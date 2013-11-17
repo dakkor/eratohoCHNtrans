@@ -1,0 +1,3777 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;2をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下で全コマンド口上を表示させないようにする場合はRETURN 1を返す
+;========================================================
+@KOJO_2_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は表示しない
+SIF EQUIP:14
+	RETURN 1
+;口枷がある場合は表示しない
+SIF TEQUIP:42
+	RETURN 1
+;失神回復時は表示しない
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊の場合は表示しない
+SIF TALENT:167
+	RETURN 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_0
+;初回実行時
+IF TFLAG:95 == 1
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「あ、こら！　へんなところ触らないでよ」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『あんなに小さかった魔理沙が、いつの間にかこんなに大きくなってたんだね』
+			PRINTFORMW 「……素っ裸の少女の胸とあそこをいじりながら言う台詞じゃないよな、それ」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ん……ふぁ……」
+			PRINTFORMW 「ん、いいよ……もっと触って……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「――ひっ！？」
+			PRINTFORMW 「や、やめろっ！　触るなぁ！」
+		ENDIF
+		RETURN 0
+;2回目以降
+ELSE
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「やぁん、どこ触ってるのよぉ」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 『……魔理沙』
+		PRINTFORMW 「な、なんだ香霖。真剣な顔して」
+		PRINTFORMW 『ちゃんと運動はしてるかい？　いくら自由に外に出られないとは言っても、少しは運動もしないといてっ』
+		PRINTFORMW 霖之助の顎に涙目魔理沙の裏拳が命中した……
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「あ……そう、そこっ……」
+		PRINTFORMW 「そこ、気持ちいいよぉ……」
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;淫乱である
+	ELSEIF TALENT:淫乱 == 1
+		PRINTFORMW 「全身……気持ちいいよぉ……」
+		PRINTFORMW 「もっと強くしていいから、私の身体、全部愛してぇ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「や、やだぁっ！」
+		PRINTFORMW 「離せ！　触るなぁっ！！」
+	ENDIF
+	RETURN 0
+ENDIF
+
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_1
+IF TFLAG:95 == 1
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「きゃはは、くすぐったい～」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 「ば、馬鹿やめろ！　そんなところ汚いぜ……」
+		PRINTFORMW 『魔理沙に汚い所なんてないよ』
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「ふああっ……！　舌がぁ……」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「そ、そんなに顔を近づけるなっ！」
+		PRINTFORMW 「ま、まさか、そんなところ舐め……いやだぁぁぁっ！」
+	ENDIF
+	RETURN 0
+;２回目以降
+ELSE
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「うう～、そこは女の子の大事なとこなのに～」
+	;屈服刻印Lv3
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 『魔理沙が弱いのはここかい？　それともこっちの上の方かな？』
+		PRINTFORMW 「はっ……ひゃいっ！？　な、なんでそんなに私の弱い所が分かるんだよぉ……」
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「ひゅごいっ、%CALLNAME:MASTER%の舌、気持ちいいよぉっ！」
+		PRINTFORMW 「私のおまんこ、%CALLNAME:MASTER%の舌で、ほぐされてぇっ！！」
+	;屈服刻印Lv3
+	ELSEIF TALENT:淫乱 == 1
+		PRINTFORMW 「もっと！　もっと舐めてっ！」
+		PRINTFORMW 「ふあぁぁぁっ！！　舌先でクリトリス舐められるの、好きぃっ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やだ……やだよぉ……」
+		PRINTFORMW 「そんな恥ずかしいところ、舐めないでくれぇ……」
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_2
+;初めて
+IF TFLAG:95 == 1
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「いやぁん、どこに指を入れてるのよ～（怒）」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 「お、お尻！？　香霖……お前やけに女っ気が無いと思ってたが、まさかそっちの趣味が……」
+		PRINTFORMW 『勝手に人の性癖を決めつけないでくれ。まぁ、彼のせいでそっちの趣味にも目覚めたのは事実だが』
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「お尻？　う、うん。分かった……ぜ」
+		PRINTFORMW 「私のお尻の穴、好きに開発してください……」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「――な、何してるんだ！」
+		PRINTFORMW 「そこはお尻の穴だろ！　何考えて……いやぁっ！！」
+	ENDIF
+	RETURN 0
+;２回目以降
+ELSE
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「なんでお尻なのよ～（汗）」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 『だいぶ慣れてきたみたいだね、魔理沙』
+		PRINTFORMW 「くぅ～、さっきから弱い所ばかり責めやがって」
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		;処女である
+		IF TALENT:処女 == 1
+			PRINTFORMW 「んっ……くふっ……相変わらずこっちの穴ばかり開発するんだな」
+			PRINTFORMW 「私は構わないんだぜ？　いつでも処女を奪ってくれても」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ふあぁぁぁっ！　入ってくる……」
+			PRINTFORMW 「%CALLNAME:MASTER%の指が、私のお尻の中にぃ……」
+		ENDIF
+	;淫乱である
+	ELSEIF TALENT:淫乱 == 1
+		PRINTFORMW 「ああっ！　そこぉっ！！」
+		PRINTFORMW 「お尻の中、指でかき回されるの、好きなのぉっ！！」
+	;その他の場合
+	ELSE
+		;処女である
+		IF TALENT:処女 == 1
+			PRINTFORMW 「ほ、本当だな？」
+			PRINTFORMW 「本当にこっちでお……おちんちん、入れられるようになったら」
+			PRINTFORMW 「処女は奪わないでくれるんだな？　……くうっ、ふあぁ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「なんで……ぐすっ、なんでこんなことするんだよぉ……」
+			PRINTFORMW 「こっちの穴は、そんなことに使う穴じゃないだろぉ……」
+		ENDIF
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_3
+;初めて
+IF TFLAG:95 == 1
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「こんな小さい胸が好きなの？」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 『魔理沙。だからキノコばかりじゃ栄養が偏ると前に言っただろう』
+		PRINTFORMW 「……どこを揉みながらその発言が出て来たのか、ちょっと聞かせてもらおうか」
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「相変わらず手つきがいやらしいぜ」
+		PRINTFORMW 「しかも私の胸の弱いところを確実に攻めてくるし、本当にいやらしい奴だぜ」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「なっ……！？　やめろ、やめてくれ……」
+		PRINTFORMW 「男になんて触らせたことなかったんだ……やだよぉ……」
+	ENDIF
+	RETURN 0
+;２回目以降
+ELSE
+	;効果[EX化]
+	IF CFLAG:0 == 1
+		PRINTFORMW 「やぁん、そんなにおっぱいもみもみしないでよ～」
+	;助手が霖之助で助手が調教
+	ELSEIF ASSIPLAY && NO:ASSI == 69
+		PRINTFORMW 「香霖……なんか手つきがやけにいやらしいんだぜ」
+		PRINTFORMW 『いや、以前に外の世界の本で見た、胸を大きくさせる揉み方を試してみようと思ってね』
+		PRINTFORMW 「……大きなお世話だぜ」
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「これだけ胸を揉まれてるんだ。少しくらい大きくならないかな？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「私はそんなに大きい方じゃないだろ？　それでもいいのか？」
+			PRINTFORMW 「そうか。まぁ、そういうこと言ってくれるお前だから、好きになったんだけどな」
+		ENDIF
+	;淫乱である
+	ELSEIF TALENT:淫乱 == 1
+		PRINTFORMW 「も、もうちょっと強くしてもいいぜ？」
+		PRINTFORMW 「優しいのはいいけど、そんな揉み方じゃ物足りないんだ」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「ぐすっ……やめろぉ……こねるなぁ……引っ張るなぁ……」
+		PRINTFORMW 「私の胸は、おもちゃじゃないよぉ……」
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_4
+;もうコピーして最初のTab消すの疲れました。さーせん。
+	;初めて
+	IF TFLAG:95 == 1
+		;処女である
+		IF TALENT:処女 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「ま、待った！　そんな奥まで入れたら、お前のためにとっておいた処女が無くなるんじゃ」
+				PRINTFORMW 「『魔理沙のあそこは小さいから、ペニスだと裂けてしまうかもしれないから』って……」
+				PRINTFORMW 「わ、私は、裂けてもいいからお前のモノで奪って欲しかったのに……」
+				PRINTFORMW 「ぐ……奥まで、指が入ってくる……あ……んぐっ……！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ま、待て！　わ、私処女なのに、そんな奥まで入れたら……！」
+				PRINTFORMW 魔理沙の懇願に耳を貸さず、%CALLNAME:MASTER%は指を魔理沙のヴァギナの奥まで進めていく
+				PRINTFORMW 「ひっ……！　お、お願いだ！　痛い！　そ、それ以上はっ……あぐぅっ！！」
+				PRINTFORMW 一瞬指先が何かに引っかかった感触を覚え、そこから先に指を進めた瞬間、魔理沙が全身を震わせて悲鳴を上げた……
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あ……指、入れるの？」
+				PRINTFORMW 「いいけど、優しくして欲しいぜ」
+				PRINTFORMW 「だって、ここが傷ついちゃったら、しばらくここでお前を喜ばせられないだろ？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「いいよ……好きにしろ」
+				PRINTFORMW 「どうせ、もう処女じゃないんだから……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ…あっ……そ、そこ、弱いからぁ……」
+			PRINTFORMW 「そこで指曲げて刺激されるの、気持ちよすぎるよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「『出し入れするたびにいやらしい汁が溢れてくる』？」
+			PRINTFORMW 「ち、違うっ！　そんなこと……ない……」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_5
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「え？　お前がしてくれるのか？」
+			PRINTFORMW 途端に魔理沙のペニスはびくん、と跳ね、大きく反り立った
+			PRINTFORMW 「あはは……まだ触れられてもいないのに、楽しみでこんなになっちゃった」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「え？　お前がしてくれるのか？」
+			PRINTFORMW 「どういう風の吹きまわしか知らないが、歯は立てないでくれよ」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「っ……はぁっ……おちんちん舐められるの、気持ちいいよぉ……」
+			PRINTFORMW 「好きな人にこんなことされるの、嬉しくて嬉しくて、すぐにイっちゃいそうだよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「くっ……あうっ、こ、これは予想以上に……うおっ、き、気持ちいい……な」
+			PRINTFORMW 「お前はいつも……ふあぁぁぁっ、わ、私にこんなこと、させて気持ち良くなってた、のか……んんんっ」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_6
+	;初めて
+	IF TFLAG:95 == 1
+		;助手が霊夢で助手が調教
+		IF ASSIPLAY && NO:ASSI == 1
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「やれやれ、まさかファーストキスの相手が霊夢なんてな」
+					PRINTFORMW 『それは光栄ね。魔理沙は嫌じゃないの？』
+					PRINTFORMW 「まぁ、本当はあいつに貰って欲しかったがな」
+					PRINTFORMW 『残念だったわね。それじゃ、魔理沙のファーストキスいただきまーす』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やれやれ、まさかファーストキスの相手が霊夢なんてな」
+					PRINTFORMW 『それは光栄ね。魔理沙は嫌じゃないの？』
+					PRINTFORMW 「まぁ、あいつに比べたら霊夢の方が100倍マシだな」
+					PRINTFORMW 『ふぅん……それじゃ遠慮なく』
+				ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+					PRINTFORMW 「やれやれ、まさかファーストキスの相手が香霖になるなんてな」
+					PRINTFORMW 『そうだったのかい？　なんだか申し訳ないな。僕なんかが初めての相手で』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「まったくだ。やっぱり乙女としては最初はあいつにあげたかったんだが」
+					PRINTFORMW 「まぁ、それがあいつの考えなら仕方ないぜ。その代わり、回数は１００倍返しであいつにこれからキスしてもらうぜ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「構わないぜ。あいつに比べたら９８倍マシだ」
+					PRINTFORMW 『微妙に１００に届かないその基準が気になるが、それじゃ行くよ魔理沙。怖かったら目を瞑ってていいから』
+				ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕== 1
+				PRINTFORMW 「やっと……キスしてくれたな」
+				PRINTFORMW 唇を愛おしそうに撫でながら、魔理沙が呟く
+				PRINTFORMW 「お前は気にしてなかっただろうけど、今まで色々とされてきた中で、ちゃんとしたキスはこれが初めてだったんだぜ」
+				PRINTFORMW そういえばそうだったか……それにしても、魔理沙はよくそんなことを覚えていたものだ
+				PRINTFORMW 「当たり前だろ。乙女にとってファーストキスって奴は、一生の思い出になるんだからな」
+		;それ以外
+		ELSE
+				PRINTFORMW 「――――！？　っ！！」
+				PRINTFORMW キスをされた魔理沙は渾身の力で%CALLNAME:MASTER%を突き飛ばすと、口元を押さえ泣き出した……
+				PRINTFORMW 「っぐすっ……ひどい……ぜ……キス、初めて、だったのに……」
+		ENDIF
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相手が霖之助
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 「こんなにキスされると、なんだか恋人同士になった気分だな」
+			PRINTFORMW 『忘れちゃ駄目だよ、僕たちのご主人様はあっちなんだから』
+		;相手が霊夢
+		ELSEIF ASSIPLAY && NO:ASSI == 1
+			PRINTFORMW 「んんん……れろ……ぴちゃ……んむむ……」
+			PRINTFORMW 「女の子同士のキスも、慣れるとなんかハマってしまいそうだな」
+			PRINTFORMW 『元々素質はあったんじゃない？　でも、私たちのご主人様はあっちなんだから忘れちゃ駄目よ』
+		;恋慕
+		ELSEIF TALENT:恋慕== 1
+			PRINTFORMW 「んんん……れろ……ぴちゃ……んむむ……」
+			PRINTFORMW 魔理沙は積極的に舌を絡ませながら濃厚なキスを続ける
+			PRINTFORMW 「ぷはっ……本物のキスはやっぱすごいな。私もこれで少しは大人に近づけたかな？」
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2
+				PRINTFORMW 「き、キスなんかされたって……お前のことを好きになったりなんかしないんだからな」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、こんなキスくらいで……優しくされたとか、思わないからな」
+			PRINTFORMW 「乙女の唇を無理やり奪うなんて、優しくもなんともないんだからな」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_7
+; ビデオなし(50)　野外でない(52)　シャワーでない(54)　バイブ等なし(20)　Aバイブ等なし(25)
+IF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+	;ふつう CFLAG:8007
+	;初めて
+	IF CFLAG:8007 == 0
+		;EX
+		IF CFLAG:0 == 1
+			PRINTFORMW 「なんでそんな恥ずかしいこと、%CALLNAME:MASTER%の目の前でしなくちゃいけないの」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『驚いたよ。魔理沙もやっぱり自慰はちゃんとする子だったんだね』
+			PRINTFORMW 「お前がやらせてるんだろ」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「し、仕方ないな……」
+			PRINTFORMW 「お前だから見せるんだぜ？　他の奴の前でなんか絶対にしないんだからな？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「じ、自慰……？」
+			PRINTFORMW 「そ、そりゃどんなことをするかくらい知ってるけど……」
+			PRINTFORMW 「なっ……今ここでしろだって……！？　い、嫌に決まってるだろう！！」
+			PRINTFORMW 首を横に振って拒む魔理沙に、何度も強い口調で命令すると、魔理沙は涙を浮かべながら自慰を始めた
+		ENDIF
+		CFLAG:8007= 1
+		RETURN 0
+	ELSE
+		IF CFLAG:0 == 1
+			PRINTFORMW 「くすん、乙女の一人えっちは見世物じゃないのよ（涙）」
+			CFLAG:8007 = 8
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『そういえばオナニーの語源だが、これには創世記のオナンという男がいたとされていて』
+			PRINTFORMW 「気が散って集中できないから、こんなときくらい黙っててくれ……」
+			CFLAG:8007 = 7
+		;恋慕かつ自慰中毒Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「んんっ……ふあっ……気持ちいい……」
+			PRINTFORMW 「%CALLNAME:MASTER%に見られながらするの、気持ちいいよぉ……」
+			CFLAG:8007 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んんっ……ふあっ……気持ちいい……」
+			PRINTFORMW 「%CALLNAME:MASTER%に見られながらするの、気持ちいいよぉ……」
+			CFLAG:8007 = 5
+		;露出癖Lv4以上
+		ELSEIF ABL:露出癖 >= 4
+			PRINTFORMW 「見てるか？　んうぅ……はぁっ……ああっ……！」
+			PRINTFORMW 「わ、私が、いやらしいオナニーしているとこ、ちゃんと見てるか……ふぁ……ひゃうぅっ！！」
+			CFLAG:8007 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「なんで……くぅっ、見られてるのに、こんな恥ずかしいことしてるのに……」
+			PRINTFORMW 「止まらない、気持ち良くって指が止まらないよぉ……」
+			CFLAG:8007 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「嫌だぁ……見るなぁ……」
+			PRINTFORMW 「こんな恥ずかしいところ、見るなぁ……」
+			CFLAG:8007 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;二穴バイブオナニー CFLAG:8008
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	IF CFLAG:8008 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「らめぇぇぇっ！　む、無理いっ！」
+			PRINTFORMW 「おまんこと、お尻と、胸と、クリと、４つ全部いじるなんて本当に飛んじゃううぅぅぅぅっ！！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「じ、冗談だ……ろ？」
+			PRINTFORMW 「無理！　無理だって！　２つ同時に使うなんて、私の身体が絶対持たないってば！」
+		ENDIF
+		CFLAG:8008= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「らめぇぇぇっ！　む、無理いっ！」
+			PRINTFORMW 「おまんこと、お尻と、胸と、クリと、４つ全部いじるなんて本当に飛んじゃううぅぅぅぅっ！！」
+			CFLAG:8008 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ひっ……ぐすっ……お尻がぁ……おまんこがぁ……」
+			PRINTFORMW 「胸とクリトリスだけで、ひぐっ、きついのにぃっ、こんな沢山、無理、無理いぃぃぃっ！！」
+			CFLAG:8008 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+; バイブオナニー CFLAG:8009
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 1
+	IF CFLAG:8009 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「バイブじゃ、なくて……うぁっ」
+			PRINTFORMW 「お前のが欲しいのにぃ……ぐすっ、意地悪……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お願いだ……せめて、これを抜いてさせてくれ……」
+			PRINTFORMW 「こんなの使ってオナニーしたら、本当に壊れちゃうよぉ……」
+		ENDIF
+		CFLAG:8009= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「バイブじゃ、なくて……うぁっ」
+			PRINTFORMW 「お前のが欲しいのにぃ……ぐすっ、意地悪……」
+			CFLAG:8009 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お願いだ……せめて、これを抜いてさせてくれ……」
+			PRINTFORMW 「こんなの使ってオナニーしたら、本当に壊れちゃうよぉ……」
+			CFLAG:8009 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;アナルバイブオナニー CFLAG:8010
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:25 == 1
+	IF CFLAG:8010 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「仕方のない奴だな、お前は……」
+			PRINTFORMW 「よく見てろよ？　私がお尻にバイブ抜き差ししてオナニーする所」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こ、これでオナニーしろ、って……」
+			PRINTFORMW 「お尻の奥まで自分で入れたら、取れなくなりそうで怖いんだぜ」
+		ENDIF
+		CFLAG:8010= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んふっ！　あふっ！　ひゃあぁぁぁっ、はひいっ！」
+			PRINTFORMW 「だ、だめ、お前に、見られてると、思うと、お尻ぃっ、ずぼずぼするの、止まらないよぉっ！！」
+			CFLAG:8010 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あ、んっ、ぁくっ、んはぁっ……」
+			PRINTFORMW 「お、お尻で感じてなんか、ないぜ……」
+			CFLAG:8010 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;センズリ	CFLAG:8011
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:30 == 2
+	;初めて
+	IF CFLAG:8011 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8011= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8011 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8011 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;公開オナニー CFLAG:8012
+;野外とかお風呂とかでもカメラ使えるけど特に条件分けてないのでここ。
+ELSEIF TEQUIP:50 == 1 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+	IF CFLAG:8012 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「まったく……こんなことまでやらせるなんてな」
+			PRINTFORMW 「ここまでしたら本当にお嫁に行けなくなっちゃうだろ。責任は取って貰うぜ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「び、ビデオの前で……？」
+			PRINTFORMW 「だって、それ、ビデオに残って……そ、それ、売られたら他の人が見るんだろ……？」
+			PRINTFORMW 「いやぁっ、いやだぁ……っ」
+			PRINTFORMW 「うっ……ひっく……分かったよ……やる、やるからぁ……」
+		ENDIF
+		CFLAG:8012= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……はっ……わ、私、霧雨魔理沙は……」
+			PRINTFORMW 「ご主人様の命令で、誰が見るか分からないビデオの前で、オナニーしてますっ……ふぁっ、はぁっ！」
+			CFLAG:8012 = 4
+		;露出癖Lv4以上
+		ELSEIF ABL:露出癖 >= 4
+			PRINTFORMW 「カメラの前の人……見てるか？」
+			PRINTFORMW 「んっ……ふっ……これから、私、霧雨魔理沙は……」
+			PRINTFORMW 「オナニーを始めます……どうか、最後まで見てください……んんっ……あうっ」
+			CFLAG:8012 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「もう……やめて……うぐっ……」
+			PRINTFORMW 「こんなの、知り合いに見られたら、恥ずかしくて生きていけないよぉ……」
+			CFLAG:8012 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;公開二穴バイブオナニー CFLAG:8013
+ELSEIF TEQUIP:50 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	IF CFLAG:8013 == 0
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8013= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8013 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8013 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;公開バイブオナニー CFLAG:8014
+ELSEIF TEQUIP:50 && TEQUIP:20 == 1
+	IF CFLAG:8014 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8014= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8014 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8014 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;CFLAG:8022まで使っていると言ったな…。あれは嘘だ…。
+;だってスペースだけで特に何も書いてないし。
+;一応15以降は
+;公開アナルバイブオナニー	CFLAG:8015
+;公開センズリ	CFLAG:8016
+;野外オナニー	CFLAG:8017
+;野外二穴バイブオナニー	CFLAG:8018
+;野外バイブオナニー	CFLAG:8019
+;野外アナルバイブオナニー	CFLAG:8020
+;野外センズリ	CFLAG:8021
+;シャワーオナニー	CFLAG:8022
+;の枠あり
+
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_9
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「……？　どうしたんだ？」
+			PRINTFORMW 「急に何もされないと、ちょっと不安になるぜ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんだ？　休憩か？」
+			PRINTFORMW 「お前さんが何を考えてるか分からんが、今のうちに少し休ませてもらうぜ」
+		ENDIF
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「噂には聞いたことがあるが、これが放置プレイってやつか？」
+			PRINTFORMW 「……成程、効果覿面だぜ」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「なぁ？　私何かまずいことしたのか？」
+			PRINTFORMW 「黙ってちゃ分からないだろ。何もされないと逆に不安だぜ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんだ？　休憩か？」
+			PRINTFORMW 「言っとくがな、少し手を緩めたからって、お前のことをいい奴だなんて思わないからな」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_10
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん、今度はそれか」
+			PRINTFORMW 「それも気持ちいいんだが、できればお前に直接してもらいたいな」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんだそれ？　見たことない機械だな」
+			PRINTFORMW 「お、おい！？　どこに押し付けて……ひっ！？　ひやあぁぁぁぁぁぁっ！！」
+		ENDIF
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃあぁぁぁっ！！」
+			PRINTFORMW 「わ、私の敏感なとこばかり、そんなに押し付けたら駄目なのぉっ！！」
+		;屈服刻印Lv3
+			;ELSEIF MARK:屈服刻印 == 3 && (CFLAG:9010 <= 2 || FLAG:11 == 2)
+			;PRINTFORMW 
+			;CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、またそれか……」
+			PRINTFORMW 「それ、刺激が強すぎるんだ……お願いだから振動を弱くして……いやあぁぁぁぁぁぁっ！！」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_11
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そ、それ、見た目からして嫌な予感がするんだが……」
+			PRINTFORMW 「いくらお前がしてくれるやつでも、あまり強すぎるのはちょっと勘弁願いたいぜ、ってちょっと待……ひゃぁぁぁぁ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「な、なんだその機械……見るからに怪しいぜ」
+			PRINTFORMW 「マッサージをする機械？　私は肩なんて凝ってないぜ」
+			PRINTFORMW 「って、どこに押し付けてるんだぜ！？　ま、まさか……ひっ！？　――――っ！！？？」
+		ENDIF
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あああっ！　くうぅぅぅっ！　ふあぁぁぁぁぁ――――っ！！」
+			PRINTFORMW 「駄目！　だめっ！　らめぇぇぇ！！　刺激っ！　強すぎてっ！　意識、飛んじゃうぅぅぅ！！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「もうその気持ちよさは十分分かったから、もう少し刺激の小さい奴にしてくれないか」
+		;それ以外
+		ELSE
+			PRINTFORMW 「や、やだぁっ！　それ、強すぎて本当に駄目なんだ！」
+			PRINTFORMW 「やめ、やめて、やめてくださ……っ！？　あぁぁぁぁ――――っ！！」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+	;解除口上は1回目、2回目以降変化なしみたいなので、CFLAGでは特にチェックなし
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「こんな中途半端なところで抜かれても困るぜ……」
+		PRINTFORMW 「ほら、後から後からえっちな液体が溢れてくるんだ……お前ので栓をして、くれないか……？」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「や、やっと解放か……」
+		PRINTFORMW 「機械に無遠慮にあそこの中をかき回されるのはもう勘弁願いたいぜ」
+	ENDIF
+	RETURN 0
+
+;装着時
+ELSE
+	;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「……せめて、初めては道具じゃなく本物で奪って欲しかったぜ」
+				PRINTFORMW 「お前が決めたんなら、それに従うけどさ……」
+				PRINTFORMW 「やっぱり……これが初めての相手だなんて……ちょっと、嫌だぜ」
+				PRINTFORMW 魔理沙は一瞬だけ悲しそうな目でバイブを見ると、目を瞑ってバイブの入ってくる感触に肩を震わせた
+				PRINTFORMW 「っ――――！　ぐ……痛っ――――！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なんだ、お前のおちんちんじゃなくて、そっちの機械を入れるのか」
+				PRINTFORMW 「仕方ないな。お前のだと思って受け入れるぜ」
+				PRINTFORMW 「くっ……入ってくる……んうぅ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「……これが、私の初めての相手になるのか」
+				PRINTFORMW 「もっとロマンチックな初体験を夢見てたけど……無理だった、な」
+				PRINTFORMW 「……まぁ、お前が初めての相手になるよりは、いくらかマシなのか、な」
+				PRINTFORMW 「……じゃあな。私の処女」
+				PRINTFORMW 魔理沙は涙を浮かべた目でバイブを見ると、目を瞑ってバイブを入れられる秘所を指で広げた
+				PRINTFORMW 「っ――――！　ぐ……痛っ――――！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……形からして嫌な予感がするぜ」
+				PRINTFORMW 「……やっぱりそういう使い方か。あのな。処女じゃなくなったとはいえ、やっぱり怖いんだぜそんなの入れるなんて」
+				PRINTFORMW 「……分かったよ。入れるよ。入れるから、せめてゆっくり入れてくれ」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うぁっ……奥まで、、かき回されてる……」
+			PRINTFORMW 「お、お願い……道具じゃなくて、%CALLNAME:MASTER%のおちんちん、入れて欲しいよ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「……いいよ、入れたければ好きにしろ」
+			PRINTFORMW 「どうせもう処女じゃないんだ……お前のよりずっとマシだぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「はぁ……はぁ……はぁ……」
+		PRINTFORMW 「おひりが……おひりがぁ……」
+		PRINTFORMW 魔理沙のアヌスはアナルバイブの大きさに開いたまま、ひくひくと痙攣している……
+	;その他の場合
+	ELSE
+		PRINTFORMW 「や、やっと……解放、された、ぜ……」
+		PRINTFORMW 魔理沙が息も絶え絶えに深呼吸をするのに合わせ、魔理沙のアヌスも開いたり閉じたりを繰り返していた……
+	ENDIF
+	RETURN 0
+
+;装着時
+ELSE
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「な、なんだその機械？」
+			PRINTFORMW %CALLNAME:MASTER%はアナルバイブの使い方について懇切丁寧に説明してあげた
+			PRINTFORMW 「な、なんだよそれ……私、そんな恥ずかしいところまでお前に開発されちゃうのか……」
+			PRINTFORMW お尻を両手で押さえながら、もじもじと照れる魔理沙に、いいから尻をこちらに突きだすよう命じた……
+		;処女
+		ELSEIF TALENT:処女 == 1
+			PRINTFORMW 「な、なんだその機械？　ま、まさか……」
+			PRINTFORMW これで処女を奪われると思ったのか、魔理沙の顔が青くなる。
+			PRINTFORMW %CALLNAME:MASTER%はアナルバイブの使い方について懇切丁寧に説明してあげた
+			PRINTFORMW 「お、お尻に――？　な、なぁ……冗談……だよな？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「な、なんだその機械？」
+			PRINTFORMW %CALLNAME:MASTER%はアナルバイブの使い方について懇切丁寧に説明してあげた
+			PRINTFORMW 「成程よく分かった。お前さんは私の前だけじゃ飽き足らず、後ろまで開発しようってことか」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なあ、私のお尻もだいぶ慣れてきただろ？」
+			PRINTFORMW 「その細いのより、お前の太いのを入れてくれてもいいんだぜ私は」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「あ、それ……またそれ、奥まで入れてくれるんだな？」
+			PRINTFORMW 「くっ……あああああっ！！　ひっ、すご、すごいのぉっ！」
+			PRINTFORMW 「おひりの、ずっと、奥までっ、ぐりぐりされてるよぉっ！！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「や、やめろよ……そんなに奥まで入れるなぁ……」
+			PRINTFORMW 「抜けなくなったらどうするんだよ……怖いよぉ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+	IF TALENT:恋慕 == 1
+		PRINTFORM 
+	;その他の場合
+	ELSE
+		PRINTFORM 
+	ENDIF
+	RETURN 0
+;装着時
+ELSE
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん……ほら。ここに着けて欲しいのぜ……」
+			PRINTFORMW 魔理沙は自分から足を開き、既に固く自己主張しているクリトリスを%CALLNAME:MASTER%に見せつけた……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「嫌な予感しかしないけど、いちおう聞いておくぜ。なんだそれ？」
+			PRINTFORMW 使い方を説明すると、慌てて魔理沙はクリトリスを守るように股間を隠した。
+			PRINTFORMW それを力ずくでどかすと、魔理沙のクリトリスにクリキャップを装着した……
+			PRINTFORMW 「お、お願いだ。やめ……ひぃやぁっ！？」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん……ほら。ここに着けて欲しいのぜ……」
+			PRINTFORMW 魔理沙は自分から足を開き、既に固く自己主張しているクリトリスを%CALLNAME:MASTER%に見せつけた……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「なぁ、分かるだろ？　少女のここは一番敏感なんだ」
+			PRINTFORMW 「そんなところをずっと攻め続けられるのって、気持ちいいだけじゃなくて本当に怖いんだぜ」
+			PRINTFORMW 「……分かった、分かったよ。どうせ言って聞いてもらえるとは思っちゃいないさ」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あんまりこれで乳首を敏感にさせられるとだな」
+			PRINTFORMW 「お前の赤ちゃんを産んだ時、おっぱいをまともにあげられるかちょっと心配になるんだが」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「なんかもう既に悪い予感しかしないが、いちおう聞いておくか。なんだそれ？」
+			PRINTFORMW 「……お前、ホント変なモノ持ってるんだな」
+			PRINTFORMW 呆れたようにため息をつく魔理沙だったが、乳首にニプルキャップを付けられた途端大人しくなった
+			PRINTFORMW 「――――っ……くぅ……ふ……」
+			PRINTFORMW どうやら、乳首への刺激に必死で耐えているようだ……
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あんまりこれで乳首を敏感にさせられるとだな」
+			PRINTFORMW 「お前の赤ちゃんを産んだ時、おっぱいをまともにあげられるかちょっと心配になるんだが」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お前さんは少女の乳首を何だと思ってるんだ」
+			PRINTFORMW 「少なくともこんなのを付けられて敏感にさせられるオモチャじゃないんだぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_20
+;PRINTFORMW 
+	;初めて
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助がその屹立したペニスを魔理沙の入り口にあてがうと、魔理沙は目を瞑って握り拳を口元に当てた
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。おねがい、やさしくして……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、僕に奪わせるつもりなんだね。君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の顔が期待と不安の色に染まった
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は大きく足を開くと、これから男を受け入れる未通の秘所を露わにした
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「この体勢だと、お前の顔がちゃんと見られるから安心するな……えへへ」
+				PRINTFORMW 「ん……いいよ……っく……んっ……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「ちゃんとした態勢でしてもらえるのが、せめてもの救いかな」
+				PRINTFORMW 「いいぜ……好きにしてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、ペニスの先端を魔理沙の入口に擦りつける……
+				PRINTFORMW 「や、やめっ……い゛っ……いやあぁぁぁぁぁっ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「今度はこの体勢か？」
+				PRINTFORMW 「いいぜ……来てくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「今度はこの体勢か？」
+				PRINTFORMW 「いいさ、好きにしてくれ」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「やだ、恥ずかしいわ」
+			PRINTFORMW 「繋がってるところ、そんなに見せつけないでよ」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「そんなところに立ってないで３人で気持ち良くなろうぜわひゃぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり奥を突くなぁっ……ひゃんっ」
+				PRINTFORMW 『すまない。会話をする余裕があるなら、少し強くしても大丈夫かなと思ってね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。辛くないかい？』
+				PRINTFORMW 「んっ……大丈夫。悔しいが、私の身体もだいぶ慣れてきたみたいだぜ、あっ、やっ」
+				PRINTFORMW 『魔理沙の身体は小さいからね。このくらいの強さでいいかな？』
+				PRINTFORMW 「んう……もう少しだけなら、激しくしても大丈夫、かも」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;Ｖ感覚Lv4以上
+			IF ABL:Ｖ感覚 >= 4
+				PRINTFORMW 「らめなのぉっ！！　おまんこのおく、きゅんってなるよぉっ！！」
+				PRINTFORMW 「おちんちんっ、奥まできてぇっ！　しあわへで、きゅんってなっひゃうのぉっ！！」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「はぁっ！　あうっ！　き、気持ちいい、よぉっ！」
+				PRINTFORMW 「もっと、もっと早くしていいからぁっ！　もっと、もっと激しく、だぜっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あ、あのさ……手を握ってもらってて、いいか……？」
+				PRINTFORMW 「ありがとう……ひゃあっ！　い、いきなり激しくっ……ああっ、好きっ！　好きいぃぃぃっ！！」
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「あはっ！　いいっ！　そこっ、もっとぉっ！！」
+			PRINTFORMW 「もっと激しくしてくれ……何も考えなくてもいいくらいに、もっと気持ちよくさせてぇっ！！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_21
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助が四つん這いになって背を向けた魔理沙のヴァギナにペニスをあてがうと、魔理沙は目を潤ませながら振り向いた
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。おねがい、やさしくして……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、こんな動物みたいな体位で僕に奪わせるつもりなんだね。
+				PRINTFORMW 『君は……いや、魔理沙も、本当にそれでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……入って、くるよぉ……っ」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 挿れるぞ、と告げた途端、四つん這いになった魔理沙の顔は見えないが、身体は敏感に反応していた
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は振り返って笑顔をこちらに向けると、お尻を突き出して足を軽く開いた
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「この体勢だと、お前の顔が見えなくて不安なんだ。その分優しくしてくれ……」
+				PRINTFORMW 「ん……入り口、入って……っく……んっ……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「こんな犬みたいな格好でされるのは嫌だけど……この格好の方が痛みが少ない、って言うしな」
+				PRINTFORMW 「いいぜ……好きにしてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 魔理沙を四つん這いにさせてその未成熟なお尻を掴む
+				PRINTFORMW このまま後ろから挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、ペニスの先端を魔理沙の入口に擦りつける……
+				PRINTFORMW 「いやぁっ！　初めてがこんな、犬みたいな恰好で犯されるなんて、いやだあぁぁぁぁぁっ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「今度はこの格好でするのか？」
+				PRINTFORMW 「動物みたいで恥ずかしいな。どうせなら、うんと激しく犬みたいに突いてくれよ？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「今度はこんな格好でするのか……」
+				PRINTFORMW 「私は……動物と同じ扱いなんだな……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「こんな格好恥ずかしすぎるわ」
+			PRINTFORMW 「しくしく。私は犬じゃないのに」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「そんなところに立ってないで、口かお尻なら空いてるぜ？　っにゃぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり奥を突くなぁっ……ひゃんっ」
+				PRINTFORMW 『すまない。会話をする余裕があるなら、少し強くしても大丈夫かなと思ってね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『しかし、僕は魔理沙を正しい道に育てられなかった。霧雨の親父さんには申し訳なくて顔向けできないな』
+				PRINTFORMW 「ふぁ……んんっ！　そ、その霧雨の娘さんに後ろからおちんちん入れながら言っても何の説得力も無いぜ、んっ、くっ、あんっ」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;Ｖ感覚Lv4以上
+			IF ABL:Ｖ感覚 >= 4
+				PRINTFORMW 「やぁ……らめぇっ、そんなっ、激しく後ろから突かれたら、だめなのぉっ！！」
+				PRINTFORMW 「私のいちばんおく、こつこつってノックされへぇっ！　そんなにノックされたら入口ひらいひゃうぅぅっ！！」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「この格好、すごく恥ずかしいけど……」
+					PRINTFORMW 「無理やりお前のモノにされてるって感じがして、ゾクゾクするな」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ふあぁぁぁぁ……はひいっ！？　う……んんん……あにゃぁっ！？」
+					PRINTFORMW 「それ、好きぃ……ゆっくり引き抜かれてから、一気に奥まで入れられるの、すごいよぉ……」
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「にゃぁぁっ！　もっと、もっと激しくしてぇっ！」
+			PRINTFORMW 「わ、私は、霧雨魔理沙はえっちなメス猫だから、壊れちゃうくらいおちんちんでいじめて欲しいよぉっ！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_22
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助は魔理沙を抱きかかえ、%CALLNAME:MASTER%に言われた通りその屹立したペニスを魔理沙の入り口にあてがう
+				PRINTFORMW 魔理沙は正面に来た霖之助に頬ずりすると、手を霖之助の背中に回した
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。やさしくしてくれ……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、僕に奪わせるつもりなんだね。君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「っ……痛っ……こ、こーりん……お願い、キスしながら、処女、破ってくれ……」
+					PRINTFORMW 「あ……んむぅ……ちゅう……っ！！　ぐ……ちゅ……んんん～っ！！」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 挿れるぞ、と告げた途端、抱っこされて目の前にある魔理沙の顔が喜びと不安に満ちた表情になった
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は%CALLNAME:MASTER%の肩に置いていた手を伸ばして首の後ろに抱きつくようにすると、
+				PRINTFORMW 少し腰を浮かしてペニスが入りやすい体勢を取った
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「この体勢だと、お前に抱きしめられているから安心できるな。もしかしたら、お前の背中に爪立てちゃうかもしれないけど……いいか？」
+				PRINTFORMW %CALLNAME:MASTER%は小さく頷くと、一度魔理沙のおでこにキスをしてから、ゆっくりと魔理沙の腰を沈めさせていった
+				PRINTFORMW 「ん……少しずつ、入って……っく……んっ……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「この体勢だと、たぶん私、お前の背中におもいっきり爪を立ててしまうと思うぜ？　それでもいいんだな？」
+				PRINTFORMW 「いいぜ……好きにしてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 魔理沙を正面から抱え上げ、抱きしめるように密着する
+				PRINTFORMW そのまま魔理沙の腰を少し持ち上げてペニスの先端の位置に合わせると、このまま挿れるぞ、と告げる
+				PRINTFORMW その宣告を聞いた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、魔理沙の身体を少しずつ下ろしていく
+				PRINTFORMW 自分の体重と重力、そして%CALLNAME:MASTER%が押さえつける力には逆らえず、
+				PRINTFORMW 魔理沙のヴァギナに少しずつペニスが飲みこまれていく……
+				PRINTFORMW 「いやっ……！　お願いだから、お願いだから、入れないで……いやあぁぁぁぁぁっ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「こんなに近くにお前の顔があると、ドキドキするな」
+				PRINTFORMW 「あ、あのさ……キス、しながら、入れてもらってもいいか？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「こんなに近くでお前の顔を見ながらされるのか」
+				PRINTFORMW 「……私は目を瞑ってるからな。終わったら言ってくれ」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「私、%CALLNAME:MASTER%に抱っこされながら犯されてるのね」
+			PRINTFORMW 「どうせならお姫様抱っこのほうがステキだったのに」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「そんなところに立ってないで３人で気持ち良くなろうぜわひゃぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり奥を突くなぁっ……ひゃんっ」
+				PRINTFORMW 『すまない。会話をする余裕があるなら、少し強くしても大丈夫かなと思ってね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。辛くないかい？』
+				PRINTFORMW 「んっ……大丈夫。こうやって香霖に抱きしめられてると安心できるから、少しくらい香霖のが大きすぎても平気だぜ」
+				PRINTFORMW 『魔理沙の身体は小さいからね。もう少しゆっくり動こうか？』
+				PRINTFORMW 「んう……もう少しだけなら、激しくしても大丈夫、かも」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;Ｖ感覚Lv4以上
+			IF ABL:Ｖ感覚 >= 4
+				PRINTFORMW 「うにゃぁ……れろ、ちゅぱ、あむっ、はにゃぁぁぁ……んむっ、ぺろっ、はむぅ……」
+				PRINTFORMW 魔理沙はとろけそうな表情で、%CALLNAME:MASTER%と何度も何度も舌を絡ませて濃厚なキスを繰り返す
+				PRINTFORMW 「とけひゃう……舌もおまんこも、気持ちよすぎてとろけちゃうよぉ……」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「もっと……もっとぎゅって、抱きしめてぇ……」
+					PRINTFORMW 「わ、私、飛んじゃう、からっ！　いっしょに、いっしょに、飛びたいよぉっ！！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「うぅあぁぁ……ずんずんって、お腹に響くっ……！」
+					PRINTFORMW 「こんな体勢でお腹の奥っ、突かれたらぁっ！！　我慢、出来な……っ！！」
+					PRINTFORMW 魔理沙は全力で%CALLNAME:MASTER%にしがみつきながら、絶頂へと登りつめていく……
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「駄目なのぉ……こんなに密着しながらおまんこの奥まで入れられたら、身体の外も中も気持ち良すぎて駄目になっちゃうのぉ……」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_23
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助が魔理沙を後ろから抱きかかえる形になり、霖之助のペニスが魔理沙の秘所に触れる
+				PRINTFORMW 魔理沙は手を恥ずかしげに口元に当てながら、霖之助にもたれかかった
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。おねがい、やさしくして……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、僕に奪わせるつもりなんだね。君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「ん……香霖にこうやって抱いて貰うの、いつ以来かな。安心できるぜ……あっ、入って、つぅっ！！」
+					PRINTFORMW 「あ……うぐぅっ……大丈夫……痛いけど、大丈夫だぜ、香霖……」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 挿れるぞ、と告げた途端、抱っこされて目の前にある魔理沙の顔が喜びと不安に満ちた表情になった
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は%CALLNAME:MASTER%の膝の上に座るような姿勢から、少し腰を浮かせると、
+				PRINTFORMW ペニスの先端を自分のまだ未開発の秘所の入口へと導いた
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「やっぱり、最初は痛いかもしれないから……余裕があったら、胸とか、クリトリスとかもいっぱいいじって、気持ちよくして欲しいぜ」
+				PRINTFORMW %CALLNAME:MASTER%は小さく頷くと、一度魔理沙の髪にキスをしてから、ゆっくりと魔理沙の腰を沈めさせていった
+				PRINTFORMW 「ん……少しずつ、入って……っく……んっ……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「乳首やクリトリスもいじる気か？　まぁ、痛みが紛れて丁度いいかもな」
+				PRINTFORMW 「いいぜ……好きにしてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 魔理沙を背後から抱え上げ、まるで子供が用を足すときのように大きく足を開かせる
+				PRINTFORMW 魔理沙は両手で顔を覆い、恥ずかしい体勢を取らされている羞恥に首をいやいやと横に振る
+				PRINTFORMW そのまま魔理沙の腰を少し持ち上げてペニスの先端の位置に合わせると、このまま挿れるぞ、と告げる
+				PRINTFORMW その宣告を聞いた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW じたばたと手を動かして魔理沙が抵抗する。しかし%CALLNAME:MASTER%の力には到底かなわず、
+				PRINTFORMW 逆に%CALLNAME:MASTER%の指で乳首とクリトリスをつねられると可愛い悲鳴を上げて抵抗を止めた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 背後を振り返り、必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、魔理沙の身体を少しずつ下ろしていく
+				PRINTFORMW 自分の体重と重力、そして%CALLNAME:MASTER%が押さえつける力には逆らえず、
+				PRINTFORMW 魔理沙のヴァギナに少しずつペニスが飲みこまれていく……
+				PRINTFORMW 「いやっ……！　こんな恥ずかしい恰好で処女奪われるところ、見せないでぇっ！……いやっ、入って……痛あぁぁぁ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「この格好、お前に体重預けられるから楽だな」
+				PRINTFORMW 「ひゃっ！？　こ、こら、どさくさにまぎれて胸を揉むな！　ふぅぁっ！？　く、クリもダメだ！」
+				PRINTFORMW 「ううー、この体位、私最後まで気持ちいいの我慢できる自信がないぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「変なところ触るなよ……あそこに入れられるだけでも嫌なんだからな」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「ん――っ！　３か所同時攻撃なんてずるい。私の身体じゃ耐えられないわ」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「こんな、全部丸見えのところを見られるのはさすがに恥ずかしいぜ……はにゃぁぁぁっ！？」
+				PRINTFORMW 「こ、香霖！　乳首とクリ同時になんて、感じすぎ……っくひゃぁぁぁっ！」
+				PRINTFORMW 『忘れてないかい魔理沙？　これは調教なんだから、ご主人様によく見てもらわなくちゃね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。辛くないかい？』
+				PRINTFORMW 「んっ……だいじょうぶ。辛いというよりは、こんな丸見えの体制を見られて恥ずかしいと言いたいぜ」
+				PRINTFORMW 『そうだね。僕と魔理沙が繋がっている所や、魔理沙の可愛い胸、小さなクリトリス、ぜんぶご主人様に見られてるね』
+				PRINTFORMW 「んう……そんなこと口に出すなんて、香霖の意地悪……」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;Ｖ感覚Lv4以上
+			IF ABL:Ｖ感覚 >= 4
+				PRINTFORMW 『やぁぁぁぁんっ！　らめぇっ！！　おちんちんでおまんこ突きながら、乳首とクリ両方いじるなんて、無理いぃぃぃっ！！」
+				PRINTFORMW 乳首とクリトリスを両方の手で同時に摘み、くりくりと指で挟んで刺激すると、魔理沙のヴァギナはきゅう、と締め付けを強める
+				PRINTFORMW 「きゅんっって来ちゃうぅっ！　そんなにいっぱい感じさせられたら、おちんちんから精液出してほしくて、おまんこ、きゅんって締めちゃうぅっ！！」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「も、もう少し、んふっ、お前に体重預けても、あうっ、いい……か？」
+					PRINTFORMW 「さっきから、ひうっ、気持ちいいところ全部責められて、にゃっ、もう、身体に力入らないんだぜ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やなのぉ……わたし、おっぱいと、クリと、おまんこと、いっぱい気持ちよくしてもらってるのにぃ……」
+					PRINTFORMW 「ご主人さまは、おちんちんしか気持ちよくなれないの不公平なのぉ……もっと、気持ちよくなってもらいたいよぉ……」
+					PRINTFORMW 全身を愛撫されて感じながら、涙目でそんな健気なことを言ってくれる魔理沙の頭をよしよしと撫でながら、
+					PRINTFORMW %CALLNAME:MASTER%は十分に魔理沙に気持ち良くさせてもらっているペニスをさらに激しく動かしていく……
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「手がお留守だぜ？　ほら、もっと乳首とクリトリスを強く抓って欲しいんだぜ」
+			PRINTFORMW 「きゃうっ！！　そ、そう！　そこっ、もっと、もっと強くちぎれるくらいつねってぇ！！」
+			PRINTFORMW 「んやあぁぁぁぁぁっ！！　ちぎれちゃうぅぅ！　気持ち良すぎておまんこでおちんちんしめつけひゃうぅぅぅぅぅ！！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_24
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 言われたとおり、霖之助が横になり、魔理沙は霖之助のペニスの上に膝立ちになる
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。だから、最初はうまくできないかもしれないけど……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙に処女を自分で捧げさせるつもりなのか。しかも君じゃなくて僕に』
+				PRINTFORMW 『君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつにもらって欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖なら、我慢できるぜ」
+					PRINTFORMW 『ゆっくりでいいからね。魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……はーっ、は――っ、香霖……んぐっ、香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖にあげられる方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。どうしても無理なら、途中で休んでもいいから……』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるから、そろそろいくぜ」
+					PRINTFORMW 『ああ……深呼吸して、力を抜きながら、ゆっくりだよ、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……へへ……香霖のおちんちん、入ってくぜ……」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 自分で入れてみろ、と告げた途端、馬乗りになった魔理沙の顔に喜びと緊張が走った
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は少し腰を浮かせると、膝で移動してペニスの先端と自分のヴァギナの位置を合わせた
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「初めてだから、最初はお前を気持ちよくさせられないかもしれないけど……」
+				PRINTFORMW %CALLNAME:MASTER%が『無理しないで自分のペースで動けばいい』と言うと、魔理沙は決意したように頷いた
+				PRINTFORMW 「ん……入れるぜ……っく……先っぽが……んっ……入ってく……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 上に跨って自分で挿れろ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「しかも自分で入れろ、か……自分から、お前に捧げることになっちゃうんだな」
+				PRINTFORMW 「いいぜ……好きにしてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW %CALLNAME:MASTER%は魔理沙の腕を捕まえて、強引に寝ている%CALLNAME:MASTER%の上に膝立ちにさせた
+				PRINTFORMW そのまま腰を下ろせ、、と命令した途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めてが、こんな形で自分からなんて……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%は、自分で出来ないなら、多少乱暴にこっちから奪うだけだ、と非情な２択を突きつけた
+				PRINTFORMW どちらにせよ初めてを奪われる２択に魔理沙はしばらく泣きながらそのままでいたが、
+				PRINTFORMW やがていくらかでもマシだと考えたのか、自分からペニスに跨り腰を下ろしていく……
+				PRINTFORMW 「うっ……うっ……ぐずっ、えうぅ……い……痛い……いや……痛い、痛いよぉ……」
+				PRINTFORMW 魔理沙は何度も痛みで腰の動きを止めながら、時間をかけてゆっくりと進んで行き、
+				PRINTFORMW ついさっきまで処女だったヴァギナの奥まで%CALLNAME:MASTER%のペニスを迎え入れた
+				PRINTFORMW %CALLNAME:MASTER%のお腹の上には、魔理沙が痛みとくやしさで流した涙が水溜りのように溜まっていた……
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「私が自分で動いていいのか？」
+				PRINTFORMW 「それも楽しそうだな。へへ、覚悟しろよ？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「今度は自分で動けって？」
+				PRINTFORMW 「……やるよ。もう、今さらだからな」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「今度はお馬さんなの？」
+			PRINTFORMW 「いいわ。どっちが早いか競争ね」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「騎乗位だからちょっと難しいけど、口でならできるぜっぜっにゃぁぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり激しく突き上げるなぁっあひぃっ！」
+				PRINTFORMW 『だって魔理沙の動きが止まっていたからね。駄目じゃないか、途中で休んだりしたら』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。自分で動けるかい？』
+				PRINTFORMW 「んっ……大丈夫。初めての時と比べたらあまり痛くないし、コツも掴みかけてきたみたいだぜ」
+				PRINTFORMW 『魔理沙はやっぱり飲み込みが早いね。僕はこのまま寝てるから、好きなように動いてみると良い』
+				PRINTFORMW 「ん……香霖の、大きいけど、頑張る、からっ」
+			ENDIF
+		;サドっ気Lv4以上
+		ELSEIF ABL:サドっ気 >= 4
+			PRINTFORMW 「おっと、まだイかせないぜ」
+			PRINTFORMW 「射精したくなったらちゃんと『お願いします、射精させてください』って言うんだぜ。分かったか？」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;Ｖ感覚Lv4以上
+			IF ABL:Ｖ感覚 >= 4
+				PRINTFORMW 「やだぁ……止まらない、腰、とまらなひよぉ……」
+				PRINTFORMW 「下からおまんこの奥まで突かれて、もう、イっちゃいそうなのに、どんどん早く動いちゃうのぉ……」
+				PRINTFORMW 「お願い、おてて握ってへぇ……わたし、もう、イっちゃう、あなたのおひんひんで、飛んじゃうからぁ……」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あ！？　ひゃうっ、こら、だから動くと突くな、って言ったろ。今は私が動く番なんだから」
+				PRINTFORMW 「まったく……私だって、ちゃんとお前を気持ちよくさせたいんだぜ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ほらほら、ペースを上げるぜ？」
+				PRINTFORMW 「今日は調子がいいんだ。お前にイかされる前にイかせてやるから、覚悟しろよ？」
+			ENDIF
+		;Ｖ感覚Lv4以上
+		ELSEIF ABL:Ｖ感覚 >= 4
+			PRINTFORMW 「な、なんで……無理やりやらされてるのに、このままだとまた中に出されちゃうのに……」
+			PRINTFORMW 「おまんこ気持ちよくて、動くの止められないよぉ……」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動かせて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうせ……お前が出すまで終わらないんだろ……？」
+			PRINTFORMW 「だったら、早く終わらせるためにも、動くしかないんだから……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女である
+			IF TALENT:処女 == 1
+				PRINTFORMW 「お前がぜんぜん私の処女を奪ってくれないのは、たぶんお前なりの考えがあるんだろうが」
+				PRINTFORMW 「私はもう待てないぜ？　悪いが、私は手に入れたいものは自分の力で手に入れる人間なんだ」
+				PRINTFORMW 「お前もこんなにおちんちん勃起させて……本当は私の処女をこれでぶち破りたいんじゃないのか？」
+				PRINTFORMW 「やめろと言っても無駄だからな……行くぜ……っ……痛っ……！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やられっぱなしは癪だぜ」
+				PRINTFORMW 「ここからは私の反撃だぜ？　覚悟しろよ」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「なんのつもりだ、って？　悪いが、私にもわからん」
+			PRINTFORMW 「とりあえず押し倒してみたが、これからどうすればいいんだ？」
+			PRINTFORMW 「……まぁ、手っ取り早くセックスしてみるか」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「主導権を握られっぱなしなのは、私らしくないからな」
+			PRINTFORMW 「しっかりおちんちん勃たせてくれよ？　ご主人様（はぁと）」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「私だって、たまには自分のペースで気持ち良くなりたいぜ」
+			PRINTFORMW 「これも私が自分に正直であるためにだぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が霊夢
+			IF NO:ASSI == 1
+				PRINTFORMW 「お、おい、今は私の調教の番じゃなかったのか？」
+				PRINTFORMW 『悪いわね魔理沙。ちょっと彼を借りるわよ……あんっ』
+				PRINTFORMW 「くぅ……生殺しだぜ」
+			;助手が霖之助
+			ELSEIF NO:ASSI == 69
+				PRINTFORMW 「お、おい、今は私の調教の番じゃなかったのか？」
+				PRINTFORMW 『まったくだ。魔理沙に見せるのはまだ早くないかい。刺激が強すぎる』
+				PRINTFORMW 「おいおい……なんでそう言いながら積極的にそいつにやられてるんだぜ香霖」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「おーい。私は放置か？」
+				PRINTFORMW 「……さすがに、目の前でされると凹むぜ」
+			ENDIF
+		;その他の場合
+		ELSE
+			;助手が霖之助
+			IF NO:ASSI == 69
+				PRINTFORMW 『こ、こら。魔理沙に悪影響だろ……って、今さらか』
+				PRINTFORMW 「こ、香霖……嘘だろ……そんなの、見せないでくれよ……」
+			;助手が霊夢
+			ELSEIF NO:ASSI == 1
+				PRINTFORMW 『あっ……駄目……魔理沙が見てるのに、そんな、激しく……っ』
+				PRINTFORMW 「嘘だろ……霊夢……お前が、そんなこと……」
+				PRINTFORMW 「嫌だよぉ……２人とも、そんな姿を私に見せないでよぉ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そんなの見せつけてどうしようってんだ」
+				PRINTFORMW 「わ、私は、そんなことくらいで動揺したりしないのぜ」
+				PRINTFORMW 口調からして動揺している様子が丸わかりである
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が霊夢
+			IF NO:ASSI == 1
+				PRINTFORMW 『あっ……駄目……魔理沙が、あんなにじっくり見てるのに、そんな、激しく……っ』
+				PRINTFORMW 「むうぅ～、霊夢ばっかりずるいぜ」
+			;助手が霖之助
+			ELSEIF NO:ASSI == 69
+				PRINTFORMW 「うわぁ……いつ見ても、男同士のそれって生々しいな。男の尻にも入るのか、あんなの」
+				PRINTFORMW 『男同士のこれをそんなに堂々と見ていられる君もよほどだよ。僕は育て方を間違ったかな……』
+				PRINTFORMW 「犯されて悦んでるやつにそんなこと言われても説得力に欠けるぜ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「いぢわる……私にもしてくれよぉ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;助手が霊夢
+			IF NO:ASSI == 1
+				PRINTFORMW 「霊夢……やめてくれ！　そんな霊夢の姿、見たくないぜ！！」
+				PRINTFORMW 『あんっ、んんっ、はっ……ごめんね、魔理沙……私、もう、駄目になっちゃったから……』
+			;助手が霖之助
+			ELSEIF NO:ASSI == 69
+				PRINTFORMW 「香霖……やめてくれ！　お前は、そんなことされて喜ぶような奴じゃなかっただろ！！」
+				PRINTFORMW 『うっ、おおっ、んくっ……すまない、魔理沙……何と言われようと、今の僕には謝ることしかできない……んっ、むうぅっ』
+			;その他の場合
+			ELSE
+				PRINTFORMW （……あんなに気持ちよさそうな声出して……）
+				PRINTFORMW （あいつに犯されるのって、そんなに気持ちいいのかな……）
+				PRINTFORMW （っ！？　な、何考えてるんだ私！　正気を保つんだぜ！）
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助がその屹立したペニスを魔理沙の入り口にあてがうと、魔理沙は目を瞑って握り拳を口元に当てた
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。おねがい、やさしくして……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、僕に奪わせるつもりなんだね。君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 入れるぞ、と告げた途端、魔理沙の顔に期待と不安の表情が浮かんだ
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙は%CALLNAME:MASTER%に足を抱きかかえられると、手を%CALLNAME:MASTER%の背中にまわして抱きついた
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「初めてを貰われるにはちょっと妙な体勢だけど……私は幸せだぜ」
+				PRINTFORMW 「んっ……入ってく……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の目を見ないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「こんな、立ったままで繋がるのが私の初めてか……せめてもう少し普通だったらな」
+			;その他の場合
+			ELSE
+				PRINTFORMW 魔理沙の足を持ち上げ、立って向かい合う体勢で%CALLNAME:MASTER%はペニスを魔理沙の入口に擦りつける
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、ペニスの先端を魔理沙の入口に侵入させていく……
+				PRINTFORMW 「や、やめっ……い゛っ……いやあぁぁぁぁぁっ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「これまたすごい体勢でやるもんだな」
+				PRINTFORMW 「私が落ちないようにしっかり支えていてくれよ？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ちょ、ちょっと待て。こんな力が入らない体勢じゃ、どうすればいいんだ私は」
+				PRINTFORMW 「しっかりしがみついてろ？　……ああ、そういうことかい」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「そんなところに立ってないで３人で気持ち良くなろうぜわひゃぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり奥を突くなぁっ……ひゃんっ」
+				PRINTFORMW 『すまない。会話をする余裕があるなら、少し強くしても大丈夫かなと思ってね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。辛くないかい？』
+				PRINTFORMW 「んっ……大丈夫。悔しいが、私の身体もだいぶ慣れてきたみたいだぜ、あっ、やっ」
+				PRINTFORMW 『こうして持ち上げてみると、魔理沙はやっぱり軽いね。このくらいの早さでいいかな？』
+				PRINTFORMW 「んう……もう少しだけなら、激しくしても大丈夫、かも」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……激しくなってきたな……」
+			PRINTFORMW 「わたしゃ、これだけおちんちんで激しく突かれてもう足腰に力なんて入らんよ。後はお前に任せた」
+			PRINTFORMW 「私が落ちないように、しっかり支えておいてくれよ？　信じてるからな？」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「この体勢、いいのぉっ！　一番おくまで、ずぼずぼって、きて、頭の中真っ白になっちゃうぅぅぅっ！！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;処女
+		IF TALENT:処女 == 1
+			;助手が霖之助で助手が調教
+			IF ASSIPLAY && NO:ASSI == 69
+				PRINTFORMW 霖之助がその屹立したペニスを魔理沙の入り口にあてがうと、魔理沙は振り返り、幼く弱々しい表情を向けた
+				PRINTFORMW 「香霖……わ、私、初めてなんだ……。おねがい、やさしくして……」
+				PRINTFORMW 『……え？』
+				PRINTFORMW 霖之助は確認を求めるように%CALLNAME:MASTER%の方を振り向く
+				PRINTFORMW %CALLNAME:MASTER%は事実だと言いたげに軽く首を縦に振った
+				PRINTFORMW 『君は……魔理沙の処女を、僕に奪わせるつもりなんだね。君は……いや、魔理沙も、それでいいのかい？』
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「私は……そりゃ、そいつのことが好きだから、本当はそいつに奪って欲しかったけど」
+					PRINTFORMW 「ご主人様の命令だから仕方ないぜ。それに、香霖は2番目に好きな男だからな。嫌ってほどじゃないぜ」
+					PRINTFORMW 『……魔理沙。いいんだね』
+					PRINTFORMW 「ん……香霖のおちんちんで、私を女にしてくれ……」
+					PRINTFORMW 『行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「私は……いつかそいつに奪われるくらいなら、香霖に奪って貰える方が嬉しいぜ」
+					PRINTFORMW 「たぶん香霖は私のこと、妹とか娘みたいなものとしてしか見てなかったんだろうけどさ」
+					PRINTFORMW 「私はこれでも、香霖のこと、そんなに嫌いじゃなかったんだぜ」
+					PRINTFORMW 『……嬉しいよ魔理沙。君のためにも、なるべく優しくするから……すまない』
+					PRINTFORMW 「へへ……謝るなよ馬鹿。ほら、ご主人様が早くしろってこっち見てるぜ」
+					PRINTFORMW 『ああ……行くよ……力を抜いて、魔理沙』
+					PRINTFORMW 「あ……うぐぅっ……香霖……香霖……っ」
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:恋慕 == 1
+				PRINTFORMW 入れるぞ、と告げた途端、魔理沙は振り返って期待と不安に満ちた表情を向けて来た
+				PRINTFORMW 「そうか。やっともらってくれるんだな」
+				PRINTFORMW 魔理沙はおずおずと両手を伸ばして壁につけると、お尻を少し突き出して足を開いた
+				PRINTFORMW 「笑われるかもしれないけどさ……私も私なりに、初めては好きな人に貰って欲しい、って思ってたんだ」
+				PRINTFORMW 「ここまで来るのに色々あったけどさ。今、私はお前に捧げることができて幸せだぜ」
+				PRINTFORMW 「初めてを貰われるにはちょっと妙な体勢だけど……私は幸せだぜ」
+				PRINTFORMW 「んっ……入ってく……っうぁ……っ！！」
+			;屈服刻印Lv3
+			ELSEIF MARK:屈服刻印 == 3
+				PRINTFORMW 挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……そうか。いつかはそうなると思ってた」
+				PRINTFORMW %CALLNAME:MASTER%の方を振り返らないで魔理沙は呟く。その声には諦めの色が濃く滲んでいた
+				PRINTFORMW 「今さらだけどさ。初めては、もっとロマンチックなものだと思ってたんだ」
+				PRINTFORMW 「そりゃ、白馬の王子様なんてのに夢見る乙女なんかじゃなかったけど……それでも、やっぱり」
+				PRINTFORMW 「初めては、好きな人と、って……そう思ってたんだ」
+				PRINTFORMW 目を逸らした魔理沙の瞳から涙が一筋零れ落ちる
+				PRINTFORMW 「分かってるよ。やめろと言ったって止めるような奴じゃないもんな、お前は」
+				PRINTFORMW 「こんな、立ったまま後ろから入れられるのが私の初めてか……せめてもう少し普通がよかったぜ」
+			;その他の場合
+			ELSE
+				PRINTFORMW %CALLNAME:MASTER%は魔理沙を立たせると、壁に手を突いてこちらにお尻を突き出すよう命じた
+				PRINTFORMW 魔理沙がしぶしぶその体勢を撮ると、%CALLNAME:MASTER%は魔理沙の腰を掴んでペニスを魔理沙の可愛いお尻に押し付ける
+				PRINTFORMW このまま挿れるぞ、と告げた途端、魔理沙の身体がびくっ、と反応した
+				PRINTFORMW 「……い、いやっ……お願い、それだけは……それだけは……」
+				PRINTFORMW ふるふると首を横に振って魔理沙が懇願する。その声には絶望の色が濃く滲んでいた
+				PRINTFORMW 「お願いだ……他のことならなんでもしていいから、初めては、こんなのじゃなくて好きな人と……」
+				PRINTFORMW 必死に%CALLNAME:MASTER%を見つめる魔理沙の両目から涙がぼろぼろと零れ落ちる
+				PRINTFORMW %CALLNAME:MASTER%はそれを無視して、ペニスの先端を魔理沙の入口に擦りつける……
+				PRINTFORMW 「いやっ……！　いやだいやだいやだ……い゛っ……いやあぁぁぁぁぁっ！！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「立ったままで後ろから？　これ、かなり恥ずかしいぜ」
+				PRINTFORMW 「う～、見えないと不安なんだぜ。早く入れてくれよぉ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「いたいけな少女に恥ずかしい恰好をさせて、後ろから犯して楽しいのか？」
+				PRINTFORMW 「気持ちいい？　ああそうかい」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「なぁ、お前は見ているだけなのか？」
+				PRINTFORMW 「そんなところに立ってないで、お前も気持ち良くさせてやりたいのぜっわひゃぁっ！？」
+				PRINTFORMW 「こ、香霖！　今、話してるところなんだからいきなり一気に入れるなぁっ……ひゃんっ」
+				PRINTFORMW 『すまない。会話をする余裕があるなら、少し強くしても大丈夫かなと思ってね』
+				PRINTFORMW 「うう……あいつほどじゃないが、香霖も意地悪だぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『魔理沙。辛くないかい？』
+				PRINTFORMW 「んっ……大丈夫。悔しいが、私の身体もだいぶ慣れてきたみたいだぜ、あっ、やっ」
+				PRINTFORMW 『魔理沙の身体は小さいからね。このくらいの強さでいいかな？』
+				PRINTFORMW 「んう……もう少しだけなら、激しくしても大丈夫、かも」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……激しくなってきたな……」
+			PRINTFORMW 「わたしゃ、これだけおちんちんで激しく突かれてもう足腰に力なんて入らんよ。後はお前に任せた」
+			PRINTFORMW 「私が倒れないように、しっかり手を掴んで離さないでくれよ？　信じてるからな？」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「あっ、やっ、あっ、はっ、ああっ、やぁっ、ひいっ、ひあぁっ、はひゃあぁぁぁぁぁぁぁっ！！」
+			PRINTFORMW 「もうらめぇっ！　立ったままでぱんぱんっておひんひんで叩かれて、足に力はいらないよぉぉぉ！！」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……くっ、はぁ、んぐ……っ」
+			PRINTFORMW 「もう……諦めたからさ、ひうっ、せめて、もっとゆっくり……っあうっ！　動いて、くれよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ……こんなの……」
+			PRINTFORMW 「ぜんぜんっ、気持ちよくなんか、ない……ぜっ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、やっぱり、こんなの恥ずかしいけど」
+				PRINTFORMW 「でも、あなたにお尻も愛してもらえて、しあわせ（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。お尻におちんちんを入れられるところを見せつけられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「あなたの顔も、おちんちんとお尻の穴が繋がっているところも、よく見えるよぉっ！！」
+				PRINTFORMW 「私、わたし、処女なのに、お尻でセックスして、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はは……普通のセックスの体位なのに、お尻でしちゃってるんだな、私たち」
+				PRINTFORMW 「でも……んんっ！　お前となら、お尻でしても、すごく嬉しいんだぜ、ひゃんっ」
+				PRINTFORMW 「もう少し、激しくてもいいからぁ……私のお尻、いっぱい愛して欲しいんだぜ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのにお尻でセックスして気持ちいい、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？　やぁっ、ひゃあぁぁぁっ！！」
+					PRINTFORMW 「だ……だめぇ……これ以上、お尻におちんちん入れられたら、おかしくなっちゃうぅ……」
+					PRINTFORMW 「こんなっ、お尻を犯されて、気持ちいいのが私だなんて、いやなのにぃ……」
+					PRINTFORMW 「わ、私、お尻で感じる変態魔法使いに、されちゃったのかな……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、お尻の中の異物感が、やな感じ、だぜ……」
+
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_31
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、やっぱり、こんなの恥ずかしいけど」
+				PRINTFORMW 「でも、あなたにお尻も愛してもらえて、しあわせ（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。こんな動物みたいな体勢お尻におちんちんを入れられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「後ろから動物みたいにおちんちんでお尻の穴犯されるの、大好きなのぉっ！！」
+				PRINTFORMW 「子宮があるところよりずっと奥までおひんひん入れられてっ！　私、わたし、処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「んぐっ、あんっ、やあぁっ！　お尻、気持ち、いいっ！　にゃ、ひゃっ、んっ、はひぃぃぃっ！！」
+					PRINTFORMW 「好きなのぉ……こんなかっこで、お尻ずぼずぼされるの、好きなのぉぉぉっ！！」
+					PRINTFORMW 「私の、霧雨魔理沙の、お尻の穴っ、犬みたいに、乱暴に、犯してぇぇぇっ！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「んぐ……あはは、私たち、すごい恰好ですごいことしてるな」
+					PRINTFORMW 「おまんこにおちんちん入れられるのが一番好きだけど、お前の大きいのが、お腹の奥まで届くこっちも好きなんだぜ」
+					PRINTFORMW 「もっと激しく動いていいから、ひうっ、好きなだけ私のお尻を使ってくれ、あんっ」
+				ENDIF
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、犬みたいな恰好で、後ろからお尻の穴犯されてぇっ！」
+				PRINTFORMW 「私、私、本当に、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？　やぁっ、ひゃあぁぁぁっ！！」
+					PRINTFORMW 「こんなっ、後ろから、お尻なんか犯されて、気持ちいいわけが……ひいぃっ」
+					PRINTFORMW 「ごめんなさい……ごめんなさい……本当は、気持ちいいですっ！」
+					PRINTFORMW 「わ、私は、好きでもない奴に、後ろからお尻を犯されて、気持ちよく、なってますっ！！　ううっ……うぁぁ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、こうして犬みたいな格好でお尻の中犯されるのは、やっぱり屈辱だぜ……」
+
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、やっぱり、こんなの恥ずかしいけど」
+				PRINTFORMW 「でも、あなたとキスしながらお尻も愛してもらえるの、大好き（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。お尻におちんちんを入れられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「おちんちんで激しく突かれながら、キスしてもらうの、大好きなのぉっ！！」
+				PRINTFORMW 「こんなに近くで、身体ぴったりくっついて、ぎゅってしてもらうの、幸せだよぉっ！！」
+				PRINTFORMW 「私、わたし、処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「だめ……見ないでくれ……」
+				PRINTFORMW 「今の私、お尻におちんちん入れられて、お前に見せられないくらい、いやらしい顔してるから……んむっ」
+				PRINTFORMW 「ん……ちゅぱ……好き……お尻に入れられながら、ご主人様にキスしてもらうの、大好きだぜ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、抱っこされながらお尻におちんちん入れられて、キスしながら気持ちよくなっへぇ！！！」
+				PRINTFORMW 「私、私、本当に、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？　やぁっ、ひゃあぁぁぁっ！！」
+					PRINTFORMW 「なんで……嫌なはずなのに、抱っこされて、キスまでされて、なんで……なんで……」
+					PRINTFORMW 「ひっく、お尻が切なくて……なんで、もっとして欲しいって思うんだよぉ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、キスされながらお尻の中突かれる気分は最悪だぜ……」
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、この体勢、体重がかかってお尻の奥までおちんちん入っちゃう」
+				PRINTFORMW 「でも、あなたとこんなに深くまで繋がれるの、嬉しいな（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。こんな恥ずかしい恰好でお尻におちんちんを入れられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「後ろから抱きしめられながら、おちんちん出し入れされるの好きなのぉっ！！」
+				PRINTFORMW 「おっぱいも、クリトリスも、お尻の穴も、おまんこ以外、全部気持ちよくしてもらって、嬉しいよぉっ！！」
+				PRINTFORMW 「私、わたし、処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「この格好、すごく恥ずかしいな……えへへ」
+				PRINTFORMW 「でも、お尻に入れてもらいながら、乳首やクリトリスもいじってもらえるから、私は好きだぜ、この体勢」
+				PRINTFORMW 「お尻の奥まで突かれて、力入らなくても、お前が受け止めてくれるからな。安心できるんだ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、こんな恥ずかしい恰好で抱っこされて、胸もクリトリスもいじられて……っ！！」
+				PRINTFORMW 「私、私、本当に、処女のままぜんぶ気持ち良くなって、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？　やぁっ、ひゃあぁぁぁっ！！」
+					PRINTFORMW 「違うもん……気持ちいいのは、胸やクリトリスをいじられてるから……だから……」
+					PRINTFORMW 「お尻で、お尻で気持ち良くなってなんかぁ……ないよぉ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、胸やクリトリスと一緒にお尻の奥まで攻められるのは刺激が強すぎるぜ……」
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に自分から香霖のおちんちんを入れる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ入れるぜ。あ……最初はゆっくり行くからな？」
+			PRINTFORMW 『分かっているよ。自分のペースで構わないから、力を抜いて深呼吸しながらがいいよ』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「それじゃ入れるぜ……お前のその太いおちんちんで、私のお尻の穴、奥まで突いてくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「行くぜ。私のお腹の中に、お前の太いおちんちん、入れるからな……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れろ？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……」
+				PRINTFORMW 「わ、分かったよ……自分で入れるから、前の方には入れないでくれ……ぐすっ……う……ぐうぅ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に自分で入れろ……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「わ、分かったよ……ううっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、こんなの、お尻がすごくて足腰に力が入らない～」
+				PRINTFORMW 「でも、私が動くとあなたが私のお尻で気持ちよくなってくれるのが分かるから嬉しいわ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。自分からおちんちんをお尻に入れなきゃいけないなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「自分から、好きな人のおちんちんをお尻に入れて、自分で動くの幸せだよぉっ！！」
+				PRINTFORMW 「下から、ひたからいっぱいおひんひんで突いてもらって、私、処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「おお、どうした？　もうイきそうなのか？」
+				PRINTFORMW 「せっかく今回は私が動く番なんだ。私が満足するまで出さないでくれよ？」
+				PRINTFORMW 「はひゃっ……こ、こら、お前が動くな……あんっ、下から突き上げるなぁ……ふぁぁ……ま、負けないぜっ」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、自分からおちんちんに乗って、お尻の、穴に、出ひ入れするなんてぇっ！！」
+				PRINTFORMW 「私、私、本当に、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？　やぁっ、ひゃあぁぁぁっ！！」
+					PRINTFORMW 「嫌なのに……自分からお尻を犯してもらうなんて、おかしいのにぃ……」
+					PRINTFORMW 「気持ちよくて、ううっ、腰が、止まらないよぉ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、自分でお尻におちんちんを出し入れさせられるのは予想以上に屈辱的だなこれ」
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「も、もう我慢できないぜ！」
+			PRINTFORMW 「お前のお尻、入れるからなっ！！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やられっぱなしは性に合わないんでな。セックスでの反撃なら文句ないだろ？」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お前のお尻の中、きついな……っ」
+			PRINTFORMW 「私のおちんちん、千切れそうだぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「このままお前の尻の中にマスタースパークだぜ！」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「な、なぁ……お前もしかして、お尻の方が好きなのか？」
+		;助手が霊夢
+		ELSEIF NO:ASSI == 1
+			PRINTFORMW 「うわぁ……霊夢のお尻にずっぽり入ってるぜ」
+			PRINTFORMW 「霊夢の奴もそこまで開発されてたか」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うわぁ……お尻の穴って、あそこまで広がるものなんだな」
+			PRINTFORMW 「私もされるときは、あんなにお尻の穴が広がってるのか？　想像したいようでしたくないな」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なぁ……お前もしかして、お尻の方が好きなのか？」
+			PRINTFORMW 「き、きっと私のお尻の方が気持ちいいぜ！　だ、だから……次は私にもして欲しい……ぜ」
+		;助手が霊夢
+		ELSEIF NO:ASSI == 1
+			PRINTFORMW 「しかしなんだな。親友がお尻を犯されて気持ちよさそうにしているのを見るのは、複雑な気分だぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「しかしなんだな。他人がお尻を犯されて気持ちよさそうにしているのを見るのは、複雑な気分だぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、やっぱり、こんなの恥ずかしいけど」
+				PRINTFORMW 「でも、あなたにお尻も愛してもらえて、しあわせ（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。お尻におちんちんを入れられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「こんな、繋がったまま抱っこされて、お尻の奥までおちんちん入れられへぇっ！！」
+				PRINTFORMW 「ゆさゆさされて、奥までおひんひん届くの好きなのぉっ！　処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あっ……激しくなってきたな……」
+				PRINTFORMW 「わたしゃ、これだけおちんちんで激しく突かれてもう足腰に力なんて入らんよ。後はお前に任せた」
+				PRINTFORMW 「私が落ちないように、しっかり支えておいてくれよ？　信じてるからな？」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、こんな、抱きかかえられながら、お尻の奥までおちんちん入れられへぇっ！！」
+				PRINTFORMW 「揺さぶられて、奥までおひんひん届くの好きなのぉっ！　私、私、本当に、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？」
+					PRINTFORMW 「や、やだぁ……抱っこされてお尻をずぼずぼされるのが、気持ちいい、なんてぇ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、こんな荷物みたいな扱いされながらお尻を犯されるのも嫌だな」
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『魔理沙のことは君が小さいころから面倒を見て来たが、まさか魔理沙とお尻で性交する日が来るとは露ほども思ってなかったよ』
+			PRINTFORMW 「お互い様だぜ。私だってまさかお尻の穴に香霖のおちんちんを入れられる日が来るなんてキノコの胞子ほども思ってなかったぜ」
+			PRINTFORMW 「でも悪い気はしないな。香霖がそうやっておちんちん大きくしてるってことは、少なくとも私のお尻に入れることは嫌じゃないんだろ？」
+			PRINTFORMW 『まぁそうなるのかな。僕だって男だ。こんな可愛い魔理沙のお尻に入れられるのに興奮しないわけがない』
+			PRINTFORMW 「それじゃ、そろそろ来てくれ。あ……最初はゆっくりだぜ？」
+			PRINTFORMW 『分かっているよ。力を抜いて。魔理沙……』
+			PRINTFORMW 「んぐっ……うぐぐぐぐ……お尻、広げて、香霖のがぁ……」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ここまで来ても、まだお尻なのか？　私の処女はいつ奪ってくれるんだ？」
+				PRINTFORMW 「むぅ～。まぁ、お前にも考えがあるだろうから我儘は言わないが」
+				PRINTFORMW 「まぁ、お尻だって、お前が愛してくれることには変わりないし、気持ちいいから別にいいか」
+				PRINTFORMW 「ほら……お前のその太いおちんちんで、私のお尻の穴、たくさん犯してくれ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻でするのか？　いいぜ。お前になら何をされたって」
+				PRINTFORMW 熱を帯びた表情で足を開く魔理沙。そのアヌスはすでに%CALLNAME:MASTER%を誘うようにヒクヒクと動いていた
+				PRINTFORMW 「ほら……私のお尻の穴、もうこんなになってるんだ」
+				PRINTFORMW 「いつでもいいぜ。私のお腹の中、全部、お前でいっぱいにしてくれ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだから、それだけは！！」
+				PRINTFORMW 「……え？　違う？　お尻の穴に入れる？」
+				PRINTFORMW 「そっか……って安心してる場合じゃない！？　そっちはそっちで駄目だって！」
+				PRINTFORMW 「そ、そりゃ処女は守りたいけど、だからってお尻の穴なんて……って、や、やめ……うぐうぅぅぅぅっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、私の中に入れるのか？」
+				PRINTFORMW 「……え？　お、お尻の中に入れる……？」
+				PRINTFORMW 「だ、駄目だっ！　お尻の穴なんて、そんな恥ずかしい所までおちんちん入れられたら、私……っ」
+				PRINTFORMW 「い、いやっ……入って……かはっ……く……るぅ……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁんっ、やっぱり、こんなの恥ずかしいけど」
+				PRINTFORMW 「でも、あなたにお尻も愛してもらえて、しあわせ（はぁと）」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くすん。お尻におちんちんを入れられるなんて、あんまりだわ」
+			ENDIF
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『くっ……魔理沙のお尻、すごく締め付けてきて、きついくらいだ』
+			PRINTFORMW 「だ、だって……あうっ、香霖の、大きいおちんちんが、はひっ、お尻の、奥まで、入って、きてぇっ！」
+			PRINTFORMW 「わたっ、私、香霖に、お尻激しく、犯されてるよぉっ！！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、気持ち、いいよぉっ！！」
+				PRINTFORMW 「わ、私、処女のまま、好きな人に、お尻、こんなに、くぅんっ、開発、されてぇっ！！」
+				PRINTFORMW 「こんな、立ったままで、後ろから激しくおちんちん出し入れされてぇっ！！」
+				PRINTFORMW 「私、処女のまま、ご主人様にいっぱいいっぱい、愛されてるよぉっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あっ……激しくなってきたな……」
+				PRINTFORMW 「わたしゃ、これだけおちんちんで激しく突かれてもう足腰に力なんて入らんよ。後はお前に任せた」
+				PRINTFORMW 「私が倒れないように、しっかり手を掴んで離さないでくれよ？　信じてるからな？」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女かつＡ感覚Lv3
+			IF TALENT:処女 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「っひぃぃぃっ！！　お、お尻っ、どんどん、気持ちよく、なるっ！！」
+				PRINTFORMW 「わ、私、処女なのに、お尻、こんなに、ひぎっ、開発、されてぇっ！！」
+				PRINTFORMW 「やだぁっ！　わ、私、処女なのに、こんな、立ったまま、後ろから、おちんちんで突かれてっ！！」
+				PRINTFORMW 「おっぱい揉まれながら、おひんひん出たり入ったりするの好きなのぉっ！　私、私、本当に、変態魔法使いになっひゃうよおっ！！」
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「ひうっ、あぅっ、くうぅぅぅぅ……うにゃぁっ！？」
+					PRINTFORMW 「な、なんで……立ったまま後ろからお尻を犯されるのが、なんでこんなに気持ちいいんだぜ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぐっ……かはっ……は……あ……」
+					PRINTFORMW 「妊娠させられないだけ、マシだけど、立ったまま後ろからお尻を犯されるってのも変な感じだぜ……」
+				ENDIF
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_40
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 「う、うわー、うわー、うわー。こ、これが香霖のおちんちんなんだな」
+			PRINTFORMW 『魔理沙。女の子がそんなに両手で男性器を握りしめながらおちんちんとか言うものじゃないよ』
+			PRINTFORMW 「だ、だって初めて見たから……えっと、それで、ここから、確か、こ、こう……」
+			PRINTFORMW 『うっ……ま、魔理沙。初めてにしては、なかなか……っ』
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「手で？　分かったぜ」
+			PRINTFORMW 魔理沙はペニスの正面に位置取ると、丁度いい強さでペニスを握りしめる
+			PRINTFORMW 「最初は怖くてグロテスクだと思ったが、お前の一番大事な部分だと思うと」
+			PRINTFORMW 「なんか、とても大切にしたくなってくるな」
+			PRINTFORMW 魔理沙はペニスの根元を両手で輪を作って握り、亀頭から裏筋にかけての部分を自分の頬に頬ずりさせた……
+		;その他の場合
+		ELSE
+			PRINTFORMW 手でペニスを握るよう魔理沙に命令すると、魔理沙は十数秒躊躇った後、おっかなびっくりペニスに手を伸ばして触れた
+			PRINTFORMW 「あ……」
+			PRINTFORMW その小さな両手でペニスの感触を確かめると、おそらくは初めて触れるであろうその硬さや熱さに驚いたのか、可愛らしい声を漏らす
+			PRINTFORMW 「これを前後に擦れ？　や、やり方分からないけど……こう……か？」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;助手が霖之助で助手が調教
+		IF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 「ふふ、香霖のおちんちんも慣れてくるとなんか可愛いな」
+			PRINTFORMW 『ああ……あの頃の純真無垢だった魔理沙はもういないんだね。まったく……』
+			PRINTFORMW 霖之助は少しだけ不満げに%CALLNAME:MASTER%の方に抗議の視線を向けて来た
+		;恋慕かつ奉仕精神Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「相変わらず固くて立派なおちんちんだな……手だけで満足できるのか？」
+			PRINTFORMW 「口や胸やあそこも使って欲しかったら、いつでも言ってくれ」
+			PRINTFORMW 「それまでは手だけでこのおちんちん、イかせられるように頑張るから」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「うりうり。気持ちいいのはここか？　それともこっちか？」
+			PRINTFORMW 魔理沙はお気に入りのオモチャで遊ぶように、亀頭や裏筋からペニスの根元、果ては玉袋まで、
+			PRINTFORMW 片手でペニスをしごきながらもう片方の手でペニスのあちこちを丁寧に愛撫していく……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「『まだ慣れないか？』って……当たり前だぜ。男の、お、おち……おちんちん、なんて」
+			PRINTFORMW 「だったらキノコを手入れしていると思えば、って……こ、こんないやらしい匂いがするキノコなんてないよぉ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_41
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「どうしてもやらなきゃだめ？（涙）」
+			PRINTFORMW だめ。
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 「そ、それじゃ、香霖の、な、舐めるぜ……」
+			PRINTFORMW 『うっ……ま、魔理沙……っ』
+			PRINTFORMW 「ん……香霖のおちんちん、舐める日が来るなんて思わなかったな……」
+			PRINTFORMW 『僕の方こそ、魔理沙に僕の男性器を舐めさせることなんて絶対にないと思っていたんだけどね』
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「最初は、これを口に入れるなんて嫌で仕方がなかったけど」
+			PRINTFORMW 「お前の大事な部分だと考えたら、これも愛おしく感じるぜ」
+			PRINTFORMW 「それじゃ、今日も口でご奉仕するからな……はむっ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こ、これを口で！？」
+			PRINTFORMW 「やだ、やだぁ……そんなの、口に入れたくないよぉ……」
+			PRINTFORMW 必死に抵抗する魔理沙の頬を、ペニスで叩いたり亀頭を押し付けるうちに、
+			PRINTFORMW 観念したのか魔理沙は涙目でペニスを咥えていった……
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「おいしくないよ～」
+			PRINTFORMW 「魔法で甘くならないかしら」
+			PRINTFORMW 本気でやめてくれ
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『ま、魔理沙……この前より、上手くなってないか……ううっ』
+			PRINTFORMW 「へへ、いつも香霖には口じゃ勝てなかったけど、香霖のおちんちんになら口で勝てるみたいだな」
+			PRINTFORMW 『こ、こら。いつから君はそんなはしたない発言ばかりするようになったんだ』
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「相変わらず大きいな……私の口じゃ全部収まりきらないぜ」
+				PRINTFORMW 「でも、その分舌とか使って、いっぱい愛してやるからな……れろっ」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ん……はむっ。れろっ、ちゅぱ……あむ……」
+				PRINTFORMW 「ん……今まで食べたどんなキノコよりも、お前のキノコが一番美味しい……」
+			;その他の場合
+			ELSE
+				PRINTFORMW （私の口の中、おちんちんで征服されてる……）
+				PRINTFORMW （このまま口の中に出されるのかな、それとも、顔にかけられるのかな……）
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「うっ……うぐっ……ぐすっ……ちゅぱ……ううう……」
+				PRINTFORMW 魔理沙は目に涙を溜めながら、口での拙い愛撫を続けている……
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「……これをキノコだと思えば少しは抵抗も無いだろう、って？」
+				PRINTFORMW 「本物のキノコの方が100倍マシだぜ……」
+			;その他の場合
+			ELSE
+				PRINTFORMW （私……今、男の人のおちんちん、口に入れてるんだ……）
+				PRINTFORMW （嫌だよぅ……吐き出したいよぉ……）
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_42
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「ぱいずり？　何それ？」
+			PRINTFORMW 「おっぱいで？　……もしかして私、馬鹿にされてるのかしら」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『言っちゃ悪いが、魔理沙の胸だと無理だと思うよ？』
+			PRINTFORMW 「言ってくれたな香霖。そこまで言われたら、意地でも私の胸で香霖を気持ちよくさせてやるぜ」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「胸で？　そんなに私の胸が気にいったのか？」
+			;貧乳である
+			IF TALENT:貧乳 == 1
+				PRINTFORMW 「相変わらず、満足にできる胸じゃないかもしれないが」
+				PRINTFORMW 「こんな胸でもよければ、いくらでもやってやるぜ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あれから少しは大きくなったんだ」
+				PRINTFORMW 「お前の愛が育ててくれたのかな。今ならお前を満足させられるぜ」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ぱいずり？」
+			PRINTFORMW 魔理沙は意味が分からないのか、首を傾げて小動物のように尋ねる
+			PRINTFORMW 意味を説明すると、魔理沙は自分の胸に視線を落とし――――
+			PRINTFORMW 恥ずかしがるよりも呆れたような目で%CALLNAME:MASTER%を睨んだ
+			PRINTFORMW  「……お前さん、アホだろ」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「こんなおっぱいでも、やればできるものね」
+			PRINTFORMW 「れろっ……気持ちいい？　うふ、うふ、うふふふふふ」
+		;助手が霖之助で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 69
+			PRINTFORMW 『ま、魔理沙……この前より、上手くなってないか……ううっ』
+			PRINTFORMW 「へへ、私だっていつまでも子供じゃないんだぜ？」
+			PRINTFORMW 『くぅ……まさか、魔理沙の胸でここまで気持ちよくさせられるとはね』
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「お前が気持ち良くなってくれてるのが、私の胸を通して心臓まで伝わってくるぜ」
+			PRINTFORMW 「分かるかな？　お前のおちんちんを胸で愛せて、私の心臓もすごくドキドキ言ってるんだぜ」
+		;その他の場合
+		ELSE
+			;奉仕精神Lv4以上
+			IF ABL:奉仕精神 >= 4
+				PRINTFORMW 「また胸がいいのか？　仕方ないな」
+				PRINTFORMW 「あ、こら動かすな。私の胸だと上手く挟めないんだから」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ええい、なんてひどい調教だ」
+				PRINTFORMW 「やらされるたびに男に奉仕させられる屈辱と、自分の小ささを思い知らされる屈辱の２つを味わうんだからな」
+				PRINTFORMW 何が小さいのかには敢えて触れない魔理沙であった
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_43
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「あ……ついに、入れるのか？」
+				PRINTFORMW 挿入されると思ったのだろう。魔理沙は恥ずかしそうに口元を隠しながら足を開く
+				PRINTFORMW これからする行為について説明すると、魔理沙は少しがっかりしたのか身体の力が抜けたようだった
+				PRINTFORMW 「入れてもいいのに……って、何言わせるんだぜ、まったく」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「すまた？」
+				PRINTFORMW その言葉の意味を知らないのか、頭に？マークを浮かべながら魔理沙が尋ねる
+				PRINTFORMW これからする行為について説明すると、魔理沙は納得したように足を開いた
+				PRINTFORMW 「何事もチャレンジだな。ほら、私はいつでも準備できてるぜ」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ま、待ってくれ！　お願いだ、それだけは！」
+				PRINTFORMW 挿入されると思ったのだろう。慌てて魔理沙が懇願してくる
+				PRINTFORMW これからする行為について説明すると、魔理沙は安心したのか身体の力を抜いて足を開いた
+				PRINTFORMW 「これもかなり恥ずかしいけど……セックスじゃないんなら、まだマシかな」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「……また、せっくすするのか？」
+				PRINTFORMW 挿入されると思ったのだろう。魔理沙は諦めたように足を開く
+				PRINTFORMW これからする行為について説明すると、魔理沙は安心したのか身体の力を抜いて足を大きく開いた
+				PRINTFORMW 「これもかなり恥ずかしいけど……中に射精されないんなら、まだマシかな」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「ふぅっ、はぁっ、んくっ……んうっ、はぁ……あんっ！！」
+				PRINTFORMW ペニスが魔理沙の割れ目を擦り上げたり戻ったりするたびに与えられる、入口やクリトリスへの刺激に
+				PRINTFORMW 魔理沙は何度も可愛らしい悲鳴を上げる
+				PRINTFORMW 「はぁ……はぁ……お前は、気持ちいいのか？」
+				PRINTFORMW 「無理しなくても、入れたくなったらいつでも私の処女を奪ってくれていいんだからな？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふぅっ、はぁっ、んくっ……んうっ、はぁ……あんっ！！」
+				PRINTFORMW ペニスが魔理沙の割れ目を擦り上げたり戻ったりするたびに与えられる、入口やクリトリスへの刺激に
+				PRINTFORMW 魔理沙は何度も可愛らしい悲鳴を上げる
+				PRINTFORMW 「はぁ……はぁ……お前は、気持ちいいのか？」
+				PRINTFORMW 「無理しなくても、入れたくなったらいつでも私の中に入れていいんだからな？」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「んっ……く……あぅぅ……」
+				PRINTFORMW 「き、気持ちよくなんかないぜ。いつお前の気が変わって処女を奪われるかと思うと、こう見えても不安なんだからな……ひゅやぁぁぁ！？」
+				PRINTFORMW クリトリスを巻き込みながら一際大きくペニスを擦りつけると、魔理沙はシーツを掴みながらその刺激に身体を震わせた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ……く……あぅぅ……」
+				PRINTFORMW 「き、気持ちよくなんかないぜ。いつお前の気が変わっておちんちん挿入されるかと思うと、こう見えても不安なんだからな……ひゅやぁぁぁ！？」
+				PRINTFORMW クリトリスを巻き込みながら一際大きくペニスを擦りつけると、魔理沙はシーツを掴みながらその刺激に身体を震わせた
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お、お願い……します」
+			PRINTFORMW 「私のお尻に……霧雨魔理沙の肛門に、ご主人様のを、入れてください……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お、お願い……します」
+			PRINTFORMW 「私のお尻に……霧雨魔理沙の肛門に、ご主人様のを、入れてください……」
+			PRINTFORMW 「……こ、これで満足か？　変態さん」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お、お願い……します」
+			PRINTFORMW 「私のお尻に……霧雨魔理沙の肛門に、ご主人様のを、入れてください……」
+			PRINTFORMW 「うう～、ここまで言ったんだからちゃんと入れてほしいんだぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お、お願い……します」
+			PRINTFORMW 「私のお尻に……霧雨魔理沙の肛門に、ご主人様のを、入れてください……」
+			PRINTFORMW 「……こ、これでいいんだろ……入れたいなら好きにしろ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「足で？　仕方のない奴だな……」
+			PRINTFORMW 「本当にそのうち、私の身体でお前を気持ちよくさせない場所はなくなってしまうかもしれないな」
+			PRINTFORMW 「でも、そうなったら嬉しいな。今回は足でしてあげるけど、他に使って欲しい所があったら遠慮なく言ってくれ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「……分からん。お前と言う人間が今回だけは本気で分からん」
+			PRINTFORMW 「おちんちんって手や口で気持ちよくさせるモノじゃないのか？　足でも気持ちよくなれるのか？」
+			PRINTFORMW 「……うわ、敏感な足の裏だと、お前のおちんちんの硬さや熱さがはっきり分かるな」
+			PRINTFORMW 「これが本当に気持ちいいのか？　……わたしゃ本気で分からん」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;サドっ気Lv4以上
+			IF ABL:サドっ気 >= 4
+				PRINTFORMW 「うりうり。ここか？　ここが気持ちいいのか？」
+				PRINTFORMW 「へへっ。足なんかで踏まれてさらに硬くなるなんて、本当にお前さんはどうしようもない変態だな」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なんか、足でお前のおちんちんいじるのって、楽しいな」
+				PRINTFORMW 「足でこう、ぐりぐりして、お前が気持ちよさそうな顔するのを見るのも悪くないぜ。うりゃうりゃ」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「まぁ、手や口でさせられるよりは私も抵抗はないんだが」
+			PRINTFORMW 「加減が難しいんだぜこれ？　気持ちよくなくても文句言わないでくれよ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 魔理沙の髪はふわふわで、サラサラしていて、とても気持ちいい
+			PRINTFORMW その感想を素直に言うと、魔理沙は嬉しそうにペニスと髪の毛を一緒に撫でた
+			PRINTFORMW 「幻想郷だと、私より綺麗な髪のやつなんていくらでもいたからさ」
+			PRINTFORMW 「髪の毛を褒めてもらうことって、私はあまりなかったんだ」
+			PRINTFORMW 「だから……おちんちんを気持ち良くすることで褒められたとしても、素直に嬉しいぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「な、何するんだっ」
+			PRINTFORMW 「痛っ……！　髪の毛引っ張るな！」
+			PRINTFORMW 「痛い！　分かった、分かったから乱暴しないでくれ！」
+			PRINTFORMW 「っく……ぐすっ……私の髪は、こんなことさせるために伸ばしてるんじゃないのに……」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 魔理沙の髪は相変わらず、とても気持ちいい
+			PRINTFORMW その感想を素直に言うと、魔理沙は嬉しそうにペニスと髪の毛を一緒に撫でた
+			PRINTFORMW 「髪は乙女の命だからな。それに、お前が手入れの道具を奮発してくれてるおかげだぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「お前なぁ……乙女の髪を、本当に何だと思ってるんだぜ」
+			PRINTFORMW 既に諦めたのか、髪の毛を強く引っ張ることさえしなければ、魔理沙は髪扱きに抵抗することは少なくなった
+			PRINTFORMW 「髪にかけられるのはもう諦めたが、今日はシャワーの時間は多めに取らせてくれよ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW これからすることを宣言すると、魔理沙は呆れるよりも疑問を浮かべた表情で%CALLNAME:MASTER%を見た
+			PRINTFORMW 「……お前さんの趣味は少しずつ理解してきたつもりだったが」
+			PRINTFORMW 「今ので、またさっぱり分からなくなったぜ」
+			PRINTFORMW なんか癪に障ったので、少し強引に魔理沙の腋にペニスをこじ入れて扱き始める
+			PRINTFORMW 「ひゃっ！？　ちょ、ちょっと待ってくれ。それ、ちょっとくすぐったい……はひゃぁっ」
+		;その他の場合
+		ELSE
+			PRINTFORMW これからすることを宣言すると、魔理沙は嫌悪よりも疑問を浮かべた表情で%CALLNAME:MASTER%を見た
+			PRINTFORMW 「……お前さんの趣味は元々理解したくもなかったが」
+			PRINTFORMW 「今ので、ますます理解できなくなったぜ」
+			PRINTFORMW なんか癪に障ったので、少し強引に魔理沙の腋にペニスをこじ入れて扱き始める
+			PRINTFORMW 「ひゃっ！？　ちょ、ちょっと待ってくれ。それ、ちょっとくすぐったい……はひゃぁっ」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「このまま続けてたら、そのうち私も腋でもイっちゃうくらい気持ちよくなるのかな」
+			PRINTFORMW 「それならそれでいいか。私の全身余すところなく、お前に気持ち良くしてもらえるもんな」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こういうのはどちらかというと霊夢の領域だぜ」
+			PRINTFORMW 「……あ、だからって霊夢を連れてきてこんなことさせるなよ！？」
+			PRINTFORMW 「腋でして欲しければ私がいくらでもしてやるから、霊夢でも他の奴でも、手を出さないでくれ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ……後ろから入れるの？」
+			PRINTFORMW 挿入されると思っている魔理沙に、これからする行為について後ろから耳打ちする
+			PRINTFORMW 「お、お尻でおちんちんを……？　変態すぎるけど、お前が気持ちよくなれるなら受け入れるぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ま、待って。まさか入れるんじゃ……」
+			PRINTFORMW 怯える魔理沙に、これからする行為について後ろから耳打ちする
+			PRINTFORMW 「お、お尻でおちんちんを……？　変態すぎてついていけないぜ」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「私のお尻、どう……かな？」
+			PRINTFORMW 「よく他の奴にヒップアタックくらわせたりして鍛えられてるんだ。ハリと弾力には自信があるんだぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「私のお尻で、よくそんなにおちんちんを硬くできるな」
+			PRINTFORMW 「まぁ、よく他の奴にヒップアタックくらわせたりして鍛えられてるからな。ハリと弾力には自信があるぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ここで、いつも出してくれてる精子が作られるって？」
+			PRINTFORMW 「それじゃ、丁寧にマッサージしてやらんとな」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そ、そんなところ恥ずかしすぎて触りたくないぜ……」
+			PRINTFORMW 「う、うわぁ……おちんちんと違って、なんか変な感触だな」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「大事な場所だ。丁寧にマッサージしてやらんとな」
+			PRINTFORMW 「もみもみ、もみもみ……ご主人様、こってるところはないですか……と」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そ、そんなところ恥ずかしすぎて触りたくないぜ……」
+			PRINTFORMW 「う、うわぁ……おちんちんと違って、なんか変な感触だな」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ここも気持ちいいのか？」
+			PRINTFORMW 「ふふっ、男も意外と弱点多いんだな」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こ、これ……舐めなきゃいけないのか？」
+			PRINTFORMW 「うう……わ、分かったよぅ……」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ここも気持ちいいのか？」
+			PRINTFORMW 「ふふっ、男も意外と弱点多いんだな」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こ、これ……また舐めなきゃいけないのか？」
+			PRINTFORMW 「うう……せめて毛の手入れはちゃんとしておいてくれよ……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん？　なんだその液体」
+			PRINTFORMW 「うわ、なんだこれ！？　ぬるぬるして面白いぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ん？　なんだその液体」
+			PRINTFORMW 「うわ、なんだこれ！？　ぬるぬるして気持ち悪いぜ」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あはは、全身ぬるぬるだなこれ」
+			PRINTFORMW 「次は私の番だな。塗ってやるから、こっちに貸してくれ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うー、ぬるぬるしすぎて変な感じだぜ」
+			PRINTFORMW 「こんなに液体塗れにして、次は何をするつもりなんだぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「媚薬なんて使わなくても、今なら私はお前になんだってしてやるんだがなぁ」
+			PRINTFORMW 「まぁ、くれるっていうんならありがたく貰っておくぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「っ！？　い、今飲ませたのはなんなんだ？」
+			PRINTFORMW 「媚薬だって……？　お、おい。薬に頼るのは反則だぜ！」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、いいのか？」
+			PRINTFORMW 「今の私に媚薬で火を付けたら、当分治まらないから激しく行くぜ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ん――うぁ……身体が……熱いよぉ……」
+			PRINTFORMW 「はぁ……はぁ……こ、こんなことなら、もっと薬に耐性つけておくんだった……な……」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「――――！？」
+			PRINTFORMW 「な、なんでもない。なんでもない……ぜ」
+			PRINTFORMW 魔理沙は手で股間を抑えながら、もじもじと内股をくねらせている……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「――――！？」
+			PRINTFORMW 「な、なんでもない。なんでもない……ぜ」
+			PRINTFORMW 魔理沙は手で股間を抑えながら、もじもじと内股をくねらせている……
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「またその薬か」
+			PRINTFORMW 「お前さん、そんなに私がおしっこしている所を見たいのか？　えんがちょだな」
+		;おもらし癖である
+		ELSEIF TALENT:おもらし癖 == 1
+			PRINTFORMW 「そ、それやだぁ……」
+			PRINTFORMW 「それ飲まされたら、おしっこ、本当に止まらなくなっちゃうよぉ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またその薬か」
+			PRINTFORMW 「無駄だと思うけどいちおう聞いてみるぜ。トイレに行かせてくれる気は……あるわけないか」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「座薬？　別に私はどこも悪くないぜ？」
+			PRINTFORMW 「これも調教のため？　ちょっと待……ふぁっ……冷たっ……！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「座薬？　……ちょっと待て、私は別にどこも悪くないぜ」
+			PRINTFORMW 「や、やめろよっ！　ふぁっ……冷たっ……！」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぁっ……冷たっ……！」
+			PRINTFORMW 「ふう……この異物感が最近クセになってきたぜ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ふぁっ……冷たっ……！」
+			PRINTFORMW 「うう……この異物感が気になるんだぜ」
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「聞いたことない薬だな？　何のための薬なんだ？」
+			PRINTFORMW 用途を説明すると、魔理沙は一瞬驚いたようだが、すぐに口元に手を当てて恥ずかしげに視線を逸らした
+			PRINTFORMW 「お前……私との赤ちゃん、作るつもりなのか……？」
+			PRINTFORMW 「ん……いいぜ。お前の子供だったら、妊娠してもいい……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「聞いたことない薬だな？　何のための薬なんだ？」
+			PRINTFORMW 用途を説明すると、魔理沙は一瞬理解が出来なかったようだが、すぐにその表情が絶望に彩られた
+			PRINTFORMW 「お前……私との赤ちゃん、作るつもりなのか……？」
+			PRINTFORMW 「い、嫌だぜ？　私はそんなの……お願い……妊娠なんてしたくないよぉ……」
+			PRINTFORMW 涙を流してすがりつく魔理沙の口に錠剤を押し込み、無理やりに飲み込ませると、
+			PRINTFORMW 魔理沙は泣きながら首を振って嫌がった……
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[EX化]
+		IF CFLAG:0 == 1
+			PRINTFORMW 「あら？　私生理もまだ来てないのよ？」
+			PRINTFORMW 「冗談よ。うふ、うふふ」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「今日こそ妊娠できますように、っと」
+			PRINTFORMW 魔理沙は錠剤を前に手を合わせて拝んでから、一気に飲み込んだ
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうか……どうか妊娠しませんように……」
+			PRINTFORMW 魔理沙は錠剤を前に手を合わせて拝んでから、怯えた表情で排卵誘発剤を飲み込んだ
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+		IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「エプロン？　なんだ、何か作ってほしいのか？」
+			PRINTFORMW 「……え？　結婚した妻がする正装だ？」
+			PRINTFORMW 「……え？　それって……え？　え？」
+			PRINTFORMW 魔理沙はエプロンを抱きしめながら、顔を真っ赤にして%CALLNAME:MASTER%を上目遣いに見つめている……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「エプロン？　なんだ、何か作ってほしいのか？」
+			PRINTFORMW 「……え？　結婚した妻がする正装だ？」
+			PRINTFORMW 「お前、熱でもあるのか？」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「……あ、あのさ……あなた」
+			PRINTFORMW エプロンを着た魔理沙が上目遣いに呼ぶが、すぐに頭から湯気を出してベッドに顔から突っ込んだ
+			PRINTFORMW 「……あー、ダメだ！　無理だこれ！　やっぱり恥ずかしすぎる！」
+			PRINTFORMW 「だ、だって、お前のこと、旦那として見るなんて、それって、つまり、結婚で、愛し合って、夫婦で……ううう」
+			PRINTFORMW 魔理沙の花嫁修業は前途多難そうだ……
+		;その他の場合
+		ELSE
+			PRINTFORMW 「裸よりはマシかと思ったが、このエプロン、大事なところが隠せそうで隠せてないぜ」
+			PRINTFORMW 「ある意味裸より恥ずかしいな、これ」
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「水着？　私あまりスタイル良くないから、見てもきっとつまらないぜ……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「よく分からんな。それを着た方が露出が減るのにわざわざ着せたいのか？」
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「せっかくだからお前と一緒に泳ぎたいけど、この家にはプールは無いのか？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうでもいい疑問なんだが、どうして胸の名札が『きりさめまりさ』って平仮名なんだ？」
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_2_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

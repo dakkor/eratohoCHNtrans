@@ -1,0 +1,2600 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;82をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは調教開始時・終了時・調教中イベント・エンディング口上用関数などが置いてあります。
+;このファイル内で他の関数を呼び出す処理のある関数は、削除せず残すことを推奨します。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;芳香ちゃん口上
+;初めは感覚がないけれど恋慕もしくは禁断の知識持ちで開発されていく芳香ちゃん
+;やふぁやふぁフランちゃん口上、YMメディスン口上などを参考にさせていただきました
+;==============================================================
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_82
+RETURN 1
+
+;========================================================
+;専用口上表示の固定化判定
+;========================================================
+;口上表示の専用口上使用設定において、選択肢を専用口上のみに固定化させたい場合は2を、専用口上＋地の文のみに固定化させたい場合は3を返すようにしてください
+;なお、1を返した(またはこの関数をコメントアウト等で使用できないようにした)場合は両方の選択肢が出るように、1・2・3以外の数値を返した時はエラー回避のため専用口上を使用できないようになっています
+;@KOJO_82_DISPLAY_SETTINGS
+;RETURN 1
+
+;========================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;========================================================
+@KOJO_82_EXTRA_INITIALIZATION
+PRINTFORML 口上内イベント起こるようにしますか？（素質が変わり難易度に差が出てきます）
+PRINTL [0]イベントを発生させる
+PRINTL [1]素質変化無しでイベントだけを発生させる
+PRINTL [2]イベントはいらない
+$INPUT_LOOP_1
+INPUT
+IF RESULT == 0
+	PRINTFORMW イベントが起きるよう変更しました
+	CFLAG:7000 = 1
+	CFLAG:7001 = 1
+ELSEIF RESULT == 1
+	PRINTFORMW 素質を変化させないでイベントを起こします
+	CFLAG:7000 = 0
+	CFLAG:7001 = 1
+ELSEIF RESULT == 2
+	PRINTFORMW イベントを起こしません
+	CFLAG:7000 = 0
+	CFLAG:7001 = 0
+ELSE
+	GOTO INPUT_LOOP_1
+ENDIF
+
+
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_82_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+DRAWLINE
+
+;調教開始口上分岐
+IF CFLAG:5201 == 0
+	TRYCALL K82_MESSAGE_START_1
+ELSE
+	TRYCALL K82_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時
+;-------------------------------------------------
+@K82_MESSAGE_START_1
+PRINTFORML %CALLNAME:MASTER%は奴隷商から墓場をふらふらと徘徊していたという%CALLNAME:TARGET%を買い取り
+PRINTFORMW %CALLNAME:TARGET%の為に割り当てた部屋へと入った
+PRINTFORMW 「おー、ここはドコだー？おまえはダレだー？」
+PRINTFORMW 元気は良さそうだ、それに死体で思考が鈍って居るであろうし調教もしやすいだろう
+PRINTFORML %CALLNAME:TARGET%は奴隷商に捕まり売り払われここに居るということ
+PRINTFORML そしてこれから調教を始めることを告げ%CALLNAME:TARGET%の服を脱がしにかかった…
+PRINTFORMW 「な、何をするー。ちーかーよーるなー！！」
+CFLAG:5201 = 1
+
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K82_MESSAGE_START_2
+	;感度変化開始
+	;もう一度
+	IF TALENT:150 == 1 && CFLAG:7002 == 3 && CFLAG:7001 == 1 && CFLAG:7003 == 0
+		PRINTFORML 「なー%CALLNAME:MASTER%ー
+		PRINTFORMW  まえにせーがが言っていたことをおもいだしたぞー！」
+		PRINTFORML 話を聞くに前%CALLNAME:TARGET%の体を調べた時に見つけた回路についての話だった…
+		PRINTFORMW %CALLNAME:TARGET%のその回路をどうしようかと考えていると%CALLNAME:TARGET%が話しかけてきた
+		PRINTFORML 「あ…あのなー、あ…%CALLNAME:MASTER%にだったら…」
+		PRINTFORMW 回路について意識が向いていて生返事を返すと%CALLNAME:TARGET%に%CALLNAME:MASTER%は組み敷かれた
+		PRINTFORMW 「あ…あのなー？だいじなコト…私がはなしてるのに…」
+		PRINTFORML ふと気が付く、%CALLNAME:TARGET%の目じりが軽く濡れていることに
+		PRINTFORMW %CALLNAME:TARGET%は身も心も%CALLNAME:MASTER%へ捧げる決心が付いたことに…
+		PRINTFORML %CALLNAME:MASTER%は%CALLNAME:TARGET%の頬に手を当て涙を指で拭い
+		PRINTFORMW そして%CALLNAME:MASTER%は%CALLNAME:TARGET%を強く強く抱きしめた…
+		CFLAG:7002 = 1
+		CFLAG:7003 = 1
+	;恋慕
+	ELSEIF TALENT:150 == 1 && CFLAG:7001 == 1 && CFLAG:7003 == 0
+		PRINTFORML 「あ、あのな%CALLNAME:MASTER%…
+		PRINTFORML せーがが前言ってたことおもいだしたぞ」
+		PRINTFORMW なんでも%CALLNAME:TARGET%を作った人物はその体にある仕掛けを施したらしい
+		PRINTFORML %CALLNAME:TARGET%本人が気を許し、その身を捧げたいと心の底から思い
+		PRINTFORMW 相手も生涯を添い遂げたいと精神に刻み込まれた場合のみ発動するそうだ
+		PRINTFORML 身も心も深く愛しその結果体の感覚も生前を上回るほどに取り戻し
+		PRINTFORMW より深くお互いを感じ、夫婦として何ら障害も無く暮らせるため施したそうだ
+		PRINTFORML 「な、何ぼーっとしてるんだー！
+		PRINTFORMW こんなだいじなこと　はなしたいみを　さっせよーばかー！」
+		PRINTL 深く愛してやれるだろうか…？
+		PRINTL [0] 当たり前だ
+		PRINTL [1] 道具は道具に過ぎない
+		$INPUT_LOOP_2
+		INPUT
+		;ON
+		IF RESULT == 0
+			PRINTFORMW %CALLNAME:MASTER%は考えるまでも無く即答し、%CALLNAME:TARGET%に口付けをした
+			PRINTFORML 「そ…そーいうことだからよろしくなー！」
+			PRINTFORMW %CALLNAME:TARGET%は気恥ずかしそうにそう言い放ちこちらに背を向け服を脱ぎ始める
+			PRINTFORMW そんな%CALLNAME:TARGET%の青く血色の悪い頬はほのかに朱に染まっているように見えた…
+			CFLAG:7002 = 1
+			CFLAG:7003 = 1
+		;OFF
+		ELSEIF RESULT == 1
+			PRINTFORML %CALLNAME:MASTER%は少し思案し『あぁ、当たり前だろう』とニヤリと笑うように言い放ち
+			PRINTFORMW %CALLNAME:TARGET%の服を脱がしにかかる
+			PRINTFORMW 「こ、これからもよろしくなー！」
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:MASTER%を疑う事無く
+			PRINTFORMW 青白く血色の悪い頬をほのかに染めながらそう言い放った
+			CFLAG:7002 = 2
+			CFLAG:7003 = 2
+		ELSE
+			GOTO INPUT_LOOP_2
+		ENDIF
+	;従順LV3以上、屈服刻印LV3、あなたが禁断の知識持ち
+	ELSEIF ABL:10 >= 3 && MARK:2 == 3 && TALENT:MASTER:56 == 1 && CFLAG:7001 == 1 && CFLAG:7003 == 0
+		PRINTFORML %CALLNAME:MASTER%は%CALLNAME:TARGET%を調教しようと近づいた時にふと思いつく
+		PRINTFORMW %CALLNAME:MASTER%の持つ知識を駆使すれば%CALLNAME:TARGET%の使い物にならなくなった神経を生前まで戻すことが出来るのではないのだろうかと
+		PRINTFORML 「なー%CALLNAME:MASTER%ー、うんうんうなってどーしたー？」
+		PRINTFORMW そう呼びかけられ思案をやめ%CALLNAME:TARGET%の方へ向き直る…
+		PRINTFORML %CALLNAME:TARGET%の了承を取り、少し%CALLNAME:TARGET%の体を調べたところ
+		PRINTFORMW どうやら既に神経を元に戻すための回路は作られているようだ
+		PRINTFORML しかし、その元に戻すための条件にはお互いに深く愛し合うという事が必要らしい…
+		PRINTFORMW だが%CALLNAME:MASTER%の持つ知識を使えばその条件を書き換えることも出来るが…
+		PRINTL 書き換えてしまおうか…？
+		PRINTL ［0］やってしまおう
+		PRINTL ［1］やめておこう
+		PRINTFORML ［2］%CALLNAME:TARGET%が決めた相手に…
+		$INPUT_LOOP_3
+		INPUT
+		;ON
+		IF RESULT == 0
+			PRINTFORML %CALLNAME:MASTER%は%CALLNAME:TARGET%にじっとしているようにと告げ
+			PRINTFORMW 回路を書き換えるために%CALLNAME:TARGET%へと手をかざし作り変えていった…
+			CFLAG:7002 = 1
+			CFLAG:7002 = 2
+		;OFF
+		ELSEIF RESULT == 1
+			PRINTFORMW やめておこう、どうせ売り払う奴隷だ。余計な力を使う必要は無い…
+			CFLAG:7002 = 2
+			CFLAG:7003 = 2
+		ELSEIF RESULT == 2
+			PRINTFORMW やめておこう、%CALLNAME:TARGET%が心の底から思う相手に楽しんでもらうとしよう…
+			CFLAG:7002 =3
+		ELSE
+			GOTO INPUT_LOOP_3
+		ENDIF
+	ELSEIF MARK:9 == 3
+		IF TALENT:150 == 1
+			PRINTFORMW 「ちーかーよーるーなー！！」
+		ELSE
+			PRINTFORML 「ちーかーよーるーなー！！」
+			PRINTFORMW %CALLNAME:TARGET%は口を大きく開け、うなりながら%CALLNAME:MASTER%を威嚇している
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		;感度変化ON
+		IF CFLAG:7002 == 1
+			IF RAND:7 == 0 && CFLAG:7010 >= 1
+				;V
+				IF CFLAG:7010 == 1
+					PRINTFORML 「あ…あのなー、いつもちんちん出し入れしてるところが何かむずむずするんだー！」
+					PRINTFORMW %CALLNAME:TARGET%はまだまだ硬い関節を動かし太ももをすり合わせながら%CALLNAME:MASTER%へそう告げた…
+				ELSEIF CFLAG:7010 == 2
+					PRINTFORML 「あっ%CALLNAME:MASTER%ー！せっくす？ってこんなにきもちいーコトだったんだなー！！」
+					PRINTFORMW %CALLNAME:TARGET%は大分動くようになって来た自らの足で歩きながら%CALLNAME:MASTER%へ抱きつきそう言った…
+				ELSEIF CFLAG:7010 == 3
+					PRINTFORML 「おー、%CALLNAME:MASTER%ー！いっぱいいっぱいせっくすしてくれー！！」
+					PRINTFORMW %CALLNAME:TARGET%は自由になった自らの足を開き%CALLNAME:MASTER%を誘惑している…
+				ENDIF
+			;A
+			ELSEIF RAND:6 == 0 && CFLAG:7012 >= 1
+				IF CFLAG:7012 == 1
+					PRINTFORML 「あ…あのなー？さいきんおしりにちんちんが出たり入ったりするとむずむずするんだー」
+					PRINTFORMW どうやら%CALLNAME:TARGET%は今までの成果が出てきたようでアヌスで感じ始めるようになって来たようだ…
+					PRINTFORMW 「だ…だからもっと一杯…」
+				ELSEIF CFLAG:7012 == 2
+					IF CFLAG:7101 == 0
+						PRINTFORML 「あ…あのなー？%CALLNAME:MASTER%がおしりにちんちん出し入れするたびに頭が真っ白になって世界がまわってみえるんだー！
+						PRINTFORMW 私のからだ…こわれちゃったのか…？」
+						PRINTFORML %CALLNAME:MASTER%は不安そうにしている%CALLNAME:TARGET%を安心させるため愛し合った結果治ってきたと告げると
+						PRINTFORMW 今まで不安そうだった%CALLNAME:TARGET%の顔は一瞬で笑顔に変わり恥ずかしそうに
+						PRINTFORM 「も…もっとセカイ…　回して…
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						CFLAG:7101 = 1
+					ELSE
+						PRINTFORML 「き…きょーもいっぱい　おかして欲しい…なー…
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW %CALLNAME:TARGET%は恥ずかしそうにうつむきながらも%CALLNAME:MASTER%へアヌスの責めを求める…
+					ENDIF
+				ELSEIF CFLAG:7012 == 3
+					;淫乱or淫尻
+					IF TALENT:170 == 1 || TALENT:173 == 1
+						PRINTFORM 「えへへ…%CALLNAME:MASTER%にあいされて、おしりおかされるの　だいすきになっちゃった…
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%にしな垂れかかりながら、自らの指でアヌスを責め続けている…
+					ELSE
+						PRINTFORML 「お…おしりでかんじるとか…　うおー%CALLNAME:MASTER%ー！せきにんとれー！！」
+						PRINTFORMW そう詰め寄る%CALLNAME:TARGET%のアヌスを指で弄ってやると可愛く声を上げた…
+					ENDIF
+				ENDIF
+			;C
+			ELSEIF RAND:5 == 0 && CFLAG:7014 >= 1
+				PRINTFORM 「く、くりとりす…おかしくなってきちゃった…　ぞ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は自らの指でくりくりと淫核を弄びながら%CALLNAME:MASTER%へと近づいてきた…
+			;B
+			ELSEIF RAND:4 == 0 && CFLAG:7016 >= 1
+				PRINTFORM 「えへへ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ちくびもおっぱいもきもちいぞ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:MASTER%が来るまで%CALLNAME:TARGET%は自らの胸を責めながら体の疼きを慰めていたようだ…
+			;痛覚
+			ELSEIF RAND:3 == 0 && CFLAG:7018 >= 1
+				PRINTFORM 「いたみがわかるってこんなにうれしーことだったんだなー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORMW 」
+			;味覚
+			ELSEIF RAND:2 == 0 && CFLAG:7020 >= 1
+				PRINTFORM 「えへへ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML いままでごはんってうごくためだけにたべてたけどなー
+				PRINTFORMW あじがわかっておいしいって思えるってすごいうれしいことだったんだなー」
+			;子宮
+			ELSEIF RAND:1 == 0 && CFLAG:7022 >= 1
+				IF CFLAG:7022 == 3
+					PRINTFORM 「えへへ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML にんしん出来るようになったから早くあかちゃんできないかなー」
+					PRINTFORMW %CALLNAME:TARGET%は顔を赤くし、ニコニコしながら%CALLNAME:MASTER%へそう言った
+				ELSEIF CFLAG:7022 == 2
+					PRINTFORMW 「はやくあかちゃんほしいぞー！！」
+				ELSEIF CFLAG:7022 == 1
+					PRINTFORML 「はやくあかちゃん作れるようになりたいぞー！！
+					PRINTFORM 今日もがんばろーなー、%CALLNAME:MASTER%ー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+			;その他
+			ELSE
+				PRINTFORML 「はやく、きもちくなりたいぞー！
+				PRINTFORM だから…いっぱいおかしてなー？
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORMW 」
+			ENDIF
+		ELSE
+			PRINTFORML 「おー、%CALLNAME:MASTER%ー！きょーもいっぱい　あいしてもらうぞー！！」
+			PRINTFORMW %CALLNAME:TARGET%は待ちわびた様子で%CALLNAME:MASTER%を見た途端服を脱ぎ放っていった
+		ENDIF
+	;屈服刻印lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORML 「んー、きょーもやるのかー？よくあきないなー」
+		PRINTFORMW %CALLNAME:TARGET%はぶつくさと文句を言いながらも素直に服を脱いでいく
+	;従順LV3
+;	ELSEIF ARB:10 == 3
+;		PRINTFORML 
+	ELSE
+		PRINTFORML 「したいいじくるとか　いーしゅみだなー？」
+	ENDIF
+	
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_82_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+DRAWLINE
+TRYCALL K82_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K82_MESSAGE_END
+IF MARK:9 == 3
+	IF TALENT:150 == 1
+		PRINTFORMW 「さ…さわんなー！！」
+	ELSE
+		PRINTFORMW 「もーくんなー！！」
+	ENDIF
+;恋慕
+ELSEIF TALENT:150 == 1
+	;全MAX
+	IF CFLAG:7002 == 4
+		IF RAND:5 == 0
+			IF BASE:0 <= 500 && TFLAG:11 >= 0
+				PRINTFORM 「は…はげしすぎだぞー…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM こわれちゃう…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は体力を使い果たしはぁはぁと肩で息をしている…
+			ELSEIF TFLAG:11 >= 0
+				PRINTFORM 「もっとナカにいれてくれー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は物足りない様子で自らの指でヴァギナを慰めている…
+				EXP:10 += 1
+				EXP:0 += 1
+			ELSE
+				PRINTFORM 「つ…つぎはこっちにも…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%にヴァギナへの刺激をねだる…
+			ENDIF
+
+			IF TFLAG:11 >= 5 && TFLAG:12 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%の存分に愛されたヴァギナとアヌスから大量に注ぎ込まれた精液がごぽごぽと音を立てるように溢れた…
+			ELSEIF TFLAG:11 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%のたっぷり愛された膣内からはごぽりと精液が溢れた…
+			ELSEIF TFLAG:12 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%のアヌスからごぽりと精液が溢れた…
+			ENDIF
+			
+		ELSEIF RAND:4 == 0 
+			IF BASE:0 <= 500 && TFLAG:12 >= 0
+				PRINTFORM 「あはっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おしり…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM もっとぉ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:MASTER%に愛しぬかれぐったりとした%CALLNAME:TARGET%はアヌスへの刺激がまだまだ足りない様子で力なく指で慰めている…
+				EXP:10 += 1
+				EXP:1 += 1
+				PRINTFORML A経験+1
+				PRINTFORMW 自慰経験+1
+			ELSEIF TFLAG:12 >= 0
+				PRINTFORM 「わたしのおしり…もっといじめてくれー…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は物足りない様子で%CALLNAME:MASTER%へとアヌスの刺激をねだる…
+			ELSE
+				PRINTFORM 「こ…こんどはおしりにも…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%はアヌスへの刺激をねだる…
+			ENDIF
+			
+			IF TFLAG:11 >= 5 && TFLAG:12 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%の存分に愛されたヴァギナとアヌスから大量に注ぎ込まれた精液がごぽごぽと音を立てるように溢れた…
+			ELSEIF TFLAG:11 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%の愛されていたヴァギナからごぽりと音を立てながら精液が溢れてきた…
+			ELSEIF TFLAG:12 >= 5
+				PRINTFORMW そういう%CALLNAME:TARGET%のアヌスからはごぽりと音を立てながら精液が溢れてきた…
+			ENDIF
+			
+		ELSEIF RAND:3 == 0
+			IF BASE:0 <= 500
+				PRINTFORM 「んっ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM つぎもいっぱい…いじめ…て…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORM %CALLNAME:TARGET%は力なくも物足りない様子で
+				
+				IF CFLAG:7014 == 3
+					PRINTFORMW クリトリスへの刺激で自らを慰め続けていた…
+				ELSE
+					PRINTFORMW 乳首への刺激で自らを慰め続けていた…
+				ENDIF
+				
+				EXP:10 += 1
+				PRINTFORMW 自慰経験+1
+			ELSE
+				PRINTFORM 「こんども…いっぱい…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%はにこりと%CALLNAME:MASTER%に笑みを投げかけると口付けをした…
+				EXP:23 += 1
+				PRINTFORMW キス経験+1
+			ENDIF
+		ELSEIF RAND:2 == 0
+			IF BASE:0 <= 500 && (TFLAG:15 >= 0 || TFLAG:14 >= 0)
+				PRINTFORM 「こんなにいっぱい…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は口の周りにこびりついた精液をうっとりとした瞳で舐め取り味わっている…
+				EXP:4 += 1
+				PRINTFORMW 精液経験+1
+			ELSE
+				PRINTFORML 「なー、もっといっぱいせーしくれー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%はまだまだ味わい足りないといった様子で%CALLNAME:MASTER%を咥えている…
+				EXP:22 += 1
+				PRINTFORMW フェラ経験+1
+			ENDIF
+			
+		ELSEIF RAND:1 == 0
+			IF BASE:0 <= 500 && CFLAG:7030 >= 100 && TFLAG:11 >= 0
+				PRINTFORM 「しきゅう…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM こわれ…ちゃう…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORM %CALLNAME:MASTER%の性器を奥まで受け入れていた%CALLNAME:TARGET%の膣はぽっかりと口を開き
+				IF TFLAG:11 >= 15
+					PRINTFORMW 大量に注ぎ込まれた精液がどろりと溢れた…
+				ELSE
+					PRINTFORMW 注ぎ込まれていた精液が溢れてきた…
+				ENDIF
+			ELSE
+				PRINTFORM 「えへへー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM あかちゃん出来るようにもっといっぱいだしてー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%との子供が欲しい様子で膣出しをねだっている
+			ENDIF
+		ELSE
+			IF BASE:0 <= 500
+				PRINTFORM 「もー…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM からだうごかないー…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:MASTER%に力尽きてしまうほど愛された%CALLNAME:TARGET%ははぁはぁと肩で息をしている…
+			ELSE
+				PRINTFORM 「つぎもいっぱいかわいがってほしいぞ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は顔を赤くしながら%CALLNAME:MASTER%へもたれかかった…
+			ENDIF
+		ENDIF
+	;感度変化
+	ELSEIF CFLAG:7002 == 1
+		;v感度
+		IF CFLAG:7011 >= 10
+			PRINTFORM %CALLNAME:TARGET%のヴァギナは
+				IF CFLAG:7010 == 0
+					PRINTFORMW 感じることが出来なかったが
+				ELSEIF CFLAG:7010 == 1
+					PRINTFORMW あまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW だいぶ感じるようになって来たが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの愛を十分受け
+				IF CFLAG:7010 == 0
+					PRINTFORMW わずかに感じるようになって来た
+				ELSEIF CFLAG:7010 == 1
+					PRINTFORMW だいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW 生前よりも強力な快感を受けるようになって来た
+				ENDIF
+			PRINTFORML 「えへへ、%CALLNAME:MASTER%にいっぱい可愛がられて
+				IF CFLAG:7010 == 0
+					PRINTFORM 少しだけ%CALLNAME:MASTER%のちんちんが出たり入ったりがわかるようになって来たぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7010 == 1
+					PRINTFORM きもちよくなれるようになったから…
+					PRINTFORM もっとわたしとせっくすしてくれー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORM 「あたままっしろになっちゃった
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM だからせっくす…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM せっくすもっといっぱい…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+			PRINTFORML %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 0
+					IF CFLAG:7010 == 2
+					 	PRINTFORML 表情はだいぶ硬いがヴァギナへの刺激にすっかり脳はとろけきり
+					 	PRINTFORMW 呂律が回らないようだ…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが少し恥ずかしそうにすごくうれしそうな声でそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7010 == 2
+						PRINTFORML 表情はまだまだ硬いがヴァギナへの刺激にすっかり脳はとろけきり
+						PRINTFORMW 呂律が回らないようだ…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF CFLAG:7010 == 2
+						PRINTFORML だいぶ自由になった表情は快楽により痙攣し
+						PRINTFORMW 呂律も回らなくしゃべるのもままならないようだ…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7010 == 2
+						PRINTFORMW すっかり蕩けきった表情で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 自由になった表情筋で恥ずかしさとうれしさの入り混じった顔で%CALLNAME:MASTER%にそう言った
+					ENDIF
+				ENDIF
+
+				CFLAG:7010 += 1
+				CFLAG:7011 = 0
+
+				IF CFLAG:7000 == 1
+					IF CFLAG:7010 == 3
+						TALENT:102 = 1
+						PRINTFORMW %CALLNAME:TARGET%はV敏感を得ました
+					ELSEIF CFLAG:7010 == 1
+						TALENT:103 = 0
+						PRINTFORMW %CALLNAME:TARGET%はV鈍感を失いました
+					ENDIF
+				ENDIF
+		;A感度
+		ELSEIF CFLAG:7013 >= 10
+			PRINTFORM %CALLNAME:TARGET%のアヌスは
+				IF CFLAG:7012 == 0
+					PRINTFORMW 感じることが出来なかったが
+				ELSEIF CFLAG:7012 == 1
+					PRINTFORMW あまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW だいぶ感じるようになって来たが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの愛と努力を十分受け
+				IF CFLAG:7012 == 2
+					PRINTFORMW 生前よりも強力な快楽を受けるようになって来た
+				ELSEIF CFLAG:7012 == 1
+					PRINTFORMW だいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW わずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%にお尻いっぱいいじめられて
+				IF CFLAG:7012 == 2
+					PRINTFORM 頭まっしろになっちゃった…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW だからおしり…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM もっといっぱいいじめ…て…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7012 == 1
+					PRINTFORM きもちよくなれるようになったから
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM もっといっぱいおしりをいじめてくれー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORM ちんちんが出たり入ったりしてるのわかるようになってきたぞ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF CFLAG:7012 == 2
+						PRINTFORML アヌスへの快楽を常人以上に受けすっかり顔は蕩け切り
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ刺激を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋でアヌスで感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF CFLAG:7012 == 2
+						PRINTFORML だいぶ自由になった表情はアヌスからの快楽により痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7012 == 2
+						PRINTFORML 表情はまだまだ硬いがアヌスから与えられた快楽により脳はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7012 == 2
+						PRINTFORML 表情はだいぶ硬いがアヌスから与えられた快楽により脳はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+
+			CFLAG:7012 += 1
+			CFLAG:7013 = 0
+
+			IF CFLAG:7000 == 1
+				IF CFLAG:7012 == 3
+					TALENT:104 = 1
+					PRINTFORMW %CALLNAME:TARGET%はA敏感を得ました
+				ELSEIF CFLAG:7012 == 1
+					TALENT:105 = 0
+					PRINTFORMW %CALLNAME:TARGET%はA鈍感を失いました
+				ENDIF
+			ENDIF
+
+		;C感度
+		ELSEIF CFLAG:7015 >= 10
+			PRINTFORM %CALLNAME:TARGET%のクリトリスは
+				IF CFLAG:7014 == 0
+					PRINTFORMW 感じることが出来なかったが
+				ELSEIF CFLAG:7014 == 1
+					PRINTFORMW あまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW だいぶ感じるようになって来たが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの愛と努力を十分受け
+				IF CFLAG:7014 == 2
+					PRINTFORMW 生前よりも強力な快楽を受けるようになって来た
+				ELSEIF CFLAG:7014 == 1
+					PRINTFORMW だいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW わずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%にくりとりすいっぱいいじめられて
+				IF CFLAG:7014 == 2
+					PRINTFORM あたままっしろになっちゃったぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7014 == 1
+					PRINTFORM きもちよくなれるようになったぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORM 「さわられるたびにくりとりすがむずむずしてきたぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF CFLAG:7014 == 2
+						PRINTFORML クリトリスへの快楽を常人以上に受けすっかり顔は蕩け切り
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ刺激を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋でクリトリスで感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF CFLAG:7014 == 2
+						PRINTFORML だいぶ自由になった表情はクリトリスからの快楽により痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7014 == 2
+						PRINTFORML 表情はまだまだ硬いがクリトリスから与えられた快楽により脳はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7014 == 2
+						PRINTFORML 表情はだいぶ硬いがクリトリスから与えられた快楽により脳はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+
+			CFLAG:7014 += 1
+			CFLAG:7015 = 0
+
+			IF CFLAG:7000 == 1
+				IF CFLAG:7014 == 3
+					TALENT:100 = 1
+					PRINTFORMW %CALLNAME:TARGET%はC敏感を得ました
+				ELSEIF CFLAG:7014 == 1
+					TALENT:101 = 0
+					PRINTFORMW %CALLNAME:TARGET%はC鈍感を失いました
+				ENDIF
+			ENDIF
+
+		;B感度
+		ELSEIF CFLAG:7017 >= 10
+			PRINTFORM %CALLNAME:TARGET%の胸は
+				IF CFLAG:7016 == 2
+					PRINTFORMW だいぶ感じるようになって来たが
+				ELSEIF CFLAG:7016 == 1
+					PRINTFORMW あまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW 感じることが出来なかったが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの愛と努力を十分受け
+				IF CFLAG:7016 == 2
+					PRINTFORMW 生前よりも強力な快楽を受けるようになって来た
+				ELSEIF CFLAG:7016 == 1
+					PRINTFORMW だいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW わずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%におっぱいいじめられて
+				IF CFLAG:7016 == 2
+					PRINTFORM あたままっしろになっちゃったぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7016 == 1
+					PRINTFORM きもちよくなれるようになったぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM 」
+				ELSE
+					PRINTFORM 触られるたびにちくびがむずむずしてきたぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF CFLAG:7016 == 2
+						PRINTFORML 胸への快楽を常人以上に受けすっかり顔は蕩け切り
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ刺激を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋で胸で感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF CFLAG:7016 == 2
+						PRINTFORML だいぶ自由になった表情は胸からの快楽により痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7016 == 2
+						PRINTFORML 表情はまだまだ硬いが胸から与えられた快楽により脳はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7016 == 2
+						PRINTFORML 表情はだいぶ硬いが胸から与えられた快楽により脳はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+
+			CFLAG:7016 += 1
+			CFLAG:7017 = 0
+
+			IF CFLAG:7000 == 1
+				IF CFLAG:7016 == 3
+					TALENT:106 = 1
+					PRINTFORMW %CALLNAME:TARGET%はB敏感を得ました
+				ELSEIF CFLAG:7016 == 1
+					TALENT:107 = 0
+					PRINTFORMW %CALLNAME:TARGET%はB鈍感を失いました
+				ENDIF
+			ENDIF
+		;痛覚
+		ELSEIF CFLAG:7019 >= 10
+			PRINTFORM %CALLNAME:TARGET%の痛覚は
+				IF CFLAG:7018 == 2
+					PRINTFORMW だいぶ感じるようになって来たが
+				ELSEIF CFLAG:7018 == 1
+					PRINTFORMW あまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW 感じることが出来なかったが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの愛と努力を十分受け
+				IF CFLAG:7018 == 2 && ABL:21 == 5
+					PRINTFORMW 生前よりも強力な快楽を受けるようになって来た
+				ELSEIF CFLAG:7018 == 2
+					PRINTFORMW 完全に痛覚が戻ってきたようだ
+				ELSEIF CFLAG:7018 == 1
+					PRINTFORMW だいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW わずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%に叩かれて
+				IF CFLAG:7018 == 2 && ABL:21 == 5
+					PRINTFORM あたままっしろになっちゃったぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7018 == 2
+					PRINTFORM 痛い…けれど…うれしいぞ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7018 == 1
+					PRINTFORM 肌がぴりぴりするのがわかるようになって来たぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORMW ぴりぴりするのが痛みなのかー？」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF CFLAG:7018 == 2 && ABL:21 == 5
+						PRINTFORML 痛みが快楽となりその刺激で理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ刺激を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋で痛みを感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF CFLAG:7018 == 2 && ABL:21 == 5
+						PRINTFORML だいぶ自由になった表情は痛みが快楽になり痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7018 == 2 && ABL:21 == 5
+						PRINTFORML 表情はまだまだ硬いが痛みは快楽になり理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7018 == 2 && ABL:21 == 5
+						PRINTFORML 表情はだいぶ硬いが痛みは快楽になり理性はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+	
+			CFLAG:7018 += 1
+			CFLAG:7019 = 0
+		
+			IF CFLAG:7000 == 1
+				IF CFLAG:7018 == 3
+					TALENT:82 = 1
+					PRINTFORMW %CALLNAME:TARGET%はマゾを取得しました
+				ENDIF
+			ENDIF
+		
+		;味覚
+		ELSEIF CFLAG:7021 >= 10
+			PRINTFORM %CALLNAME:TARGET%の味覚は
+				IF CFLAG:7020 == 2
+					PRINTFORMW だいぶ精の味がクセになってきたようだが
+				ELSEIF CFLAG:7020 == 1
+					PRINTFORMW 精の味をあまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW 精の味を感じることが出来なかったが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの精を十分受け
+				IF CFLAG:7020 == 2 && ABL:31 == 5
+					PRINTFORMW すっかり精液の味の虜となったようだ
+				ELSEIF CFLAG:7020 == 2
+					PRINTFORMW 生前よりも強力に精を味わえるようになった
+				ELSEIF CFLAG:7020 == 1
+					PRINTFORMW 味がだいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW 味覚をわずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%にいっぱいくちにそそがれて
+				IF CFLAG:7020 == 2 && ABL:31 == 5
+					PRINTFORM あたままっしろになっちゃった…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7020 == 2
+					PRINTFORM せーしのあじがおいしくなってきちゃったぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7020 == 1
+					PRINTFORM すこしなまぐさいけど…なんかクセに…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORMW これがせーしの…あじなのかー…？」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF ABL:31 == 5
+						PRINTFORML すっかりクセになってしまった精子の味により理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ精を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋で味を感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF  ABL:31 == 5
+						PRINTFORML だいぶ自由になった表情は痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF ABL:21 == 5
+						PRINTFORML 表情はまだまだ硬いが精の味に理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF ABL:21 == 5
+						PRINTFORML 表情はだいぶ硬いが精の味に理性はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+		
+			CFLAG:7020 += 1
+			CFLAG:7021 = 0
+	
+		;子宮
+		ELSEIF CFLAG:7023 >= 10
+			PRINTFORM %CALLNAME:TARGET%の子宮は
+				IF CFLAG:7022 == 2
+					PRINTFORMW だいぶ子宮でも感じるようになってきたようだが
+				ELSEIF CFLAG:7022 == 1
+					PRINTFORMW 子宮口ではあまり感じることが出来なかったが
+				ELSE
+					PRINTFORMW 子宮口では感じることが出来なかったが
+				ENDIF
+			PRINTFORM %CALLNAME:MASTER%からの子宮へのマッサージを十分受け
+				IF CFLAG:7022 == 2
+					PRINTFORMW すっかり子宮へ与えられる刺激の虜となったようだ
+				ELSEIF CFLAG:7022 == 1
+					PRINTFORMW 子宮口でだいぶ感じるようになって来た
+				ELSE
+					PRINTFORMW 子宮口でわずかに感じるようになって来た
+				ENDIF
+			PRINTFORM 「えへへ、%CALLNAME:MASTER%にいっぱいおく突かれて
+				IF CFLAG:7022 == 2
+					PRINTFORM あたま…まっしろに…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7022 == 1
+					PRINTFORM ちょっとくるしいけど…きもちよく…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORMW さっきのはなにしたんだー…？」
+				ENDIF
+			PRINTFORM %CALLNAME:TARGET%は
+				IF CFLAG:7020 == 3
+					IF CFLAG:7022 == 2
+						PRINTFORML すっかりクセになってしまった子宮への刺激により理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%へ精を求め続けた…
+					ELSE
+						PRINTFORML 自由になった表情筋で子宮への刺激を感じられるということに
+						PRINTFORMW 恥ずかしさと嬉しさの入り混じった顔で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 2
+					IF  CFLAG:7022 == 2
+						PRINTFORML だいぶ自由になった表情は子宮への刺激により痙攣し
+						PRINTFORMW 呂律の回らない言葉で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW だいぶやわらかくなった表情で%CALLNAME:MASTER%にそう言った…
+					ENDIF
+				ELSEIF CFLAG:7020 == 1
+					IF CFLAG:7022 == 2
+						PRINTFORML 表情はまだまだ硬いが子宮への刺激理性はすっかり蕩けきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW まだまだ硬い表情だがうれしそうな声でそう言った…
+					ENDIF
+				ELSE
+					IF CFLAG:7022 == 2
+						PRINTFORML 表情はだいぶ硬いが子宮への刺激により理性はすっかりとろけきり
+						PRINTFORMW 呂律の回らない声で%CALLNAME:MASTER%にそう言った…
+					ELSE
+						PRINTFORMW 表情はだいぶ硬いが嬉しそうな声でそう言った…
+					ENDIF
+				ENDIF
+			
+			CFLAG:7022 += 1
+			CFLAG:7023 = 0
+	
+			IF CFLAG:7022 == 2
+				PRINTFORMW %CALLNAME:TARGET%は妊娠が可能になりました…
+			ENDIF
+		
+		ELSE
+			PRINTFORM 「えへへ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM いっぱい可愛がってもらえて…　えへへー
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%は満たされた様子で%CALLNAME:MASTER%に寄りかかった…
+		ENDIF
+	ENDIF
+ELSEIF MARK:2 == 3
+	PRINTFORML 「もう…おわりなのかー？」
+ELSE
+	PRINTFORML 「やっと…おわりかー…」
+	PRINTFORMW %CALLNAME:TARGET%は疲れた様子でベッドへ横になった…
+ENDIF
+
+IF CFLAG:7010 == 3 && CFLAG:7012 == 3 && CFLAG:7014 == 3 && CFLAG:7016 == 3 && CFLAG:7018 == 3 && CFLAG:7020 == 3 && CFLAG:7022 == 3
+	CFLAG:7002 = 4
+ENDIF
+
+;素質変化
+IF CFLAG:7000 == 1 && (CFLAG:7010 >= 2 || CFLAG:7012 >= 2 || CFLAG:7014 >= 2 || CFLAG:7016 >= 2 || CFLAG:7018 >= 2 || CFLAG:7020 >= 2 || CFLAG:7022 >= 2)
+	IF CFLAG:7010 >= 2
+		TFLAG:181 = 0
+	ENDIF
+	
+	IF CFLAG:7012 >= 2
+		TFLAG:182 = 0
+	ENDIF
+	
+	IF CFLAG:7014 >= 2
+		TFLAG:180 = 0
+	ENDIF
+	
+	IF CFLAG:7016 >= 2
+		TFLAG:183 = 0
+	ENDIF
+ENDIF
+
+;妊娠処理
+IF CFLAG:7022 <= 1 && CFLAG:7000 == 1
+	IF CFLAG:71 >= 0 || CFLAG:72 >= 0
+		CFLAG:71 = 0
+		CFLAG:72 = 0
+	ENDIF
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_82_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中・失神回復時も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+
+;処女喪失時のメッセージ呼び出し
+SIF TFLAG:0
+	TRYCALL K82_MESSAGE_LOST_VIRGIN
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K82_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K82_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K82_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+
+;-------------------------------------------------
+;処女喪失
+;-------------------------------------------------
+@K82_MESSAGE_LOST_VIRGIN
+;主人のペニス
+IF TFLAG:2
+	IF CFLAG:7001
+		IF CFLAG:7018 >= 1
+			PRINTFORM 「叩かれるのとちょっとちがって
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM なんだかあたまがふわふわするぞー
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF CFLAG:7018 == 0
+			PRINTFORMW 「お？、なんかしたのかー？」
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		PRINTFORM 「えへへー
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM %CALLNAME:MASTER%にあげられてうれしいぞー
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:TARGET%は破瓜の痛みに涙を浮かべながらも、嬉しそうに%CALLNAME:MASTER%へ口付けをした
+	ELSE
+		PRINTFORML 「やめろっていったのにー…」
+	ENDIF
+;それ以外
+ELSE
+	IF CFLAG:7001 == 1
+		PRINTFORML 「%CALLNAME:MASTER%が…よかったのに…」
+		IF CFLAG:7018 >= 1
+			PRINTFORMW %CALLNAME:TARGET%は破瓜による痛みではない涙をぽろぽろと流している…
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%は破瓜の痛みを感じないがぽろぽろと涙を流している…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 「いや…なのに…」
+	ELSE
+		PRINTFORMW 「なんかしたのかー？」
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_82_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K82_MESSAGE_OVERLV2_10
+PRINTFORMW 「おー、なんだこれー」
+CFLAG:5330 = 1
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K82_MESSAGE_OVERLV2_13
+;PRINTFORMW 
+;CFLAG:5333 = 1
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K82_MESSAGE_OVERLV2_15
+PRINTFORMW 「は…はずかしいぞー」
+CFLAG:5335 = 1
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;-------------------------------------------------
+@K82_MESSAGE_OVERLV2_17
+;PRINTFORMW 
+;CFLAG:5337 = 1
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5300～を使用
+;@KOJO_82_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_0
+;初めて
+IF CFLAG:5300 == 0 && CFLAG:7001 == 1
+	PRINTFORMW %CALLNAME:TARGET%は絶頂したはずだが全く表情が変わらない…
+	CFLAG:5300 = 1
+ELSEIF CFLAG:5300 == 0
+	PRINTFORMW 「な…からだがびりってしたぞー？」
+	CFLAG:5300 = 1
+ELSEIF CFLAG:5300 == 1 && SELECTCOM == 146 && CFLAG:7001 == 1 && CFLAG:7014 == 0 && CFLAG:7018 == 0
+	PRINTFORMW %CALLNAME:TARGET%は尿道で絶頂したはずだが痛みも快楽も全くわからないようだ…
+	CFLAG:5300 += 1
+ELSEIF CFLAG:5300 == 1 && SELECTCOM == 146 && (CFLAG:7014 >= 1 || CFLAG:7018 >= 1)
+	IF CFLAG:7014 >= 1 && RAND:2 == 0
+		PRINTFORM 「おしっこのあな…きもちい…ぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+		CFLAG:5300 += 1
+	ELSEIF CFLAG:7018 >= 1 && RAND:1 == 0
+		PRINTFORM 「ひっ…いた…いけど…きもちい…ぞ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+		CFLAG:5300 += 1
+	ENDIF
+ELSEIF CFLAG:5300 == 1 && SELECTCOM == 146 && CFLAG:7001 == 0
+	PRINTFORMW 「お…ぐっ…い…いまのなんだー…？」
+;２回目以降
+ELSE
+	;尿道挿入
+	IF SELECTCOM == 146
+		IF TALENT:175 == 1
+			PRINTFORM 「あぎっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM おしっこにょ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM あにゃがあぁあ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			IF CFLAG:7031 >= 150
+				IF RAND:2 == 0
+					PRINTFORM 「きひゃうっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM くりとりひゅにょうらがわごりごりっって
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM きひゃうぞおおぉぉぉおおっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF RAND:1 == 0
+					PRINTFORM 「ひぎゅっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM にょーどーきひゃうっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM にょーどーごりごりらいひゅきっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORM 「いっ、ぎひっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM こわれっ　んひぃいいいぃぃぃいいんっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ENDIF
+;			ELSEIF CFLAG:7031 >= 50
+;				IF RAND:2 == 0
+;					
+;				ELSEIF RAND:1 == 0
+;				
+;				ELSE
+;				
+;				ENDIF
+;			ELSEIF CFLAG:7031 >= 30
+;				IF RAND:3 == 0
+;				
+;				ELSEIF RAND:2 == 0
+;				
+;				ELSEIF RAND:1 == 0
+;				
+;				ELSE
+;				
+;				ENDIF
+			ELSEIF CFLAG:7031 >= 10
+				PRINTFORM 「おしっこのあな…きもちいい…ぞ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORMW 」
+;			ELSE
+			
+			ENDIF
+		ENDIF
+	;C感度2以上
+	ELSEIF CFLAG:7014 >= 2
+		PRINTFORM 「ひっ…ぐっ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM くりとりしゅ…こわれ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORML %CALLNAME:TARGET%はすっかり敏感になったクリトリスへの刺激により
+		PRINTFORMW 首をいやいやと振るようにしながら絶頂に達した…
+	ELSEIF CFLAG:7014 == 1
+		PRINTFORM 「あっ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM なんかびりって…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:MASTER%との特訓の成果により%CALLNAME:TARGET%はクリトリスで絶頂することが出来るようになって来たようだ…
+	ELSEIF CFLAG:7001 == 1
+		PRINTFORML %CALLNAME:TARGET%は絶頂に達したはずだが
+		PRINTFORMW まだまだ特訓が足りないようでその刺激を認識することが出来ないようだ…
+	ELSEIF CFLAG:7001 == 0 && TALENT:150 == 1
+		IF ABL:0 == 5
+			PRINTFORM 「くりとりす…しゅごひ…ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF ABL:0 >= 3
+			PRINTFORM 「また…きひゃう…ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORM 「ま…またびりってしたぞー
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ENDIF
+	ELSE
+		IF ABL:0 == 5
+			PRINTFORM 「も…もう…やめ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF ABL:0 >= 3
+			PRINTFORMW 「もう…やめ…」
+		ELSE
+			PRINTFORMW 「ま…またびりって…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_1
+;初めて
+IF CFLAG:5301 == 0 
+	IF CFLAG:7001 == 1
+		PRINTFORML %CALLNAME:TARGET%のヴァギナは絶頂に達したようで激しく収縮するが
+		PRINTFORMW その刺激を感じ取ることが出来ないようだ…
+		CFLAG:5301 = 1
+	ELSE
+		PRINTFORMW 「ひっ…い…いまのなんだー？」
+		CFLAG:5301 = 1
+	ENDIF
+;２回目以降
+ELSE
+	;触手
+	IF CFLAG:7038 == 1
+		IF ABL:35 == 5
+			PRINTFORM 「いぎっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しょくひゅっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しょくひゅちんちんっしゅきっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ひゅきいいぃいぃいいぃぃっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「いっ、ぎっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM いひっ　ばけもにょちんちん…ひゅご…ひ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORM 「やめっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW きもちくなっちゃ…う…ぞ…」
+		ENDIF
+	;バイブ
+	ELSEIF TEQUIP:20 == 1
+		IF CFLAG:7001 == 1
+			IF CFLAG:7035 == 1
+				PRINTFORM 「いっ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ぐっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM いっぢゃう"う"う"ぅぅぅう"う"ぅう"
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は腕ほどの太さのあるバイブをくわえ込みながら獣の様な喘ぎ声をあげながら絶頂へ達した…
+			ELSEIF CFLAG:7036 == 1
+				PRINTFORM 「しきゅー…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM しきゅーおかひくなっひゃううぅぅううぅぅうう
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は子宮まで突き入れられたバイブをぎちぎちと締め付け絶頂へと達した…
+			ELSEIF CFLAG:7010 >= 2 || CFLAG:7002 == 4
+				PRINTFORM 「ばいぶっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ばいぶしゅごひぞおおぉぉぉぉおおお
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%の肉壺に突き入れられたバイブの刺激により絶頂してしまったようだ…
+			ELSEIF CFLAG:7010 == 1
+				PRINTFORM 「んっ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おまんこでも…きもちくなれてきた…ぞ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%との特訓によりヴァギナで絶頂を迎えるようになって来たようだ…
+			ELSEIF CFLAG:7002 == 1
+				PRINTFORMW %CALLNAME:TARGET%は特訓がまだ足りない様子で絶頂を感じ取ることが出来ないようだ…
+			ELSE
+				PRINTFORMW %CALLNAME:TARGET%は絶頂を感じ取ることが出来ない様子だ…
+			ENDIF
+		ELSE
+			IF TALENT:150 == 1
+				IF ABL:1 >= 3
+					PRINTFORM 「んひっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM おまんこ…きもちくなっちゃったぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+				ELSE
+					PRINTFORM 「えへへ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM おまんこでも…きもちよくなれちゃった…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+				ENDIF
+			ELSE
+				IF ABL:1 >= 3
+				
+				ELSE
+				
+				ENDIF
+			ENDIF
+		ENDIF
+	;フィスト
+	ELSEIF SELECTCOM == 231
+		IF CFLAG:7032 >= 150
+			IF RAND:2 == 0
+				PRINTFORM 「いっぎぎぎい"い"い"ぃ"ぃ"い"い"ぃ"っ"
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+			ELSE
+				PRINTFORM 「こっ　こわれっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM こわれひゃううぅぅうっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+			ENDIF
+			PRINTFORMW %CALLNAME:TARGET%はヴァギナに突き入れられた腕をぎちぎちと締め上げながらケモノの様な声を上げ絶頂に達したようだ…
+;		ELSEIF CFLAG:7032 >= 50
+;			IF RAND:2 == 0
+;			
+;			ELSE
+;			
+;			ENDIF
+		ELSEIF CFLAG:7032 >= 30
+;			IF RAND:2 == 0
+				PRINTFORM 「やっ、いぎぃっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM こわれ…ちゃっ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+;			ELSE
+;				PRINTFORM 
+;			ENDIF
+;		ELSEIF CFLAG:7032 >= 10
+;			IF RAND:2 == 0
+;			
+;			ELSE
+;			
+;			ENDIF
+;		ELSE
+;			
+		ENDIF
+	ELSEIF CFLAG:7010 >= 2
+		PRINTFORM 「んぎっ…おま…こ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM こわれ…ひゃう…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORML 特訓ですっかり敏感になった%CALLNAME:TARGET%のヴァギナは
+		PRINTFORMW 絶頂により%CALLNAME:MASTER%のペニスを食いちぎらんばかりに締め付けてくる
+	ELSEIF CFLAG:7010 == 1
+		PRINTFORM 「んっ…なんだか気持ちいいのがー…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:MASTER%との特訓の成果により%CALLNAME:TARGET%はヴァギナで快感を得ることが出来るようになったようだ…
+	ELSEIF CFLAG:7001 == 1 
+		PRINTFORML %CALLNAME:TARGET%は絶頂に達し激しく収縮するがまだまだ特訓が足りないようでその刺激を認識することが出来ないようだ…
+	ELSEIF CFLAG:7001 == 0 && TALENT:150 == 1
+		IF ABL:1 == 5
+			PRINTFORM 「おまんこ…気持ち良いぞー
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORM 「ひぐっ…ま…またくるぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_2
+;初めて
+IF CFLAG:5302 == 0
+	IF CFLAG:7001 == 1
+		PRINTFORML %CALLNAME:TARGET%のアヌスは絶頂したようにきつく締め付けてくるが
+		PRINTFORMW その刺激を感じ取ることが出来ないようだ…
+		CFLAG:5302 = 1
+	ELSE
+		PRINTFORMW 「おしりで感じるとか…おかしい…ぞ…」
+		CFLAG:5302 = 1
+	ENDIF
+ELSEIF CFLAG:5302 == 1 && CFLAG:7012 >= 1
+	PRINTFORM 「おしりってこんなに…きもちいの…かー…
+	SETCOLOR 0xFF0000
+	PRINTFORM %UNICODE(0x2665)%
+	RESETCOLOR
+	PRINTFORML 」
+	PRINTFORMW いままで感じることの出来なかったアヌスでの絶頂に%CALLNAME:TARGET%は身震いをしている…
+	CFLAG:5302 = 1
+;２回目以降
+ELSE
+	IF CFLAG:7012 >= 2
+		PRINTFORM 「ひっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM ぎっ…おしりっ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM おしりいぃ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORML 特訓ですっかり敏感になったアヌスは絶頂により%CALLNAME:MASTER%のペニスを万力のように締め付けながらも
+		PRINTFORMW %CALLNAME:TARGET%はまだまだ足らないという様子で自ら腰を振り続けている
+	ELSEIF CFLAG:7012 == 1
+		PRINTFORM 「あはぁっ…おしり…で…きもちくなれた…ぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:MASTER%との特訓の成果により%CALLNAME:TARGET%はアヌスの絶頂を感じることが出来るようになって来たようだ…
+	ELSEIF CFLAG:7002 == 1 || CFLAG:7002 == 3 || CFLAG:7001 == 1
+		PRINTFORMW %CALLNAME:TARGET%のアヌスは絶頂に達しペニスを締め付けてくるがまだまだ特訓が足りないようでその刺激を認識することが出来ないようだ…
+	ELSEIF TALENT:150 == 1
+		IF ABL:2 == 5
+			PRINTFORM 「おしりっ…おしりいっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%は絶頂したがかまわず腰を振り続けている…
+		ELSEIF ABL:2 >= 3
+			PRINTFORM 「おしりで…きもちく…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORMW 「また…おしり…がー…」
+		ENDIF
+	ELSE
+		IF ABL:2 == 5
+			PRINTFORM 「やだっ…やだぁああぁぁ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%はアヌスの絶頂に耐え切れないという様子で頭を振り乱している…
+		ELSEIF ABL:2 >= 3
+			PRINTFORM 「おしり…またきちゃう…ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORMW 「もう…やめ…ろー…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_3
+;初めて
+IF CFLAG:5303 == 0
+	IF CFLAG:7001 == 1
+		PRINTFORMW %CALLNAME:TARGET%は絶頂したはずだがその刺激を認識できないようだ…
+		CFLAG:5303 = 1
+	ELSE
+		PRINTFORMW 「お…おぉう…なんだいまのはー」
+		CFLAG:5303 = 1
+	ENDIF
+ELSEIF CFLAG:5303 == 1 && CFLAG:7016 >= 1
+	PRINTFORM 「こ…こんな…にっ…
+	SETCOLOR 0xFF0000
+	PRINTFORM %UNICODE(0x2665)%
+	RESETCOLOR
+	PRINTFORML 」
+	PRINTFORMW %CALLNAME:TARGET%は初めて胸の絶頂を認識しびくりと肩を震わせた…
+	CFLAG:7303 = 2
+;２回目以降
+ELSE
+	IF CFLAG:7016 >= 2
+		PRINTFORM 「また…おっぱいきちゃう…ぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW 特訓により敏感になった胸で絶頂へと%CALLNAME:TARGET%は導かれた…
+	ELSEIF CFLAG:7016 == 1
+		PRINTFORM 「おっぱい…きもちい…ぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:MASTER%との特訓の成果により%CALLNAME:TARGET%は胸での絶頂を迎えることが出来るようになって来たようだ…
+	ELSEIF CFLAG:7001 == 1
+		PRINTFORMW %CALLNAME:TARGET%は胸で絶頂したはずだがやはりその刺激を認識できないようだ…
+	ELSEIF TALENT:150 == 1
+		IF ABL:3 == 5
+			PRINTFORM 「あひっ…ん…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM おっぱいしゅごひ…ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF ABL:3 >= 3
+			PRINTFORM 「あ…はぁっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ちくび…とれちゃうかとおもったぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORMW 「ま…またおっぱい…きちゃう…ぞ…」
+		ENDIF
+	ELSE
+		IF ABL:3 == 5
+			PRINTFORM 「ちくび…しゅご…ひ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSEIF ABL:3 >= 3
+			PRINTFORM 「やーめー…ひんっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORMW 「さーわーるー…ひっ…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5304
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_10
+;初めて
+IF CFLAG:5304 == 0
+	;PRINTFORMW 
+	;CFLAG:5304 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:5305
+;IF TFLAG:9 == 19でＶで逆レイプされて射精した場合を参照可
+;IF TFLAG:9 == 20でＡで逆レイプされて射精した場合を参照可
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:5305 == 0
+	IF CFLAG:7001 == 1
+		IF CFLAG:7014 >= 1
+			PRINTFORM 「お…おしっこ…でるっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW あ…あれ…あなたとおなじの…が…？」
+			CFLAG:5305 = 1
+		ELSE
+			PRINTFORMW 「おー、ちんちんからなんかでてるぞー？」
+			CFLAG:5305 = 1
+			CFLAG:7102 = 1
+		ENDIF
+	ELSE
+		PRINTFORM 「なんか・・・でちゃう…でちゃうぞー
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+		CFLAG:5305 = 1
+	ENDIF
+ELSEIF CFLAG:5305 == 1 && CFLAG:7102 == 1 && CFLAG:7014 >= 1
+	PRINTFORM 「ひぎっ
+	SETCOLOR 0xFF0000
+	PRINTFORM %UNICODE(0x2665)%
+	RESETCOLOR
+	PRINTFORM せ…せーしでるのってこんなに…
+	SETCOLOR 0xFF0000
+	PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+	RESETCOLOR
+	PRINTFORMW 」
+;２回目以降
+ELSE
+	IF CFLAG:7001 == 1
+		IF CFLAG:7014 >= 1
+			PRINTFORM 「しゃせー…とまらにゃひ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORML 「おー、せーしまたでてるぞー」
+			PRINTFORMW %CALLNAME:TARGET%は射精の感覚というものがわからない様子で精子を指で弄んでいる…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:37 >= 3
+			PRINTFORM 「えへへ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しゃせいきもちひ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%は射精の終えたペニスを物足りない様子でしごき続けている…
+		ELSE
+			PRINTFORM 「んっ…でるっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ENDIF
+	ELSE
+		PRINTFORMW 「せーし…もう出したく…ないのに…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:5306
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+@K82_MESSAGE_ORGASM_12
+SIF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+;初めて
+IF CFLAG:5306 == 0
+	;PRINTFORMW 
+	;CFLAG:5306 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;膣内に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_11
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7001 == 1
+		IF CFLAG:7002 == 1 || CFLAG:7002 == 4
+			IF CFLAG:7022 >= 2
+				PRINTFORM 「おー、ナカででてるぞー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM いっぱいだして…私を孕ませてほしいぞー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORMW 」
+			ELSEIF CFLAG:7022 <= 1
+				PRINTFORM 「えへへー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM イったんだなー？えへへ、早くあかちゃんほしいぞー%CALLNAME:MASTER%ー
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORMW 」
+			ENDIF
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%のナカに精を放つが全くの無反応だ…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		PRINTFORM 「えへへー
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM ナカでどくどくいってるぞー？
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+	ELSE
+		PRINTFORMW 「だーすーなー！！」
+	ENDIF
+;それ以外
+ELSE
+	PRINTFORMW 「だーすーなー！！」
+ENDIF
+
+;-------------------------------------------------
+;アナルに射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_12
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7001 == 1
+		IF CFLAG:7012 >= 1
+			PRINTFORM 「こんなに出して…おしりで妊娠させるつもりかー？
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 」
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%のアヌスに精を放つがやはり感じ取れないようだ…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		PRINTFORM 「えへへ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM いっぱいだしたなー？
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+	ELSE
+		PRINTFORMW 「死体のおしりはそんなにいいかー？」
+	ENDIF
+;それ以外
+;ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;髪に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_13
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_14
+;PRINTFORMW 
+
+;-------------------------------------------------
+;口に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_15
+IF CFLAG:7001 == 1
+	PRINTFORMW 「おー、なんかでてるぞー？」
+ELSEIF CFLAG:7020 >= 1
+	IF RAND:2 == 0
+		PRINTFORM 「んっ…　えへへー
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW いっぱいでたなー？」
+	ELSE
+		PRINTFORM 「えへへ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM クセになっちゃった…ぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORMW 」
+	ENDIF
+ELSEIF TALENT:150 == 1
+	PRINTFORM 「おー、くちのなか…　いっぱい…
+	SETCOLOR 0xFF0000
+	PRINTFORM %UNICODE(0x2665)%
+	RESETCOLOR
+	PRINTFORMW 」
+ENDIF
+
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7021 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_16
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腹に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_17
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_19
+;PRINTFORMW 
+
+;-------------------------------------------------
+;秘裂に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_20
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_22
+;PRINTFORMW 
+
+;-------------------------------------------------
+;太腿に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_23
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足に射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_24
+;PRINTFORMW 
+;-------------------------------------------------
+;尿道で射精	CFLAG:9025
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_25
+IF TFLAG:25 > 0 && SELECTCOM == 146
+	IF CFLAG:7001 == 1
+		IF CFLAG:7002 == 1 || CFLAG:7002 == 4
+			IF CFLAG:7014 >= 1
+				IF CFLAG:7031 >= 150
+					PRINTFORM 「ひぎっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW にょーどー…　にん…しんしちゃ…
+					PRINTFORM あはぁ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSEIF CFLAG:7031 >= 50
+					PRINTFORM 「あは…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM だし…すぎ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+					PRINTFORMW %CALLNAME:TARGET%は%CALLNAME:MASTER%にたっぷりと精を注ぎ込まれた尿道を指でぐちゅぐちゅと弄んでいる…
+				;ELSEIF CFLAG:7031 >= 30
+				
+				;ELSEIF CFLAG:7031 >= 10
+				
+				ELSE
+					PRINTFORM 「もー…こんなトコに出しすぎだぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW %CALLNAME:TARGET%のすっかり拡がりきった尿道からは尿と精液の混じった液体がごぽりと音を立てるように溢れてきた…
+				ENDIF
+			ELSEIF CFLAG:7018 >= 1
+				;IF CFLAG:7031 >= 150
+					
+				IF CFLAG:7031 >= 50
+					PRINTFORM 「いっぱいだしたなー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM えへへ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW %CALLNAME:TARGET%は尿道を責められ膀胱にたっぷり出されるがその痛みが快感となったようで精が溢れるたびにびくりと体を震わせた…
+				;ELSEIF CFLAG:7031 >= 30
+				
+				ELSEIF CFLAG:7031 >= 10
+					PRINTFORM 「えへへ…いたいけど…きもちかった…ぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORMW 」
+				ELSE
+					PRINTFORM 「もー、こんなトコにだしすぎだぞー
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW %CALLNAME:TARGET%のすっかり拡がりきった尿道からは精と尿が混じりあった液体がごぽりと音を立てるように溢れてきた…
+				ENDIF
+			ENDIF
+		ELSE
+			PRINTFORMW %CALLNAME:TARGET%の膀胱へ精を放ったが全く感じ取ることが出来ないようだ…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		PRINTFORM 「もー、こんなトコにいっぱい出してー…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW %CALLNAME:TARGET%がぴくんと体を震わせるたび、すっかり拡がった尿道からはごぽりと精と尿の混じった液体が溢れた…
+	ELSE
+		PRINTFORML 「したいのにょーどーはそんなにいいかー？」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;調教者がキスで射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教者がコンドームに射精
+;-------------------------------------------------
+@K82_MESSAGE_EJAC_PLAYER_28
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_82_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中・失神回復時も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K82_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+@K82_MESSAGE_MARK0_1
+;PRINTFORMW 
+;CFLAG:5310 = 1
+
+@K82_MESSAGE_MARK0_2
+;PRINTFORMW 
+;CFLAG:5310 = 2
+
+@K82_MESSAGE_MARK0_3
+;PRINTFORMW 
+;CFLAG:5310 = 3
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;-------------------------------------------------
+@K82_MESSAGE_MARK1_1
+;PRINTFORMW 
+;CFLAG:5311 = 1
+
+@K82_MESSAGE_MARK1_2
+;PRINTFORMW 
+;CFLAG:5311 = 2
+
+@K82_MESSAGE_MARK1_3
+;PRINTFORMW 
+;CFLAG:5311 = 3
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+@K82_MESSAGE_MARK2_1
+;PRINTFORMW 
+;CFLAG:5312 = 1
+
+@K82_MESSAGE_MARK2_2
+;PRINTFORMW 
+;CFLAG:5312 = 2
+
+@K82_MESSAGE_MARK2_3
+;PRINTFORMW 
+;CFLAG:5312 = 3
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+@K82_MESSAGE_MARK3_1
+;PRINTFORMW 
+;CFLAG:5313 = 1
+
+@K82_MESSAGE_MARK3_2
+;PRINTFORMW 
+;CFLAG:5313 = 2
+
+@K82_MESSAGE_MARK3_3
+;PRINTFORMW 
+;CFLAG:5313 = 3
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+@K82_MESSAGE_MARK4_1
+;PRINTFORMW 
+;CFLAG:5314 = 1
+
+@K82_MESSAGE_MARK4_2
+;PRINTFORMW 
+;CFLAG:5314 = 2
+
+@K82_MESSAGE_MARK4_3
+;PRINTFORMW 
+;CFLAG:5314 = 3
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+@K82_MESSAGE_MARK6_1
+;PRINTFORMW 
+;CFLAG:5316 = 1
+
+@K82_MESSAGE_MARK6_2
+;PRINTFORMW 
+;CFLAG:5316 = 2
+
+@K82_MESSAGE_MARK6_3
+;PRINTFORMW 
+;CFLAG:5316 = 3
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_82_MESSAGE_LOOK_VIDEO
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_82_MESSAGE_IMPRESSION
+;PRINTFORML 　　　「」
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_82_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+;PRINTFORMW 
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_82_MESSAGE_SINGLE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_82_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――奴隷エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+;PRINTFORMW 
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_82_MESSAGE_SLAVE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_82_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K82, ARG, ARG:1
+;DRAWLINE
+;PRINTFORMW 　%CSVCALLNAME(82,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTFORMW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.82 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.82の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_82
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.82の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_82
+PRINTL [82] プロローグNo.82 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.82 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_82
+PRINTW 　　　　　　　　―― Prologue No.82 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.82に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.82に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_82
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.82に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_82
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.82 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.82の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_82
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.82 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_82
+
+;………………………………………………
+;キャラ追加イベントを盛り込む場合
+;………………………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;………………………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.82 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

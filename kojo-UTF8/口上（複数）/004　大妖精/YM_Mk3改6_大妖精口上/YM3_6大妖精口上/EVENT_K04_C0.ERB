@@ -1,0 +1,2011 @@
+
+;コマンド口上表示時の処理メモ
+;全部地の文→専用口上の順で処理が回ってるぽい
+
+;@DISPLAY_KOJO_DEAL_MESSAGE_COM, ARGでコマンド拒否時の口上
+;地の文はSYSTXT_DENIAL_MESSAGE_COM_{ARG}
+;専用はKOJO_{NO:TARGET}_DENIAL_MESSAGE, ARG
+
+;@DISPLAY_KOJO_TRAIN_MESSAGE_F_COM内でコマンドの処理実行前の地の文・専用口上を表示
+;地の文を使う場合　 SYSTXT_TRAIN_MESSAGE_F_COM_{SELECTCOM}
+;専用口上を使う場合 KOJO_{NO:TARGET}_TRAIN_MESSAGE_F_COM_{SELECTCOM}
+;				   対応するものがなければKOJO_{NO:TARGET}_TRAIN_MESSAGE_F_GENERAL
+;(テンプレにはKOJO_{NO:TARGET}_TRAIN_MESSAGE_F_COM_{SELECTCOM}がないので普通はスルーされるかも)
+;この口上では本来の地の文を表示する部分は死んでいるので
+;専用口上の中で地の文を表示する関数をCALL (@KOJO_4_SYSTXT_TRAIN_MESSAGE_F_COM)
+
+;コマンド処理実行後の表示用として@DISPLAY_KOJO_TRAIN_MESSAGE_S_COMを実行
+;地の文を使う場合KOJO_X_TRAIN_MESSAGE_EQUIPTEXT
+;専用口上を使う場合
+;KOJO_{NO:TARGET}_TRAIN_MESSAGE_S_BEFOREがあり、(眠っている時などの条件分岐で)RETURN 1の時は表示しない
+;BEFOREがない時はいつでも表示する
+;表示にはKOJO_{NO:TARGET}_TRAIN_MESSAGE_S_COM_{SELECTCOM}を使う
+;なければKOJO_{NO:TARGET}_TRAIN_MESSAGE_S_GENERALを試す
+;この口上では地の文を使う場合は専用口上内でCALL
+;テンプレに用意されているBEFOREを使うと地の文も一緒に表示されなくなるので
+;テンプレでのBEFOREでは表示すると言いつつ地の文を表示し、
+;その後で状況に応じて(元の)専用口上部分も表示するか判断する、という順番が必要
+
+;追加の地の文表示として@DISPLAY_KOJO_TRAIN_TEXT_COM
+;地の文を使う場合SYSTXT_TRAIN_TEXT_COM_{SELECTCOM}
+;さらに専用口上がある場合KOJO_{NO:TARGET}_TRAIN_TEXT_COM_{SELECTCOM}
+;この口上では専用口上内で地の文をCALL
+;使ってるコマンドは0, 1, 2, 3, 5, 7, 10, 11, 12, 13, 14, 15, 16, 17, 24, 34, 151, 170, 203, 205, 220, 221, 222, 223, 253, 302, 321, 336, 606
+;一応テンプレが地味に用意してあるので全部のパターン対応するのが望ましいが…めんどくさいなぁ…
+;なんでGENERALないし。付け足すパッチ作った方が早いな。うん。
+
+;器具装着の表示として@DISPLAY_EQUIP_MESSAGE_COM, ARG
+;地の文用にSYSTXT_EQUIP_MESSAGE_COM_{ARG}
+;専用口上としてKOJO_{NO:TARGET}_EQUIP_MESSAGE_COM_{ARG}
+;ARGにはコマンド番号が入るっぽい
+;使ってる番号は065, 070, 120, 141, 143, 144, 174, 520, 521, 524, 533, 534, 550, 560
+;こっちは3ケタ合わせらしい。
+
+;パラメータ変動用に@DISPLAY_KOJO_MESSAGE_PALAMCNG
+;地の文SYSTXT_MESSAGE_PALAMCNG
+;専用KOJO_{NO:TARGET}_MESSAGE_PALAMCNG
+
+;あとE0にサブイベント用のメモもあったりする
+
+
+;サブイベントの休憩つかってデート口上を使ってやるぜ!
+;のためだけにすげえめんどくさい
+;こんなめんどくさいことしなくても地の文表示の処理の前に1度専用口上側に処理回してくれれば
+;そこで地の文表示のフラグを一時的に殺せばいいんですけどね (^q^)
+
+;--------------------------
+;コマンド前の地の文表示
+@KOJO_4_SYSTXT_TRAIN_MESSAGE_F_COM
+;地の文を表示する設定の時
+IF CFLAG:7820 == 1
+	;一時的に地の文を表示しないフラグが立ってなければ表示
+	;コマンドで使うつもりはないので誰かが書き足さん限りずっと表示しっぱなしだと思います
+	IF CFLAG:7821 == 0
+		TRYCCALLFORM SYSTXT_TRAIN_MESSAGE_F_COM_{SELECTCOM}
+			WAIT
+		CATCH
+		ENDCATCH
+	ELSE
+	ENDIF
+	;次に備えてフラグを殺しておく
+	CFLAG:7821 = 0
+ENDIF
+
+@KOJO_4_TRAIN_MESSAGE_F_GENERAL
+;コマンドごとの分岐は中でSELECTCOM使って勝手にやってくれるのでこれでOK
+CALL KOJO_4_SYSTXT_TRAIN_MESSAGE_F_COM
+;--------------------------
+
+;KOJO_4_TRAIN_MESSAGE_S_COM_{num}用の地の文関数
+@KOJO_4_TRAIN_MESSAGE_EQUIP_SYSTXT
+;地の文を表示する設定か
+IF CFLAG:7820 == 1
+	;一時不使用が立ってないか
+	IF CFLAG:7821 == 0
+		;SIFでもいいのかもしれないけどGrepでヒットする数を抑えるためにも関数化しておきます
+		CALL KOJO_X_TRAIN_MESSAGE_EQUIPTEXT
+	ENDIF
+	CFLAG:7821 = 0
+ENDIF
+
+;KOJO_4_TRAIN_MESSAGE_S_COM_{num}用の専用口上使用チェック関数
+@KOJO_4_TRAIN_MESSAGE_S_BEFORE2
+;各コマンドで対応する地の文を表示後、もともとの専用口上(セリフなど)を表示するか
+;表示させない場合はRETURN 1
+;眠っている
+SIF EQUIP:14
+	RETURN 1
+;口枷
+SIF TEQUIP:42
+	RETURN 1
+;失神回復
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊
+SIF TALENT:167
+	RETURN 1
+
+
+;S_COMもS_COM_HOGEとかに適当に置換してシステム側で呼ばないようにして
+;GENERAL内のTRYCALLFORMでSELECTCOM使って分岐すればもうちょっと楽だったかも
+;そっちの方が楽だな。
+;というわけで再構成
+
+@KOJO_4_TRAIN_MESSAGE_S_GENERAL
+;何かの理由で一時的に地の文を表示したくない場合は
+;この関数をコピーしてGENERALの部分をコマンド番号に変更し
+;MESSAGE.ERBで専用口上の個別コマンド口上として呼ぶようにした後
+;CFLAG:7821 = 1を書きたし
+CALL KOJO_4_TRAIN_MESSAGE_EQUIP_SYSTXT
+
+;眠っているなどの理由でセリフ部分を飛ばしたい場合はRETURN
+CALL KOJO_4_TRAIN_MESSAGE_S_BEFORE2
+SIF RESULT == 1
+	RETURN 0
+
+;もともとあったコマンドごとの口上をCALL
+TRYCALLFORM KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_{SELECTCOM}
+
+;-----------------------
+;追加の地の文表示
+@KOJO_4_TRAIN_TEXT_GENERAL
+IF CFLAG:7820 == 1
+	IF CFLAG:7821 == 0
+		TRYCALLFORM SYSTXT_TRAIN_TEXT_COM_{SELECTCOM}
+	ENDIF
+ENDIF
+;専用文があるなら@KOJO_4_TRAIN_TEXT_COM_num
+;を個別に用意して書く必要があるけど、特にないのでGENERALで一括
+
+;-----------------------
+;器具装着地の文はEQ.ERBに記述
+;パラメータ変動の地の文はメインのERBに記述
+
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1を返す
+;========================================================
+@KOJO_4_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は表示しない
+;SIF EQUIP:14
+;	RETURN 1
+;口枷がある場合は表示しない
+;SIF TEQUIP:42
+;	RETURN 1
+;失神回復時は表示しない
+;SIF TFLAG:898 == 1
+;	RETURN 1
+;精神崩壊の場合は表示しない
+;SIF TALENT:167
+;	RETURN 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+;@KOJO_4_TRAIN_MESSAGE_F_COM_0
+;CALL KOJO_4_SYSTXT_TRAIN_MESSAGE_F_COM
+;GENERALで呼んでもSELECTCOMで分岐してくれるので
+;特別表示したくないなどがなければコマンドごとの個別の関数は不要
+
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_0
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「ん……ぁっ」
+	ELSE
+			PRINTFORMW 「……ん」
+	ENDIF
+ELSE
+	;レンボ
+	;古い口上は感覚5で分岐するのが流行りなのか？
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「んんあっ！ひぃっ、あっあっあぁぁぁぁ！！！」
+	;レンボ
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「やん、きもちいぃぃ…」
+			PRINTFORMW 「も、もっとぉ…もっと触ってください……」
+	;コイビトかゴウイ
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「そこ…んっ！」
+	ELSE
+			PRINTFORMW 「やだ、やめ…んぅっ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_1
+
+
+CALL KOJO_4_TRAIN_MESSAGE_S_BEFORE2
+SIF RESULT == 1
+	RETURN 0
+
+;PRINTFORMW 
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「え、そこ……舐めるの…？」
+	ELSE
+			PRINTFORMW 「や…そんな所、舐めないで…」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+		IF RAND:3 == 0
+				PRINTFORMW 「んぁぁ～！だ、だめぇ。舐められたら…出ちゃう…」
+				PRINTFORMW 目の前では、大妖精の秘唇が蠕いている。その度、愛液が中から溢れ出ていた。
+				PRINTFORMW 大妖精の味を堪能しつつ、%CALLNAME:MASTER%は、秘唇からあふれ出る愛液を舐め上げる。
+				PRINTFORMW 「あぁぁぁ！！らめ～、そ、そんなに舐めないでぇ～」
+				PRINTFORMW %CALLNAME:MASTER%は、その味をかみしめた。
+				PRINTFORMW 「そ、そんなに…私の、あはぁ…お、おいしいの？」
+				PRINTFORML 
+				PRINTFORMW 「んぁぁぁぁ！！らめ、来ちゃうから、らめぇぇっ♪」
+				PRINTFORMW 大妖精は%CALLNAME:MASTER%の頭を自分の秘唇に押し付けて絶頂に達した。
+		ELSE
+				PRINTFORMW 「んひいぃぃぃっ！ダメっ、クリで！いくっ！いっちゃうううぅ！」
+		ENDIF
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「私ばっかりしてもらって……あんっ！」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「ん、きもちいいよぅぅ…」
+	ELSE
+			PRINTFORMW 「ん、やぁん…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_2
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「そっちは違っ……ああっ！」
+	ELSE
+			PRINTFORMW 「そっちは違っ……ああっ！」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ａ感覚 >= 5
+			PRINTFORMW 「あふ…ぅ…んっ…あん…」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「ああぁ…そんなところまで…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「んぅ…そこは…だめ、だめぇ」
+	ELSE
+			PRINTFORMW 「ん、指が…ぅぅ」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_3
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「ふ…ぁ、気持ち良いです…」
+	ELSE
+			PRINTFORMW 「ん…もっと優しく…」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｂ感覚 >= 5
+			PRINTFORMW 「ひゃっ！胸は弱いから…！ん、だめっ！！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あっ、んっ！…ひっぱっちゃ、やぁ…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「私の胸…どうかな」
+	ELSE
+			PRINTFORMW 「胸は…あんっ」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_4
+
+
+IF TFLAG:95 == 1
+	;処女
+	;IF TFLAG:0 == 1
+	IF TALENT:処女
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「だめっ！私、まだ…あ、あぁっ！」
+		ELSE
+				PRINTFORMW 「わ、私、まだ…やめ、やめてぇっ！！！」
+		ENDIF
+	ELSE
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「あ…%CALLNAME:MASTER%の指が、私の中で動いて…」
+		ELSE
+				PRINTFORMW 「変な…感じ…」
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「入ってくるっ！ひゃあん！なぞらないでぇぇ！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「ふわぁ……指が出たり…入ったりして…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「うぁ…ぁん……はぁぁぁ」
+	ELSE
+			PRINTFORMW 「もう…抜いてっ、抜い…てっ！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_5
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「私のおちんちん…んっんんっ！」
+			PRINTFORMW 「なにこれ、腰の奥が…熱いっ」
+	ELSE
+			PRINTFORMW 「私のおちんちん…んっんんっ！」
+			PRINTFORMW 「なにこれ、腰の奥が…熱いっ」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「もっと舐めて！私のおちんちん！ちゅーって吸ってぇ…」
+			PRINTFORMW 「くあぁん！イっちゃう！おちんちんが溶けちゃううぅぅ！」
+			PRINTFORMW ペニスを口に押し込み、大妖精は%CALLNAME:MASTER%の頭をゆっくり動かしている…
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「男の人のが、こんなにイイなんて…っ…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「あっ、先っぽ気持ち良い…」
+	ELSE
+			PRINTFORMW 「ダメ…そんなところ汚いよ」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_6
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「ん…ちゅる、ちゅる…」
+	ELSE
+			PRINTFORMW 「ん！んんー！」
+	ENDIF
+ELSE
+	IF CFLAG:7803 == 1
+		IF RAND:4 == 0
+			PRINTFORMW 「…ん……ふぁん……ぅん…」
+			PRINTFORMW %CALLNAME:MASTER%は大妖精の腰を引き寄せ、情熱的なキスを重ねている…
+			PRINTFORMW 「……%CALLNAME:MASTER%…」
+			PRINTFORMW 「…ん、なんでもないです。続けて…ください…」
+			PRINTFORMW 大妖精の顔がゆっくりと近づき、%CALLNAME:MASTER%に優しく口づけた…
+		ELSE
+			PRINTFORMW 「ちゅっ、ちゅ…ちゅる、ちゅるるる……ちゅう……」
+		ENDIF
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「…キス…してください…」
+			PRINTFORMW 大妖精が目を潤ませて口付けをねだってきた…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW %CALLNAME:MASTER%の差し入れた舌を気持ち良くさせようと、大妖精の短めな舌が一生懸命奉仕している…
+	ELSE
+			PRINTFORMW 「んっ、んふぅ、んんん…」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_7
+
+
+;PRINTFORMW 
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+		PRINTFORMW 「一人で…するの？」
+		PRINTFORMW 「そ、そんなの、恥ずかしいよ…」
+	ELSE
+		PRINTFORMW 「一人でって、本当に…？」
+		PRINTFORMW 「し、したことなんて…無いよぉ」
+	ENDIF
+
+;カメラ、野外、シャワーなし
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0
+	;TFLAG:95の場合を外に括りだした
+		IF CFLAG:7802 == 1 && ABL:自慰中毒 >= 5
+			PRINTFORMW 「いくっ！またいっちゃうのっ、私のイくところ見てぇぇぇぇ！！」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%に弄られてるのを想像するの…」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「うん…ここ擦ると気持ちいいの」
+		ELSE
+			PRINTFORMW 「ん…そんなにまじまじ見ないで」
+		ENDIF
+;シャワーの湯加減なんて知らない
+ELSEIF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 1
+	IF CFLAG:8800 == 0
+		IF CFLAG:7800 == 1
+			PRINTFORMW 「え、アソコにあてるの…？」
+		ELSE
+			PRINTFORMW 「え、アソコにあてるの…？」
+		ENDIF
+		CFLAG:8800 = 1
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:自慰中毒 >= 5
+			PRINTFORMW 「触ってぇ！どこでもいいからぁ！…切ないよぉ！！」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あはぁ…お湯が…うぁぁ」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「誰かに触られてるみたい…」
+		ELSE
+			PRINTFORMW 「これ、痛いよ…え、お風呂の中で？」
+		ENDIF
+	ENDIF
+
+;カメラ
+ELSEIF TEQUIP:50 == 1 && TEQUIP:52 == 0 && TEQUIP:54 == 0
+	IF CFLAG:8801 == 0
+		IF CFLAG:7800 == 1
+			PRINTFORMW 「一人で、って…。　だって…」
+		ELSE
+			PRINTFORMW 「一人で、って…。　…本当に！？」
+		ENDIF
+		CFLAG:8801 = 1
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:自慰中毒 >= 5
+			PRINTFORMW 「ああっ！ああっ！気持ちいいのぉ！好きっ！大好きぃぃ！っあん！！」
+			PRINTFORMW 「……んっ、ふっ、ふあっ！あ…ああぁぁっ！」
+			PRINTFORMW 良い映像は撮れたが、%CALLNAME:MASTER%の名前を連呼している部分はどうすべきだろうか…
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「うう、また撮るの…？」
+			PRINTFORMW 「本当は嫌なんだからね？」
+			PRINTFORMW 「……んっ、ふっ、ふぅぅっ！あ…ああぁぁっ！」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「うう、また撮るの…？」
+			PRINTFORMW 「本当は嫌なんだからね？」
+			PRINTFORMW 「……んっ、ふっ、ふぅぅっ！あ…ああぁぁっ！」
+		ELSE
+			PRINTFORMW 「…。」
+			PRINTFORMW 大妖精は軽くため息をついた
+		ENDIF
+	ENDIF
+
+;カメラとシャワー
+ELSEIF TEQUIP:50 == 1 && TEQUIP:52 == 0 && TEQUIP:54 == 1
+	IF CFLAG:8802 == 0
+		IF CFLAG:7800 == 1
+			PRINTFORMW 「これで…どうするの？」
+		ELSE
+			PRINTFORMW 「これで…どうするの？」
+		ENDIF
+		CFLAG:8802 = 1
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:自慰中毒 >= 5
+			PRINTFORMW 大妖精はシャワーヘッドを直接クリトリスにあてがい、空いた手で乳首を転がすようにして行為に耽っている。
+			PRINTFORMW 「ふぁっ、ふぁああ、気持ち良いよう…」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「ああぁ、そこ、もっと撫でて…」
+			PRINTFORMW 大妖精は片手で陰唇を開き、クリトリスに直接シャワーを当てて行為に耽っている…
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「ふぁぁぁぁ……」
+		ELSE
+			PRINTFORMW 「ふぁぁぁぁ……」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_9
+
+
+;PRINTFORMW 
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「どうしたの…？」
+	ELSE
+			PRINTFORMW 「どうかした…？」
+	ENDIF
+ELSE
+	IF CFLAG:7803 == 1
+			PRINTFORMW 「触って…くださいっ…我慢できない…っ」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「…はぁ、はぁ、はぁ…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「…ん…」
+	ELSE
+			PRINTFORMW 「どうかした…？」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_10
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「え…これ、何に使うの？」
+	ELSE
+			PRINTFORMW 「え…これ、何に使うの？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「ひゃっ、はうっ！いっちゃうのぉぉ！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あぁあっ…くぅっ…はぁああっ…！」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「…それ…好き…」
+	ELSE
+			PRINTFORMW 「ゃ…また使うの…？」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_11
+
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「それは、何の道具？」
+	ELSE
+			PRINTFORMW 「それは…何の道具？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「それだめぇぇぇ！いっちゃ、いくっ、いく、ああぁぁぁぁぁっ！！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あっ、あはっ、気持ちよすぎて…くぁぁぁん！」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「あっ、あはっ、気持ちよすぎて…くぁぁぁん！」
+	ELSE
+			PRINTFORMW 「凄いっ、これすごいよぉ！！！」
+			;この電気按摩すごいよぉ！さすがＣ系の拡張コマンド！
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_12
+
+
+;解除時
+IF TEQUIP:20 == 0
+		IF CFLAG:7802 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「あ、あぁん…！」
+			PRINTFORMW 大妖精は愛液に塗れた肉襞をヒクつかせ、ぐったりと横たわっている
+			PRINTFORMW 「はぁ、はぁ、…次は……おちんちん…欲しい」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あ…抜くの…ひ、ひゃぁぁぁん！！」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「あ…抜くの…ひ、ひゃぁぁぁん！！」
+		ELSE
+			PRINTFORMW 「もう…、そんなの…入れないで…ひっく」
+		ENDIF
+ELSE
+	IF TFLAG:95 == 1
+		;処女
+		;IF TFLAG:0 == 1
+		IF TALENT:処女
+			IF CFLAG:7800 == 1
+				PRINTFORMW 「それで…ですか……」
+				PRINTFORMW 「私は…ううん、なんでもないの…」
+			ELSE
+				PRINTFORMW 「そんなのいや…お願い、やめて！」
+			ENDIF
+		ELSE
+			IF CFLAG:7800 == 1
+				PRINTFORMW 「…なんとなく分かるけど…それ幾らしたの…？」
+			ELSE
+				PRINTFORMW 「…なんとなく分かりますけど…本気ですか？」
+			ENDIF
+		ENDIF
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「あ…あ…あぁぁ……」
+			PRINTFORMW 差し込んだバイブのスイッチを入れてやると、口の端から涎を垂らしながら陶然とした表情を浮かべた…
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「そ、れもいいけど、あ、ああんっ」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「こう…するの？」
+			PRINTFORMW 大妖精をまんぐり返しの体勢にさせ、彼女の目の前でバイブを埋めていった
+			PRINTFORMW 「は、入ってるぅ」
+		ELSE
+			PRINTFORMW 「また…それ使うの？」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_13
+
+;解除時
+IF TEQUIP:25 == 0
+		IF CFLAG:7802 == 1 && ABL:Ａ感覚 >= 5
+			PRINTFORMW 「あ、あ、あ、あ、あぁぁぁぁ！　……はぁ…はぁ…　んあっ！？あああぁぁぁぁ！！」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「あ、あ、ああぁ……もうおしまい…？」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「あ、あ、ああぁ……もうおしまい…？」
+		ELSE
+			PRINTFORMW 「あ、あ、ああぁ……もうおしまい…？」
+		ENDIF
+;装着時
+ELSE
+	IF TFLAG:95 == 1
+		IF CFLAG:7800 == 1
+			PRINTFORMW 「それ、もしかして…」
+			PRINTFORMW 「…違うの？　それならどうやって……え！？」
+		ELSE
+			PRINTFORMW 「それ、もしかして…」
+			PRINTFORMW 「…違うの？　それならどうやって……え！？」
+		ENDIF
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:Ａ感覚 >= 5
+			PRINTFORMW 「あぁぁぁ、もっとほじってぇ…アナルぐりぐりされると感じちゃうのぉ！！」
+			PRINTFORMW 大妖精は腰を蠢かせながら、アナルバイブを何度も出し入れしている
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「気持ち悪いぃ…止めてよぉ……」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「…っ変な感触！…もう止めて…」
+		ELSE
+			PRINTFORMW 「これ、気持ち悪くっ…ぐぅぅ」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_14
+
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_15
+
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_16
+
+;解除時
+IF TEQUIP:30 == 0
+	IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+		PRINTFORMW 「あっ、はぁ、凄いよう、またイっちゃうぅぅ♪」
+		PRINTFORMW %CALLNAME:MASTER%は、刺激に腰をくねらせ、すっかり玩具の虜になっている大妖精の後ろに膝立ちになった
+		PRINTFORMW 「んっ♪…え…何を？」
+		PRINTFORMW 大妖精を四つん這いにさせ、クリトリスを摘みながら、装着したままのオナホールを、荒々しく扱いてやる
+		PRINTFORMW 「ひっ！うひぃぃぃぃぃ！！しびっ、じびれる！！！　ぎもぢよすぎぃぃぃぃぃ！！！！！」
+		PRINTFORMW 抵抗を許されない彼女の口からは、いつもの彼女からは想像もできない、獣のような喘ぎ声を発している…
+		PRINTFORMW 「すごぃぃぃぃ！ああぁぁぁぁっ！いぐぅぅぅぅぅぅぅぅ！！！」
+	ELSEIF CFLAG:7802 == 1
+		PRINTFORMW 「あっ、はぁ、凄いよう、またイっちゃうぅぅ！」
+		PRINTFORMW 大妖精は刺激に腰をくねらせ、すっかり玩具の虜になっている…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+		PRINTFORMW 「あっ、はぁ、凄いよう、またイっちゃうぅぅ！」
+		PRINTFORMW 大妖精は刺激に腰をくねらせ、すっかり玩具の虜になっている…
+	ELSE
+		PRINTFORMW 「あっ、はぁ、凄いよう、またイっちゃうぅぅ！」
+		PRINTFORMW 大妖精は刺激に腰をくねらせ、すっかり玩具の虜になっている…
+	ENDIF
+;装着時
+ELSE
+	IF TFLAG:95 == 1
+		IF CFLAG:7800 == 1
+			PRINTFORMW 「これ、おちんちん差し込むんだよね」
+			PRINTFORMW 「見ればなんとなく分かるけど…そのスイッチは？」
+		ELSE
+			PRINTFORMW 「これ、おちんちん差し込むんだよね」
+			PRINTFORMW 「見ればなんとなく分かるけど…そのスイッチは？」
+		ENDIF
+	ELSE
+		IF CFLAG:7802 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「んはぁぁぁ。おちんちん…カリのところに、イボイボが引っかかって…！」
+			PRINTFORMW 「！ひゃぁあ！　スイッチ入れちゃだめぇぇぇぇ！！！」
+		ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「中で、ちんちんがこすられて…あ…はぁぁぁぁ…」
+			PRINTFORMW 「だめ！動かしちゃや…。　はぁっ！はぁぁぁぁん！」
+		ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「おちんちんに…襞が擦れて…　んあぁぁ！うごっ！動かさないでぇ！！」
+		ELSE
+			PRINTFORMW 「おちんちんに…襞が擦れて…　んあぁぁ！うごっ！動かさないでぇ！！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_17
+
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_20
+
+;PRINTFORMW 
+IF TFLAG:95 == 1
+	;主人公が道程にあたる条件式がほしい。
+	;とりあえずありえんようにしておく
+	;処女を頂いた人数が0の時、という条件に変更　死に分岐はもったいないものね
+	;ついでに購入奴隷が1も付けたよ 鬼畜分岐だね
+	;やったね大ちゃん、分岐が増えるよ！
+	IF FLAG:400 == 0 && FLAG:39 == 1
+		IF TFLAG:2
+			;シンアイでゴウイで相手が主人公
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW 「%CALLNAME:MASTER%…嬉しいです…やっと…
+					PRINTFORMW 1つになれるんですね…」
+					PRINTFORMW 大妖精は%CALLNAME:MASTER%に抱きついた。
+					PRINTFORMW 互いの肌が重なり合う…お互いの体温が…伝わりあう。
+					PRINTFORMW 「あの…私…初めてなんです。男の人とこうやって…
+					PRINTFORMW 裸で抱き合ったり…その…それと…せ…」
+					PRINTFORMW もごもごと大妖精は、恥ずかしそうに…
+					PRINTFORMW %CALLNAME:MASTER%は、自分も初めてだと言った…
+					PRINTFORMW 「え？」
+					PRINTFORMW 大妖精は、%CALLNAME:MASTER%の目を見つめ、微笑した。
+					PRINTFORMW 「じゃぁ、私達…今日、お互い初体験ですね。」
+					PRINTFORMW そして、2人は口づけをした…
+					PRINTFORMW 「ん…ちゅる…」
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精の背中…首…胸と愛撫していく
+					PRINTFORMW 「ん…あぁん…はぁ…%CALLNAME:MASTER%…。」
+					PRINTFORMW 大妖精は…気持ち良さそうに喘いでいる…
+					PRINTFORML 
+					PRINTFORML 
+					PRINTFORML 「はぁはぁ…%CALLNAME:MASTER%……きて…ください。」
+					PRINTFORMW %CALLNAME:MASTER%は、頷くと大妖精の秘所にペニスをあてがった。
+					PRINTFORMW 柔らかい秘所の肉が%CALLNAME:MASTER%のペニスを迎える。愛液がペニスに
+					PRINTFORMW まとわりつく…官能的な大妖精の声は、%CALLNAME:MASTER%のペニスに稲妻
+					PRINTFORMW のような快感を与える。
+					PRINTFORMW 「ん…あたってる…%CALLNAME:MASTER%の…が…」
+					PRINTFORMW %CALLNAME:MASTER%は、快感に耐えながら、秘壺へペニスを埋めて行く…
+					PRINTFORMW 「…う…っ…ああぁっぁ…い…た…」
+					PRINTFORMW 大妖精は、シーツを握りしめ目を強くつ塗り…痛みに耐えている…
+					PRINTFORMW %CALLNAME:MASTER%が…一旦…奥へ埋めるのをやめると…
+					PRINTFORMW 優しい目で見た後、首を横にフルフルとふった…
+					PRINTFORMW %CALLNAME:MASTER%は…再び奥へ…奥へ…
+					PRINTFORMW 「ん…あっぁっ…」
+					PRINTFORMW 奥へ行くたびに快感が津波のように押し寄せてくる…温かくペニスを包み込む膣壁…
+					PRINTFORMW 愛液が…ペニスを優しく包み込む…
+					PRINTFORMW 快感が電撃のように体を貫き…堰に押し寄せてくる快感の津波……
+					PRINTFORMW そして…
+					PRINTFORMW 「ん…！！！！。え？」
+					PRINTFORMW 大妖精は、閉じてた目を大きく開いた…
+					PRINTFORMW 「あ…あの…%CALLNAME:MASTER%？」
+					PRINTFORMW 射精してしまった…%CALLNAME:MASTER%は大妖精に謝った…情けなさで涙が出てくる…
+					PRINTFORMW 「%CALLNAME:MASTER%…」
+					PRINTFORMW 大妖精は、優しく指で涙をぬぐった。
+					PRINTFORMW 「%CALLNAME:MASTER%…大丈夫です。だって…私達…お互い初めてですから…
+					PRINTFORMW それに…私…嬉しいです。だって…射精したってことは…
+					PRINTFORMW 私の膣内が…すごく気持ちよかったって事ですよね。」
+					PRINTFORMW 大妖精は、腕を%CALLNAME:MASTER%び首の後ろで組み優しく…抱きしめた…大妖精の
+					PRINTFORMW 柔らかい感触が…%CALLNAME:MASTER%に伝わる…
+					PRINTFORMW 「あ…ふふふ…%CALLNAME:MASTER%の…また…」
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精にキスをし…奥へ奥へと埋めて行く…
+					PRINTFORMW そして…すべて膣内に入った時、大妖精は…媚声をあげた…
+					PRINTFORMW 「はぁ…はぁ…%CALLNAME:MASTER%…やっと1つに…」
+					PRINTFORMW 「ん…はぁ…動いていいですよ。でも…できるだけゆっくり、優しくお願いします。」
+					PRINTFORMW %CALLNAME:MASTER%は、ゆっくりと腰を動き始めた…温かい…大妖精の温もりを…
+					PRINTFORMW そのまま感じとっているようであった。
+					PRINTFORMW 「ん…ふぅん…ああ……う…っ…」
+					PRINTFORMW 時折、痛みで顔をゆがめる大妖精だが…甘い吐息を出す事が多くなっていく。
+					PRINTFORMW 「あの…%CALLNAME:MASTER%…きもち…いい？」
+					PRINTFORMW 大妖精の問いに%CALLNAME:MASTER%は、頷き腰を振り続ける
+					PRINTFORMW 「良かった…すごく…嬉しい…」
+					PRINTFORMW 大妖精は優しく・幸せそうにほほ笑んだ。
+			;レンボでゴウイで主人公
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「あ、あの…%CALLNAME:MASTER%…わ、私…初めてで…
+					PRINTFORMW だから…その…」
+					PRINTFORMW 大妖精は、震えた声で%CALLNAME:MASTER%にいった…
+					PRINTFORMW %CALLNAME:MASTER%は、自分も初めてだと言った。
+					PRINTFORMW 「え？」
+					PRINTFORMW 「ふふふ…私達…お互い初めてだったんですね…」
+					PRINTFORMW 大妖精は、緊張しているが微笑して言った。
+					PRINTFORMW 「あ、あの…優しくしてくださいね…」
+					PRINTFORMW %CALLNAME:MASTER%は、優しく、大妖精を抱きしめた。
+					PRINTFORMW 「あ…」
+					PRINTFORML 
+					PRINTFORML 
+					PRINTFORML 
+					PRINTFORMW 「はぁはぁ…ん…はぁ…%CALLNAME:MASTER%…
+					PRINTFORMW 十分濡れた…し…きて…」
+					PRINTFORMW 大妖精は甘い吐息を吐きながら%CALLNAME:MASTER%を求めた
+					PRINTFORMW %CALLNAME:MASTER%は、ペニスを大妖精の秘壺にあてた…
+					PRINTFORMW %CALLNAME:MASTER%の全身に快感が走る…襲い来る射精感に
+					PRINTFORMW 抵抗しながら、少しずつ力を入れていく…
+					PRINTFORMW 「く…っ…あぁぁ…い…！」
+					PRINTFORMW 大妖精は、シーツをつかみ痛みに耐えている…
+					PRINTFORMW 「い…いたい…うぅぅ…」
+					PRINTFORMW 大妖精は痛みで顔を歪め、涙を浮かべ、息を荒くしている。
+					PRINTFORMW %CALLNAME:MASTER%は…大妖精の膣内にはいる度に快感が津波のように
+					PRINTFORMW 襲ってくるのを耐えながら…奥へ奥へ進めて行く…
+					PRINTFORMW 「ん…あぁぁ…%CALLNAME:MASTER%のが、あ、ついです…」
+					PRINTFORMW ぐぐぐ…と力を入れると、ズボっと抵抗感が一気になくなった。
+					PRINTFORMW 「ん…ふあぁぁぁぁ…あああ…」
+					PRINTFORMW 大妖精は、一気に入った快感に媚声をあげた。
+					PRINTFORMW 「はぁ…はぁ…やっと…1つになれました…」
+					PRINTFORMW 大妖精は嬉しそうに言った…
+					PRINTFORMW 大妖精の秘所からは処女の証が流れている…%CALLNAME:MASTER%はすぐに動きたいのを
+					PRINTFORMW 我慢しながら…大妖精の様子をうかがっていた。
+					PRINTFORMW 「…%CALLNAME:MASTER%…動いていいですよ…でも、ん…ゆっくり、できるだけ優しく…
+					PRINTFORMW お願いします…。」
+					PRINTFORMW %CALLNAME:MASTER%は、頷き…ゆっくりと慈しむように…動き始めた…
+					PRINTFORMW 「…い…っ……んっ…」
+					PRINTFORMW 大妖精は、時々、痛みに顔をゆがめるが…
+					PRINTFORMW 「ん…あん…はぁはぁ…ああぁあ…」
+					PRINTFORMW 少しであるが、気持ち良さそうな声を出した…%CALLNAME:MASTER%は、初めて味わう快感に
+					PRINTFORMW 溺れながら…大妖精の膣内を自分のペニスで堪能した…
+					PRINTFORMW 「%CALLNAME:MASTER%………きもち…いい？」
+					PRINTFORMW 大妖精は、息を荒くしながら不安そうに聞いてきた。%CALLNAME:MASTER%は頷き、大妖精を
+					PRINTFORMW だきしめた。
+					PRINTFORMW 「よかった…気持ち…よくて…」
+					PRINTFORMW 大妖精は、安どの笑みを浮かべた。
+			;レンボかゴウイで主人公
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「ふふふ、2人とも初めてなんて…何か…嬉しいです。」
+					PRINTFORMW 「でも…私…%CALLNAME:MASTER%だったら…私の初めてを…
+					PRINTFORMW もらって欲しいです。」
+					PRINTFORMW 大妖精は顔を紅潮させて…%CALLNAME:MASTER%に抱きついた。
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精をベットに優しく寝かせ…
+					PRINTFORMW 愛撫を重ねた…
+					PRINTFORMW 「う、嬉しいです…私…幸せです…」
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「…私…も、初めてなんです…」
+					PRINTFORMW 「ですから…あの、優しくしてくださいね。
+			ENDIF
+		ELSE
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW %CALLNAME:MASTER%は…震える手で大妖精の胸を揉んだ…
+					PRINTFORMW 「ん…はぁ…」
+					PRINTFORMW 大妖精は目を閉じ…その感触を味わっている。
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精の胸の感触とその裸体…
+					PRINTFORMW 声に…興奮が次第に抑えきれずにいた…
+					PRINTFORMW 胸を揉み…乳首を愛撫し…しゃぶった…
+					PRINTFORMW 「あ…ん……ふぁ…気持ち…いい…
+					PRINTFORMW ふふふ…%CALLNAME:MASTER%……赤ちゃん見たい…」
+					PRINTFORML 
+					PRINTFORML 
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精の秘所を愛撫し…舐めつくす…
+					PRINTFORMW 大妖精は、喘ぎ声を出し…秘所からは愛液がこぼれ出す。
+					PRINTFORMW %CALLNAME:MASTER%は…次第に興奮し…本能のまま…
+					PRINTFORMW 大妖精の体を愛撫した…
+					PRINTFORMW ………
+					PRINTFORMW ……
+					PRINTFORMW …
+					PRINTFORMW 「はぁ…はぁ……
+					PRINTFORMW %CALLNAME:MASTER%……そろそろ…ん…私…我慢できなく…」
+					PRINTFORMW 大妖精は…我慢できなくなり…あなたを求めてきた…
+					PRINTFORMW %CALLNAME:MASTER%は自分のペニスをもち…大妖精の秘所にあてた…
+					PRINTFORMW 「ん…あたってる…%CALLNAME:MASTER%のが…」
+					PRINTFORMW 秘所の肉が、%CALLNAME:MASTER%のペニスを迎える…愛液が…絡みつき
+					PRINTFORMW 大妖精の吐息があなたのペニスを猛狂わせる…
+					PRINTFORMW 一気に射精感に襲われる%CALLNAME:MASTER%は、ぐっと我慢した…
+					PRINTFORMW 秘壺に…歩を進める…
+					PRINTFORMW 「あぁぁ…ん…ふあぁぁ…%CALLNAME:MASTER%…きてください…」
+					PRINTFORMW ペニスに電撃が走る…それは脳髄まで達し…快感が津波の如く押し寄せる。
+					PRINTFORMW 一歩一歩…奥に埋めて行く度に快感が襲う…そして…
+					PRINTFORMW 「はぅっ…え？……」
+					PRINTFORMW 大妖精がびくっと体が動いた…%CALLNAME:MASTER%は放心している…
+					PRINTFORMW 「あ、あの…%CALLNAME:MASTER%…その…私…出しても気にしませんから…」
+					PRINTFORMW と、放心している%CALLNAME:MASTER%に語りかけた。
+					PRINTFORMW 「だって…%CALLNAME:MASTER%…初めてなんだし…仕方ないです。」
+					PRINTFORMW 「だから……」
+					PRINTFORMW 大妖精は、顔を近づけ%CALLNAME:MASTER%の目を優しい目で見つめ…抱き寄せて
+					PRINTFORMW %CALLNAME:MASTER%の顔を自分の胸で抱きしめた…
+					PRINTFORMW 「それに…%CALLNAME:MASTER%の…まだ私の膣内で…大きくなっています…」
+					PRINTFORMW と、照れくさそうに言った。
+					PRINTFORMW %CALLNAME:MASTER%は、再び埋めて行く…大妖精に抱きしめられながら…
+					PRINTFORMW 「ん…んはぁ……%CALLNAME:MASTER%のが…%CALLNAME:MASTER%のが…」
+					PRINTFORMW と…大妖精はあなたの耳元で…甘い吐息を洩らす…
+					PRINTFORMW その声…体の体温で快感が襲うが…さっきほどではない…
+					PRINTFORMW %CALLNAME:MASTER%は奥へ奥へ…入れて行く…
+					PRINTFORMW 「ん…あ…ああぁ…んぅ…」
+					PRINTFORMW 大妖精は、気持ち良さそうに声を出す…抱きしめる腕に力が入る…
+					PRINTFORMW 「ん…あぁぁぁ…はぁ…お…奥に…届いています…」
+					PRINTFORMW と、大妖精はあなたの頭を撫でながら言った…
+					PRINTFORMW 「ん…%CALLNAME:MASTER%の好きに…はぁ…動いてください…」
+					PRINTFORMW %CALLNAME:MASTER%は…快楽をむさぼるがごとく…腰を振る…
+					PRINTFORMW 秘所からは大妖精の愛液が溢れ出る…
+					PRINTFORMW 「ん…はぁ…んん…あぁぁ…あん…いぃぃ…気持ちいい…」
+					PRINTFORMW 「やっと…%CALLNAME:MASTER%と…あはぁ…一つに…」
+					PRINTFORMW 大妖精は甘美な声で喘ぐ…
+					PRINTFORMW 二人は互いの声と体温を感じながら…快楽の海へと沈んでいく…
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「%CALLNAME:MASTER%…」
+					PRINTFORMW 大妖精は…%CALLNAME:MASTER%の首に手を回し、ゆっくりと抱き寄せた。
+					PRINTFORMW 「%CALLNAME:MASTER%…に、とっての初めて…私でいいんですか？」
+					PRINTFORMW %CALLNAME:MASTER%は頷いた
+					PRINTFORMW 「う、嬉しいです。%CALLNAME:MASTER%…きて…」
+					PRINTFORMW 大妖精は、あなたを自分の秘所に導いた
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「ん…ちゅ…」
+					PRINTFORMW 大妖精は%CALLNAME:MASTER%に口づけをした。
+					PRINTFORMW 「大丈夫です。%CALLNAME:MASTER%…怖がらないで…」
+					PRINTFORMW 大妖精は、優しく手をとり…自分の秘所へ導いた。
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「%CALLNAME:MASTER%…あなたが好きなように…」
+					PRINTFORMW 「だって…今日が初めてなんでしょ…」
+			ENDIF
+		ENDIF
+	;0のELSEだから必ずこっち
+	;でもなくなった
+	ELSE
+		IF TFLAG:2 == 1
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW 「%CALLNAME:MASTER%…」
+					PRINTFORMW 大妖精は%CALLNAME:MASTER%に抱きついた…大妖精の体温が
+					PRINTFORMW あなたに伝わる…少し震えている大妖精を優しく抱きしめた。
+					PRINTFORMW 「%CALLNAME:MASTER%…%CALLNAME:MASTER%が…私の…
+					PRINTFORMW 初めての人ですごく嬉しいです…」
+					PRINTFORMW 「私…%CALLNAME:MASTER%と…一緒に入れて幸せです…
+					PRINTFORMW 優しくしてくださいね。いつも…私にしてくれるみたいに…」
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「あの…笑わないださいね…」
+					PRINTFORMW 「私…実はまだ処女なんです。男の人が苦手だから…
+					PRINTFORMW 今まで…こんなことなかったし…」
+					PRINTFORMW %CALLNAME:MASTER%は、震える大妖精を抱きしめた。
+					PRINTFORMW 「温かい…まだ、少し怖いけど…でも…
+					PRINTFORMW %CALLNAME:MASTER%なら…少し安心する…
+					PRINTFORMW 優しくしてくださいね…%CALLNAME:MASTER%…。」
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「私…こういうことした事ないから…」
+					PRINTFORMW 「すごく怖いけど…でも…
+					PRINTFORMW %CALLNAME:MASTER%…ならいいかなって…
+					PRINTFORMW だから…
+					PRINTFORMW 優しくしてくださいね…。」
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「あ、あの…私…まだ…男の人を知らなくて…。」
+					PRINTFORMW 大妖精は震えている…
+					PRINTFORMW 「だから、その…優しくしてくださいね…」
+					PRINTFORMW %CALLNAME:MASTER%は、頷き静かに押し倒していった。
+			ENDIF
+		ELSE
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW 「ん…んはぁ…奥が奥が…%CALLNAME:MASTER%…
+					PRINTFORMW もっと…奥を…そこが…すごく…」
+					PRINTFORMW 大妖精は%CALLNAME:MASTER%と激しく交わってる。
+					PRINTFORMW 「ねぇ…%CALLNAME:MASTER%、気持いいいですか？」
+					PRINTFORMW あなたは、正直に言うと…
+					PRINTFORMW 「んっ…う、うれしです…もっと、気持ちよくなって…」
+					PRINTFORMW 「それが…私…ん…はぁ…とって…あぁぁ、し、幸せだからっ」
+					PRINTFORMW 2人は激しく互いを求め合った。
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「んんっ…わ、私の…・なかっ…どうですか？」
+					PRINTFORMW %CALLNAME:MASTER%が正直に言うと…
+					PRINTFORMW 「あぁぁん…う、嬉しいですぅ～、んんっ…もっと、もっと…
+					PRINTFORMW 気持ちよく…んはぁ…あっあっ…なって…ください。」
+					PRINTFORMW 2人は互いを貪るように貪欲に求めあった。
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「んっ…あ、あ、あぁっ…んはぁ…だめぇ～
+					PRINTFORMW そ、そんなに…は、はげしく～」
+					PRINTFORMW %CALLNAME:MASTER%は、激しくピストンをしている。
+					PRINTFORMW 「ああぁん…ふあぁ…ん…」
+					PRINTFORMW 2人は激しく交わった…
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「ん…はぁ…ああっ…入ってきます…
+					PRINTFORMW %CALLNAME:MASTER%のが…奥に…ああぁぁ…」
+			ENDIF
+		ENDIF
+	ENDIF
+ELSE
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+				PRINTFORMW 「んっあっあ、あぁぁ…ん～…は、激しすぎます…」
+				PRINTFORMW 「あぁぁ…あっ…だめぇぇ…%CALLNAME:MASTER%…、止めて…止めてぇ～」
+				PRINTFORMW 「来ちゃう…来ちゃう…来ちゃうよぉ。あぁぁ、ん…だ、だめぇぇぇ…」
+				PRINTFORMW 「きちゃうきちゃうきちゃう…何か・・・きちゃう…い、あっあっ…」
+				PRINTFORMW 「いやぁぁぁぁぁぁぁぁ…」
+				PRINTFORMW 大妖精は大きく体を痙攣させ…一気に脱力した…
+				PRINTFORMW 「はぁ…はぁ……あ、頭が…真っ白に…も、ぉ…
+				PRINTFORMW %CALLNAME:MASTER%…止めてって言ったのに…何で…いじわるするんですか…」
+				PRINTFORMW 少し…ほっぺを膨らませた…大妖精を優しく抱く…
+				PRINTFORMW 「もぉ…そんなに優しくされると…怒るに怒れないですよ…もぉ…」
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+				IF CFLAG:8020 == 0 && PALAM:潤滑 >= 10000
+					PRINTFORMW 「はぁはぁ…%CALLNAME:MASTER%……
+					PRINTFORMW わ、私…も…う…はぁはぁ…我慢できません。
+					PRINTFORMW お、お願い…%CALLNAME:MASTER%ので…私の膣内を…
+					PRINTFORMW 満たしてください…切なくて…が、我慢できません…」
+					PRINTFORMW %CALLNAME:MASTER%は…大妖精の膣内にペニスを埋めた…
+					PRINTFORMW 「ひゃん！入って…%CALLNAME:MASTER%ので…満たされてるよぉ～」
+				ELSE
+					PRINTFORMW 「んぁ…あっあっ…はぁん…き、気持ちいいよぉ
+					PRINTFORMW ひゃん…んぁ…駄目ぇ…か、感じちゃう」
+				ENDIF
+				CFLAG:8020 = 1
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+				PRINTFORMW 「ん…あっ…そんなに…優しくされたら…
+				PRINTFORMW 溢れちゃう…ん……だ、だめぇ…」
+				PRINTFORMW 大妖精は、%CALLNAME:MASTER%に突かれ……甘美な声を出している
+				PRINTFORMW 「ん…はぁ…%CALLNAME:MASTER%…私幸せです…」
+			;既成事実はなかった
+
+			ELSEIF ASSIPLAY == 0
+				PRINTFORMW 「%CALLNAME:MASTER%…の好きに…」
+				PRINTFORMW 「%CALLNAME:MASTER%が、気持ちよければいいです。」
+			ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_21
+
+IF TFLAG:95 == 1
+	;主人公が道程にあたる条件式がほしい。
+	;とりあえずありえんようにしておく
+	;同上
+	IF FLAG:400 == 0 && FLAG:39 == 1
+		IF TFLAG:2
+			;シンアイでゴウイで相手が主人公
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW 「えっと…初めては後ろからですか？」
+					PRINTFORMW 「…私としては、前から抱きしてもらった方が…安心するけど…」
+					PRINTFORMW 「でも… %CALLNAME:MASTER%がそれでやりたいなら……
+					PRINTFORMW いいですよ…」
+					PRINTFORMW	%CALLNAME:MASTER%は大妖精を、後ろから強く抱きした…腕に…
+					PRINTFORMW 大妖精の柔らかい胸の感触と体全体から、大妖精の体温を感じる。
+					PRINTFORMW 「 %CALLNAME:MASTER%の…したいように…でいいです…」
+					PRINTFORMW 「私…こうしていられるだけで…幸せですから…」
+					PRINTFORMW %CALLNAME:MASTER%は、後から…ペニスを大妖精の秘壺へ…埋めて行った…
+					PRINTFORMW 「んっ…あっあぁぁ…い……。」
+					PRINTFORMW 大妖精の悲痛な声が聞こえる…表情は分からないが…%CALLNAME:MASTER%は…
+					PRINTFORMW 大妖精は…後ろから強く抱きしめた…
+					PRINTFORMW 大妖精の体から…少し力が抜けた…
+					PRINTFORMW 「%CALLNAME:MASTER%……わ、私…大丈夫ですから…つ、続けて…」
+					PRINTFORMW 大妖精は、振り向いて言った…
+					PRINTFORMW %CALLNAME:MASTER%は…再度力を入れた…少しずつ奥へ進み…
+					PRINTFORMW 一瞬、強い抵抗があった後、一気に奥まで進んだ…シーツには処女の証が落ちる。
+			;レンボでゴウイで主人公
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「う、後ろからですか？」
+					PRINTFORMW 「初めてだから…わ、私としては…そ、その…
+					PRINTFORMW 抱き合いながら…の方が安心するんですけど…」
+					PRINTFORMW %CALLNAME:MASTER%は…大妖精を後ろから抱きしめた。
+					PRINTFORMW 「はぅ…そ、それなら…落ち着きます…%CALLNAME:MASTER%の
+					PRINTFORMW 鼓動が聞こえます…」
+					PRINTFORMW 大妖精の震えが少し落ち着いた…%CALLNAME:MASTER%は、大妖精を
+					PRINTFORMW 抱きつつ…後ろから秘所をついた…
+			;レンボかゴウイで主人公
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「あ、あぅ…そ、その…う、後ろからですか？」
+					PRINTFORMW %CALLNAME:MASTER%は頷いた…
+					PRINTFORMW 「わ、分かりました…そ、その…私初めてだから…
+					PRINTFORMW 後ろからでも…抱きしめてください…」
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「え…う、後ろからですか…あぅ…」
+					PRINTFORMW 「%CALLNAME:MASTER%が…それでいいなら…いいですよ。」
+					PRINTFORMW %CALLNAME:MASTER%は大妖精の秘所にうずめた…
+					PRINTFORMW 「んぁ…い…いた…い…」
+					PRINTFORMW %CALLNAME:MASTER%のペニスが大妖精の穢れのない秘所にゆっくりと入っていく…
+					PRINTFORMW %CALLNAME:MASTER%はペニスから伝わる快感を感じ、ペニスから熱い物が、
+					PRINTFORMW こみ上げてきた…
+					PRINTFORMW %CALLNAME:MASTER%は、必死にこらえながら埋めていく…
+					PRINTFORMW 「んぁ…あぁぁ…つ…」
+					PRINTFORMW 大妖精は痛みに耐えるようにシーツを強く掴む…
+					PRINTFORMW 「！！！、んぁぁぁ…あぁぁ…んん…」
+					PRINTFORMW ペニスは大妖精の秘所の奥まで入り込んだ…
+					PRINTFORMW 「い…痛いです…はぁはぁ…」
+					PRINTFORMW 大妖精は、痛みから目に涙を浮かべた…
+			ENDIF
+		ELSE
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+				PRINTFORMW %CALLNAME:MASTER%は大妖精に後からがいいと言った。
+				PRINTFORMW 「え？う、後からですか…」
+				PRINTFORMW 大妖精は、きょとんとしたがすぐに優しく微笑み…
+				PRINTFORMW 「くす…%CALLNAME:MASTER%…いきなり後からなんて…
+				PRINTFORMW はい、%CALLNAME:MASTER%がしたいというなら私はかまいません。」
+				PRINTFORMW そういうと、大妖精は、%CALLNAME:MASTER%の方にお尻を向けた…
+				PRINTFORMW %CALLNAME:MASTER%は緊張した手で大妖精の胸を揉む…
+				PRINTFORMW 「ん…はぁ…%CALLNAME:MASTER%…気持ちいいです…」
+				PRINTFORMW 大妖精は、%CALLNAME:MASTER%が乳房を揉むと次第に息を荒げていく…
+				PRINTFORMW 「んぁ…んんん…%CALLNAME:MASTER%…あ、あの…
+				PRINTFORMW 乳首も弄ってくれませんか？」
+				PRINTFORMW 大妖精は、少し息を荒げながら…恥ずかしそうに…
+				PRINTFORMW %CALLNAME:MASTER%は、緊張しながら乳首を刺激する。
+				PRINTFORMW 「んぁ…はぁん…気持ちいいです…%CALLNAME:MASTER%…」
+				PRINTFORML ……
+				PRINTFORML …
+				PRINTFORML 
+				PRINTFORMW 大妖精の秘所からは十分なほどの愛液が滴り落ちていた…
+				PRINTFORMW 「はぁはぁはぁ…%CALLNAME:MASTER%…わ、私…もぉ…」
+				PRINTFORMW 大妖精は、火照った表情で%CALLNAME:MASTER%をみた…
+				PRINTFORMW 「%CALLNAME:MASTER%…きて…ください…」
+				PRINTFORMW %CALLNAME:MASTER%は、大妖精の秘所にペニスを埋めていく…
+				PRINTFORMW 「ふぁぁ…ああぁぁ…」
+				PRINTFORMW 大妖精は甘い声を出す…
+				PRINTFORMW 「あ、あ、あ…%CALLNAME:MASTER%が…」
+				PRINTFORMW %CALLNAME:MASTER%は、電撃のような快感を感じ…
+				PRINTFORMW 「ふぇ？あ、あぅ…」
+				PRINTFORMW 大妖精は、びくんと体がはねた…
+				PRINTFORMW 「え？ま、まさか…%CALLNAME:MASTER%…」
+				PRINTFORMW %CALLNAME:MASTER%は、射精してしまい…呆然としていた…
+				PRINTFORMW 大妖精は、%CALLNAME:MASTER%のペニスを優しく握り抜き取り、優しい表情で
+				PRINTFORMW %CALLNAME:MASTER%と向き合い、%CALLNAME:MASTER%の目を見つめた…
+				PRINTFORMW 「%CALLNAME:MASTER%、そんな顔をしないでください。そ、その…
+				PRINTFORMW %CALLNAME:MASTER%は…初めてですから、しょうがないです…」
+				PRINTFORMW 大妖精は、にこりと笑い%CALLNAME:MASTER%に抱きついた…
+				PRINTFORMW 「それに…私…%CALLNAME:MASTER%のなら、いくらでも受け入れます…
+				PRINTFORMW だって…私は、%CALLNAME:MASTER%を愛していますから…だから…
+				PRINTFORMW そんな顔をしないでください…」
+				PRINTFORMW %CALLNAME:MASTER%は、大妖精を強く抱きしめた…
+				PRINTFORMW 「あ…ふふふ、%CALLNAME:MASTER%のが、また元気になってきました…」
+				PRINTFORMW と%CALLNAME:MASTER%は、見るとペニスが大妖精の大陰唇のところに挟まっていた。
+				PRINTFORMW 「ん…もぉ、すっかり元気になりました。」
+				PRINTFORMW そういうと、大妖精は再度四つんばいになり、自分の秘所を自らの手で開いた…
+				PRINTFORMW 「%CALLNAME:MASTER%…」
+				PRINTFORMW %CALLNAME:MASTER%は、再度ゆっくりと、大妖精の秘所にペニスを埋め始めた…
+				PRINTFORMW 膣壁が、%CALLNAME:MASTER%のペニスを歓迎するかのように、ペニスを柔らかに
+				PRINTFORMW 包み込む…
+				PRINTFORMW 「ん…ん…はぁはぁ…んぁ…」
+				PRINTFORMW 大妖精が、気持ちよさそうに喘ぎ声を上げる…
+				PRINTFORMW 「あぁぁぁ、%CALLNAME:MASTER%…熱いです…
+				PRINTFORMW あぁぁぁん…お、奥に…はぁはぁ…」
+				PRINTFORMW 大妖精の、甘い声が部屋にこだまする。%CALLNAME:MASTER%のペニスはどんどん硬くなる。
+				PRINTFORMW 「はぁはぁ…あん…あぁぁ、き、気持ち良いですぅ…%CALLNAME:MASTER%…%CALLNAME:MASTER%…」
+				PRINTFORMW %CALLNAME:MASTER%は、大妖精の甘い声と、膣内の快楽に埋もれていく…
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+
+			ELSEIF ASSIPLAY == 0
+
+			ENDIF
+		ENDIF
+	;0のELSEだから必ずこっち じゃない
+	ELSE
+		IF TFLAG:2 == 1
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+					PRINTFORMW 「初めてで…この体勢…」
+					PRINTFORMW 大妖精は…4つ這いになっているが、震えているのが分かる
+					PRINTFORMW 「あ…あれ？ふ、震えが止まらないです…」
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精を後ろから優しく…抱きしめた。
+					PRINTFORMW 大妖精の震えが少しずつ小さくなっていく
+					PRINTFORMW 「%CALLNAME:MASTER%…の鼓動が…聞こえます…
+					PRINTFORMW 暖かいです…」
+					PRINTFORMW 大妖精の震えが止まった…
+					PRINTFORMW %CALLNAME:MASTER%は、大妖精を抱きしめ…秘所へペニスを滑らす…
+					PRINTFORMW ビクンと大妖精の体がはねた…
+					PRINTFORMW 「ん…あ…ん…」
+					PRINTFORMW 大妖精の喘ぎ声が聞こえる…甘い吐息の音も聞こえる
+					PRINTFORMW 秘所から秘壺へペニスを埋める…大妖精の体が硬くなる。
+					PRINTFORMW 「あぅ…ん…んっ…い……た……」
+					PRINTFORMW %CALLNAME:MASTER%はそのまま突き進む……
+					PRINTFORMW 先端に引っかかる感触を感じ、%CALLNAME:MASTER%は一気に突き進んだ…
+					PRINTFORMW 「うっ……くっ…ぁ…あぁぁ…」
+					PRINTFORMW 大妖精の体が大きく跳ねる…秘所からは証たる赤い液体がシーツにこぼれる。
+					PRINTFORMW 「はぁ…はぁ…ん…全部…入りましたね…これが…%CALLNAME:MASTER%の…
+					PRINTFORMW 大きくて…熱いです…でも…すごく…安心します。」
+					PRINTFORMW %CALLNAME:MASTER%と大妖精はお互いを確か合うように肌を重ねた。
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+					PRINTFORMW 「う、後ですか？そ、その…優しくしてくれますか？」
+					PRINTFORMW 「%CALLNAME:MASTER%の、顔が見れなくて不安なんです…」
+					PRINTFORMW 「だから…せめて…抱きしめてくださいね…
+					PRINTFORMW %CALLNAME:MASTER%の鼓動を感じていたいから…」
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+					PRINTFORMW 「後ろからですか？あ…わ、分かりました。」
+					PRINTFORMW 「あ、あの…私…初めてですので…優しくお願いします。」
+			ELSEIF ASSIPLAY == 0
+					PRINTFORMW 「あ、あの…%CALLNAME:MASTER%…私…初めてで…」
+					PRINTFORMW 「優しく…してくださいね。」
+			ENDIF
+		ELSE
+			IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+
+			ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+
+			ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+
+			ELSEIF ASSIPLAY == 0
+
+			ENDIF
+		ENDIF
+	ENDIF
+ELSE
+		IF CFLAG:7803 == 1 && CFLAG:7800 && ASSIPLAY == 0
+			PRINTFORMW 「あっ…あぁぁ…ん…はぁ…」
+			PRINTFORMW 「この体位って結構奥まで入るんですね…」
+			PRINTFORMW 「あぁぁん…%CALLNAME:MASTER%…、そんなに…激しくちゃ…
+			PRINTFORMW 来ちゃう…来ちゃいますから…」
+			PRINTFORMW 大妖精は背を大きく曲げ…絶頂した。
+		ELSEIF CFLAG:7802 == 1 && CFLAG:7800 == 1 && ASSIPLAY == 0
+			PRINTFORMW 「%CALLNAME:MASTER%…お、お願いだから…焦らさないでぇ…」
+			PRINTFORMW 大妖精は、%CALLNAME:MASTER%を強く求めている。%CALLNAME:MASTER%は
+			PRINTFORMW 後ろから一気に埋めた…
+			PRINTFORMW 「あぁぁ…んっ…奥まで…入っています…熱い…」
+			PRINTFORMW %CALLNAME:MASTER%は、腰を振り大妖精と快楽におぼれていく。
+		ELSEIF (CFLAG:7802 == 1 || CFLAG:7800) && ASSIPLAY == 0
+			PRINTFORMW 「%CALLNAME:MASTER%…の好きにしていいですからっ」
+			PRINTFORMW 「ふぁああああ…子宮にあたって…んあぁぁぁ…いい…です・・
+			PRINTFORMW 気持ちいいです…」
+		;既成事実はなかった
+
+		ELSEIF ASSIPLAY == 0
+			PRINTFORMW 「は、恥ずかしいので…早く…済ませてくださいね…」
+
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_22
+
+;PRINTFORMW 
+IF TFLAG:95 == 1
+	IF TFLAG:2
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「初めてだから…その、優しくしてね？」
+		ELSE
+				PRINTFORMW 「ひ、いやあぁぁぁ！」
+		ENDIF
+	ELSE
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「…んっ…少しこのままでいて…」
+		ELSE
+				PRINTFORMW 「んんぅ、ダメ、動かないで…」
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「あ、あぁぁ・・・ん、お、奥にあたって気持ちいいです…」
+			PRINTFORMW 大妖精は腰をゆっくりと前後に揺すり始めた…
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「私の中…気持ちよくなれてる？」
+	ELSEIF (CFLAG:7801 == 1 || CFLAG:7800 == 1)
+			PRINTFORMW 「ちゅ…んっ…あふぅん…」
+	ELSE
+			PRINTFORMW 「こんな…格好で…ああん！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_23
+
+IF TFLAG:95 == 1
+	IF TFLAG:2
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「後ろから…？」
+				PRINTFORMW 「…ちょっと…怖い」
+		ELSE
+				PRINTFORMW 「後ろから…？」
+				PRINTFORMW 「…ちょっと！まっ…！ああぁぁぁ！」
+		ENDIF
+	ELSE
+		IF CFLAG:7800 == 1
+				PRINTFORMW 「後ろから…？」
+				PRINTFORMW 「…ちょっと…怖い」
+		ELSE
+				PRINTFORMW 「後ろから…？」
+				PRINTFORMW 「…ちょっと…怖い」
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「クリっ、クリトリスもっ！気持ちいいのぉぉ！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「ね…しっかり抱いててね…」
+	ELSEIF (CFLAG:7801 == 1 || CFLAG:7800 == 1)
+			PRINTFORMW 「背中が…暖かい…」
+	ELSE
+			PRINTFORMW 「うっ、うんっ！ああぁ！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_24
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「おちんちん、全部入っちゃった…」
+	ELSE
+			PRINTFORMW 「や、こんなのぉ…」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:奉仕精神 >= 5 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「…ほら、おちんちんがだんだん入っていきますよ……はあぁん」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「おちんちん、全部入っちゃった…」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「ん、それじゃ、動くね」
+	ELSE
+			PRINTFORMW 「うん、それじゃ、動くから…」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_25
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「私が…入れるの？」
+	ELSE
+			PRINTFORMW 「私が…入れる方ですか？」
+	ENDIF
+ELSE
+	IF TALENT:淫乱 == 1
+			PRINTFORMW 「ふふ、凄い顔…んふぅ、ふっ、ふっ、ふっ…」
+			PRINTFORMW 「中で擦れて…ねぇ、私のおちんちん気持ち良い…？」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「うわぁ、ぐちょぐちょ…」
+			PRINTFORMW 「それじゃ、入れるね…んふぅ」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「おちんちん、溶けちゃう…」
+			PRINTFORMW 大妖精は一心不乱に腰を打ち付けている
+	ELSE
+			PRINTFORMW 「おちんちん、溶けちゃう…」
+			PRINTFORMW 大妖精は一心不乱に腰を打ち付けている
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_26
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「…私じゃ、だめなの？」
+	ELSE
+			PRINTFORMW 「…私もいるのに…」
+	ENDIF
+ELSE
+	IF TALENT:淫乱
+			PRINTFORMW 「…あぁ…ご主人様ぁ、私にもお願いします……」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「……わたしにも、触ってください……っ！」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「…ぁぁ……」
+			PRINTFORMW 大妖精はこちらを見ながら自らの秘芯を慰めている…
+	ELSE
+			PRINTFORMW 大妖精はこちらを見ながら太腿をモジモジと動かしている…
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_27
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_28
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_30
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「お、お尻でするの？」
+			PRINTFORMW 「うん、大丈夫だと思うけど…入るのかなぁ」
+	ELSE
+			PRINTFORMW 「お、お尻でするの？」
+			PRINTFORMW 「う…そんなの入らないよ…」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:Ａ感覚 >= 5
+			PRINTFORMW 「おっ、奥まで、奥まで来てるぅ…」
+			PRINTFORMW 「あっ！あひぃ！あおっ！！おうううぅぅんっ！！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「はい、私のおしりを存分に可愛がってください」
+			PRINTFORMW 大妖精は小さな丸いお尻をこちらに向け、両穴を広げて見せた…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「そ、そっちは…！」
+	ELSE
+			PRINTFORMW 「そ、そっちは…！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_31
+
+;PRINTFORMW 
+CALL KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_30
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_32
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_33
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_34
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_35
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_36
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_37
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_38
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_40
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「手で擦ればいいの…？」
+	ELSE
+			PRINTFORMW 「手で擦るの…？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「こういうのが…良いんだよね？」
+			PRINTFORMW 大妖精は亀頭に唾液をたっぷりとまぶし、手の平で円を描くようにさすり始めた…
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「ふふ、気持ち良い…？」
+			PRINTFORMW 大妖精は出てきたリンパ液を亀頭全体に拡げ、指の腹で撫でるように刺激を加えてきた…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「こんな感じでどう…？」
+	ELSE
+			PRINTFORMW 「こ、こうすれば良いの？」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_41
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「お口で…？」
+	ELSE
+			PRINTFORMW 「お口で…？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「ちゅぷ、ちゅぷ、じゅるっ、じゅるる…ちゅうぅ」
+			PRINTFORMW 大妖精は肉棒を咥えながら、持ち上げるようにやんわりと玉袋を刺激してくる…
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「じゅぷ、じゅぷ…ちゅうぅぅ」
+			PRINTFORMW 大妖精は%CALLNAME:MASTER%の尻に手を回し、肉棒を深く咥え込んだ…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「ちゅ、ぺろ、ぺろ、ちゅうぅぅ……」
+			PRINTFORMW 「おちんちん…がちがちになってる」
+	ELSE
+			PRINTFORMW 「ふぉっ、んん…ぷは。どうかな」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_42
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「胸で…どうやればいいの？」
+	ELSE
+			PRINTFORMW 「胸で…どうやればいいの？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:奉仕精神 >= 5 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「気持ちいいですか？んっ…おっぱいが擦れてっ……！」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「気持ちいいですか…」
+			PRINTFORMW 大妖精は胸から飛び出た部分を舌先で焦らすようになぞっている…
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「ふっ、ちゅ、ちゅるっ、ちゅうぅぅう！」
+	ELSE
+			PRINTFORMW 「こうして、上に出すんですね…」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_43
+
+IF TFLAG:95 == 1
+	IF CFLAG:7800 == 1
+			PRINTFORMW 「入れ…るんじゃなくて？…足で挟むの？」
+	ELSE
+			PRINTFORMW 「入れ…るんじゃなくて？…足で挟むの？」
+	ENDIF
+ELSE
+	IF CFLAG:7802 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「くすくす、おまんこよりこっちのほうがいいの？」
+			PRINTFORMW 「んん、私もこれ、好きだけど…」
+	ELSEIF CFLAG:7802 == 1
+			PRINTFORMW 「クリトリスに引っかかってぇ……んぁう！ああん！」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+			PRINTFORMW 「あ、これ…私まで…そんな、あうっ！」
+	ELSE
+			PRINTFORMW 「あはぁ、気持ちいいよぅ…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_44
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_45
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_46
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_47
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_48
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_49
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_50
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_51
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_52
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_53
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_54
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_55
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_56
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_60
+
+;数少ないシンアイを要求する条件
+IF CFLAG:7803 == 1
+		PRINTFORMW 「ね、塗りっこしよ！」
+ELSEIF CFLAG:7802 == 1
+		PRINTFORMW 「ん、これ塗られるの気持ち良い…」
+ELSEIF CFLAG:7801 == 1
+		PRINTFORMW 「そ、そこは自分で塗るから…」
+ELSE
+		PRINTFORMW 「ぬるぬるする…」
+ENDIF
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_61
+
+IF TALENT:淫乱
+		PRINTFORMW 「うふふ、これ好きなの」
+		PRINTFORMW 「あぁん…おまたがジュンってしてきたぁ…」
+ELSEIF CFLAG:7802 == 1
+		PRINTFORMW %CALLNAME:MASTER%は口移しで媚薬を飲ませた…
+		PRINTFORMW 「んぅ、んむ、んむ、んむ…」
+		PRINTFORMW 大妖精は顔を紅潮させ、%CALLNAME:MASTER%の太ももに股間を押し付けてきた…
+ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+		PRINTFORMW %CALLNAME:MASTER%は口移しで媚薬を飲ませた…
+		PRINTFORMW 大妖精は息を荒くして、太腿を擦り合わせている…
+ELSE
+		PRINTFORMW %CALLNAME:MASTER%は口移しで媚薬を飲ませた…
+		PRINTFORMW 大妖精は息を荒くして、太腿を擦り合わせている…
+ENDIF
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+;高血圧に効くってガッテンで言ってた
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_62
+
+IF TALENT:淫乱
+		PRINTFORMW 「ふふ、また私のお漏らし見たいの？」
+		PRINTFORMW %CALLNAME:MASTER%は錠剤を噛み砕き、唾液と共に口移しで流し込んだ。
+		PRINTFORMW 「じゅる、ちゅぅぅ…。んふ、もう」
+ELSEIF CFLAG:7802 == 1
+		PRINTFORMW 「？　この錠剤って…え、おしっこの…！」
+ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+		PRINTFORMW 「(あれ…さっきトイレに行っておいたのに？)」
+ELSE
+		PRINTFORMW 「(あれ…さっきトイレに行っておいたのに？)」
+ENDIF
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_63
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_64
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_65
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_66
+
+;PRINTFORMW 
+IF TALENT:妊娠 == 1 && CFLAG:70 == 1
+	IF CFLAG:7802 == 1
+			PRINTFORMW 「え？も、もぉ～お腹に赤ちゃんがいるのに…もう、次の子が欲しいんですか？さすがに…無理ですよ」
+	ELSEIF (CFLAG:7801 == 1 || CFLAG:7800) && MARK:反発刻印 < 0
+			PRINTFORMW 「ふふふ、飲んでもいですけど？お腹に赤ちゃんがいるから、意味がないですよ？」
+	ELSE
+			PRINTFORMW 「ふぇ？え、これを飲むのですか？」
+			PRINTFORMW 大妖精は、何をいっているのかという表情だった
+	ENDIF
+ELSEIF TALENT:妊娠
+
+ELSE
+	IF CFLAG:7802 == 1
+			PRINTFORMW 「薬を飲まないで、赤ちゃんが欲しいですけど…仕方がないですね。」
+			PRINTFORMW 大妖精は飲んで、%CALLNAME:MASTER%に甘えてきた
+	ELSEIF (CFLAG:7801 == 1 || CFLAG:7800) && MARK:反発刻印 < 0
+			PRINTFORMW 「こ、子供ですか？」
+			PRINTFORMW 「…ちょっと、考えさせて欲しいです…」
+	ELSEIF TALENT:淫乱
+			PRINTFORMW 「ふふふ、あなた…はやく頂戴…その薬…」
+			PRINTFORMW 「早く赤ちゃんが欲しいって私の子宮がうずくんです。」
+	ELSE
+			PRINTFORMW 「っ！？に、妊娠…！？」
+			PRINTFORMW 「い、嫌です！そ、それだけは許してください…お、お願い…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_67
+
+;PRINTFORMW 
+IF TALENT:妊娠 == 1 && CFLAG:70 == 1
+	IF CFLAG:7802 == 1
+			PRINTFORMW 「へ…そ、それを飲むんですか？」
+			PRINTFORMW 「もぉ～お腹を触ってください。ここに…あなたと私の赤ちゃんがいるんですよ。」
+	ELSE
+			PRINTFORMW 「…頭…大丈夫ですか？」
+			PRINTFORMW 「忘れたとは言わせません！」
+	ENDIF
+ELSEIF TALENT:妊娠
+
+ELSE
+	IF (CFLAG:7801 == 1 || CFLAG:7800) && MARK:反発刻印 < 0
+			PRINTFORMW 「…はい、生まれてくる赤ちゃんがかわいそうですから…」
+	ELSE
+			PRINTFORMW 「……ほ…」
+			PRINTFORMW 「本当に信じてもいいんですね。」
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_68
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_69
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_70
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_71
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_72
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_79
+
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_80
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_81
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_82
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_83
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_84
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_85
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_86
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_88
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_90
+
+;解除時
+IF TEQUIP:59 == 0
+	IF CFLAG:7803 == 1
+		PRINTFORMW 「うん、さっきの続きをしましょう」
+	ELSEIF CFLAG:7802 == 1
+		PRINTFORMW 「旦那さ…えふん、気にしないで」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+		PRINTFORMW 「これ以上は邪魔になっちゃうものね…」
+	ELSE
+		PRINTFORMW 「やっぱり裸のほうが恥ずかしいです…」
+	ENDIF
+;装着時
+ELSE
+	IF CFLAG:7803 == 1
+		PRINTFORMW 「これを着けるのね」
+		PRINTFORMW 「旦那様、これでいかがでしょうか、ふふ」
+	ELSEIF CFLAG:7802 == 1
+		PRINTFORMW 大妖精は着用したエプロンをじっと見つめている…
+		PRINTFORMW 「……はぁ。」
+	ELSEIF CFLAG:7801 == 1 || CFLAG:7800 == 1
+		PRINTFORMW 「…旦那様。…うっ、ううん！なんでもないの」
+		PRINTFORMW 「……はぁ。」
+	ELSE
+		PRINTFORMW 「裸でいるより恥ずかしいかも…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_91
+
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_92
+
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_93
+
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_4_TRAIN_MESSAGE_S_COM_MAINKOJO_94
+
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

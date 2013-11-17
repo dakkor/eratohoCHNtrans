@@ -1,0 +1,7579 @@
+;-------------------------------------------------
+;妹紅口上～どうせ私はかわいくなんかない～
+;[反抗的] [プライド高い] [抵抗] [男嫌い] [痛みに強い] [濡れにくい] 
+;[蓬莱人] [倒錯的] [Ａ敏感] [音痴] 
+;コンセプト１・自分にコンプレックスのあるもこたん
+;コンセプト２・恋愛が絡むと自分と輝夜を比較しだして勝手に鬱りだすもこたん
+;口調は儚月抄準拠　しかしいざと言う時に接吻だの伽だの契るだの言い出す
+;EX化妹紅＝不老不死でなくなった妹紅の分岐を書きたいが、いつになるやら。
+;-------------------------------------------------
+
+;-------------------------------------------------
+;口上設定雛形
+;31と31をキャラ番号に置換し、Y1を助手のキャラ番号に置換する。
+;ただし、キャラ番号が3桁未満のキャラの場合、31,Y1は1、31は001のように変える必要がある
+;そしてコマンド内の適当な条件の下のPRINTFORMWの後ろに半角スペースを置いてセリフを追加してください。
+;テンプレートが更新された際には、新しいテンプレをベースにして、
+;該等する条件のPRINTFORMWの行をコピー＆ペーストしていくことをお勧めします。（手間はかかるが、エラーは起こりえない）
+;口上を追加しないコマンドには行頭に『;』をつけましょう。後で追加した際に初めての口上が出ないなどの弊害が起こります。
+;また、口上を追加したコマンドの『;』をきちんと外しましょう。これだと条件を満たしても口上がでません
+;条件の追加や変更は自由ですが、その際には随時テストをしていくとよいでしょう。（エラーの原因は、ほぼ確実に手を加えた部分にあるため）
+;最後にできればread meも読んで下さい
+;-------------------------------------------------
+;使用フラグメモ一覧　5106はrev6ぱんくしょんで使うらしいので念のため避ける
+;CFLAG:5100 ローターを見たことがあるか
+;CFLAG:5101 アナルセックス初体験
+;CFLAG:5102 電極系初体験
+;CFLAG:5109 セックス系コマンドをしたか否か
+;CFLAG:6000 イベントフラグオン（妹紅の能力変動）
+;CFLAG:6001 最初に何目的で攫ったかと言った
+;CFLAG:6020 キャラ問わず望んだ妊娠をした
+;CFLAG:6021 主人の子供を妊娠した
+;CFLAG:6022 輝夜の子供を妊娠した
+;CFLAG:6029 バッド妊娠
+;CFLAG:6999 呼び名絡み
+;CFLAG:7000 イベントフラグオン（それ以外の能力変動）
+;CFLAG:7980 売春婦として初めて表に出た（ビラ配り含む）＆売春で輝夜が来た
+;CFLAG:7991 赤い首輪エンド輝夜フラグ、エンゲージでも赤い首輪でも使うので注意
+;CFLAG:7992 赤い首輪エンド慧音フラグ
+;CFLAG:7999 グッドエンドフラグ
+;CFLAG:8000 蓬莱人になる？
+;--------------------------------------------------------------------------------------------------------------------------
+;CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CA
+;--------------------------------------------------------------------------------------------------------------------------
+;ライセンス
+;口上の作者はこの口上についての意思表示をしてください。書かなくとも構いませんが、
+;あなたの口上が無断で口上まとめに入れられたりする恐れがあります。
+;このライセンスの基本構造または文章を改変する場合、必ず作者に申し出てください。
+;口上のオリジナルの作者であっても、指定された部分(…の後)以外を変更することはできません。
+;ただし「変更者名X…」(Xは整数とする)についてはその枠を無断で増やすことを許可します。
+;基本的に「はい」と「いいえ」で答え、「条件付のはい/いいえ」にしたい場合、その条件も明記しておいてください。
+;
+;言葉の定義
+;修正…構文のミス(IF-ENDIFなど)の修正や条件式とコメント欄の食い違い、明らかな誤字を正しい文字に修正すること。
+;加筆…PRINTFORMWを増やす等した後、PRINTFORMの後ろに文章を書き足すこと。
+;改変…それ以外のソースの変更行為。条件分岐を増やしたり、新しいエクストラ構文の追加等も含む。
+;二次配布…ソースやreadmeを全く変更せず、そのままの形または一つのファイルにまとめる形で公開すること。
+;
+;口上作者名… 鉄槌
+;変更者名1…
+;変更者名2…
+;口上を書いた人の名前です。名前が無い場合は「31スレ目>>848」等でも構いません。
+;加筆した場合などはその下の変更者名にお書きください。3人以上変更者がいる場合、
+;変更者の枠を無断で増やして構いません。
+;
+;各種変更/転載を許可する
+;修正を許可する…はい
+;加筆を許可する…はい
+;改変を許可する…いいえ（他のバリアントに適応するようにする改変は可、外国語翻訳含む）
+;二次配布を許可する…はい
+
+;修正した場合は口上作者名を変えず、必ず元作者のreadmeを同梱してください。
+;加筆/改変した場合は必ず元の作者名を明記するようにしてください。
+;また、口上のオリジナルの作者によって削除依頼が出た場合、修正、加筆、改変、二次配布者は速やかに削除しなくてはなりません。
+;
+;変更時に(各)作者のreadmeの同梱を義務付ける
+;口上作者(作者名)…はい
+;変更者1(変更者名)…
+;変更者2(変更者名)…
+;加筆、改変、二次配布等の際にreadmeを残すのを義務付けるかどうかです。
+;口上作者(作者名)…「はい/いいえ」、変更者1(変更者名)…「はい/いいえ」…という形式で1行ずつ表記してください。
+;はいの場合は必ず口上の場所と同じフォルダに(各)作者のreadmeの同梱をしてください。
+;その際、加筆、改変、二次配布者はreadme.txtの名前を変更しても構いませんが、readmeの内容を変更することはできません。
+;
+;ライセンスの継承を義務付ける…はい
+;加筆、改変、二次配布等の際にこのライセンスを書き変えてよいかどうかです。
+;はいの場合はあらゆるライセンスの表示(はい/いいえ)を勝手に変更することは許されません。
+;いいえの場合は口上作者名や変更者名、readme同梱の意思を除き変更することができます。
+;
+;
+;共通事項
+;1.この口上の出典について虚偽の表示をしてはなりません。
+;  あなたがこの口上を(テンプレートを使用して)最初から書いた場合を除き、あなたがこの口上のオリジナルの作者であると主張してはなりません。
+;2.あなたがこの口上を修正、加筆、改変、二次配布した場合は、そのことを明示しなければなりません。
+;  この口上のオリジナルの作者が新たに修正、加筆、改変した場合を除き、この口上をオリジナルの口上であるという虚偽の表示をしてはなりません。 
+;3.このライセンスの項目に空欄があった場合、原則として許可されたものとします。
+;4.あなたがこのライセンスによって禁止されていることをする場合、口上作者に連絡し許可をとる必要があります。
+;  連絡に対する口上作者の返答がない場合、原則として否定されたものとします。
+;5.あなたはこの口上を開くまたは二次配布する際に、このライセンスを読む義務があります。読まなかった等の理由によりこれらの義務を破ることは許されません。
+;
+;
+;あなたはいかなる場合であっても、以上のことに必ず従わなければなりません。
+;--------------------------------------------------------------------------------------------------------------------------
+;!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!!      CAUTION!! 
+;--------------------------------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------
+;口上ファイルの存在判定
+;--------------------------------------------------
+;口上の存在判定（YM版）
+@TRY_31
+RETURN 1
+
+;--------------------------------------------------
+;エキストラモード構文 CFLAG:5020を使用
+;-------------------------------------------------;
+@KOJO_31_EXTRA_INITIALIZATION
+IF CFLAG:5020 == 0
+	PRINTL 妹紅は貧乳だろ常識的に考えて……
+	PRINTL [0] ですよねー（貧乳化）
+	PRINTL [1] むしろ絶壁だろＪＫ（絶壁化）
+	PRINTL [2] お前は何を言っているんだ（そのまま）
+	;また胸のサイズごとにパイズリを書く作業で苦しむのか俺は
+	$INPUT_BSIZE_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―妹紅を貧乳にしました―
+		TALENT:爆乳 = 0
+		TALENT:巨乳 = 0
+		TALENT:絶壁 = 0
+		TALENT:貧乳 = 1
+		;でも輝夜が貧乳に設定されてるのに妹紅が貧乳に設定されてないのはおかしいと思います！
+	ELSEIF RESULT == 1
+		PRINTFORMW ―妹紅を絶壁にしました―
+		TALENT:爆乳 = 0
+		TALENT:巨乳 = 0
+		TALENT:貧乳 = 0
+		TALENT:絶壁 = 1
+	ELSEIF RESULT == 2
+		PRINTFORMW ―通常モードで調教を開始します―
+	ELSE
+		GOTO INPUT_BSIZE_LOOP
+	ENDIF
+	PRINTL 妹紅は男性を惹きつけることに関して今の自分を……
+	PRINTL [0] 輝夜より劣っていると「思い込んで」いる(イベントオン+初期素質に[魅力]追加)
+	PRINTL [1] 別に何か思うことがあるわけでもない（そのまま、イベントもオフ）
+	$INPUT_EVENT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTL ―[魅力]を追加―
+		PRINTW ―イベントをオンにしました―
+		CFLAG:6000 = 1
+		TALENT:魅力 = 1
+		;本人が勝手にかわいくとないと思っているだけで実際は可愛い、というわけ
+		;流石に謎の魅力には及ばないが、しかし魅惑習得イベントあり
+		SIF EXP:調理経験 < 4
+			EXP:調理経験 = 4
+		;花嫁修業をやってみて諦めた形跡（焼き鳥屋ではない）
+		PRINTL イベントによる能力変化の範囲をどうしますか？
+		PRINTL [0] 妹紅以外も
+		PRINTL [1] 妹紅のみ
+		$INPUT_EVENT_LOOP2
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW ―能力変化を全てオンにしました―
+			CFLAG:7000 = 1
+		ELSEIF RESULT == 1
+			PRINTFORMW ―能力変化を一部を除いてオンにしました―
+		ELSE
+			GOTO INPUT_EVENT_LOOP2
+		ENDIF
+	ELSEIF RESULT == 1
+		PRINTFORMW ―通常モードで調教を開始します―
+	ELSE
+		GOTO INPUT_EVENT_LOOP
+	ENDIF
+	PRINTL 妹紅と輝夜がやってるのは……
+	PRINTL [0] 殺し愛だよ（相性上昇）
+	PRINTL [1] 殺し合いだよ（そのまま）
+	$INPUT_MOKOTERULOOP
+	INPUT
+	IF RESULT == 0
+		IF RELATION:30 < 140
+			PRINTW ―輝夜との相性を上げました―
+			RELATION:30 = 140
+		ELSE
+			PRINTFORMW ―もう十分相性が上がっています―
+		ENDIF
+	ELSEIF RESULT == 1
+		PRINTFORMW ―通常モードで調教を開始します―
+	ELSE
+		GOTO INPUT_MOKOTERULOOP
+	ENDIF
+	CFLAG:5020 = 1
+ENDIF
+
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG:5001～5019を使用
+;-------------------------------------------------
+@KOJO_31_SLAVE_MESSAGE_TRAIN_START
+;輝夜が主人だと矛盾しまくるので対応してません
+SIF NO:MASTER == 30
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K31_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K31_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5021 =1
+;ENDIF
+;首輪エンディングの分岐（助手輝夜or慧音の素質チェック）
+SIF ASSI > 0 && NO:ASSI == 30 && (TALENT:ASSI:恋慕 || TALENT:ASSI:淫乱 || TALENT:ASSI:服従)
+	CFLAG:7991 = 1
+SIF ASSI > 0 && NO:ASSI == 26 && (TALENT:ASSI:恋慕 || TALENT:ASSI:淫乱 || TALENT:ASSI:服従)
+	CFLAG:7992 = 1
+;-------------------------------------------------
+;初調教時 CFLAG:5001
+;-------------------------------------------------
+;精神崩壊はまともに喋ってくれない
+IF TALENT:精神崩壊 == 1
+	CALL K31_KOJO2
+ELSEIF CFLAG:5001 == 0
+	DRAWLINE
+	PRINTFORMW 部屋に入ると、妹紅は既に目を覚ましていたらしい。腕を組んでベッドに座っている。
+	PRINTFORMW 暴れたような形跡はないが、彼女の表情は穏やかなものではない。
+	PRINTFORMW 「この家の家主でいいね？　さっそくだけど、私になんの用か聞かせてほしい」
+	PRINTFORMW 「炎は出せない、でも傷は治る――少なくとも、真っ当な要件じゃなさそうだ」
+	PRINTFORMW 挑戦的な視線の彼女に対して、
+	PRINTL [0] 売るつもりだ、と伝えた。
+	PRINTL [1] 自分のものにするつもりだと伝えた。
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 「売るねぇ。確かに、死なない人間の研究なんて買い手数多だろうけど」
+		PRINTFORMW 「……そういう目的じゃない？　性奴隷？」
+		PRINTFORMW 「それならそれで、私なんかよりずっと高値が付く奴がいるのに」
+		PRINTFORMW %CALLNAME:MASTER%の言葉を聞いた妹紅は、どこか自嘲したような笑みを浮かべている。
+		PRINTFORMW 「ま、せいぜい、私が逃げ出さないように気を遣って精神をすり減らせばいいよ」
+		CFLAG:6001 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW %CALLNAME:MASTER%の言葉を聞いた妹紅は、どこか自嘲したような笑みを浮かべている。
+		PRINTFORMW 「……自分のもの、ねぇ。随分と奇特な趣味なんだ」
+		PRINTFORMW 「私を捕まえられるくらいなら、もっと魅力的な奴を捕まえられるだろうに」
+		PRINTFORMW 「まあいい、好きにすれば？　どっちみち先に死ぬのはそっちのほうだ」
+		PRINTFORMW 「せいぜい、私が逃げ出さないように気を遣って精神をすり減らせばいいよ」
+		CFLAG:6001 = 2
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	IF ASSI > 0 && NO:ASSI == 30
+		PRINTFORMW 『あらあら、随分私は妹紅に高く買われてるのね……嬉しいわ』
+		PRINTFORMW 「え……かぐ、や？　なんでここに」
+		PRINTFORMW 『そんなの、決まってるじゃない。ねぇ……』
+		PRINTFORMW 「……うそ、だ」
+		PRINTFORMW 輝夜が%CALLNAME:MASTER%に擦り寄る様を見せると、妹紅は呼吸すら忘れていた。
+		CFLAG:5002 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 26
+		PRINTFORMW 『それは、私の精神も擦り減らすということかな？』
+		PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+		PRINTFORMW 妹紅のどこか%CALLNAME:MASTER%を馬鹿にしていたような表情が、険しいものとなった。
+		CFLAG:5003 = 1
+	;さとりんがいたらフラグだけ立てる
+	ELSEIF ASSI > 0 && NO:ASSI == 61
+		CFLAG:5004 = 1
+	ENDIF
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG:5001
+;-------------------------------------------------
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:屈服刻印 == 1 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、妹紅が暴れたような形跡があった。
+	PRINTFORMW 「そっちの実力は認めるよ、決して逃げられないようにすることのね」
+	PRINTFORMW 「でも、それだけだ。いくら調教しても私は従わない」
+	CFLAG:5001 = 2
+	IF ASSI > 0 && NO:ASSI == 30 && CFLAG:5002 == 0
+		PRINTFORMW 『ふーん、まあ逃げられないようにすることなら私も大得意ね』
+		PRINTFORMW 「え……かぐ、や？　なんでここに」
+		PRINTFORMW 『そんなの、決まってるじゃない。ねぇ……』
+		PRINTFORMW 「……うそ、だ」
+		PRINTFORMW 輝夜が%CALLNAME:MASTER%に擦り寄る様を見せると、妹紅は呼吸すら忘れていた。
+		CFLAG:5002 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 26 && CFLAG:5003 == 0
+		PRINTFORMW 『まあ、逃げられないようにすることなら私もできなくはないな』
+		PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+		PRINTFORMW 妹紅のどこか%CALLNAME:MASTER%を馬鹿にしていたような表情が、険しいものとなった。
+		CFLAG:5003 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 61 && CFLAG:5003 == 0
+		CFLAG:5004 = 1
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:屈服刻印 == 2 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 部屋に入ると、妹紅は呆れたような表情をこちらに向けてきた。
+	PRINTFORMW 「……またやるの？」
+	IF CFLAG:6001 == 1
+		PRINTFORMW 「私みたいな魅力のない女に時間を掛けるのは、効率が悪いよ」
+		PRINTFORMW 「他の女を調教したら？」
+	ELSE
+		PRINTFORMW 「私がどれほどつまらない女か、もうよく分かったはずだ」
+		PRINTFORMW 「他の女を調教したら？」
+	ENDIF
+	PRINTFORMW いくらやっても無駄だ、とは言わなかった。
+	IF ASSI > 0 && NO:ASSI == 30 && CFLAG:5002 == 0
+		PRINTFORMW 『あら、私に時間を掛けるべきって言いたいのかしら妹紅は？』
+		PRINTFORMW 「え……かぐ、や？　なんでここに」
+		PRINTFORMW 『そんなの、決まってるじゃない。ねぇ……』
+		PRINTFORMW 「……うそ、だ」
+		PRINTFORMW 輝夜が%CALLNAME:MASTER%に擦り寄る様を見せると、妹紅は呼吸すら忘れていた。
+		CFLAG:5002 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 26 && CFLAG:5003 == 0
+		PRINTFORMW 『自分を過小評価するのはあまりよくないな』
+		PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+		PRINTFORMW 妹紅のどこか%CALLNAME:MASTER%を馬鹿にしていたような表情が、険しいものとなった。
+		CFLAG:5003 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 61 && CFLAG:5003 == 0
+		CFLAG:5004 = 1
+	ENDIF
+	CFLAG:5001 = 3
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 部屋に入ると、諦めたように妹紅は溜息を吐いた。
+	PRINTFORMW 「……逃げられそうにないし、従えばいいんでしょ、従えば」
+	PRINTFORMW 「そっちがどのくらい生きるか知らないけど、生きてる限りはそれなりに従う」
+	PRINTFORMW 「さっさと寿命を迎えて死んでほしいけどね」
+	IF ASSI > 0 && NO:ASSI == 30 && CFLAG:5002 == 0
+		PRINTFORMW 『あら残念。少なくとも私の寿命は尽きないわね』
+		PRINTFORMW 「え……かぐ、や？　なんでここに」
+		PRINTFORMW 『そんなの、決まってるじゃない。ねぇ……』
+		PRINTFORMW 「……うそ、だ」
+		PRINTFORMW 輝夜が%CALLNAME:MASTER%に擦り寄る様を見せると、妹紅は呼吸すら忘れていた。
+		CFLAG:5002 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 26 && CFLAG:5003 == 0
+		PRINTFORMW 『私にも死ねって言っている……とは思いたくないな』
+		PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+		PRINTFORMW 妹紅のどこか%CALLNAME:MASTER%を馬鹿にしていたような表情が、険しいものとなった。
+		CFLAG:5003 = 1
+	ELSEIF ASSI > 0 && NO:ASSI == 61 && CFLAG:5003 == 0
+		CFLAG:5004 = 1
+	ENDIF
+	CFLAG:5001 = 4
+	RETURN 1
+
+;恋慕
+;妹紅の[倒錯的]や初期経験・カタログ解説を見ての解釈
+ELSEIF CFLAG:5001 < 5 && TALENT:恋慕
+	DRAWLINE
+	PRINTFORMW 「その……ひとつだけ、いい？」
+	PRINTFORMW 部屋に入ると、おずおずとした様子で妹紅は声を掛けてきた。
+	PRINTFORMW 「……ふと思ったんだけど、どう呼んで欲しい？　今度から、そう呼ぶよ」
+	PRINTFORMW どういうつもりだと聞くと、妹紅は今までとは似ても似つかないか細い声で妹紅は続ける。
+	PRINTFORMW 「だって、私は奴隷だから……できるだけ悦ばせるのが、仕事」
+	PRINTFORMW しおらしくなった妹紅に調教の手応えを感じながら、%CALLNAME:MASTER%は呼び名を
+	IF TALENT:MASTER:オトコ
+		PRINTL [0] 以前通りのままでいいと命じた。
+		PRINTL [1] ご主人様と呼ぶようにと命じた。
+		PRINTL [2] 我が君と呼ぶようにと命じた。
+		PRINTL [3] 主様と呼ぶようにと命じた。
+		PRINTFORML [4] %CALLNAME:MASTER%さんと呼ぶようにと命じた。
+		PRINTFORML [5] %CALLNAME:MASTER%様と呼ぶようにと命じた。
+		PRINTL [6] 旦那様と呼ぶようにと命じた。
+		PRINTL [7] お兄様と呼ぶようにと命じた。
+		PRINTL [8] 兄上と呼ぶようにと命じた。
+		PRINTL [9] 夫の君と呼ぶようにと命じた。
+	ELSE
+		PRINTL [0] 以前通りのままでいいと命じた。
+		PRINTL [1] ご主人様と呼ぶようにと命じた。
+		PRINTL [2] 我が君と呼ぶようにと命じた。
+		PRINTL [3] 主様と呼ぶようにと命じた。
+		PRINTFORML [4] %CALLNAME:MASTER%さんと呼ぶようにと命じた。
+		PRINTFORML [5] %CALLNAME:MASTER%様と呼ぶようにと命じた。
+		;貴女にしようかと思ったが、原作だと貴方なんだよな、女相手でも
+		PRINTL [6] 貴方と呼ぶようにと命じた。
+		PRINTL [7] お姉様と呼ぶようにと命じた。
+		PRINTL [8] 姉上と呼ぶようにと命じた。
+		PRINTL [9] 姉君と呼ぶようにと命じた。
+	ENDIF
+	$INPUT_NAMELOOP
+	INPUT
+	SELECTCASE RESULT
+		CASE 0
+			PRINTFORMW 「そのままでいいの？　分かったよ」
+		CASE 1
+			PRINTFORMW 「%K31_CALLNAME()%ね……順当かな。それで呼ぶ」
+		CASE 2
+			PRINTFORMW 「%K31_CALLNAME()%ね……なんか仰々しいけど、それで呼ぶ」
+		CASE 3
+			PRINTFORMW 「%K31_CALLNAME()%ね……少し呼びにくいけど順当かな。それで呼ぶ」
+		CASE 4
+			PRINTFORMW 「%K31_CALLNAME()%ね……そんなのでいいなら、それで呼ぶ」
+		CASE 5
+			PRINTFORMW 「%K31_CALLNAME()%ね……順当かな。それで呼ぶ」
+		CASE 6
+			PRINTFORMW 「%K31_CALLNAME()%……ええ、そんなのでいいの？　まぁ、それで呼ぶ」
+		CASE 7, 8, 9
+			PRINTFORMW 「%K31_CALLNAME()%……先祖が藤原なの？　まぁ、これで呼ぶ」
+		CASEELSE
+			GOTO INPUT_NAMELOOP
+	ENDSELECT
+	CFLAG:6999 = RESULT
+	PRINTFORMW 頷くと、妹紅は自分から服を脱ぎ始めた。
+	PRINTW 
+	PRINTFORMW （……愛しあうことや快楽で退屈が埋められないか試したことなんて、たくさんあった）
+	PRINTFORMW （結果は無残なものばかりで、その果てに輝夜との殺し合いが生きがいになったはずなのに）
+	PRINTFORMW （なんで今更、私はこんな感情を……恋をしてしまってるんだろう？）
+	PRINTFORMW 心中に秘めている強い想いを、抑えこみながら妹紅は服を脱いでいく。
+	PRINTFORMW （私は奴隷で、輝夜みたいな美貌があるわけじゃない）
+	PRINTFORMW （はじめてなんてとっくの昔に最悪な形で捨ててる）
+	IF CFLAG:6001 == 1
+		PRINTFORMW （ましてや、私はただの売り物だ）
+	ELSE
+		PRINTFORMW （きっと%K31_CALLNAME()%は、私を性欲の捌け口としてしか見てない）
+	ENDIF
+	PRINTFORMW （そんな私が必死に愛を告白しても、受け入れられるはず……ない）
+	PRINTFORMW （押し殺して、奴隷らしく振る舞おう……私の好意なんて、お互いを不幸にするだけだ）
+	CFLAG:5001 = 5
+	;抵抗が消える、既に抵抗がなければ献身的習得か恭順の珠追加
+	IF CFLAG:6000 == 1 && TALENT:抵抗 == 1
+		PRINTFORMW %CALLNAME:TARGET%は[抵抗]を失った
+		TALENT:34 = 0
+		CFLAG:13 |= 2
+		;否定の珠が半減する
+		IF JUEL:100
+			PRINTW 否定の珠が半分になった
+			JUEL:100 /= 2
+		ENDIF
+	ELSEIF CFLAG:6000 == 1 && TALENT:献身的 == 0
+		PRINTW 妹紅は[献身的]を得た
+		TALENT:献身的 = 1
+	ELSEIF CFLAG:6000 == 1 
+		PRINTL 恭順の珠＋5000
+		JUEL:12 += 5000
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:自制心 == 0
+		PRINTW 妹紅は[自制心]を得た
+		TALENT:自制心 = 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:悲観的 == 0
+		PRINTW 妹紅は[悲観的]を得た
+		TALENT:悲観的 = 1
+	ENDIF
+	IF ASSI > 0 && NO:ASSI == 30 && CFLAG:5002 < 2
+		IF CFLAG:5002 == 0
+			PRINTFORMW 『ふーん、私が来るまでもなく随分従順になってるのね、妹紅は』
+			PRINTFORMW 「え……かぐ、や？　なんでここに……いや、今更だ」
+		ELSE
+			PRINTFORMW 『調教の成果が出たみたいね、妹紅は』
+			PRINTFORMW 「……また来たのか、いいけど」
+		ENDIF
+		PRINTFORMW 「お前ともするのが%K31_CALLNAME()%の命令なんだな、けど、一つ聞いていい？」
+		PRINTFORMW 『何？』
+		PRINTFORMW 「輝夜と%K31_CALLNAME()%は……仲が、いいの？」
+		PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た輝夜はふんと鼻で笑い、
+		IF TALENT:ASSI:恋慕
+			PRINTFORMW 『見ての通りよ』
+		ELSE
+			PRINTFORMW 『別に、ただの助手よ』
+		ENDIF
+		PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+		PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+		PRINTFORMW そう言って全裸になった妹紅を、輝夜はつまらなさそうに見つめていた……
+		CFLAG:5002 = 2
+	ELSEIF ASSI > 0 && NO:ASSI == 26 && CFLAG:5003 < 2
+		IF CFLAG:5003 == 0
+			PRINTFORMW 『この様子だと私が来るまでもなかったんじゃないか？』
+			PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+		ELSE
+			PRINTFORMW 『調教の成果が出たらしいな』
+			PRINTFORMW 「また来たんだ、慧音」
+		ENDIF
+		PRINTFORMW 「慧音ともするのが%K31_CALLNAME()%の命令なんだな、けど、一つ聞いていい？」
+		PRINTFORMW 『何だ？』
+		PRINTFORMW 「慧音と%K31_CALLNAME()%は……仲が、いいの？」
+		PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た慧音は首を傾げながら、
+		IF TALENT:ASSI:恋慕
+			PRINTFORMW 『まあ、一応は』
+		ELSE
+			PRINTFORMW 『別に、ただの助手だ』
+		ENDIF
+		PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+		PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+		PRINTFORMW そう言って全裸になった妹紅を、慧音は納得が言ったような顔で見つめていた……
+		CFLAG:5003 = 2
+	;外道さどりんイベント
+	ELSEIF ASSI > 0 && NO:ASSI == 61 && CFLAG:5004 < 2
+		IF TALENT:ASSI:恋慕
+			PRINTFORMW 『……流石は主様、と言っておくわ。少しばかり不愉快だけど』
+		ELSE
+			PRINTFORMW 『中々面白いことを考えているのね』
+		ENDIF
+		IF CFLAG:5004 == 0
+			PRINTFORMW 「……え？　貴方、は？」
+			PRINTFORMW 『申し遅れました。私は古明地さとり……心の読める妖怪です』
+			PRINTFORMW 「！」
+		ELSE
+			PRINTFORMW 「！　お前、は……」
+			PRINTFORMW 『以前会った時に、私の能力を説明しましたね』
+		ENDIF
+		PRINTFORMW 『「なんでよりによって今」……ええ、そうね。だからこそ弄りがいがあるわ』
+		PRINTFORML 「い、いや……」
+		PRINTFORMW 『「お願い、言わないで」……さぁ？　それは今後の貴方次第ね』
+		PRINTFORML 「…………」
+		PRINTFORMW 『随分心を押し込めてしまったわね。でも、読めるけど』
+		PRINTFORMW 『貴方が隠そうとするものを私は全て知っている……しっかり覚えておくのね』
+		IF CFLAG:6000 == 1 && (TALENT:抑圧 == 0 || ABL:欲望 > 0)
+			PRINTL 妹紅は心を固く閉ざそうとするようになった
+			IF ABL:欲望 > 0
+				PRINTW 妹紅は欲望を押し込めてしまった
+				ABL:欲望 = 0
+			ENDIF
+			IF TALENT:抑圧 == 0
+				PRINTW 妹紅は[抑圧]を得た
+				TALENT:抑圧 = 1
+			ENDIF
+		ENDIF
+		IF CFLAG:6000 == 1 && (TALENT:弱味 == 0 || MARK:恐怖刻印 < 2)
+			PRINTL 妹紅はさとりの力を恐れている……
+			IF MARK:恐怖刻印 < 2
+				PRINTW 妹紅は恐怖刻印Lv2を得た
+				MARK:恐怖刻印 = 2
+			ENDIF
+			IF TALENT:弱味 == 0
+				PRINTW さとりは妹紅の[弱味]を握った
+				TALENT:弱味 = 1
+				CFLAG:12 |= 1024
+			ENDIF
+		ENDIF
+		CFLAG:5004 = 2
+	ENDIF
+	RETURN 1
+;-------------------------------------------------
+;妊娠後調教開始時（妊娠一回につき一回のみ） CFLAG6021（主人の子供妊娠とフラグ共有する）
+;なので主人の子供妊娠のみ
+;-------------------------------------------------
+;妊娠口上を二回以上見てても妊娠調教初の時はまずここにくる
+ELSEIF CFLAG:6021 == 1 && TALENT:妊娠 == 1 && CFLAG:78 == MASTER
+	DRAWLINE
+	;グッド妊娠
+	IF CFLAG:76 == 1 && TALENT:相愛 == 1
+		PRINTFORMW 「……妊娠してるのにするの？　ちょっと不安かなぁ」
+		PRINTFORMW 「生まれるまではお腹の子も私の一部だってみなされてるなら、流産とかは心配ないけどさ」
+		PRINTFORMW 「でもやっぱり精神的に嫌だ。子供がいるのにそういうことするのは」
+		PRINTFORMW 「だから無理しちゃだめ。いーい、わかった？」
+	ELSEIF CFLAG:76 == 1
+		PRINTFORMW 「あ……やっぱり調教するんだ。妊娠してても……」
+		PRINTFORMW 「そうだよね……例え自分の子供でも、私なんかが母親じゃ情も持てない……」
+		PRINTFORMW 「私は奴隷……私は奴隷……」
+		PRINTFORMW 自分に言い聞かせるように、妹紅はぶつぶつと言葉を繰り返している……
+	;バッド妊娠、つまり恋慕じゃない
+	ELSE
+		PRINTFORMW 扉の前まで来たところで、妹紅の部屋から鉄のような臭いが漂っていることに気付く。
+		PRINTFORMW 嫌な予感を感じて扉を開けると、部屋は妹紅の血に染まり真っ赤になっていた。
+		PRINTFORMW 「……久しぶりに、死ねないってことがどれだけ苦しいか思い出したよ」
+		PRINTFORMW 立ち竦む%CALLNAME:MASTER%の前で、体も自分の血に染めた妹紅がこちらを向く。
+		PRINTFORMW その腹には、明らかに何かで抉ったような痕がある……
+		PRINTFORMW 「質の悪いことに、お腹の子供も産むまでは自分の体として扱わられるらしくて」
+		PRINTFORMW 「腹を裂いて無理やり堕ろそうとしても堕ろせない」
+		PRINTFORMW 「ほんと最悪だ、不老不死なんて……」
+		PRINTFORMW それだけ言うと、妹紅は未だ血を噴き出している腹を気にせずに寝転んだ……
+		IF BASE:0 > 501
+			PRINTL 
+			PRINTFORMW 妹紅は消耗した
+			BASE:0 = 501
+		ENDIF
+	ENDIF
+	CFLAG:6021 = 2
+	RETURN 1
+
+;また妊娠したときに2か4の場合、妊娠口上でフラグを3にする→ここが出る
+ELSEIF CFLAG:6021 == 3 && TALENT:妊娠 == 1 && CFLAG:78 == MASTER
+	DRAWLINE
+	;グッド妊娠
+	IF CFLAG:76 == 1 && TALENT:相愛 == 1
+		PRINTFORMW 「……前の子の時も妊娠してるのに来たよね」
+		PRINTFORMW 「もしかして%K31_CALLNAME()%、お腹の子に愛し合ってるとこ見せたいとか思う性格？」
+		PRINTFORMW 「私はそういうの嫌いかなぁ……自分の腕とかだったら切り落とすのも平気なんだけど」
+		PRINTFORMW 「ともかく、この子のためにも無理しちゃ駄目だ。いーい、わかった？」
+	ELSEIF CFLAG:76 == 1
+		PRINTFORMW （前も、自分の子供を孕ませたのに%K31_CALLNAME()%は調教をやめなかった）
+		PRINTFORMW （だから、今回も意に介するはずがない。分かったけど……）
+		PRINTFORMW （やっぱり、私は奴隷でしかないんだ……）
+	;バッド妊娠、つまり恋慕じゃない
+	ELSE
+		;売ると言った
+		IF CFLAG:6001 == 1
+			PRINTFORMW 「……売るつもりとか言ってた癖に、何度も孕ませてるけど」
+			PRINTFORMW 「なに？　私の売値があんまりにも低くてヤケにでもなった？」
+			PRINTFORMW 「どうでもいいけどね……もう。蓬莱人の私は子供を堕ろせないんだし……」
+		ELSE
+			PRINTFORMW 「……私を自分のものにしたいと思う割には、子供には頓着しないんだねぇ」
+			PRINTFORMW 「それとも執着してるのは私だけで、孕ませるのは屈服させる手段ってこと？」
+			PRINTFORMW 「だとしたら効果的だ。もう、怒り覚える余裕すらない……」
+		ENDIF
+	ENDIF
+	CFLAG:6021 = 4
+	RETURN 1
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0
+	CALL K31_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上 CFLAG:5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;助手
+;輝夜
+ELSEIF NO:ASSI == 30 && CFLAG:5002 == 0
+	DRAWLINE
+	;妹紅が相愛＝妹紅が自分自身に自信がある
+		IF TALENT:相愛
+			PRINTFORMW 「あ、輝夜もここにいたのか」
+			PRINTFORMW 『ふーん、私を見ても随分動じないのねぇ』
+			PRINTFORMW 「輝夜と殺しあうだけが、生きがいじゃないって気付いたから」
+			PRINTFORMW 『むっ……言うじゃない。あんまりバカにするとこの人とっちゃうわよ？』
+			PRINTFORMW 「それは無理だ。だって、%K31_CALLNAME()%は私と添い遂げるんだから♪」
+			CFLAG:5002 = 3
+	;恋慕＋恋慕時初口上（陥落イベント）が発生済み＋グッドエンドフラグオン
+		ELSEIF TALENT:恋慕 && CFLAG:5001 >= 5 && CFLAG:7999 == 1
+			PRINTFORMW 『ふーん、私が来るまでもなく随分従順になってるのね、妹紅は』
+			PRINTFORMW 「え……かぐ、や？　なんでここに……いや、今更だ。始めよう」
+			PRINTFORMW （輝夜なら、きっと父上のように容易く%K31_CALLNAME()%を篭絡してしまうんだろうな）
+			PRINTFORMW （でも、いい。一番じゃなくてもいい。ただ来てもらえるだけで、幸せだ）
+			CFLAG:5002 = 3
+	;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		ELSEIF TALENT:恋慕 && CFLAG:5001 >= 5
+			PRINTFORMW 『ふーん、私が来るまでもなく随分従順になってるのね、妹紅は』
+			PRINTFORMW 「え……かぐ、や？　なんでここに……いや、今更か。始める前に一つ聞いていいか？」
+			PRINTFORMW 『何？』
+			PRINTFORMW 「輝夜と%K31_CALLNAME()%は……仲が、いいの？」
+			PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た輝夜はふんと鼻で笑い、
+			IF TALENT:ASSI:恋慕
+				PRINTFORMW 『見ての通りよ』
+			ELSE
+				PRINTFORMW 『別に、ただの助手よ』
+			ENDIF
+			PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+			PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+			PRINTFORMW そう言って全裸になった妹紅を、輝夜はつまらなさそうに見つめていた……
+			CFLAG:5002 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 『お久しぶり。気分はどうかしら、妹紅？』
+			PRINTFORMW 「え……かぐ、や？　なんでここに」
+			PRINTFORMW 『そんなの、決まってるじゃない。ねぇ……』
+			PRINTFORMW 「……うそ、だ」
+			PRINTFORMW 輝夜が%CALLNAME:MASTER%に擦り寄る様を見せると、妹紅は呼吸すら忘れていた。
+			CFLAG:5002 = 1
+		ENDIF
+			RETURN 1
+
+;相愛
+ELSEIF NO:ASSI == 30 && CFLAG:5002 < 3 && TALENT:相愛
+	DRAWLINE
+	PRINTFORMW 「なんだ、また来たのか」
+	PRINTFORMW 『ふーん、私を見ても随分動じなくなったのねぇ』
+	PRINTFORMW 「輝夜と殺しあうだけが、生きがいじゃないって気付いたから」
+	PRINTFORMW 『むっ……言うじゃない。あんまりバカにするとこの人とっちゃうわよ？』
+	PRINTFORMW 「それは無理だ。だって、%K31_CALLNAME()%は私と添い遂げるんだから♪」
+	CFLAG:5002 = 3
+	RETURN 1
+
+;恋慕＋恋慕時初口上（陥落イベント）が発生済み＋まだグッドエンドフラグが立ってない
+ELSEIF NO:ASSI == 30 && CFLAG:5002 == 1 && TALENT:恋慕 && CFLAG:5001 >= 5 && CFLAG:7999 == 0
+	DRAWLINE
+	PRINTFORMW 『調教の成果が出たみたいね、妹紅は』
+	PRINTFORMW 「……また来たのか、いいけど。始める前に一つ聞いていい？」
+	PRINTFORMW 『何？』
+	PRINTFORMW 「輝夜と%K31_CALLNAME()%は……仲が、いいの？」
+	PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た輝夜はふんと鼻で笑い、
+	IF TALENT:ASSI:恋慕
+	PRINTFORMW 『見ての通りよ』
+	ELSE
+		PRINTFORMW 『別に、ただの助手よ』
+	ENDIF
+	PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+	PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+	PRINTFORMW そう言って全裸になった妹紅を、輝夜はつまらなさそうに見つめていた……
+	CFLAG:5002 = 2
+	RETURN 1
+	
+;慧音
+ELSEIF NO:ASSI == 26 && CFLAG:5003 == 0
+	DRAWLINE
+	;妹紅が相愛＝妹紅が自分自身に自信がある
+		IF TALENT:相愛
+			PRINTFORMW 「なーんだ、慧音までここにいたのか」
+			PRINTFORMW 『むっ……その言いようは、堪えるな』
+			PRINTFORMW 「だって、慧音お邪魔虫だよ？」
+			IF TALENT:ASSI:恋慕
+				PRINTFORML 『…………』
+				PRINTFORMW 「ご、ごめんごめん、いていいよ慧音、だから泣かないで！」
+			ELSE
+				PRINTFORML 『……帰る』
+				PRINTFORMW 「ご、ごめん、言い過ぎた、三人で楽しもうよ、ね！」
+			ENDIF
+			CFLAG:5003 = 3
+	;恋慕＋恋慕時初口上（陥落イベント）が発生済み＋グッドエンドフラグがもう立っている
+		ELSEIF TALENT:恋慕 && CFLAG:5001 >= 5 && CFLAG:7999 == 1
+			PRINTFORMW 『ふーん、私が来るまでもなく随分従順になってるのね、妹紅は』
+			PRINTFORMW 「え……慧音？　どういう……いや、今更だ。始めよう」
+			PRINTFORMW （こうして見ると、慧音は綺麗だ。それなり人付き合いもいいし、%K31_CALLNAME()%を、とられるかも）
+			PRINTFORMW （でも、いい。一番じゃなくてもいい。ただ来てもらえるだけで、幸せだ）
+			CFLAG:5003 = 3
+	;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		ELSEIF TALENT:恋慕 && CFLAG:5001 >= 5
+			PRINTFORMW 『妹紅のこの落ち着きようだと様子だと私が来るまでもなかったんじゃないか？』
+			PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+			PRINTFORMW 「慧音ともするのが%K31_CALLNAME()%の命令なんだな、けど、一つ聞いていい？」
+			PRINTFORMW 『何だ？』
+			PRINTFORMW 「慧音と%K31_CALLNAME()%は……仲が、いいの？」
+			PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た慧音は首を傾げながら、
+			IF TALENT:ASSI:恋慕
+				PRINTFORMW 『まあ、一応は』
+			ELSE
+				PRINTFORMW 『別に、ただの助手だ』
+			ENDIF
+			PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+			PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+			PRINTFORMW そう言って全裸になった妹紅を、慧音は納得が言ったような顔で見つめていた……
+			CFLAG:5003 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 『なんだ、元気そうだな』
+			PRINTFORMW 「え……慧音？　どういう……いや、そういうことか」
+			PRINTFORMW 妹紅のどこか%CALLNAME:MASTER%を馬鹿にしていたような表情が、険しいものとなった。
+			CFLAG:5003 = 1
+		ENDIF
+			RETURN 1
+;相愛
+ELSEIF NO:ASSI == 26 && CFLAG:5003 < 3 && TALENT:相愛
+	DRAWLINE
+	PRINTFORMW 「なんだ、慧音まで来たんだ」
+	PRINTFORMW 『むっ……その言いようは、堪えるな』
+	PRINTFORMW 「だって、慧音お邪魔虫だよ？」
+	IF TALENT:ASSI:恋慕
+		PRINTFORML 『…………』
+		PRINTFORMW 「ご、ごめんごめん、いていいよ慧音、だから泣かないで！」
+	ELSE
+		PRINTFORML 『……帰る』
+		PRINTFORMW 「ご、ごめん、言い過ぎた、三人で楽しもうよ、ね！」
+	ENDIF
+	CFLAG:5003 = 3
+	RETURN 1
+;恋慕＋恋慕時初口上（陥落イベント）が発生済み＋グッドエンドフラグがまだ立ってない
+ELSEIF NO:ASSI == 26 && CFLAG:5003 == 1 && TALENT:恋慕 && CFLAG:5001 >= 5 && CFLAG:7999 == 0
+	DRAWLINE
+	PRINTFORMW 『妹紅のこの落ち着きよう、調教の成果が出たらしいな』
+	PRINTFORMW 「また来たんだ、慧音。一つ聞いていい？」
+	PRINTFORMW 『何だ？』
+	PRINTFORMW 「慧音と%K31_CALLNAME()%は……仲が、いいの？」
+	PRINTFORMW 捨てられた子犬のような目をしながら、問いかける。それを見た慧音は首を傾げながら、
+	IF TALENT:ASSI:恋慕
+		PRINTFORMW 『まあ、一応は』
+	ELSE
+		PRINTFORMW 『別に、ただの助手だ』
+	ENDIF
+	PRINTFORMW と答えた。妹紅はそれになんとも言えない反応を表に出しかけて……それを、押し殺す。
+	PRINTFORMW 「わかった、いや、ただ興味本位で聞いてみただけ、じゃあ始めようよ」
+	PRINTFORMW そう言って全裸になった妹紅を、慧音は納得が言ったような顔で見つめていた……
+	CFLAG:5003 = 2
+	RETURN 1
+;さとり
+;外道さどりんイベント
+ELSEIF NO:ASSI == 61 && CFLAG:5004 < 2 && CFLAG:7999 == 0 && TALENT:恋慕 && TALENT:相愛 == 0
+	DRAWLINE
+	IF TALENT:ASSI:恋慕
+		PRINTFORMW 『その主様への視線……予想通りの心なのは、少しばかり癪ね』
+	ELSE
+		PRINTFORMW 『その視線……あら、やはり予想通りの心だったわね』
+	ENDIF
+	IF CFLAG:5004 == 0
+		PRINTFORMW 「……？　貴方は？」
+		PRINTFORMW 『申し遅れました。私は古明地さとり……心の読める妖怪です』
+		PRINTFORMW 「！」
+	ELSE
+		PRINTFORMW 「！　お前、は……」
+		PRINTFORMW 『以前会った時に、私の能力を説明しましたね』
+	ENDIF
+	PRINTFORMW 『今の貴方は……』
+	PRINTFORML 「だ、だめ！」
+	PRINTFORMW 『「お願い、言わないで」……さぁ？　それは今後の貴方次第ね』
+	PRINTFORMW 「…………」
+	PRINTFORMW 『随分心を押し込めてしまったわね。でも、読めるけど』
+	PRINTFORMW 『貴方が隠そうとするものを私は全て知っている……しっかり覚えておくのね』
+	IF CFLAG:6000 == 1 && (TALENT:抑圧 == 0 || ABL:欲望 > 0)
+		PRINTL 妹紅は心を固く閉ざそうとするようになった
+		IF ABL:欲望 > 0
+			PRINTW 妹紅は欲望を押し込めてしまった
+			ABL:欲望 = 0
+		ENDIF
+		IF TALENT:抑圧 == 0
+			PRINTW 妹紅は[抑圧]を得た
+			TALENT:抑圧 = 1
+		ENDIF
+	ENDIF
+	IF CFLAG:6000 == 1 && (TALENT:弱味 == 0 || MARK:恐怖刻印 < 2)
+		PRINTL 妹紅はさとりの力を恐れている……
+		IF MARK:恐怖刻印 < 2
+			PRINTW 妹紅は恐怖刻印Lv2を得た
+			MARK:恐怖刻印 = 2
+		ENDIF
+		IF TALENT:弱味 == 0
+			PRINTW さとりは妹紅の[弱味]を握った
+			TALENT:弱味 = 1
+			CFLAG:12 |= 1024
+		ENDIF
+	ENDIF
+	CFLAG:5004 = 2
+	RETURN 1
+
+ELSEIF NO:ASSI == 61 && CFLAG:5004 == 0 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「……？　貴方は？」
+	PRINTFORMW 『申し遅れました。私は古明地さとり……心の読める妖怪です』
+	IF TALENT:服従 || TALENT:淫乱 || TALENT:抵抗 == 0
+		PRINTFORMW 「……こんな妖怪まで連れてくるなんて、どういう趣味なんだか」
+		SIF TALENT:ASSI:恋慕
+			PRINTFORMW 『決まっているわ。主様は、貴方の心までも犯したいの』
+	ELSE
+		PRINTFORMW 「やめておいた方がいいよ。貴方の脇にいる相手が、さんざん罵られるのを見ることになる」
+		IF TALENT:ASSI:恋慕
+			PRINTFORMW 『本心のようね。少しばかりこの奴隷は難儀な相手だわ、主様』
+		ELSE
+			PRINTFORMW 『手強い子ね。まぁ、それくらいの方がやりがいがあるのかもしれないけれど』
+		ENDIF
+	ENDIF
+	CFLAG:5004 = 2
+	RETURN 1
+
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K31_KOJO2
+ENDIF
+	
+;-------------------------------------------------
+;調教開始時（2回目以降） CFLAGなし 
+;-------------------------------------------------
+@K31_KOJO2
+;精神崩壊
+IF TALENT:精神崩壊 == 1
+	DRAWLINE
+	PRINTFORMW 「あー、あー……」
+	PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、妹紅は涎を垂らしながら赤ん坊のように手を動かしていた。
+	PRINTFORMW 服を脱がし始めると、妹紅は首を傾げた後、また手を動かす作業に没頭していった……
+	RETURN 1
+
+;反発刻印Lv2以上
+ELSEIF MARK:反発刻印 >= 2
+	DRAWLINE
+	IF TALENT:相愛
+		PRINTFORMW 「ちょっと最近の%K31_CALLNAME()%はひどすぎだ」
+		PRINTFORMW 「もう少し、方法を考え直して欲しいよ」
+	ELSEIF TALENT:恋慕
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、悲しそうに妹紅は目を背けた。
+	ELSE
+		PRINTFORMW 部屋に入るやいなや、突如鋭い何かが風切り音と共に飛んでくる。
+		PRINTFORMW とっさに首を傾けると、舌打ちが耳に響いた。
+		PRINTFORMW 「ちぇっ、外れた。ま、どうせならこんなのじゃなくて私の肝を食わせてやりたいけどね」
+		PRINTFORMW 「私が味わった苦しみ、じっくりと味わわせることができるから」
+		PRINTFORMW 妹紅の言葉を聞き流しながら、彼女が投げたものを拾い上げる。
+		PRINTFORMW ……それは、妹紅が自分の骨を取り出して作った短刀だった。
+	ENDIF
+	RETURN 1
+
+;相愛
+ELSEIF TALENT:相愛
+	DRAWLINE
+	IF RAND:2 == 0 && TALENT:妊娠 && CFLAG:76 == 1
+		PRINTFORMW 「私の体を気遣う必要なんてないけど、お腹の子供は気遣ってね%K31_CALLNAME()%」
+		PRINTFORMW 妹紅は部屋に入ってきた%CALLNAME:MASTER%の前で指を立てて、そう言った。
+	ELSEIF RAND:2 == 0 && TALENT:妊娠 == 0
+		PRINTFORMW 「言うまでもないけど私の体を気遣う必要なんてないよ、%K31_CALLNAME()%！」
+		PRINTFORMW 「痛すぎるのはさすがに無理だけど、そっちが満足するまで死ぬほど愛していい」
+	ELSE
+		PRINTFORMW 「体に気をつけてね。いや、私のじゃなくて、%K31_CALLNAME()%の体」
+		PRINTFORMW 妹紅の言葉に、思わず苦笑した。
+	ENDIF
+	RETURN 1
+
+
+;グッド妊娠（主人以外との子）
+ELSEIF TALENT:妊娠 && CFLAG:76 == 1
+	DRAWLINE
+	IF TALENT:恋慕
+		PRINTFORMW （無茶はしない……よね？）
+		PRINTFORMW 妹紅は自分の腹と%CALLNAME:MASTER%を見比べて、不安そうにため息を吐いた。
+	ELSE
+		PRINTFORMW 「……無茶した結果お腹の子が傷付くようなことがあったら、許さない」
+		PRINTFORMW 妹紅は自分の腹と%CALLNAME:MASTER%を見比べた後、小さいながらも鋭い声でそう言ってきた。
+	ENDIF
+	RETURN 1
+	
+;恋慕
+ELSEIF TALENT:恋慕
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 「私の番？　分かった」
+		PRINTFORMW %CALLNAME:MASTER%を見ると、妹紅は自分から服を脱いでいく。
+		PRINTFORMW いつも通りの、いつもと変わらない行動。
+		PRINTFORMW だがなぜか、その様子はどこか嬉しそうに見えた。
+	ELSEIF TALENT:親愛
+		PRINTFORMW 「来てくれたんだ。じゃあ、やろう」
+		PRINTFORMW %CALLNAME:MASTER%を見た瞬間、妹紅の顔がにこりと微笑んだ。
+	ELSE
+		PRINTFORMW 「……あ」
+		PRINTFORMW %CALLNAME:MASTER%を見た瞬間、妹紅の顔がほころんだように見えた。
+		PRINTFORMW しかし、今はいつもどおりの顔に戻っている。面影はない。
+	ENDIF
+	RETURN 1
+
+;服従
+ELSEIF TALENT:服従
+	PRINTFORMW 「私の番？　分かった」
+	PRINTFORMW %CALLNAME:MASTER%を見ると、妹紅はさも当然とばかりに自分から服を脱いでいった。
+
+;屈服刻印Lv1以下
+ELSEIF MARK:屈服刻印 < 2
+	DRAWLINE
+	PRINTFORMW 妹紅の服に手をかけて脱がそうとすると、盛大な平手打ちを喰らった。
+	PRINTFORMW 「悪いけどたっぷり時間稼がせてもらう。私と違ってそっちは時間が有限なんだ」
+	PRINTFORMW その後、暴れる妹紅を抑えつけるのに時間を消耗してしまった……
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW 「私の裸なんて見て喜ぶのは、相手に困ってるやつしかいないと思うけどね」
+	PRINTFORMW 妹紅の服に手をかけて脱がそうとすると、皮肉げな声が聞こえてきた。
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:屈服刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「はいはい、さっさと脱げばいいんでしょ」
+	PRINTFORMW 速度が恐ろしく遅く時間稼ぎの意図が見え見えだったが、妹紅は自分から服を脱ぎ始めた。
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_31_SLAVE_MESSAGE_TRAIN_END
+SIF NO:MASTER == 30
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K31_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K31_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;精神崩壊
+IF TALENT:精神崩壊 == 1
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%が服を着せ始めていくと、妹紅は濁った瞳で周囲を見渡し始めた。
+	PRINTFORMW 見渡す、だけだった。
+	RETURN 1
+
+;反発刻印Lv2以上
+ELSEIF MARK:反発刻印 >= 2
+	DRAWLINE
+	IF TALENT:恋慕
+		PRINTFORMW 終りを告げると、妹紅はこちらから目を逸らして眠りに就いた。
+	ELSE
+		;最初に売ると答えた
+		IF CFLAG:6001 == 1
+			PRINTFORMW 「さっさと私を売り払ってくれない？　さすがにお前より屑な奴はいないだろうし」
+		ELSE
+			PRINTFORMW 「まだ、売り払われた方が幸せそうだ。　さすがにお前より屑な奴はいないだろうし」
+		ENDIF
+	ENDIF
+	RETURN 1
+
+;恋慕＋体力350未満
+ELSEIF TALENT:恋慕 && BASE:0 < 350
+	DRAWLINE
+	IF TALENT:妊娠 && CFLAG:76 == 1
+		IF TALENT:親愛 || TALENT:相愛
+			PRINTFORMW 「私はこれくらいされても平気だけど、この子は嫌なんじゃないかな……」
+		ELSE
+			PRINTFORMW （私はこれくらいされても平気だけど、この子は嫌なんじゃないかな……）
+		ENDIF
+		PRINTFORMW 妹紅のこちらを見る目は、どこか険しい……
+	ELSE
+		PRINTFORMW 「さすがに死なない私でもこれは筋肉痛になるかも。まぁ、頑張ってすぐ治すよ」
+		SIF TALENT:親愛 || TALENT:相愛
+			PRINTFORMW 「だから、また来てほしい」
+		PRINTFORMW 疲れた様子こそ見せているが、特に寝転ぶ様子も無く立ったままなのは流石と言うべきか。
+	ENDIF
+	RETURN 1
+
+;相愛
+ELSEIF TALENT:相愛
+	DRAWLINE
+	IF TALENT:妊娠 && CFLAG:76 == 1
+		PRINTFORMW 「これくらいならお腹の子も気にしない……かな？」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「もうおしまい？　私はこれくらいなんともないのに」
+		PRINTFORMW 「……それでも終わらせたいって言うなら仕方ない。最後に、手を握ってほしい」
+		PRINTFORMW 言うとおり妹紅の手に指を絡めると、嬉しそうに妹紅は笑った。
+	ELSE
+		PRINTFORMW 「私は大丈夫。そっちの疲れがとれたら、いつでも来て」
+		PRINTFORMW 「%K31_CALLNAME()%は私の、生きがいだから」
+	ENDIF
+	RETURN 1
+
+;グッドエンドフラグイベント・輝夜編
+ELSEIF ASSI > 0 && NO:ASSI == 30 && CFLAG:5002 == 2 && TALENT:恋慕 && CFLAG:7999 == 0
+	DRAWLINE
+	PRINTFORML 終りを告げると、輝夜が妹紅と二人きりで話をしたいと言ってきた。
+	PRINTFORMW とりあえず戸締りを確認してから、細事は彼女に任せ先に部屋から出ることにする。
+	PRINTL 
+	PRINTFORMW 「輝夜、話って……何？　からかいにでもきたの？」
+	PRINTFORML 『いいえ、真面目な話をするわ。妹紅はあの人の事、好きなのよね』
+	PRINTFORMW 「ぶっ！？　あ、あの人って……」
+	PRINTFORML 『決まってるでしょ、妹紅が%K31_CALLNAME()%って呼んでるあの人よ』
+	PRINTFORMW 「…………」
+	PRINTFORML 『なのに妹紅はそれを言わない。それどころか気持ちを押し込もうとしてる。なぜ？』
+	IF TALENT:ASSI:恋慕 && TALENT:ASSI:相愛 == 0
+		PRINTFORML 「なんでそんなこと……輝夜だって好きなんじゃ」
+		PRINTFORMW 『ええ。もちろん、好きよ。愛してるわ。自分だけのものにしたい』
+		PRINTFORML 『……けどね、私はその気持ちをはっきり言っている』
+		PRINTFORMW 『なのに妹紅は自分の気持ちを隠すどころか、その気持ちをなくすことすら望んでいる』
+		PRINTFORM 『これじゃ対等じゃないし、
+	ELSE
+		PRINTFORMW 「…………」
+		PRINTFORM 『……いつもの強気は、どうしたのよ。その、
+	ENDIF
+	PRINTFORMW 私に張り合おうとしない貴女が何よりも気にくわない』
+	PRINTFORML 「輝夜には、関係ない」
+	PRINTFORMW 『あるわ。私がどう思ってるか、聞いてきたのは妹紅でしょう？』
+	IF TALENT:ASSI:相愛
+		PRINTFORMW 『本当は思ってるんでしょう？　取られっぱなしは嫌だって。素直になりなさいよ』
+	ELSE
+		PRINTFORMW 『本当は思ってるんでしょう？　私に取られたくないって。素直になりなさいよ』
+	ENDIF
+	PRINTFORML 「殺し合いならともかく、恋愛沙汰じゃ私が輝夜に勝てるはず……』
+	PRINTFORMW 『もう、そういう態度が気にくわないって言ってんのよっ！』
+	PRINTW 
+	PRINTFORMW ……二人を置き去りにした部屋から凄まじい怒鳴り声が聞こえてくる。大丈夫だろうか？
+	PRINTL 
+	PRINTFORML 『ああ、そういうつもりだって言うならいいわよ。私は好き放題やらせてもらうわ』
+	PRINTFORMW 「…………」
+	PRINTFORML 『あの人を手に入れた暁には、二人で月に帰ろうかしら。妹紅の手の届かないところへ』
+	PRINTFORMW 「…………！」
+	PRINTFORML 『妹紅は地べたに這い蹲る醜い地上人らしく、何もかもにおいて私に敗北する』
+	PRINTFORMW 「……うる……さいっ」
+	PRINTFORMW 『あの人も私に奪われるだけ、父親のように。母親に申し訳ないと思わないの！？』
+	PRINTFORML 「ころ……して……やる！」
+	PRINTFORMW 『ぐっ！　……やっとかしら、手間のかかる……』
+	PRINTL 
+	PRINTFORMW 部屋に戻ると、妹紅が輝夜の首を締めていた。慌てて引き離す。
+	PRINTFORMW 妹紅はこれ以上無い憤怒を全身で表現していたが――なぜか、輝夜は満足した表情だった。
+	PRINTL 
+	PRINTFORMW 妹紅はある程度自分の気持ちを表に出すようになった
+	CFLAG:5002 = 3
+	CFLAG:7999 = 1
+	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:抑圧 = 0
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:魅惑 == 0
+		PRINTFORML 取られたくない気持ちから、%CALLNAME:TARGET%は魅力的に見えるよう努力するようになった
+		PRINTFORMW %CALLNAME:TARGET%は魅惑を習得した
+		TALENT:魅惑 = 1
+	ENDIF
+	RETURN 1
+
+;グッドエンドフラグイベント・慧音編
+;儚月抄の敬語慧音は敢えて無視する
+ELSEIF ASSI > 0 && NO:ASSI == 26 && CFLAG:5003 == 2 && TALENT:恋慕 && CFLAG:7999 == 0
+	DRAWLINE
+	PRINTFORML 終りを告げると、慧音が妹紅と二人きりで話をしたいと言ってきた。
+	PRINTFORMW とりあえず戸締りを確認してから、細事は彼女に任せ先に部屋から出ることにする。
+	PRINTL 
+	PRINTFORMW 「それで慧音、話とは何？」
+	PRINTFORML 『ストレートに聞くが、妹紅はあの人が好きなんだな？』
+	PRINTFORMW 「ぶっ！？　あ、あの人って……」
+	PRINTFORMW 『決まってるだろう、妹紅が%K31_CALLNAME()%と呼んでるあの人だ』
+	PRINTFORMW 「……それが、何」
+	PRINTFORMW 『なんで気持ちを言わないどころか、我慢してるんだ？』
+	IF TALENT:ASSI:恋慕 && TALENT:ASSI:相愛 == 0
+		PRINTFORML 「なんでそんなこと……慧音だって好きなんじゃ」
+		PRINTFORMW 『妹紅もあの人を好きになることくらい個人の自由だ。浮気などを責められる境遇でもない』
+		PRINTFORMW 『私が聞きたいのは、なぜ妹紅は自分の気持ちをなくそうとすらしているのか、だ』
+	ENDIF
+	PRINTFORMW 「慧音には、関係ない」
+	PRINTFORMW 『……否定はしないってことは、好きなことは確かなんだな』
+	PRINTFORML 「！！！　カマかけたの！？」
+	PRINTFORML 『ああ』
+	PRINTFORMW 「…………」
+	PRINTFORMW 『理由くらい教えてくれてもいいだろ？　岩笠の話を気にしなくていいと言ったのも妹紅だ』
+	PRINTFORMW 「……だって私は、かわいくないから。父親の気さえ引けず、輝夜に取られた駄目な娘だ」
+	PRINTFORMW 「そんな私が好きになっても、%K31_CALLNAME()%に迷惑になるだけ。だから、奴隷でいないと……」
+	PRINTFORML 『……なんだ。そんなことか』
+	PRINTFORMW 「そんなこととはなんだ、そんなこととは！」
+	PRINTFORMW 『そんなことだ。外見に関してなら妹紅が羨ましい、手入れしなくても美貌が保てるだろ？』
+	PRINTFORML 「……美貌だなんて、嘘だ。私は慧音みたいにスタイルがいいわけでもないし」
+	PRINTFORMW 『妹紅。竹林でお前に案内された者が、お前をどう評していたかわかるか？』
+	PRINTFORML 「え？」
+	PRINTFORMW 『聞いたら化粧っけはないが美人だった、とさ。だから自信を持っていいんだ」
+	PRINTFORMW 「…………」
+	PRINTFORML 『だから自分の気持ちをはっきり言って……』
+	PRINTFORMW 「言うつもりは、ないよ」
+	PRINTFORML 『……私が言ってることは、つまりな』
+	PRINTFORMW 「だって私は、%K31_CALLNAME()%の側にいられるだけでも落ち着く……今の関係を気に入ってる」
+	PRINTFORMW 「だから言わなくていい。私の存在が迷惑になってないならそれで、好きなだけでいいんだ」
+	PRINTFORMW 『……はぁ。これでもまぁ、一歩前進してはいるのか』
+	PRINTL 
+	PRINTFORMW 妹紅はある程度自分の気持ちに素直になった
+	CFLAG:5003 = 3
+	CFLAG:7999 = 1
+	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:抑圧 = 0
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:魅惑 == 0
+		PRINTFORMW 心を押し込めようとしなくなったことで、%CALLNAME:TARGET%はより魅力的に見えるようになった
+		PRINTFORMW %CALLNAME:TARGET%は[魅惑]を習得した
+		TALENT:魅惑 = 1
+	ENDIF
+	RETURN 1
+
+;親愛
+ELSEIF RAND:2 == 0 && TALENT:親愛 && TALENT:妊娠 == 0
+	DRAWLINE
+	PRINTFORMW 「……出来る限り早く、また来て」
+	PRINTFORMW ぽつりと小さく、妹紅は呟いた。
+	RETURN 1
+
+;恋慕
+ELSEIF RAND:2 == 0 && TALENT:恋慕 && BASE:0 > 650
+	DRAWLINE
+	IF TALENT:妊娠 && CFLAG:76 == 1
+		PRINTFORMW （もしかして……お腹の子を気遣って、早めに切り上げてくれてる？）
+	ELSE
+		PRINTFORMW 「え……もういいの、%K31_CALLNAME()%？　私は大丈夫なのに」
+		PRINTFORMW どこか寂しそうに、妹紅は声を漏らした。
+	ENDIF
+	RETURN 1
+		
+;恋慕or服従
+ELSEIF (TALENT:恋慕 || TALENT:服従)
+	DRAWLINE
+	PRINTFORMW 「片付けは、私がする。私の体は丈夫なんだ、これくらいしてもまだ平気で動けるよ」
+	RETURN 1
+
+;屈服刻印Lv1以下
+ELSEIF MARK:屈服刻印 <= 1
+	DRAWLINE
+	PRINTFORMW 「さて、体洗ってきてさっさと服を着て寝よう」
+	PRINTFORMW 妹紅は%CALLNAME:MASTER%が目に入っていないかのように、のんびりとあくびをした。
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW 「どうせ、私なんかじゃ満足できてないんじゃない？　知ったことじゃないけど」
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「よく私なんかに手間暇かけられるねぇ……」
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係
+;コマンド実行時に出力されます
+;--------------------------------------------------
+@KOJO_31_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ・猿轡(?)・触手口辱時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 && (SELECTCOM != 226 && SELECTCOM != 229 && SELECTCOM != 506 && SELECTCOM != 509 && SELECTCOM != 560 && SELECTCOM != 588)
+	RETURN 0
+;触手貫通時にも口上をスキップ　アナルローターとフラグ兼用なので一捻り
+SIF TEQUIP:90 && TEQUIP:25 == 3 && (SELECTCOM != 524 && SELECTCOM != 560)
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+
+;精神崩壊時の反応
+IF TALENT:精神崩壊 == 1
+	IF RAND:6 == 0
+		PRINTFORMW 「かぐ、や……」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「あつい……さむい……くすくすっ」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「……かわ、いい」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「……ふあっ」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「もえ、てる……」
+	ELSE
+		PRINTFORMW 「…………」
+	ENDIF
+	RETURN 0
+ENDIF
+
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K31_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K31_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG:9000～9999を使用（コマンド番号＋9000）
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG:9000
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:9000 == 0
+		IF TALENT:恋慕
+			PRINTFORMW 「うん、好きなだけ触っていいよ……」
+			PRINTFORMW 妹紅は目を閉じてじっとしている……
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 >= 3
+			PRINTFORMW 妹紅はギロリと睨んできたが、暴れはしなかった。
+		;それ以外
+		ELSE
+			PRINTFORMW 「べたべた、触らないで！」
+			PRINTFORMW 少し触っただけでも、妹紅はキッとなって睨んでくる……
+		ENDIF
+		CFLAG:9000 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「じっくり触っていって。%K31_CALLNAME()%の熱を、感じさせて」
+			CFLAG:9000 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ん……私の体、どう……かな……」
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「……さっさと終わらせてほしい」
+			CFLAG:9000 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……汚らわしい」
+			CFLAG:9000 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG:9001
+;岩清水 CFLAG:9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9001 == 0
+		IF TALENT:恋慕
+			PRINTFORMW 「ここを、舐める？　うん、わかった」
+		;それ以外
+		ELSE
+			PRINTFORMW 「どこに顔を近づけて……きゃっ、舐めるの！？」
+		ENDIF
+		CFLAG:9001 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ……じゃあ、好きなだけ……いいよ……」
+			CFLAG:9001 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「くっ……どれだけ舐めれば気が済むんだか……」
+			CFLAG:9001 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「犬みたいな顔で変なとこ舐めて……情けなくないの？」
+			CFLAG:9001 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611
+	;恋慕+露出癖Lv3以上+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 
+		CFLAG:9611 = 6
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:9611 = 5
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3 && ABL:露出癖 >= 3
+		PRINTFORMW 
+		CFLAG:9611 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+		CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:9611 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG:9002
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「ひああっ、なっ、どこを触ってるの！？」
+		PRINTFORMW 尻穴は弱いのか、妹紅は予想以上に激しい反応を見せた……
+		CFLAG:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上＋A感覚Lv1以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 1
+			PRINTFORMW 「あ、あぁ……いいよ、もっとほぐしてっ……♪」
+			PRINTFORMW 最初の嫌悪感はどこへやら、妹紅は自分から尻穴を動かしている……
+			CFLAG:9002 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「やっ……お尻、汚いよ……」
+			PRINTFORMW まだアナルに対する妹紅の感覚は、嫌悪感の方が強いようだ……
+			CFLAG:9002 = 4
+		;潤滑Lv2以上＋A感覚Lv2以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 2
+			PRINTFORMW 「あ、あぁ……ふあぁっ……♪」
+			PRINTFORMW 最初の嫌悪感はどこへやら、指だけでも妹紅の瞳は蕩けはじめている……
+			CFLAG:9002 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「どういう、趣味よ……長い間生きてきたけど、こんなことした奴はっ……」
+			CFLAG:9002 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG:9003
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:9003 == 0
+		PRINTFORMW 「……私の胸なんかいじって楽しい？」
+		SIF TALENT:貧乳 || TALENT:絶壁
+			PRINTFORMW 妹紅は自分の小さな胸を隠そうとしている……
+		CFLAG:9003 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「……私の胸でもいいなら、好きなだけ」
+			SIF TALENT:貧乳 || TALENT:絶壁
+				PRINTFORMW そう呟きながらも、妹紅の瞳は自分の胸を見る度に暗くなる……
+			CFLAG:9003 = 4
+		;B感覚Lv2以上
+		ELSEIF ABL:Ｂ感覚 >= 2
+			PRINTFORMW 「あれ……なんで、胸で、こんなにっ……！？」
+			PRINTFORMW 妹紅は胸から伝わる快感に戸惑っている……
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……今更になって胸なんかいじられても、何にもなりはしないよ」
+			SIF TALENT:貧乳 || TALENT:絶壁
+				PRINTFORMW 「特に、こんな胸なんか……」
+			CFLAG:9003 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG:9004
+;Gスポット刺激 CFLAG:9600
+;-------------------------------------------------
+;指挿入れ
+IF SELECTCOM == 4
+	;初めて
+	IF CFLAG:9004 == 0
+;		;処女
+;		IF TALENT:0 == 1
+;			;恋慕
+;			IF TALENT:恋慕
+;				PRINTFORMW 
+;			;それ以外
+;			ELSE
+;				 PRINTFORMW
+;			ENDIF
+;			CFLAG:9004 = 1
+;			RETURN 0
+		;非処女
+;		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「うん……私の中、まずしっかりほぐして……」
+			;V感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「別に……指、くらい……へい、きっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「やっ、好き勝手かき回すなっ！」
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+;		ENDIF
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ、もっと奥まで、%K31_CALLNAME()%の指を入れていいよ……」」
+			CFLAG:9004 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「指だけで、感じたり……なんかっ……」
+			CFLAG:9004 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……さっさと終わらせて、指を出して」
+			CFLAG:9004 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;Gスポット刺激
+IF SELECTCOM == 600
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「んっ、しゅごっ、指でいじられてるだけなのに、ふぁっ♪」
+		CFLAG:9600 = 4
+	;V感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「ひっ、なんで指だけなのに、やっ、そこ、だめ、やぁっ！？」
+		CFLAG:9600 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「ひああぁっ！？　な、なに、ここっ、やだ、お願い、やめっ！？」
+		CFLAG:9600 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG:9005
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:9005 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「えっ、ちょっと……そんなことまでしてくれなくていいよ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「はぁ、こんなもの生やされた挙句、こんなこと……んっ……」
+			PRINTFORMW 妹紅は自分の竿そのものが嫌だと言わんばかりに溜め息を吐いた……
+		ENDIF
+		CFLAG:9005 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;射精中毒
+		IF ABL:射精中毒 >= 3
+			PRINTFORMW 「だめっ、そんな吸いだすみたいにしたらぁ……あっ、はああぁんっ♪」
+			CFLAG:9005 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「%K31_CALLNAME()%が私のをくわえたいって言うなら、いいけど……」
+			CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW （……こんなもの生やしてこんなので気持ちよくなってる自分が嫌だ）
+			CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「変に舌を使わないで……気持ち悪くなるんだ」
+			CFLAG:9005 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする CFLAG:9006
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:9006 == 0
+		PRINTFORMW 「……私なんかの唇を奪っても、得はしないと思うな」
+		PRINTFORMW 妹紅は%CALLNAME:PLAYER%を引き離すと、そう呟いた。
+		CFLAG:9006 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛かつ主人とのキス
+		IF TALENT:相愛 && ASSIPLAY == 0
+			PRINTFORMW 「んっ……%K31_CALLNAME2()%……もっと、近くに……」
+			PRINTFORMW 妹紅は%CALLNAME:PLAYER%を抱きしめ、目を閉じて舌を触れ合わせている……
+			CFLAG:9006 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「……私の唇、どうだった？　変に乾いたりしてなかった？」
+			PRINTFORMW 離れると、妹紅は落ち着かない様子で聞いてきた。
+			CFLAG:9006 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ちゅっ……んぶっ……ぷはぁ、やっとおしまい？」
+			PRINTFORMW 不愉快そうにしながら、妹紅は唾を飲み込んだ。
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんっ……！　んっ、ぷはっ、よく何度もやる気になるよ、ぺっ」
+			PRINTFORMW 妹紅は唇を離すと、%CALLNAME:PLAYER%のものが混じった唾を吐き捨てた。
+			CFLAG:9006 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG:9007
+;シャワーオナニー CFLAG:8801
+;アナニーCFLAG9182
+;胸自慰CFLAG9205
+;公開オナニー CFLAG8803
+;……を予定。どこまで書きますかね。
+;-------------------------------------------------
+;通常自慰やローター自慰、電マ自慰において地の文で夢中になる場合（ちょっと条件ぬかしてるけど）
+IF (SELECTCOM == 7 || SELECTCOM == 124 || SELECTCOM == 125) && ABL:0 >= 5 && ABL:3 >= 5 && PALAM:13 >= PALAMLV:4 && PREVCOM == 7
+	PRINTFORMW 「ふあぁっ、もぅ、だめだ、私、自分でするだけでもすごい感じてぇ！」
+	PRINTFORMW 「もうらめ、%K31_CALLNAME()%が止めてくれなきゃ、止められないよぉ……♪」
+	CFLAG:9007 = 6
+	RETURN 0
+;アナル自慰において地の文で夢中になる場合（ちょっと条件ぬかしてるけど）　他アナニーは下
+ELSEIF SELECTCOM == 182 && ABL:0 >= 5 && ABL:3 >= 5 && PALAM:13 >= PALAMLV:4 && PREVCOM == 182
+	PRINTFORMW 「こんなっ、じぶんだけなのに、あっ、するのきもちよくて、やめらんないぃ！」
+	PRINTFORMW 「もぉ、んっ、わたし、からだ、かわっちゃったぁ……♪」
+	CFLAG:9182 = 6
+	RETURN 0
+;公開オナニー
+ELSEIF (SELECTCOM == 7 || SELECTCOM == 124 || SELECTCOM == 125 || SELECTCOM == 182 ||SELECTCOM == 205) && TEQUIP:50
+	;初めて
+	IF CFLAG:8803 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「……わかった……私は%K31_CALLNAME()%の奴隷だ、言われたことは、しないと」
+		;それ以外
+		ELSE
+			PRINTFORMW 「はぁ！？　撮られてる前でしろって！」
+			PRINTFORMW 「……そして、拒否する権利もない。最悪だ」
+		ENDIF
+			CFLAG:8803 = 1
+		RETURN 0
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「ん、ふぅっ、後で私が自慰したとこ見ながら自慰するつもりなの、%K31_CALLNAME()%？」
+			PRINTFORMW 「そんなことするくらいなら、直接抱いて欲しいよ……んうっ」
+			CFLAG:8803 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「わかった、自分でする……んっ、ふっ、ひあんっ！」
+			PRINTFORMW （断れる立場じゃない。だけどせめて、撮ったのを売らないでほしい……）
+			CFLAG:8803 = 5
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「やっ、やぁっ、撮られてるのに、指、止まらなっ……！」
+			CFLAG:8803 = 4
+;		;屈服刻印Lv3
+;		ELSEIF MARK:2 == 3
+;			PRINTFORMW 
+;			CFLAG:8803 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （なんで、こんなことしなきゃいけないんだ……）
+			CFLAG:8803 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;通常自慰＆ローター自慰＆電マ自慰（シャワー書いたら && TEQUIP:54 == 0を追加）
+ELSEIF SELECTCOM == 7 || SELECTCOM == 124 || SELECTCOM == 125
+	;ローターを見たことがなくてローター自慰初めて
+	IF SELECTCOM == 124 && CFLAG:9007 == 0 && CFLAG:5100 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これの……ここを押しながら当てればいいの？」
+			PRINTFORMW 「うん、じゃあやってみる……んっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「これの……ここを押して震えさせながら自分でやれと？」
+			PRINTFORMW 「なんでそんなこと……わかったから、やるってば……んっ……」
+		ENDIF
+		CFLAG:5100 = 1
+		CFLAG:9007 = 1
+		RETURN 0
+	;初めて
+	ELSEIF CFLAG:9007 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「自分ですればいいの？」
+			PRINTFORMW 「うん、じゃあやってみる……んっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「自分でやれと？　なんでわざわざ……わかったから、やるってば……んっ……」
+		ENDIF
+		CFLAG:9007 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:自慰中毒 >= 3
+			PRINTFORMW （あぁっ、だめ、%K31_CALLNAME()%に見られてたら、私……！）
+			CFLAG:9007 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「んっ……ふぅ、どう%K31_CALLNAME()%、こんな感じで、いいの……？」
+			CFLAG:9007 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「なんで私……今更こんなことに、んぅっ、ふけって……」
+			CFLAG:9007 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……私なんかがひとりでしてるとこなんて見て、楽しい……？」
+			CFLAG:9007 = 2
+		ENDIF
+		SIF SELECTCOM == 124 && CFLAG:5100 == 0
+			CFLAG:5100 = 1
+		RETURN 0
+	ENDIF
+;アナニー（ビデオ無し）
+ELSEIF SELECTCOM == 182
+	;初めて
+	IF CFLAG:9182 == 0
+		IF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「お、おしり、自分で、だ、なんてぇっんっ♪」
+			PRINTFORMW 初めてのアナル自慰にも関わらず、妹紅の声は明らかに上ずっている……
+		ELSE
+			PRINTFORMW 「後ろを、自分で、なんて……汚くなる、だけ、なのに……」
+		ENDIF
+		PRINTFORMW 
+		CFLAG:9182 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+A感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「みて、%K31_CALLNAME2()%、私が、おしり自分できもちよくなるの、みてぇっ……♪」
+			CFLAG:9182 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「あっ……ぐっ、ふっ、%K31_CALLNAME()%、まだ、しないといけない、のかな……？」
+			CFLAG:9182 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あっ、やぁっ、だめ、おしりいじるの、とまんないっ！」
+			CFLAG:9182 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「悪……趣味っ……！」
+			CFLAG:9182 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;シャワーオナニー
+;ELSEIF (SELECTCOM == 7  || SELECTCOM == 124 || SELECTCOM == 125) && TEQUIP:54
+;	;初めて
+;	IF CFLAG:8801 == 0
+;		PRINTFORMW 
+;		CFLAG:8800 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋自慰中毒Lv3以上
+;		IF TALENT:恋慕 && ABL:自慰中毒 >= 3
+;			PRINTFORMW 
+;			CFLAG:8800 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕
+;			PRINTFORMW 
+;			CFLAG:8800 = 4
+;		;自慰中毒Lv3以上
+;		ELSEIF ABL:自慰中毒 >= 3
+;			PRINTFORMW 
+;			CFLAG:8800 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:8800 = 2
+;		ENDIF
+;		RETURN 0
+;	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG:9009
+;-------------------------------------------------
+IF SELECTCOM == 9
+;	;初めて
+;	IF CFLAG:9009 == 0
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;		CFLAG:9009 = 1
+;		RETURN 0
+	;触手調教中
+	IF TEQUIP:90
+		;触手中毒3以上
+		IF ABL:触手中毒 >= 3
+			PRINTFORMW 「休憩ならいらないから……早く来てよぉ……」
+			PRINTFORMW 妹紅は切なそうな表情で股を擦り合わせている……
+			CFLAG:9009 = 7
+		;触手経験20以上or恋慕
+		ELSEIF (TALENT:恋慕 || EXP:53 >= 20)
+			PRINTFORMW 「……消さないってことは、まだ何かするんだよね」
+			CFLAG:9009 = 6
+		ELSE
+			PRINTFORMW 「何もしないなら、こいつら消してほしいんだけど……」
+			PRINTFORMW 妹紅は明らかな嫌悪と共に周囲を睨んでいる……
+			CFLAG:9009 = 5
+		ENDIF
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「あ……そ、その、まだ終わりには、してほしくない、一緒にいてほしい……」
+			CFLAG:9009 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「休憩のつもりなら、私にはいらないよ？」
+			CFLAG:9009 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふーん、もしかしてそっちの方が疲れたとか？　私は無駄に丈夫だから」
+			CFLAG:9009 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG:9010
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:9010 == 0 && CFLAG:5100 == 0
+		PRINTFORMW 「何それ……えっ、どこに当ててっ、やっ、震え！？」
+		CFLAG:9010 = 1
+		CFLAG:5100 = 1
+		RETURN 0
+	;初めてだが他のローターを見たことがある
+	ELSEIF CFLAG:9010 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「えっと、ローターだっけ、今度はどこにする？」
+			PRINTFORMW 「えっ……うん、わかった……あうっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっと、ローターだっけ……今度はどこにするつもりよ？」
+			PRINTFORMW 「……どこに手を伸ばして、んっ！？」
+		ENDIF
+			CFLAG:9010 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ、んんっ……」
+			PRINTFORMW 妹紅はじっとして、%CALLNAME:PLAYER%に身を任せている……
+			CFLAG:9010 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「下手に動こうものなら、腕ごと中に入れるくらいはやるよね貴方は……んっ……」
+			PRINTFORMW 妹紅は悪態こそ吐いたが、体は動かさなかった。
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またこれか、このっ……」
+			PRINTFORMW 妹紅は悪態を吐きながら、身を離そうとした……
+			CFLAG:9010 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG:9011
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:9011 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9011 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9011 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9011 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG:9012　CFLAG:8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20
+	;初めて
+	IF CFLAG:9012 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+;			IF TALENT:恋慕
+;				PRINTFORMW 
+			;それ以外
+;			ELSE
+;				PRINTFORMW 
+;			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「うん、私の中に入れるんだって見ただけでも分かる……いいよっ……」
+				PRINTFORMW 「んっ、ふぅっ……、つぎ、は、なに、するの……？」
+			;それ以外
+			ELSE
+				PRINTFORMW 「見るだけでどう使うか分かる道具だ……ん、んんっ……！」
+				PRINTFORMW 「は、あっ……これ、く、らい、へーきっ……」
+			ENDIF
+		ENDIF
+		CFLAG:9012 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ……もっと、子宮に届くくらい入れて、ふるえさせてぇっ……！」
+			CFLAG:9012 = 4
+		;V経験120以上
+		ELSEIF EXP:0 > 120
+			PRINTFORMW 「ふぁっ、やぁっ、らめっ、奥までグリグリするのだめぇ！」
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなのっ、いれられたってぇ……！」
+			CFLAG:9012 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;恋慕+V経験200以上
+	IF TALENT:恋慕 && EXP:0 > 200
+		PRINTFORMW 「やだ……もっとぉ……」
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ひ、ぐっ……！」
+		CFLAG:8811 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG:9013　CFLAG:8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25
+	;初めて
+	IF CFLAG:9013 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ、それ中に入れるんだよね……え、おしりに入れる！？」
+			PRINTFORMW 「わ、わかった、おねがい……ん、んんっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「いかにも中にいれるって感じの……えっ、尻に入れる！？」
+			PRINTFORMW 「ちょっと待っ、ひぐっ、うあぁっ！？」
+		ENDIF
+		CFLAG:9013 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A経験75以上
+		IF TALENT:恋慕 && EXP:1 > 75
+			PRINTFORMW 「入れてっ%K31_CALLNAME2()%、もっと奥まで入れて太いの動かしてぇっ！」
+			CFLAG:9013 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ふっ、ぐぅっ……だい、じょぶ、%K31_CALLNAME()%が入れたいっていうなら、もっと、いれ、ても……」
+			CFLAG:9013 = 4
+		;A経験75以上
+		ELSEIF EXP:1 > 75
+			PRINTFORMW 「や、やぁっ、入ってる、おしりで気持ちよくなってきてる……」
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、そんな太いのいれ、はぐっ、う、ああっ！」
+			CFLAG:9013 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	;A経験40以上
+	IF EXP:1 > 40
+		PRINTFORMW 「ああっ……え？　抜い、たの……？」
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ひっ、ぐっ！　抜けても、くる、し……」
+		CFLAG:8812 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG:9014　CFLAG:8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30
+	;初めて
+	IF CFLAG:9014 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9014 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9014 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8813 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8813 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG:9015　CFLAG:8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35
+	;初めて
+	IF CFLAG:9015 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8814 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8814 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG:9016　CFLAG:8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30
+	;初めて
+	IF CFLAG:9016 == 0
+		;相愛かつ主人が女
+		IF TALENT:相愛 && TALENT:MASTER:オトコ == 0
+			PRINTFORMW 「んっ……わざわざこんなのに、はめさせないでよ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、私のを、いれ、るの……ひっ！？」
+			PRINTFORMW 「や、やだっ、なかでグネグネしてっ！？」
+		ENDIF
+		CFLAG:9016 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕かつ主人が女
+		IF TALENT:恋慕 && TALENT:MASTER:オトコ == 0
+			PRINTFORMW 「はっ、あう……私が男根から出すところ……みたいってこと……？」
+			CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、やだ、これ、はめないで、刺激しないでぇ！」
+			CFLAG:9016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	;相愛かつ主人が女で主人のプレイ
+	IF TALENT:相愛 && TALENT:MASTER:オトコ == 0 && ASSIPLAY == 0
+		PRINTFORMW 「これを使うのはおしまい？　じゃ、次は%K31_CALLNAME()%としたい……♪」
+		CFLAG:8815 = 3
+	;恋慕かつ主人が女で主人のプレイ
+	ELSEIF TALENT:恋慕 && TALENT:MASTER:オトコ == 0 && ASSIPLAY == 0
+		PRINTFORMW （こんなのじゃなく%K31_CALLNAME()%としたいって言うのは、高望み、なのかな……）
+		CFLAG:8815 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「外す？　あ、ああ、わかった……」
+		PRINTFORMW （明らかに私、気持ちよくなってた……女、だったのに……）
+		CFLAG:8815 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG:9020
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:9020 == 0
+		;主人や助手とのセックスが初体験
+		IF CFLAG:5109 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え……やっと、契るんだ？」
+				PRINTFORMW 「うん、いいよ、来て……ん、あっ、ああっ……」
+				PRINTFORMW 股を開いた妹紅の中へそのまま押し込むと、口から小さく声を漏らした……
+			;それ以外
+			ELSE
+				PRINTFORMW 「そう……まぁ、伽をさせるために攫ったんだから当然……はっ、い、ああっ！」
+				PRINTFORMW 膣内に挿入されると、妹紅は喘ぎながらこちらを睨みつけてきた……
+				PRINTFORMW 「好きに、すれば、いいっ……んっ、どうせ、私なんかっ……」
+			ENDIF
+			CFLAG:5109 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「あっ……今度は普通の姿勢で契るんだ……いいよ、んっ、あぁ……」
+				PRINTFORMW 妹紅は広げていた手を相手の背中に絡め、%CALLNAME:PLAYER%を迎え入れた……
+			;それ以外
+			ELSE
+				PRINTFORMW 「ふっ、くっ……最初はまともじゃないかっこうでして、やっとこの姿勢……？」
+				PRINTFORMW 「ほんっと、おかしな趣味だねっ、んっ……！」
+				PRINTFORMW 妹紅は顔を顰めながらそう吐き捨てた……
+			ENDIF
+		ENDIF
+		CFLAG:9020 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「ふあぁっ♪　もっとっ、もっとわたしのそばにいて%K31_CALLNAME2()%！」
+			PRINTFORMW そう言いながら、妹紅は必死に自分の手を%CALLNAME:PLAYER%の指に絡ませている……
+			CFLAG:9020 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「きてっ、%K31_CALLNAME()%の気が済むまで、ずっと私を犯してぇっ！」
+			PRINTFORMW そう言いながら、妹紅は必死に自分の手を%CALLNAME:PLAYER%の指に絡ませている……
+			CFLAG:9020 = 5
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「やっ、いまさら、こんなのなんかっ、あっ、ああっ、あ――♪」
+			PRINTFORMW 妹紅の表情は、明らかに快感で蕩けてきている……
+			CFLAG:9020 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「いまさらっ、んっ、こんなの、なんかでっ……」
+			PRINTFORMW 犯されながらも、妹紅は仏頂面を崩さない……
+			CFLAG:9020 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG:9021
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:9021 == 0
+		;主人や助手とのセックスが初体験
+		IF CFLAG:5109 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え……やっと、契るんだ？」
+				PRINTFORMW 「うん、いいよ、こんなかっこうでも、%K31_CALLNAME()%なら……ん、あっ、ああっ……」
+				PRINTFORMW 妹紅は%CALLNAME:PLAYER%が自分の中に入ってくるのを感じ取ると、自ら腰を振り始めた……
+			;それ以外
+			ELSE
+				PRINTFORMW 「そう……まぁ、伽をさせるために攫ったんだから当然……はっ、い、ああっ！」
+				PRINTFORMW 膣内に挿入されると、妹紅は喘ぎながら顔を歪めた……
+				PRINTFORMW 「最初にするのがっ、こんな、かっこ、だなんて……」
+			ENDIF
+			CFLAG:5109 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「後ろから？　いいよ、こんなかっこうでも、%K31_CALLNAME()%なら……ん、あっ、ああっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「今度はこんな格好で、後ろから……？　ん、く、はぁっ……」
+				PRINTFORMW 「まぁ、私なんかの顔が見えないのはっ、んっ、いいのかもね……」
+				PRINTFORMW 妹紅はこちらに表情を見せようとしないが、口調に混じっているのは罵倒だけではなかった。
+			ENDIF
+		ENDIF
+		CFLAG:9021 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「はぁっ、はげしく、もっとはげしくしてっ、%K31_CALLNAME()%が見えなくてもだいじょぶなくらいっ、ふあぁっ♪」
+			CFLAG:9021 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はぁっ、いい、よっ、んっ、もっと、激しくしても、わたしは、ああぁっ！」
+			PRINTFORMW （%K31_CALLNAME()%の顔が見えないのは、不安だから……）
+			CFLAG:9021 = 5
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「はぁっ、やっ、こんなかっこで、ふぁあっ、やあっ……」
+			PRINTFORMW 妹紅はこちらの様子を意に介する余裕もなく、喘ぎ声を上げ続けている……
+			CFLAG:9021 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「はっ……んっ、く……」
+			PRINTFORMW 妹紅は喘ぎ声を押し殺し、こちらを見ないことに集中している……
+			CFLAG:9021 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位＆対面立位 CFLAG:9022
+;-------------------------------------------------
+IF SELECTCOM == 22 || SELECTCOM == 27
+	;初めて
+	IF CFLAG:9022 == 0
+		;主人や助手とのセックスが初体験
+		IF CFLAG:5109 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え……やっと、契るんだ？　ああ、%K31_CALLNAME()%がこんな近くに……♪」
+				PRINTFORMW 「うん、いいよ、来て……ん、あっ、ああっ……」
+				PRINTFORMW 妹紅は嬉しそうに、背中に絡めていた腕で強く抱きしめてきた……
+			;それ以外
+			ELSE
+				PRINTFORMW 「そう……まぁ、伽をさせるために攫ったんだから当然……はっ、い、ああっ！」
+				PRINTFORMW 膣内に挿入されると、妹紅は喘ぎながらこちらを睨みつけてきた……
+				PRINTFORMW 「好きに、すれば、いいっ……んっ、どうせ、私なんかっ……」
+			ENDIF
+			CFLAG:5109 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「今度は、抱きかかえながら……？　私はいいけど、%K31_CALLNAME()%はいいの……？」
+				PRINTFORMW 「……うん、いいなら……私も、んんっ、ふあぁっ！」
+				PRINTFORMW 妹紅は嬉しそうに、背中に絡めていた腕で強く抱きしめてきた……
+			;それ以外
+			ELSE
+				PRINTFORMW 「こんな、顔が近くにある状況で……あ、くぅっ……」
+				PRINTFORMW 妹紅は必死に%CALLNAME:PLAYER%から顔を背けている……
+			ENDIF
+		ENDIF
+		CFLAG:9022 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+				PRINTFORMW 「らめっ、もっと近くで、%K31_CALLNAME()%を……んっ、ちゅ、はっ、んんっ！」
+				PRINTFORMW 妹紅と%CALLNAME:PLAYER%は、繋がるだけでは物足りないとばかりに熱い口付けをした……
+			CFLAG:9022 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+				PRINTFORMW 「わたしからは、動き、にくい、けどっ……でも、%K31_CALLNAME()%を気持ちよくする、ためならっ……」
+				PRINTFORMW 妹紅はそう言いながら、%CALLNAME:PLAYER%を強く抱き締めながらも腰を振っている……
+				PRINTFORMW （接吻も、したい、けど……それは、命令、されてない、から……）
+			CFLAG:9022 = 5
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「やっ、ひぐっ、らめっ、ちから、ぬけっ、おちるぅ……」
+			PRINTFORMW 妹紅は完全に快感に溺れ、腕に力を入れることさえできないでいる……
+			CFLAG:9022 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「はぁっ、ただ気持ちよくなるならっ、こんなっ、あぐっ、抱きしめなくてっ、いいはずっ」
+			PRINTFORMW 妹紅は喘ぎ声を上げながらも、隙あらば%CALLNAME:PLAYER%の腕を引き剥がそうとしている……
+			CFLAG:9022 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位＆背面立位 CFLAG:9023
+;-------------------------------------------------
+IF SELECTCOM == 23 || SELECTCOM == 28
+	;初めて
+	IF CFLAG:9023 == 0
+		;主人や助手とのセックスが初体験
+		IF CFLAG:5109 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え……やっと、契るんだ？　うんっ、%K31_CALLNAME()%がすぐ近くにいるのが感じられる……♪」
+				PRINTFORMW 「うん、いいよ、来て……ん、あっ、ああっ……」
+				PRINTFORMW 妹紅は%CALLNAME:PLAYER%が自分の中に入ってくるのを感じ取ると、自ら腰を振り始めた……
+			;それ以外
+			ELSE
+				PRINTFORMW 「そう……まぁ、伽をさせるために攫ったんだから当然……はっ、い、ああっ！」
+				PRINTFORMW 膣内に挿入されると、妹紅は喘ぎながら目を閉じて吐き捨てた……
+				PRINTFORMW 「好きに、すれば、いいっ……んっ、どうせ、私なんかっ……」
+			ENDIF
+			CFLAG:5109 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え、背中から抱きしめて？　あ、でも、%K31_CALLNAME()%がすぐ近くにいるのが感じられる……♪」
+				PRINTFORMW 「もっと奥まで入れて、入れていい……それなら、私も、んっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「え、背中から抱きしめて……はぁ、あぐっ！？」
+				PRINTFORMW 「なかに入れながら他のところまでいじらないでっ……！」
+			ENDIF
+		ENDIF
+		CFLAG:9023 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛専用1/2
+		IF RAND:2 == 0 && TALENT:相愛
+			PRINTFORMW 「んっ、もっとっ、もっとつよくして、もっとだきしめてっ、近くにいて%K31_CALLNAME2()%！」
+			PRINTFORMW 妹紅はそう言いながら、髪を揺らすほど体を震わせている……
+			CFLAG:9023 = 7
+		;恋慕専用1/2
+		ELSEIF RAND:2 == 0 && TALENT:恋慕 && TALENt:相愛 == 0
+			PRINTFORMW 「んっ、おねがい、もっとつよくして、もっとだきしめてっ、おねがいだからぁ！」
+			PRINTFORMW 犯されているのにも関わらず、妹紅は必死に何度も懇願してきた……
+			CFLAG:9023 = 6
+		;恋慕（相愛含む）
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はぁっ、んぅ、%K31_CALLNAME2()%、だい、じょぶ？　わたしの髪、じゃまじゃ、ない……？」
+			PRINTFORMW 三点責めの快感に息を切らせながらも、妹紅はこちらの心配をしてくる……
+			CFLAG:9023 = 5
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「はっ、ふぁっ！？　やっ、なか、かんじてるのに、ちくびと豆までいじられたらぁ！」
+			CFLAG:9023 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「いっ、このっ、犯しながら、そんな、手つきで、んうっ、さわらないでっ……」
+			CFLAG:9023 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG:9024
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:9024 == 0
+		;主人や助手とのセックスが初体験
+		IF CFLAG:5109 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「最初にするやり方が、自分から？　ううん、嫌なんて言わないよ……う、ああっ！」
+				IF TALENT:相愛
+					PRINTFORMW 「ふふっ、ずっとここまでしなかったのは、このためにもったいぶってたの……？」
+				ELSE
+					PRINTFORMW （嬉しい、なんて私みたいな女が言ったら、邪魔だと思われるだけかな……）
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORMW 「最初に貴方に対して契る方法がこれだなんて……う……く、ああっ！」
+				PRINTFORMW 「どうせ私は醜女なんだから、んっ、伽にあんまり、はぁ、期待しても、むだっ」
+			ENDIF
+			CFLAG:5109 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「今度は、自分から？　ううん、嫌なんて言わないよ……う、ああっ！」
+				IF TALENT:相愛
+					PRINTFORMW 「じゃあ、こんどは私が%K31_CALLNAME()%を気持ちよく、しなきゃっ……！」
+				ELSE
+					PRINTFORMW （嬉しい、なんて私みたいな女が言ったら、邪魔だと思われるだけかな……）
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORMW 「今度から自分から？　気持ちよくなれないと思う、けど……う……く、ああっ！」
+				PRINTFORMW 「どうせ私は醜女なんだから、んっ、伽にあんまり、はぁ、期待しても、むだっ」
+			ENDIF
+		ENDIF
+		CFLAG:9024 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛ランダム
+		IF RAND:2 == 0 && TALENT:相愛
+			PRINTFORMW 「ひあっ！　そう、もっと、もっとなかでおっきくなって！」
+			PRINTFORMW 「%K31_CALLNAME()%といっしょに、私もきもちよくなりたいっ！」
+			CFLAG:9024 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ん、はぁっ、どう、%K31_CALLNAME2()%？　きもちよく、うあっ、なれてる……？」
+			CFLAG:9024 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふあっ、だ、だ、め、んっ、私には、無理だってば、ああっ、こし、くだけ、て……」
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またっ、私から動いて契れって……んっ、、よく、私なんかに……」
+			CFLAG:9024 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG:9025
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:9025 == 0
+		;恋慕で主人
+		IF ASSIPLAY == 0 && TALENT:恋慕
+			PRINTFORMW 「ああっ……んっ、わたしのが、%K31_CALLNAME()%の中にはいってくぅ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、このっ、お前には恥じらいって、もの、がぁんっ！？」
+		ENDIF
+		CFLAG:9025 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「いいよ、%K31_CALLNAME()%……ふぁっ、私、きもちいいから、もっとうごい、てぇ♪」
+			CFLAG:9025 = 5
+		;恋慕で主人
+		ELSEIF ASSIPLAY == 0 && TALENT:恋慕
+			PRINTFORMW 「んぐっ、%K31_CALLNAME()%、私なんかのでも、きもちよく、なれてる……？」
+			CFLAG:9025 = 4
+		;射精中毒
+		ELSEIF ABL:射精中毒 >= 3
+			PRINTFORMW 「うあぁっ♪　%CALLNAME:PLAYER%のなかしゅごいっ、わらひ、しぼられてるよぉ！」
+			CFLAG:9025 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだ、やだぁっ、男みたいに契って出したくない、しゃせーしたくないぃ……」
+			CFLAG:9025 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG:9026
+;-------------------------------------------------
+IF SELECTCOM == 26
+	;恋慕、或いは助手が慧音か輝夜
+	IF (TALENT:恋慕 || NO:ASSI == 26 || NO:ASSI == 30)
+		PRINTFORMW 妹紅は少しむっとした。
+		CFLAG:9026 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 妹紅はどうでもよさそうな顔をしている……
+		CFLAG:9026 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルセックス CFLAG:9030
+;CFLAG:5101でアナルセックス全般が初体験かどうか判断
+;しっかしほんとアナルセックス絡みは書きづらいな……
+;-------------------------------------------------
+IF SELECTCOM == 30 || SELECTCOM == 31
+	;初めて
+	IF CFLAG:9030 == 0 && CFLAG:5101 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「契るの？　いいけど……え、おしりで！？」
+			PRINTFORMW 「ほ、ほんとにおしりなんかで%K31_CALLNAME()%は気持ちよくなれるの、んっ、は、ぐっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なっ、尻に入れるってなに考えて、ひっ、やっ、いたいっ、やめっ！」
+			PRINTFORMW 初めて尻穴を貫かれる感覚に、妹紅は顔を引き攣らせている……
+		ENDIF
+		CFLAG:9030 = 1
+		CFLAG:5101 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋A感覚Lv2以上+潤滑Lv2以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 2
+			PRINTFORMW 「ひあぁっ！　いいよっ、%K31_CALLNAME2()%、いれてっ、おしりのおくまで%K31_CALLNAME2()%のをいれてぇ！」
+			PRINTFORMW %CALLNAME:PLAYER%が一突きするたびに、妹紅は喘ぎながら更におねだりしてくる……
+			CFLAG:9030 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 妹紅は唇を噛み締めて痛みを堪えている……
+			CFLAG:9030 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あひっ、しゅごっ、おくまでぇ、ふぁっ、かんたんに入っちゃうよぉ！」
+			PRINTFORMW アナルからの快感に、妹紅は腸からの液をまき散らしながら尻を振っている……
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんでそんなに尻を、ぎっ、くるしっ、てば！」
+			CFLAG:9030 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;------------------------------------------------
+;正常位アナル CFLAG:9030
+;-------------------------------------------------
+;IF SELECTCOM == 30
+;	;初めて
+;	IF CFLAG:9030 == 0
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;		CFLAG:9030 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		LOCAL = PALAM:10 + UP:10
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:9030 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:9030 = 4
+;		;潤滑Lv2以上＋A感覚Lv3以上
+;		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:9030 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:9030 = 2
+;		ENDIF
+;		RETURN 0
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG:9031
+;-------------------------------------------------
+;IF SELECTCOM == 31
+;	;初めて
+;	IF CFLAG:9031 == 0
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;		CFLAG:9031 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		LOCAL = PALAM:10 + UP:10
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:9031 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:9031 = 4
+;		;潤滑Lv2以上＋A感覚Lv3以上
+;		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:9031 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:9031 = 2
+;		ENDIF
+;		RETURN 0
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;対面座位アナル＆対面立位アナル CFLAG9032
+;アナルセックス初体験 CFLAG5101
+;-------------------------------------------------
+IF SELECTCOM == 32 || SELECTCOM == 37
+	;初めて
+	IF CFLAG:9032 == 0
+		;主人や助手とのアナルセックスが初体験
+		IF CFLAG:5101 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「契るの？　いいけど……え、おしりで！？」
+				PRINTFORMW 「ほ、ほんとにおしりなんかで%K31_CALLNAME()%は気持ちよくなれるの、んっ、は、ぐっ……！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「なっ、尻に入れるってなに考えて、ひっ、やっ、いたいっ、ゆらす、なっ！」
+				PRINTFORMW 初めて尻穴を貫かれる感覚に、妹紅は顔を引き攣らせている……
+			ENDIF
+			CFLAG:5101 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「今度は、こうやって、おしりに……？　いいけど、あ、ぐっ……」
+				PRINTFORMW 「その……んっ、もっと抱きしめても、いい？　私が、おちないように……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「こんどは、こんな、姿勢で……ひあっ、ああっ！」
+				PRINTFORMW 「どうかんがえてもこんなの、つらいだけじゃ、うあぁっ！」
+			ENDIF
+		ENDIF
+		CFLAG:9032 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋A感覚Lv2以上+潤滑Lv2以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 2
+			PRINTFORMW 「ふぁっ、ん、ちゅっ、いいよ、%K31_CALLNAME()%のどんどんはいるからっ、だからもっとつよくぅ♪」
+			PRINTFORMW 尻穴で竿が動く度に、妹紅は熱い吐息を%CALLNAME:PLAYER%の顔に掛けた……
+			CFLAG:9032 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はっ……いっ、つ、はぁっ……！」
+			PRINTFORMW 妹紅は痛みを堪えようと、%CALLNAME:PLAYER%の背中を強く抱きしめている……
+			CFLAG:9032 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ふぁっ♪　ひ、ぐっ、らめっ、わらし、わらしぃ……」
+			PRINTFORMW %CALLNAME:PLAYER%の肩に、言葉にならない嬌声を上げてしなだれる妹紅の涎が垂れてきた。
+			CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「くるしっ、やめっ、はなし、てっ」
+			PRINTFORMW せめてもの抵抗か、妹紅は%CALLNAME:PLAYER%の背中を軽く叩き続けている……
+			CFLAG:9032 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル＆背面立位アナル CFLAG9033
+;アナルセックス初体験 CFLAG5101
+;-------------------------------------------------
+IF SELECTCOM == 33 || SELECTCOM == 38
+	;初めて
+	IF CFLAG:9033 == 0
+		;主人や助手とのアナルセックスが初体験
+		IF CFLAG:5101 == 0
+		;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「契るの？　いいけど……え、おしりで！？」
+				PRINTFORMW 「ほ、ほんとにおしりなんかで%K31_CALLNAME()%は気持ちよくなれるの、んっ、は、ぐっ……！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「なっ、尻に入れるってなに考えて、ひっ、やっ、いたいっ、ゆらす、なっ！」
+				PRINTFORMW 初めて尻穴を貫かれる感覚に、妹紅は顔を引き攣らせている……
+			ENDIF
+			CFLAG:5101 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「ぅ、くっ……うしろからって、見えないから、ちょっとこわいんだ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「そっちはっ、うしろからだと、入れやすいのかもしれないけどっ」
+				PRINTFORMW 「こっちは見えないし、くるしっ、あぅっ……」
+			ENDIF
+		ENDIF
+		CFLAG:9033 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋A感覚Lv2以上+潤滑Lv2以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 2
+			PRINTFORMW 「おふっ、おっ、おしりぃ、いいのぉ、わらひ、おひりよわくて、おぁっ！？」
+			PRINTFORMW 「お、おひりだけれもらめなのに、ほかぁっ……♪」
+			PRINTFORMW 突きながらも更に乳首などを愛撫すると、妹紅は全身を痙攣させながら嬌声を上げた……
+			CFLAG:9033 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「いぅっ、ま、だ、うぐっ、いれられ、ないっ……」
+			CFLAG:9033 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「らめっ、とめてっ、わらひ、らめになる、おかしくなるぅっ♪」
+			PRINTFORMW 快感に頭を振り乱す妹紅の長い髪が、%CALLNAME:PLAYER%を撫でる……
+			CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「おっ、いぐっ、やっ、いやっ、おしり、みちみちってぇ……」
+			CFLAG:9033 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG:9034
+;アナルセックス初体験 CFLAG5101
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:9034 == 0
+		;主人や助手とのアナルセックスが初体験
+		IF CFLAG:5101 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え、おしりに%K31_CALLNAME()%のを自分から……！？　私は、いいけど……でも」
+				PRINTFORMW 「%K31_CALLNAME()%はお尻なんかで気持ちよくなれるの……んっ、はぁ、ひぐっ……！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「や、やっぱり、こんなのは……やっ、ひぐっ！？」
+				PRINTFORMW 途中で下ろす事を止めた妹紅の腰を%CALLNAME:PLAYER%は容赦なく掴み、下ろさせた……
+			ENDIF
+			CFLAG:5101 = 1
+		;他の体位を体験済み
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「今度はおしりに、%K31_CALLNAME()%のを自分から……？　わかった」
+				PRINTFORMW 「んっ……%K31_CALLNAME()%が気持ちよくなれるように、はぁっ、がん、ばるっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「今度は私からしろって……どれだけ尻が好きなんだ、ひぎっ、い、ああっ！」
+			ENDIF
+		ENDIF
+		CFLAG:9034 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋A感覚Lv2以上+潤滑Lv2以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 2
+			PRINTFORMW 「はぁっ、ひぐぅっ、%K31_CALLNAME2()%、かんたんにわらしのおしりに、はいってくるぅ♪」
+			PRINTFORMW 妹紅は水音が立つほど激しい勢いで、自ら尻を上下させている……
+			CFLAG:9034 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はっ……ぐ、ああっ……%K31_CALLNAME()%、気持ちよく、なってる……？」
+			PRINTFORMW 妹紅は苦しそうな表情をしながら、必死に尻を上下させている……
+			CFLAG:9034 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「やっ、なんでしりに、こんなっ、はっ、はいってくの……！？」
+			PRINTFORMW そう言う一方で、妹紅の尻は%CALLNAME:PLAYER%を欲しがるように激しく上下している……
+			CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「貴方は気持ちよく、ないでしょ、尻なんか、だから、だからはやく飽きてっ……」
+			CFLAG:9034 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG:9040
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:9040 == 0
+		PRINTFORMW 「私の手で？」
+		;恋慕
+		IF TALENT:恋慕 
+			PRINTFORMW 「%K31_CALLNAME()%が自分の手より私の手の方がいいって言うなら」
+		;それ以外
+		ELSE
+			PRINTFORMW 「貴方が自分でやった方が、まだ気持ちよくなれるだろうに」
+		ENDIF
+		CFLAG:9040 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「じゃあせっかくだし、%K31_CALLNAME()%が自分でする気さえ起こらなくなるくらいの快感を目指す！」
+			CFLAG:9040 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「私の手だし、気持ちよくなれなかったらごめん」
+			CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「私なんかの手がいいとはとても思えないけどなぁ」
+			CFLAG:9040 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG:9041
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:9041 == 0
+		;恋慕
+		IF TALENT:恋慕 
+			PRINTFORMW 「口でくわえて……うん、わかった。好きなだけ出していい、頑張って飲む」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くわえろって……そりゃ、私は病気とか気にする必要ないけど、味覚はあるんだ」
+			PRINTFORMW 「……そっちには私が変な味感じることなんて、どうでもいいんだろうけどね」
+		ENDIF
+		CFLAG:9041 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+;		;相愛
+;		IF TALENT:相愛
+;			PRINTFORMW 
+;			CFLAG:9041 = 4
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「はむっ……んっ、どう、じゅるっ……出そう……？」
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、んむっ、頭押さえつけないでっ……」
+			CFLAG:9041 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG:9042
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:9042 == 0
+		;恋慕
+		IF TALENT:恋慕 
+			IF TALENT:貧乳
+				PRINTFORMW 「えっ？　でも、見ての通り、私の胸は……」
+				PRINTFORMW 「これがいい？　……本当？　なら、頑張ってみるよ」
+			ELSE
+				PRINTFORMW 「胸で……わかった、大きさだけなら輝夜よりもある」
+				PRINTFORMW 「綺麗ってわけじゃないけど、気持ちよくさせることだけなら」
+			ENDIF
+		;それ以外
+		ELSE
+			IF TALENT:貧乳
+				PRINTFORMW 「は？　見ての通り、私の胸は小さい。痛いだけだ」
+				PRINTFORMW 「これがいい？　嘘にしか聞こえないんだけどね」
+			ELSE
+				PRINTFORMW 「……まぁ、輝夜よりは大きいけどさ」
+				PRINTFORMW 「でも大きさが美しさに繋がりは……ああ、汚していいからこういうことに使うんだ」
+			ENDIF
+		ENDIF
+		CFLAG:9042 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			IF TALENT:貧乳
+				PRINTFORMW 「%K31_CALLNAME()%はわざわざこんな胸をしてる私を選んでくれたんだ」
+				PRINTFORMW 「だから、期待に応えないと……んっ、どうかな？」
+				PRINTFORMW こちらの弱い所を知り尽くしているように、妹紅はカリに乳首を当てて刺激してくる……
+			ELSE
+				PRINTFORMW 「へへっ、%K31_CALLNAME()%が輝夜じゃなくて私を選んだ理由の一つはこの胸？」
+				PRINTFORMW 妹紅の手は胸を挟み込むだけでなく、手持ち無沙汰な指で器用に竿を愛撫している……
+			ENDIF
+			CFLAG:9042 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF TALENT:貧乳
+				PRINTFORMW 「こんな胸だけど、%K31_CALLNAME()%が気持ちよくなれるように……」
+				PRINTFORMW 妹紅は懸命に自分の胸を手で挟みこみ、谷間を作ろうとしているようだ……
+			ELSE
+				PRINTFORMW 「私の胸が、%K31_CALLNAME()%を気持ちよくできるなら……」
+				PRINTFORMW 妹紅は更に手で自分の柔らかな胸を押しこみ、乳首を竿に引っ掛けさせて刺激してくる……
+			ENDIF
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			IF TALENT:貧乳
+				PRINTFORMW 「胸もない、美しくもない、ないないづくしの私にこれをやらせても意味ない」
+			ELSE
+				PRINTFORMW 「どうせ、私の胸なんてこんなことに使うくらいしか……」
+			ENDIF
+			CFLAG:9042 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG:9043
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:9043 == 0
+		;恋慕有り
+		IF TALENT:恋慕
+			PRINTFORMW 「別に、遠慮なんかしなくてもいいんだよ……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「穢らわしい私には、入れたくないってこと？」
+		ENDIF
+		CFLAG:9043 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕有り
+		IF TALENT:恋慕
+			PRINTFORMW 「そんなにこれがいいって言うなら、頑張って擦る……んっ」
+			CFLAG:9043 = 4
+		;淫乱有り
+		ELSEIF TALENT:淫乱
+			PRINTFORMW 「こんなんじゃ、足りない……」
+			CFLAG:9043 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「まぁ、犯されるよりはいいけど……」
+			CFLAG:9043 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG:9044
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:9044 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「……ぅ……うぅっ……わかった、がん、ばる」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ……こ、このっ、最悪だ……」
+		ENDIF
+		CFLAG:9044 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「うぐっ……うぇっ、%K31_CALLNAME()%のためなら……」
+			CFLAG:9044 = 4
+;		;奉仕精神Lv3以上
+;		ELSEIF ABL:奉仕精神 >= 3
+;			PRINTFORMW 
+;			CFLAG:9044 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （この舌に毒を仕込めたらっ……！）
+			CFLAG:9044 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足扱き CFLAG9047
+;-------------------------------------------------
+IF SELECTCOM == 47
+	;初めて
+	IF CFLAG:9047 == 0
+		PRINTFORMW 「えっ、足なんかで？」
+		PRINTFORMW 「……多分こういうのは輝夜がする方が気持ちよくなれるよ。あいつは似合いそうだ」
+		CFLAG:9047 = 1
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「指輪を送りさえした相手にこんなこと頼むなんて……」
+			PRINTFORMW 「まあ、ある意味%K31_CALLNAME()%らしくはあるけど」
+		;恋慕
+		ELSeIF TALENT:恋慕
+			PRINTFORMW 「ど……どう？　私なんかの足でも、ちゃんと気持ちよくなれてる？」
+			CFLAG:9047 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「相変わらず貴方の趣味は分からない」
+			PRINTFORMW 「私なんかを攫って、私なんかの足でしてもらうのがいいだなんて」
+		CFLAG:9047 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;ローション CFLAG:9060
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:9060 == 0
+		PRINTFORMW 「うわ、何塗ってるんだ、そんなところに！」
+		PRINTFORMW 「なんか妙にぬるぬるして……ああ、なるほど……」
+		CFLAG:9060 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「%K31_CALLNAME()%が気持ちよくなるために必要なら、どんどん塗っていいよ」
+			CFLAG:9060 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「%K31_CALLNAME()%が気持ちよくなるために必要なんだよね？　なら、いい……」
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「道具使ってまで、私なんかの体で気持ちよくなりたいの？　変な趣味だねぇ」
+			CFLAG:9060 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG:9061
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:9061 == 0
+		PRINTFORMW 「気持ちよくなる薬？」
+		PRINTFORMW 「……まあ私に飲ませるなら、副作用なんて気にしなくてすむんだろうけど」
+		CFLAG:9061 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「どうせなら薬なんて使わず、%K31_CALLNAME()%自身で私を乱れさせて欲しい」
+			CFLAG:9061 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「要するに、薬使うくらい早く私に乱れてほしいことだよね？　頑張る……」
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「よほど安い薬なんだ。私なんかを淫らにさせるために何回も使えるんだから」
+			CFLAG:9061 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;排卵誘発剤 CFLAG9066
+;-------------------------------------------------
+IF SELECTCOM == 66
+	;初めて
+	IF CFLAG:9066 == 0
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「子供を作りやすくする薬……か」
+			PRINTFORMW 「ま、ちゃんとした家庭を築くには、子供は必要だね！」
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			;売ると言った
+			IF CFLAG:6001 == 1 && TALENT:烙印 == 0 && TALENT:隷属 == 0
+				PRINTFORMW 「え……子供ができやすくなる薬？　子供ができたら売り値が下がるんじゃ」
+				PRINTFORMW 「う、ううん、子供ができることは、嫌じゃない……だって、だって私は」
+				PRINTFORMW 「%K31_CALLNAME()%を……ううん、私は、%K31_CALLNAME()%の奴隷だから……」
+			ELSE
+				PRINTFORMW 「え……子供ができやすくなる薬？　そっか、私を完全に%K31_CALLNAME()%のものにするために……」
+				PRINTFORMW 「……好きなだけ犯して。孕ませて。私を、%K31_CALLNAME()%のものにして……」
+			ENDIF
+		;服従か、烙印か、淫乱か、隷属
+		ELSEIF TALENT:160 == 1 || TALENT:161 == 1 ||  TALENT:162 == 1 || TALENT:170 == 1
+			PRINTFORMW （どうせ、私には選択する権利なんてないし……）
+			PRINTFORMW （何も考えないで快楽に浸ろう……）
+		;従順Lv5かつ屈服刻印Lv3かつ反発刻印Lv0
+		ELSEIF ABL:10 >= 5 && MARK:2 == 3 && MARK:9 == 0
+			;売ると言った
+			IF CFLAG:6001 == 1
+				PRINTFORMW 「はぁ？　子供ができやすくなる薬……！？」
+				PRINTFORMW 「子供なんて生ませたらどう考えても売り値が下がると思う」
+				PRINTFORMW 「まぁ、貴方が何考えてるかわからないのなんて今さらだけどね……」
+			ELSE
+				PRINTFORMW 「はぁ？　子供ができやすくなる薬……！？」
+				PRINTFORMW 「既成事実から入ろうってわけ。まぁ、怒るだけ無駄なんだろうね……」
+			ENDIF
+		;それ以外
+		ELSE
+			;売ると言った
+			IF CFLAG:6001 == 1
+				PRINTFORMW 「はぁ？　子供ができやすくなる薬……！？」
+				PRINTFORMW 「子供なんて生ませたらどう考えても売り値が下がると思うけど」
+				PRINTFORMW 「なんでそんな薬をわざわざ……くっ！」
+				PRINTFORMW 自らの喉を抉ってまで薬を吐き出そうとする妹紅を押さえつけ、組み伏せた……
+			ELSE
+				PRINTFORMW 「はぁ？　子供ができやすくなる薬……！？」
+				PRINTFORMW 「既成事実から入ろうってわけ。けど……！」
+				PRINTFORMW 自らの喉を抉ってまで薬を吐き出そうとする妹紅を押さえつけ、組み伏せた……
+			ENDIF
+		ENDIF
+			CFLAG:9066 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「産めや増やせやってこと？　まあ寿命がない身としては、子孫が沢山いた方が嬉しい」
+			PRINTFORMW 「それに%K31_CALLNAME()%が子が欲しいなら、側室に任せるより私が産みたいし！」
+			CFLAG:9066 = 7
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			;売ると言った
+			IF CFLAG:6001 == 1 && TALENT:烙印 == 0 && TALENT:隷属 == 0
+				PRINTFORMW 「こうまで私を孕ませようとするってことは……売る気、なくなったってこと？」
+			ELSE
+				PRINTFORMW 「……何度も薬を使うくらい、私の子供が、ほしい？」
+				PRINTFORMW 「まさか%K31_CALLNAME()%は私だからこそ、満足できるってこと……？」
+			ENDIF
+			CFLAG:9066 = 6
+		;服従
+		ELSEIF TALENT:160 == 1
+			PRINTFORMW 「奴隷は、奴隷らしく振る舞わないとね……」
+			CFLAG:9066 = 5
+		;淫乱
+		ELSEIF TALENT:162 == 1
+			PRINTFORMW 「どうせなら、媚薬の方が嬉しいんだけど……」
+			CFLAG:9066 = 4
+		;従順Lv5かつ屈服刻印Lv3かつ反発刻印Lv0
+		ELSEIF ABL:10 >= 5 && MARK:2 == 3 && MARK:9 == 0
+			PRINTFORMW （もう、運を天に任せるしかない……必ずできるってわけじゃないはずだ）
+			CFLAG:9066 = 3
+		;それ以外
+		ELSE
+			;売ると言った
+			IF CFLAG:6001 == 1
+				PRINTFORMW 「もう訳がわからない。もしかして、蓬莱人にも薬が効くかどうかの実験？」
+				PRINTFORMW 「あんまり私が性奴隷として価値が低いから、実験材料に変えることにしたとか？」
+			ELSE
+				PRINTFORMW 「……蓬莱人に効かないといいんだけど」
+			ENDIF
+			CFLAG:9066 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン(新妻プレイ) CFLAG:9090 解除 CFLAG:8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:9090 == 0
+		PRINTFORMW 「えっと……何これ？　前垂？　ヒラヒラしてて変だけど……」
+		PRINTFORMW 妹紅はエプロンについて知らないようだ。とりあえず基本的なことを教えた。
+		PRINTFORMW 「つまりこれは調理する時服の上から着るもので、それを裸で着てるのが興奮する、ね」
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「まぁ、%K31_CALLNAME()%もこれで興奮するのなら、いいけど……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……これだから男ってのは」
+		ENDIF
+		CFLAG:9090 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「もしかして、私に似合うの？」
+			CFLAG:9090 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「私に家庭的な女らしい格好を求めるのは間違いだと思うけど……」
+			CFLAG:9090 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:8823 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「私に家庭的な姿なんて似合わないだろうし……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「飽きたわけ？　飽きて当然だろうけど」
+		ENDIF
+		CFLAG:8823 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「料理して欲しいなら、これでするけど……」
+			CFLAG:8823 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「貴方のことだからまた着せるんだろうね……まったく」
+			CFLAG:8823 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG:9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:9100 == 0
+		PRINTFORMW 「なにそれ、機械？　私、こういうのは疎いんだ、教えてくれると助かるよ」
+		PRINTFORMW 「……え？　これからすることをそっくりそのまま何度でも見れる！？」
+		CFLAG:9100 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「あくまで記念撮影で、売ったりしない……よね？」
+			CFLAG:9100 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「その……できれば売らないで欲しい」
+			PRINTFORMW 「だ、だってほら、私なんか撮っても二束三文にしかならないだろうし」
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……それ、やめてよ。だいたい、私の痴態なんか見直しても楽しくないよ？」
+			CFLAG:9100 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG:9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:9104 == 0
+		;露出癖
+		IF ABL:露出癖 >= 3
+			PRINTFORMW 「人気の多いところに行くのは、服を来てても慣れてない、けど……」
+			PRINTFORMW そう言いながらも、妹紅は明らかに何か期待するように唾を飲んだ。
+		;恋慕
+		ELSEIF TALENT:恋慕 && TALENT:相愛 == 0
+			PRINTFORMW 「人気の多いところに行くのは、服を来てても慣れてないけど……」
+			PRINTFORMW 「%K31_CALLNAME()%がい、行きたいって、言う、なら、我慢する……」
+			PRINTFORMW そう言う妹紅の声は、既に半分泣きかけている……
+		;それ以外
+		ELSE
+			PRINTFORMW 「人気の多いところに行くのは……服を来てても慣れてない……」
+			PRINTFORMW 「だから……やめてよ……」
+			PRINTFORMW そう言う妹紅の声は、既に半分泣きかけている……
+		ENDIF
+		CFLAG:9104 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 「ねぇ、%K31_CALLNAME()%は今回どんなことをするつもりなのかな……？」
+			PRINTFORMW そう聞いてくる妹紅の声は、明らかに弾んでいた。
+			CFLAG:9104 = 5
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「ま、また外に行くわけ……？　そ、そう……」
+			CFLAG:9104 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 && TALENT:相愛 == 0
+			PRINTFORMW 「っ……ぁ……隠れちゃ駄目だ、我慢、しなきゃ、がまんっ……！」
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだ、また周りからあいつはおかしいって思われるのはもう嫌だ……！」
+			CFLAG:9104 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	IF ABL:露出癖 >= 3
+		PRINTFORMW 「そ、その……閉じこもりっぱなしって、健康に悪いよね……」
+		CFLAG:8821 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「わたしは、%K31_CALLNAME()%と、一緒なら、どこでも、いい、けど……」
+		PRINTFORMW そう言う妹紅の表情は、%CALLNAME:MASTER%の家を見て明らかに安堵している。
+		CFLAG:8821 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「結局、こんな家でもまだ外よりマシって思うことになる……よく出来てるよ」
+		CFLAG:8821 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ローター挿入 CFLAG9151　CFLAG8816　ローター系　CFLAG5100
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 151 && TEQUIP:20 == 3
+	;初めて
+	IF CFLAG:9151 == 0 && CFLAG:5100 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なにかな、それ？　え、中に入れる？　%K31_CALLNAME()%が入れたいなら従うだけだけど……」
+			PRINTFORMW 「っ、やぁっ、なかで、震えはじめてっ！？」
+		ELSE
+			PRINTFORMW 「なにかな、それ？　……中に入れる？　嫌な予感しかしない」
+			PRINTFORMW 「っ、やぁっ、なかで、震えはじめてっ！？」
+		ENDIF
+			CFLAG:9151 = 1
+			CFLAG:5100 = 1
+			RETURN 0
+	;初めてだがローターは見たことがある
+	ELSEIF CFLAG:9151 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ……今度はそれ、どこに入れる？　え……膣に……わかった……」
+			PRINTFORMW 「んっ……やっぱり、震える、んだっ……」
+		ELSE
+			PRINTFORMW 「ローターだっけ？　今度はどこに……えぇっ、中に入れる？　震えるよね？」
+			PRINTFORMW 「……やっぱり嫌だと言っても入れるのね、んんっ」
+		ENDIF
+			CFLAG:9151 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+V感覚3以上
+		IF ABL:Ｖ感覚 >= 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「……そ、その、こんな小さいの入れるだけじゃ、%K31_CALLNAME()%も見てて楽しく、ないんじゃない？」
+			PRINTFORMW 妹紅は恥ずかしそうに目を伏せながら、言葉を絞り出した。
+			CFLAG:9151 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……入れたよ、次は、どうすればいい？」
+			CFLAG:9151 = 4
+		;V感覚Lv2以上
+		ELSEIF ABL:Ｖ感覚 >= 2
+			PRINTFORMW 「んっ……これ入れたまま、続きを……？」
+			PRINTFORMW 妹紅はかろうじて我慢しているようだが、その股間からは今も愛液が溢れ出していた。
+			CFLAG:9151 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ……振動が変な感じで伝わってきて気持ち悪い……」
+			CFLAG:9151 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 151
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「外す？　わかった……んっ……」
+		CFLAG:8816 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっと抜くの……んっ……」
+		CFLAG:8816 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ローターＡ挿入（着）CFLAG9170　ローター系 CFLAG5100
+;-------------------------------------------------
+IF SELECTCOM == 170 && TEQUIP:25 == 3
+	;初めて
+	IF CFLAG:9170 == 0 && CFLAG:5100 == 0
+		;A感覚Lv2以上
+		IF ABL:Ａ感覚 >= 2 ||  TALENT:恋慕
+			PRINTFORMW 「なにこれ……え、これをお尻に？　いいけど……」
+			PRINTFORMW 「んっ……やぁっ！？　おしりの中で、ふるえ、て！？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なにこれ……えぇっ、お尻に入れる？」
+			PRINTFORMW 「ひぐっ、なんでこんなことっ！？　やっ、なかで、ふるえっ！？」
+		ENDIF
+		CFLAG:9170 = 1
+		CFLAG:5100 = 1
+		RETURN 0
+	;初めてだがローターは見たことがある
+	ELSEIF CFLAG:9170 == 0
+		;A感覚Lv2以上
+		IF ABL:Ａ感覚 >= 2
+			PRINTFORMW 「今度はローター、どこに入れる……え、おしり？」
+			PRINTFORMW 「いい、けど……んんっ！？」
+			PRINTFORMW 妹紅はローターを尻に入れることに、それほど抵抗を見せなかった。
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 
+			PRINTFORMW 「今度はローター、どこに入れる……え、おしり？」
+			PRINTFORMW 「わかった……ん、んんっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「それで、今度はローターをどこに……は、尻！？」
+			PRINTFORMW 「やっ、いくらなんでもそんなの……ひぐっ！？」
+		ENDIF
+		CFLAG:9170= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕+A経験40以上
+		IF TALENT:恋慕 == 1 && EXP:1 > 40
+			PRINTFORMW 「もっと、もっと入れていいよ、奥の奥まで入れて震えさせていい……」
+			PRINTFORMW 妹紅の言葉には、どこか懇願が入り混じっていた。
+			CFLAG:9170 = 5
+		;A経験40以上
+		ELSEIF EXP:1 > 40
+			PRINTFORMW 「あっ、う、ああっ、なかで、ふるえ、だした……」
+			PRINTFORMW 妹紅は頬を紅潮させて、熱い吐息を漏らした。
+			CFLAG:9170 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……これ、いつ抜く？　ずっと付けてろって言うなら我慢するけど……」
+			PRINTFORMW 妹紅は我慢しているが、明らかにその顔は苦いものが混じっている。
+			CFLAG:9170 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひっ、またお尻に入れた……！？」
+			CFLAG:9170 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;ローターＡ挿入（脱）CFLAG8817　ローター系 CFLAG5100
+;-------------------------------------------------
+ELSEIF SELECTCOM == 170 && TEQUIP:25 == 0
+	;その他
+	PRINTFORMW 「はぁ……うぅっ、震えてた感覚がまだ残ってる……」
+	CFLAG:8817 = 1
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル電極 開始時CFLAG:9171 終了時CFLAG:8851
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 171 && TEQUIP:25
+	;電極系が初めて……まあまだ電極系これしか書いてないけどね
+	IF CFLAG:9171 == 0 && CFLAG:5102 == 0
+		PRINTFORMW 「何を刺して……やぁっ、なに、これ、ちりちりしてぇ……！？」
+		PRINTFORMW 始めて味わう電流に、妹紅は息を切らせながら悲鳴を上げた……
+		CFLAG:9171 = 1
+		CFLAG:5102 = 1
+		RETURN 0
+;	;アナル電極系は初めてだけど他の電極系の経験有り
+;	ELSeIF CFLAG:9171 == 0
+;		CFLAG:9171 = 1
+;		RETURN 0
+	;二回目以降
+	ELSE
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		IF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「ぁ、やっ、もぉ、だめ、あっ、わたしのおしり、あぁっ、こげるぅ♪」
+			PRINTFORMW 妹紅は全身から苦しそうに汗を流しながらも、歪んだ笑みを作っている……
+			CFLAG:9171 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「……っ……ぁ、うぅっ……！」
+			PRINTFORMW 妹紅は額に汗を浮かべながら、必死に痛みを堪えている……
+			CFLAG:9171 = 4
+;		;マゾっ気3以上でＶＣＢの感覚のどれかが３以上
+;		ELSEIF ABL:マゾっ気 >= 3 && (ABL:Ｃ感覚 >= 3 || ABL:Ｖ感覚 >= 3 || ABL:Ｂ感覚 >= 3)
+;			PRINTFORMW 「
+;			CFLAG:9171 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、これいやだっ、はずせ、ぃぐっ、はずし、てぇ！」
+			CFLAG:9171 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	IF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 「ふ、うっ……今さらだけど、死なない体がどれだけ得か分かった……」
+		PRINTFORMW 「体を気遣わないで、こういう無茶をして……快楽に浸れるんだ」
+		CFLAG:8851 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「は、あ……うっ、%K31_CALLNAME()%が私を苦しめたいって言うなら、受け入れる、けど……」
+		CFLAG:8851 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やるにせよ見るにせよ何かいいことがあるとは思えない……こんなの」
+		CFLAG:8851 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG:9172 終了時CFLAG:8852
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25
+	;初めて
+	IF CFLAG:9172 == 0
+		;A感覚Lv3以上
+		IF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ひ……ぁ、ふぁっ、あっ、どんどん、入っていってるぅ……！」
+			PRINTFORMW 調教された妹紅のアナルは、ビーズを易々と飲み込んでいく……
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「うっ、はぁっ、はぁっ、うあっ……！」
+			PRINTFORMW アナルで玉を一つ飲み込むたびに、妹紅は息を切らせて苦悶の声を上げる……
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、あぅ、まだ、あるの、もう、むりだって……！」
+			PRINTFORMW アナルで玉を一つ飲み込むたびに、妹紅は息を切らせて苦悶の声を上げる……
+		ENDIF
+		CFLAG:9172 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;テンプレだとマゾっ気で判断してるけど、コマンド見る限りあんまマゾっ気関係なそうなんですけど……
+		LOCAL = PALAM:10 + UP:10
+;		;恋慕＋A感覚Lv3以上＋潤滑Lv2以上
+;		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:9172 = 6
+		;潤滑Lv2以上＋A感覚Lv3以上
+		IF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「いぃ、いいよぉ……私のおしり、えぐらてれるぅ……♪」
+			PRINTFORMW 快感に震える妹紅の尻穴からは、腸液がビーズを伝って滴り落ちている……
+			CFLAG:9172 = 5
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「は……ぐぅっ、も、ちょっと、ゆっくり……」
+			PRINTFORMW 開発は十分でもまだほぐしていないためか、少し痛みがあるようだ……
+			CFLAG:9172 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「は……ぐぅっ、あ、ううぅっ……！」
+			PRINTFORMW 妹紅は必死に息を押し殺しているものの、漏れ出す息は明らかに苦しんでいる……
+			CFLAG:9172 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「もう、はいらないぃ……とめて、いれないでってば……！」
+			CFLAG:9172 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+	;A感覚Lv3以上
+	IF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「あひゅ、やっ、かんじちゃうっ、おしりから、ごつごつってぇ！」
+		PRINTFORMW 抜く際にも腸内をじっくりと抉られた妹紅は、排泄感のような快感に悶えている……
+		CFLAG:8852 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「あ、うっ！　は、ああぁっ……」
+		PRINTFORMW 抜き終わると、妹紅は堪えていたものを吐き出すように大きく息を吐いた……
+		CFLAG:8852 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うっ、やあああっ、ぬくのも、一苦労だよ、これ……二度としたくない……」
+		CFLAG:8852 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;浣腸 CFLAG:9174
+;-------------------------------------------------
+;開始時
+IF (SELECTCOM == 174 || SELECTCOM == 522) && TEQUIP:25
+	;初めて
+	IF CFLAG:9174 == 0
+		PRINTFORMW 「えっ……ひっ、や、やだ！　厠に、厠に行かせてっ！」
+		PRINTFORMW 妹紅は切羽詰ったような顔で、何度も頭を下げてまでお願いしてきた……
+		CFLAG:9174 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋排泄中毒Lv3以上
+		IF TALENT:恋慕 && ABL:36 > 3
+			PRINTFORMW 「これじゃ私、また出しそうなんだけど、%K31_CALLNAME()%……？」
+			PRINTFORMW 妹紅の顔には、諦観と期待が混じりあった表情が写っていた……
+			CFLAG:9174 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「えっ、ま、また！　で、でも、%K31_CALLNAME()%が、望んでるんだ……」
+			PRINTFORMW 妹紅の言葉は、自分に言い聞かせるようだった。
+			CFLAG:9174 = 4
+		;排泄中毒Lv3以上
+		ELSEIF ABL:36 >= 3
+			PRINTFORMW 「あ、ああっ、また……」
+			PRINTFORMW 妹紅の声には既に艶っぽいものが混じっていた……
+			CFLAG:9174 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「なっ、そんなっ、また、こんな、いくら私が醜い女だからってっ……」
+			PRINTFORMW 妹紅は既に排泄する前から泣きそうになっている……
+			CFLAG:9174 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;排泄（浣腸プレイ） CFLAG:8851
+;スカは嫌いなはずなのに閃いてしまった……なぜだ
+;-------------------------------------------------
+ELSEIF (SELECTCOM == 174 || SELECTCOM == 522) && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8854 == 0
+		PRINTFORMW 「ひっ、だめ、今抜いたら、やっ、やだあああああああああっ！」
+		CFLAG:8854 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋排泄中毒Lv4以上
+		IF TALENT:恋慕 && ABL:36 > 3
+			PRINTFORMW 「はふっ、ああっ、ふぁっ……あは、また糞尿を出しちゃった……」
+			PRINTFORMW 「でも何度もやらせるってことは、%K31_CALLNAME()%もきっと私のこういう姿を見たいんだ、だからいいよね……？」
+			CFLAG:8854 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ひっ、やぁっ、いやぁ！　本当に、こんなところを%K31_CALLNAME()%は見たかったの……？」
+			CFLAG:8854 = 4
+		;排泄中毒Lv4以上
+		ELSEIF ABL:36 > 3
+			PRINTFORMW 「あんっ、はぁっ――はぁ、は、はは……」
+			PRINTFORMW 「こんなことで気持ちよくなるなんて、もうだめだ私、完全に穢れてる……」
+			PRINTFORMW 「いいや、どうせ、私みたいな女にはこういうのがお似合いなんだ……」
+			CFLAG:8854 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひっ、やっ、やだっ、なんで何度も、こんなこと、うっ、ううっ……」
+			CFLAG:8854 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め＆顔面騎乗アナル CFLAG:9180
+;-------------------------------------------------
+IF SELECTCOM == 180 || SELECTCOM == 187
+	;初めて
+	IF CFLAG:9180 == 0
+		;相愛か顔面騎乗アナルで淫魔か淫尻か淫乱のとき
+		IF TALENT:相愛 || (SELECTCOM == 187 && (TALENT:180 || TALENT:173 || TALENT:170))
+			PRINTFORMW 「%K31_CALLNAME()%がしてくれるなら……もっと、してほしい、かな……」
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「えっ、ちょっと、私はともかく%K31_CALLNAME()%がそんなところ舐めたら病に罹るよ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、なっ、そこは舐めるとこじゃ、この、人の話聞けってば！」
+		ENDIF
+		CFLAG:9180 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛か顔面騎乗アナルで淫魔か淫尻か淫乱のとき
+		IF (TALENT:相愛 || (SELECTCOM == 187 && (TALENT:180 || TALENT:173 || TALENT:170)))
+			PRINTFORMW 「んっ……もう少し、左に……ぁ、はぁっ……」
+			CFLAG:9180 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「私なんかのために、そんなことしなくても……」
+			CFLAG:9180 = 4
+		;A感覚Lv2以上
+		ELSEIF ABL:Ａ感覚 >= 2
+			PRINTFORMW 妹紅は必死に冷静な顔を装っているが、その体は明らかに震えていた。
+			CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「長い間生きてきたけど……こんなことをしてくるのはお前がはじめてだ」
+			CFLAG:9180 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首ローター CFLAG9190　ローター系 CFLAG5100
+;-------------------------------------------------
+IF SELECTCOM == 190
+	;初めて
+	IF CFLAG:9190 == 0 && CFLAG:5100 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「なにそれ……胸に当てる？　わかった、いつでもいいよ……ひ、くんっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なにそれ……胸に当てる？　嫌だって言っても当てるんだろうし」
+			PRINTFORMW 「んっ……ひ、くんっ！　やっ、振動が……」
+		ENDIF
+			CFLAG:9190 = 1
+			CFLAG:5100 = 1
+			RETURN 0
+	;初めてだがローターは見たことがある
+	ELSEIF CFLAG:9190 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「今度は胸にローター？　わかった、いつでもいいよ……ひ、くんっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「今度は胸にローター？　嫌だって言っても当てるんだろうし」
+			PRINTFORMW 「んっ……ひ、くんっ！　やっ、振動が……」
+		ENDIF
+			CFLAG:9190 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ、はぁ……もっと当てたいなら、じっくり当てていっていいよ……」
+			PRINTFORMW 妹紅は蕩けた瞳を隠すことなく、座った姿勢でこちらを見上げてきた……
+			CFLAG:9190 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「…………っ」
+			PRINTFORMW 妹紅はぎゅっと手を握り、乳首から伝わる快感と振動を押し殺そうとしている……
+			CFLAG:9190 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「早く終わらせてよ……」
+			PRINTFORMW 妹紅は体を動かし、ローターを乳首からずらそうともがいている……
+			CFLAG:9190 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG:9191　CFLAG:8861
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35
+	;初めて
+	IF CFLAG:9191 == 0
+		PRINTFORMW 「なにこれ……やっ、胸が、吸われてっ！？」
+		PRINTFORMW 「いったいなんの……えっ、母乳を集めるだって？」
+		CFLAG:9191 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「私の母乳を集めれば、%K31_CALLNAME()%の暮らしが楽になると言うなら……」
+			CFLAG:9191 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……まぁ私の母乳は高く売れるかもしれないけどね、実験材料としてなら」
+			CFLAG:9191 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「んっ……もう、私の母乳は集めなくていいんだ？」
+		CFLAG:8861 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっ、いきなり引っ張らないでっ！」
+		CFLAG:8861 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;パイズリフェラ CFLAG9209
+;-------------------------------------------------
+IF SELECTCOM == 209
+	;初めて
+	IF CFLAG:9209 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF TALENT:貧乳
+				PRINTFORMW 「口を多めに？　うん、私の胸は小さいし、頑張らないと……んむっ……」
+				PRINTFORMW 「んっ、むぐっ、ちゅるっ、これじゃ口でやってるだけだね、はは……はぁ、はむっ」
+				PRINTFORMW 妹紅は微妙に落ち込みながらも、必死に奉仕を続けている……
+			ELSE
+				PRINTFORMW 「んむっ、んんっ、れろぉっ……ふふ、%K31_CALLNAME()%のと一緒に私の胸を舐めてるみたい」
+				PRINTFORMW 舌の先でチロチロと%CALLNAME:PLAYER%の亀頭を舐めながら、妹紅は嬉しそうに呟いた……
+			ENDIF
+		ELSE
+			IF TALENT:貧乳
+				PRINTFORMW 「口を多めに？　確かに私の胸は小さいけど……んむっ……」
+				PRINTFORMW 「んっ、はむっ、ちゅるっ、これじゃただ口でやってるだけだ。……意味ない」
+				PRINTFORMW 妹紅の言葉はこちらをバカにするより、自嘲するような色合いが強かった……
+			ELSE
+				PRINTFORMW 「んむっ……んんっ、はむっ……うぅ、首、辛いんだけど……」
+				PRINTFORMW 「やっ、だからって胸の中に押し込まないで！」
+			ENDIF
+		ENDIF
+		;フェラ判定
+		SIF CFLAG:9041 == 0
+			CFLAG:9041 = 1
+		CFLAG:9209 = 1
+		RETURN 0
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			IF TALENT:貧乳
+				PRINTFORMW 妹紅は胸での愛撫に苦戦しながら、それでも口だけでなく胸でも竿を擦り続ける……
+				PRINTFORMW 「れろぉ、んっ……ふふっ、%K31_CALLNAME()%は小さい胸のほうが好みなんでしょ？」
+				PRINTFORMW 「なら口だけじゃなくて頑張って胸も使わなきゃ、勿体無いよ」
+			ELSE
+				PRINTFORMW 「知ってるよ、%K31_CALLNAME()%はここが弱いんだって……ちゅっ♪」
+				PRINTFORMW 妹紅は胸でペニスに刺激を与えつつ、先端の穴に舌の先を差し入れ舐め上げた。
+			ENDIF
+			CFLAG:9209 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF TALENT:貧乳
+				PRINTFORMW 「ちゅっ、んぐっ、やっぱり、胸は気持ちよくないかな……はむっ……」
+				PRINTFORMW 胸で上手く奉仕できない分、妹紅は懸命に舌をペニスに這わせている……
+			ELSE
+				PRINTFORMW 「んっ、れろっ、はむっ、どぉ、%K31_CALLNAME()%、ぜんぶきもちいぃ……？」
+				PRINTFORMW 妹紅は一通り竿の先端を口から出した舌で舐めると、亀頭を口内へと咥えこんだ……
+			ENDIF
+			CFLAG:9209 = 3
+		;それ以外
+		ELSE
+			IF TALENT:貧乳
+				PRINTFORMW 「んむっ……これなら胸でやる分、いらないんじゃないの……？」
+			ELSE
+				PRINTFORMW 「んむっ、あうぅ……せめて胸だけで満足してよ……」
+			ENDIF
+			CFLAG:9209 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;スパンキング CFLAG:9220
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:9220 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「私のお尻を叩きたいと言うなら、いいけど……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「づっ……悪いけど別にこれくらい、どうってことない」
+		ENDIF
+		CFLAG:9220 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「ひぐっ……いいよ、そっちの手が大丈夫な限り、どんどん叩いてっ！」
+			CFLAG:9220 = 6
+		;相愛
+		ELSEIF TALENT:相愛
+			PRINTFORMW （せっかく指輪貰ったのに、まだこんなことされるのは少し嫌だ……）
+			CFLAG:9220 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ぐっ……ねぇ、%K31_CALLNAME()%の手は大丈夫？　私とは違うだろうから」
+			CFLAG:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「はぁっ……もっと叩いていいよ。私、気付いたんだ」
+			PRINTFORMW 「どうせ死なないんだから汚されるよりはこういった事のほうがいい、って」
+			CFLAG:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「別に、腕が切り落とされたわけでもないしっ……！」
+			CFLAG:9220 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG:9221
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:9221 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ、それで私を……いっ、ああっ！？」
+			PRINTFORMW 「は、あうっ、いいよ、どうせ私は死なないんだ。痛いのも、慣れてる……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何をするかは……聞くまでもないね、づっ！？」
+			PRINTFORMW 「っ、はぁっ、ああ、死なない私を買ったのはこういうことをするため？」
+		ENDIF
+		CFLAG:9221 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「んうっ、だいじょぶ、痛みで死んだりしないんだから、あふっ、おもい、きりぃ！」
+			PRINTFORMW 妹紅は我慢するどころか、むしろもっと打たれようと体を差し出している……
+			CFLAG:9221 = 6
+		;相愛
+		ELSEIF TALENT:相愛
+			PRINTFORMW 「指輪を送った相手を鞭打つなんて、きゃっ！　……正直、私は嬉しくないよ」
+			CFLAG:9221 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ひ、ぐっ、大丈夫、私は平気、だから満足するまで好きなだけ、あうぅっ！」
+			CFLAG:9221 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「ぐっ……痛い、けど、続けて、いい。変なことされるよりは続けてほしい」
+			PRINTFORMW 「予想もつかないことをされるよりは、もう慣れてる痛みを味わう方が楽だ」
+			CFLAG:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いっ……あぁ、どうせ私なんて、こんな用途にしか使われないんだ……」
+			CFLAG:9221 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG:9222
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:9222 == 0
+		;マゾっ気
+		IF ABL:マゾっ気 >= 3
+			PRINTFORMW 「い゛、あぁっ、これも、そのうち、きもちよく、なる、の、ひ、くぅん……」
+			PRINTFORMW 妹紅は悶絶しながらも、その吐息には僅かだが甘いものが混じっている。
+			PRINTFORMW もっとも死なないのだから、どのみち加減を探る必要はないだろう……
+		;それ以外
+		ELSE
+			PRINTFORMW 「い゛、あぁっ、なんで、そんな、ひ、ぐっ！？」
+			PRINTFORMW 妹紅は痛みに悶え苦しんでいるが、死なないのだから加減を探る必要はないだろう……
+		ENDIF
+		CFLAG:9222 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「ひくっ、もっと刺して、%K31_CALLNAME()%がまんぞくするまで、あひっ、すきなだけぇ！」
+			PRINTFORMW 「どうせいくらさされても、すぐ元に戻るんだからぁ……」
+			PRINTFORMW 苦痛に息を切らせ脂汗を浮かべながら、妹紅は恍惚とした表情を浮かべている……
+			CFLAG:9222 = 6
+		;相愛
+		ELSEIF TALENT:相愛
+			PRINTFORMW 「こんなの痛いだけできもちよくないっ！」
+			PRINTFORMW 怒り心頭と言った様子で妹紅はこちらを睨みつけてきた……
+			CFLAG:9222 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ぅ、くぅ、や、づっ……」
+			PRINTFORMW 妹紅は必死に悲鳴を押し殺している……
+			CFLAG:9222 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「心を汚されるのに比べれば、あぐっ、体を痛め付けられるのなんて、へーきぃっ♪」
+			PRINTFORMW 嬌声を上げる精神こそ既に作りかえられていることに、妹紅は気付いていない……
+			CFLAG:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「かぐやだってこんなとこ、刺さない゛っあぐっ！？」
+			CFLAG:9222 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縄＆四肢緊縛 CFLAG:9224　CFLAG:8872
+;rev6で地の文変わったんだよなぁ……倒錯的なもこたんは簡単に喜んでしまう
+;どうしようか
+;-------------------------------------------------
+;開始時
+IF (SELECTCOM == 224 && TEQUIP:40) || SELECTCOM == 622
+	;初めて
+	IF CFLAG:9224 == 0
+		;マゾっ気Lv3以上
+		IF ABL:マゾっ気 >= 3
+			PRINTFORMW 「縛って……何、するつもり……？」
+			PRINTFORMW 妹紅の声は、明らかに何かを期待している声色だ……
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「元から暴れるつもりはないけど、%K31_CALLNAME()%が縛りたいっていうなら、好きにしていい……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ふん、そりゃそうだ、下手に抵抗されたらたまったものじゃないだろうし」
+		ENDIF
+		CFLAG:9224 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「うん、骨が折れそうなくらい、思いっきり縛って……」
+			PRINTFORMW 明らかに妹紅はこれから何をされるのか想像し、興奮で息を弾ませている……
+			CFLAG:9224 = 6
+		;相愛
+		ELSEIF TALENT:相愛
+			PRINTFORMW 「……私、もう%K31_CALLNAME()%の奴隷じゃなくなったはずだよね」
+			CFLAG:9224 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「痛くても我慢するから、%K31_CALLNAME()%の好きなように縛っていい……」
+			CFLAG:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「あ……今回はどう、縛るわけ？　どれくらい、痛い？」
+			PRINTFORMW 妹紅はどこか痛いほうがよさそうな口ぶりだ。
+			CFLAG:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……逃げさせないためだけじゃなく、傷めつけるためにも縛るのか」
+			PRINTFORMW 「そっちにとっては一石二鳥だけど、こっちにとっては最悪だ」
+			CFLAG:9224 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0
+	;恋慕で相愛じゃない
+	IF TALENT:恋慕 && TALENT:相愛 == 0
+		PRINTFORMW 「どうせ縄の痕も肌に残らず消えるんだし、あんまり気を遣わなくてもいい」
+		CFLAG:8872 = 3
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 「あ……」
+		PRINTFORMW 体を縛り付けられる感覚がなくなった妹紅は、物足りなさそうに体を揺らした……
+		CFLAG:8772 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……やっぱり、自由に動けるほうがいいと思わない？」
+		PRINTFORMW 妹紅の声色は、明らかに現状に対する皮肉を込めていた。
+		CFLAG:8872 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG:9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41
+	;初めて
+	IF CFLAG:9225 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あっ、何も見えなく……」
+			PRINTFORMW 「いなくなってないよね、ちゃんとそこにいるよね？」
+			PRINTFORMW 命令を守ってアイマスクを外そうとはしないが、妹紅は不安そうに首を振っている……
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふーん、目隠しね……確かにただ痛めつけるだけじゃ私には効果薄いけどさ」
+		ENDIF
+		CFLAG:9225 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 「どうせ見えなくしたいなら、目を抉るくらいしてもいい。そのうち治るし」
+			PRINTFORMW あまりに開発されている妹紅の体は、もっと刺激が欲しいようだ……
+			CFLAG:9225 = 6
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「ま、まぁ、どうせなら、少しは刺激的なほうがいいよね……」
+			PRINTFORMW 妹紅の声は小さかったものの、明らかにこちらに聞こえるように言っていた。
+			CFLAG:9225 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「念のため聞くけど、%K31_CALLNAME()%、どこか行ったりしないよね……？」
+			PRINTFORMW 捨てられるのが本当に不安そうな声色で呟きながら、妹紅は体を震わせている……
+			CFLAG:9225 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「……どうせ碌なことはしないんだろう」
+			CFLAG:9225 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;マゾっ気Lv3以上
+	IF ABL:マゾっ気 >= 3
+		PRINTFORMW 「えっ、もう外すの？　あ、そう……」
+		CFLAG:8871 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「やっぱり、%K31_CALLNAME()%が見えてる方がいい……いるかどうか不安になるから」
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっぱり%CALLNAME:MASTER%を見てないと安心できないね」
+		PRINTFORMW 「……普通の感性じゃ予想できないことばかりするから」
+		CFLAG:8871 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ CFLAG:9226　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 226 && TEQUIP:42
+	;初めて
+	IF CFLAG:9226 == 0
+		PRINTFORMW 「……ぅ……むぅ」
+		CFLAG:9226 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;それ以外
+		IF 1;一括置換によりIF-ENDIFを崩さないため、形式的にIFを残す
+			PRINTFORMW 「むっ、むぐっ……」
+			CFLAG:9226 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 226 && TEQUIP:42 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「別に黙ってて欲しいならこんなもの無くても黙るけど……」
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「騒いだほうが、%CALLNAME:MASTER%は不快だってこと？」
+		CFLAG:8872 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG:9230
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:9230 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「口でしろって？　うん、わかった……んぐっ！？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「口でやれって？　はいはい、わかったよ……んぐっ！？」
+		ENDIF
+		PRINTFORMW いきなり喉へと竿を押し込まれ、妹紅は目を白黒させている……
+		CFLAG:9230 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神4以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 4
+			PRINTFORMW 「んむっ！？　んーっ、んっ、んんっ……」
+			PRINTFORMW 妹紅は少し驚いた様子を見せたものの、慣れきった表情で舌と首を動かし始めた……
+			CFLAG:9230 = 4
+		;恋慕or服従
+		ELSEIF (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 「んぐっ、んっ、んうっ、ふぅっ……」
+			PRINTFORMW 妹紅は涙目になりながらも、自ら首を動かし肉棒を喉で擦っている……
+			CFLAG:9230 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめっ、んぐっ、んんっ、んーっ！」
+			PRINTFORMW 妹紅は息を詰まらせ涙を流しているが、彼女の場合気を遣う必要はないだろう……
+			CFLAG:9230 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;腹パン CFLAG9241　足で踏むと統合　書きかけ
+;浣腸を書いてしまった以上は書くしかあるまい……（ウルージさん風味に）
+;-------------------------------------------------
+IF SELECTCOM == 241 || SELECTCOM == 240
+	;排泄物逆流……でいいんだよね？
+	IF TFLAG:198 == 4
+		;恋慕＋排泄中毒Lv4以上
+		IF TALENT:恋慕 && ABL:36 > 3
+			PRINTFORMW 「はぐっ……うっ、んんっ、げほっ、あ、ああっ、出てる……」
+			PRINTFORMW 「わざわざ腹を狙ったってことは、%K31_CALLNAME()%はこれを見たかった？　なら、我慢しなくていいか……」
+			PRINTFORMW 妹紅はどこか壊れた笑顔を浮かべつつ、蕩けた瞳でこちらを見つめている……
+			CFLAG:9241 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ひぐっ……けほっ、ん、んんっ！？　あ、ああっ、見ないで、%K31_CALLNAME()%、見ないでぇっ！」
+			CFLAG:9241 = 3
+		;排泄中毒Lv4以上
+		ELSEIF ABL:36 > 3
+			PRINTFORMW 「けほっ、んぐっ！　あ、ああ……出ちゃったみたい……」
+			PRINTFORMW 「でも、いいか……どうせ変態の貴方はこれを見たかったんでしょ……」
+			PRINTFORMW 「どうせ私はとっくの昔に、下賎な醜女に堕ちてたんだ、気にする必要なんか……」
+			CFLAG:9241 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「けほっ、こほっ……あ、ああっ、あああ、でて、る……」
+			PRINTFORMW 「私の、私のせいじゃない、お前が悪いんだ！」
+			CFLAG:9240 = 1
+		ENDIF
+		RETURN 0
+	;にんっしん　そのうち
+;	ELSEIF TALENT:妊娠
+	;その他
+	ELSE
+		IF CFLAG:9241 == 1
+			;相愛
+			IF TALENT:相愛
+				PRINTFORMW 「はぐっ！？　げほっ……ちょっと、何をっ……」
+				PRINTFORMW こんなことをされるとは思っていなかったのか、妹紅は目を吊り上げて睨んでいる……
+			ELSE
+				PRINTFORMW 「げほっ、はぁっ、やっぱり私なんか、性奴隷にすらする気が起きないってこと……？」
+			ENDIF
+			CFLAG:9240 = 1
+			RETURN 0
+		ELSE
+			;相愛
+			IF TALENT:相愛
+				PRINTFORMW 「は、あうっ、不満があるなら言ってっ……直すから……だから、だからやめて……」
+				PRINTFORMW 妹紅は泣きそうな表情になりながら、こちらに擦り寄ってきた……
+				CFLAG:9241 = 4
+			;恋慕
+			ELSEIF TALENT:恋慕
+				PRINTFORMW 「けほっ、ごほっ……私を痛めつけて%K31_CALLNAME()%の気が晴れるなら、いくらでも……」
+				CFLAG:9241 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「かはっ……今度はサンドバック、か……」
+				CFLAG:9240 = 2
+			ENDIF
+			RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;優しくする＆お嫁さんで楽しむ	CFLAG:9320
+;-------------------------------------------------
+IF SELECTCOM == 320 || SELECTCOM == 347
+	;初めて
+	IF CFLAG:9320 == 0
+		IF TALENT:相愛
+			PRINTFORMW 「うん、せっかく指輪付けたんだもの、こういうことが一番いい」
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「念のため聞くけど、本当にそんなことしていい？　それは、命令？」
+			PRINTFORMW 「うん、命令か……それなら、従わないと！」
+		ELSE
+			PRINTFORMW 「こんな状況でいきなりこんなことされても、正直、不気味なだけだ」
+		ENDIF
+		CFLAG:9320 = 1
+		RETURN 0
+	;それ以外
+	ELSE
+		IF TALENT:相愛 && ASSIPLAY == 0
+			PRINTFORMW 「うん、せっかく指輪付けたんだもの、こういうことが一番いい」
+			CFLAG:9320 = 5
+		ELSEIF TALENT:恋慕
+			PRINTFORMW （こうすることが命令なんだ。我慢なんて、しなくていいよね？）
+			CFLAG:9320 = 4
+		ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+			PRINTFORMW 「……まぁ、犯されたりするよりはこういった事のほうがいい」
+			CFLAG:9320 = 3
+		ELSE
+			PRINTFORMW 「気遣ってるつもりなら、一人きりにさせてほしい」
+			CFLAG:9320 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;指チュパ CFLAG9327
+;-------------------------------------------------
+IF SELECTCOM == 327
+	;初めて
+	IF CFLAG:9327 == 0
+		PRINTFORMW 「指をくわえて……それだけ？　それだけでいいならするけどさ」
+		CFLAG:9327 = 1
+		RETURN 0
+	;それ以外
+	ELSE
+		IF TALENT:相愛 && ASSIPLAY == 0
+			PRINTFORMW 「ちゅるっ……もう少し%K31_CALLNAME()%の近くに行くよ、%K31_CALLNAME()%の体温を感じたいんだ」
+			CFLAG:9327 = 4
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ちゅるっ……その、もう少し%K31_CALLNAME()%の近くに行っても、いい？」
+			CFLAG:9327 = 3
+		ELSE
+			PRINTFORMW 「ちゅる……ちゅくっ……」
+			PRINTFORMW （……肌がふやけて嫌だったりしないんだろうか、%CALLNAME:PLAYER%は）
+			CFLAG:9327 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;首筋耳裏責め（派生無し） CFLAG9328
+;-------------------------------------------------
+IF SELECTCOM == 328 && TFLAG:99 == 0
+	;初めて
+	IF CFLAG:9328 == 0
+		PRINTFORMW 「きゃっ、いきなり何！？　……え、これだけ？」
+		CFLAG:9328 = 1
+		RETURN 0
+	;それ以外
+	ELSE
+		IF TALENT:相愛
+			PRINTFORMW 「ひんっ！　もー、%K31_CALLNAME()%はほんっといたずら好きだね」
+			CFLAG:9328 = 4
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「あ……こんなところを舐めるだけでいいんだ？」
+			CFLAG:9328 = 3
+		ELSE
+			PRINTFORMW （確かに気軽にはできないけど、わざわざ攫ってきてまですることでもないね……）
+			CFLAG:9328 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;お嫁さんで楽しむは優しくすると統合
+;-------------------------------------------------
+;お風呂場プレイ CFLAG:9350 解除 CFLAG:8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:9350 == 0
+		PRINTFORMW （しっかし立派なお風呂だよね……）
+		PRINTFORMW （少なくとも自分で炎起こしてお湯沸かして入るのとは比較にならない……）
+		CFLAG:9350 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「うーん、やっぱり我が家に立派なお風呂がある、っていうのは素敵だ！」
+			CFLAG:9350 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「その……髪とか洗うの、私はあんまり得意じゃないけど、
+			PRINTFORMW 　%K31_CALLNAME()%が私に洗ってほしいって言うのなら……」
+			CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （はぁ、このお風呂に一人だけで入れたらなぁ……）
+			CFLAG:9350 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 350 && TEQUIP:53 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「気持よかったし、また一緒に行きたいな……」
+		CFLAG:8824 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW （次は一人で来たいな……）
+		CFLAG:8824 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG:9351
+;-------------------------------------------------
+IF SELECTCOM == 351 && TEQUIP:54
+	;初めて
+	IF CFLAG:9351 == 0
+		PRINTFORMW （こういうの、私の家には無かったんだよね……竹林のボロ屋だし当然だけど）
+		IF TFLAG:99 == 1
+			PRINTFORMW 「いいね、これ。すごく気持ちいい……ああ、そういう意味じゃなく」
+		ELSEIF TFLAG:99 == 2
+			PRINTFORMW 「水がこんな感じで浴びられる、なんて素敵。滝と違って水量も調節できるし」
+			PRINTFORMW 妹紅は微妙に勘違いしている。後で温度調節できることを教えておこう。
+		ELSEIF TFLAG:99 == 3
+			PRINTFORMW 「ちょっと熱いけど、私はこれくらいでも大丈夫かな」
+		ENDIF
+		CFLAG:9351 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			IF TFLAG:99 == 1
+				PRINTFORMW 「ほんと、我が家のお風呂は素敵……」
+			ELSEIF TFLAG:99 == 2
+				PRINTFORMW 「ちょっと、もっとあったかいのにしてよ。水だよこれ？」
+			ELSEIF TFLAG:99 == 3
+				PRINTFORMW 「私はこれくらいでも大丈夫だけど、%K31_CALLNAME()%は熱いんじゃない？」
+			ENDIF
+			CFLAG:9351 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF TFLAG:99 == 1
+				PRINTFORMW （二人でしばらく、これを浴びながら何をすることもなくのんびりできたら……）
+			ELSEIF TFLAG:99 == 2
+				PRINTFORMW 「%K31_CALLNAME()%がこの温度でいいって言うなら、いいけど……」
+			ELSEIF TFLAG:99 == 3
+				PRINTFORMW 「私はともかく、%K31_CALLNAME()%はこの温度は熱くないの？」
+			ENDIF
+			CFLAG:9351 = 3
+		;それ以外
+		ELSE
+			IF TFLAG:99 == 1
+				PRINTFORMW （これを浴びながらぼーっとしていたい……）
+			ELSEIF TFLAG:99 == 2
+				PRINTFORMW 「お湯がでる、って聞いたんだけど……なんで水？」
+			ELSEIF TFLAG:99 == 3
+				PRINTFORMW （気を張り詰めさせて相手の行動に備えるためにも、これくらいの方がいいか）
+			ENDIF
+			CFLAG:9351 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG:9352
+;-------------------------------------------------
+IF SELECTCOM == 352
+;	;初めて
+;	IF CFLAG:9352 == 0
+		;相愛
+;		CFLAG:9352 = 1
+;		RETURN 0
+	;二回目以降
+;	ELSE
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「へへっ、夫の背を流すのは妻として当然だものね！」
+			CFLAG:9352 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「どう……かな？　私みたいな女にされたら、穢されるように思うかもしれないけど」
+			CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「私みたいな女にこんなことさせても、穢れたように感じるだけだと思うけど……」
+			CFLAG:9352 = 2
+		ENDIF
+		RETURN 0
+;	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;蒸し風呂
+;-------------------------------------------------
+IF SELECTCOM == 370 && TEQUIP:55
+	;初めて
+	IF CFLAG:9370 == 0
+		PRINTFORMW 「うわ、汗がどんどん出てくる……まぁ、私は平気だけど」
+		IF TALENT:恋慕
+			PRINTFORMW 「%K31_CALLNAME()%は大丈夫？　無茶は、しないで」
+		ELSE
+			PRINTFORMW （隣にいる奴が脱水症状で倒れたりすれば、快適だろうなぁ……）
+		ENDIF
+		CFLAG:9370 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		IF TALENT:恋慕
+			PRINTFORMW 「もし%K31_CALLNAME()%の体調が悪くなったりしたら、すぐに出て。危ないよ」
+			CFLAG:9370 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （意外とこういう設備っていうのも悪くないなぁ……一人で入るなら、だけど）
+			CFLAG:9370 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;吸血 CFLAG:9400
+;-------------------------------------------------
+IF SELECTCOM == 400
+	IF 1;一括置換によりIF-ENDIFを崩さないため、形式的にIFを残す
+		PRINTFORMW 「つっ……私の血を吸うのはかなり危ないと思うんだけどな」
+		CFLAG:9400 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;尻子玉抜き CFLAG:9402　
+;-------------------------------------------------
+IF SELECTCOM == 402
+	IF ABL:Ａ感覚 >= 5
+		PRINTFORMW 「あひっ、ふにゅうっ……いい……おひりのなか、ひくひくするのぉ……♪」
+		PRINTFORMW 開ききった肛門を外気に晒しながら、妹紅は恍惚とした声を漏らして崩れ落ちた……
+		CFLAG:9402 = 3
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「やっ、ふにゃっ……！？　あ、あふ、あうぅっ……」
+		PRINTFORMW 頬を真っ赤に染めながら、なんとも言えない吐息を妹紅は漏らした……
+		CFLAG:9402 = 2
+	ELSE
+		PRINTFORMW 「うぁっ、あぁっ！？　あ……や、やらぁ、なに、こへぇ……」
+		PRINTFORMW 尻子玉を抜かれると、体力を使い切ったように妹紅は崩れ落ちた……
+		CFLAG:9402 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;操りの糸 CFLAG:9412
+;-------------------------------------------------
+IF SELECTCOM == 412 && TEQUIP:77
+	IF TALENT:恋慕 && TALENT:相愛 == 0
+		PRINTFORMW 「人形になってほしいって言うなら……我慢する、けど……」
+		CFLAG:9412 = 2
+	ELSE
+		PRINTFORMW 「ふん……まさに蓬莱人形、ってとこか」
+		;だれうま
+		CFLAG:9412 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG:9500　CFLAG:8900
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:9500 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「なっ……！？　こんなのまで扱えるだなんて……まさか」
+			PRINTFORMW 「%K31_CALLNAME()%じゃなくて、これが相手……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なっ……！？　こんなのまで扱えるだなんて。でもねぇ」
+			PRINTFORMW 「わざわざ私の相手をさせるためにこんな連中を呼び出す？　それは力の無駄遣いだ」
+		ENDIF
+		CFLAG:9500 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;触手中毒3以上
+		IF ABL:触手中毒 >= 3
+			PRINTFORML 「やっと気付いた……契る相手が人の形をしているかどうかなんて、
+			PRINTFORMW 　こんな体になった今はもう、気にする必要はないんだ……ふふっ」
+			CFLAG:9500 = 6
+		;恋慕+触手経験20以上（消費基本値が三分の一になる）
+		ELSEIF TALENT:恋慕 && EXP:触手経験 >= 20
+			PRINTFORMW 「%K31_CALLNAME()%がしろと言うなら……こんな人の形すらしてない相手でもする」
+			CFLAG:9500 = 5
+		;相愛
+		ELSEIF TALENT:相愛
+			PRINTFORMW 「えぇっ……%K31_CALLNAME()%が相手してよ、お願いだから……」
+			CFLAG:9500 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW （人の形すらしてない相手でも我慢しないと……私は、奴隷なんだから……）
+			CFLAG:9500 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……またこれか。まぁ、私にはお似合いなのかもしれないけどね」
+			CFLAG:9500 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;触手中毒3以上
+	IF ABL:触手中毒 >= 3
+		PRINTFORMW 「また呼んでほしいな……こんな私を気味悪がらずに契ってくれる生き物なんだから」
+		CFLAG:8900 = 4
+	;恋慕+触手経験20以上（消費基本値が三分の一になる）
+	ELSEIF TALENT:恋慕 && EXP:触手経験 >= 20
+		PRINTFORMW 「終わり……そう。もし、私を気遣ったのならその必要はない。もう慣れたよ」
+		CFLAG:8900 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「終わり……？　そ、そう、よかった、じゃなくてわかった」
+		CFLAG:8900 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「さすがに私なんかじゃ嫌だって、こいつらが言ったりでもした？」
+		CFLAG:8900 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手挿入（着）	CFLAG:9501
+;-------------------------------------------------
+IF SELECTCOM == 501 && TEQUIP:20 == 1
+	;初めてで触手中毒3未満
+	IF CFLAG:9501 == 0 && ABL:触手中毒 < 3
+		PRINTFORMW 「そ、そんなの入れられたら、あ……あッ、あぁっ♪」
+		PRINTFORMW 「んっ、あぅっ、なか、ひっかかってぇっ！？」
+		PRINTFORMW 膣は経験済みということもあってか、膣は触手の責めにも順応し始めている……
+		CFLAG:9501 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		IF ABL:触手中毒 >= 3
+			PRINTFORMW 「きてっ、もっとぉ、んんっ♪　すごっ、ぬるぬるが、なかまでぇっ♪」
+			PRINTFORMW 犬のように涎を垂らしながら、妹紅は股を擦り秘裂へと触手をすり寄せている……
+			CFLAG:9501 = 5
+		ELSEIF EXP:触手経験 >= 20 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あっ、あ、きてる、ふといの、ぐにゅぐにゅしてるぅ……♪」
+			PRINTFORMW 触手の粘液と自らの愛液を秘裂から溢れさせながら、妹紅は快楽で腰を震わせている……
+			CFLAG:9501 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひぐっ、やだっ、こんなの入れられて気持ちよくなんかぁ……！」
+			CFLAG:9501 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;触手挿入（脱）	CFLAG:8901
+;-------------------------------------------------
+ELSEIF SELECTCOM == 501 && TEQUIP:20 == 0
+	IF ABL:触手中毒 >= 3
+		PRINTFORMW 「んふっ……次はどこに入ってくれるの……？」
+		PRINTFORMW 妹紅は自分の愛液を垂らしている触手を愛おしげに見つめている……
+		CFLAG:8901 = 3
+	ELSEIF EXP:触手経験 >= 20 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁっ、んっ！？　あふっ……」
+		PRINTFORMW 蠢きながら抜け出ていく触手に刺激され、妹紅は熱い吐息を漏らした……
+		CFLAG:8901 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「こんなのが、私のなかに……」
+		CFLAG:8901 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;「外す系のフラグは触手召喚を8900にし、他の00の番号は触手調教のコマンドに合わせる」
+
+;-------------------------------------------------
+;触手寄生	CFLAG:9510
+;-------------------------------------------------
+IF SELECTCOM == 510
+	;寄生失敗
+	IF (FLAG:75 & 8192) == 0 && TALENT:蓬莱人
+		IF CFLAG:9510 == 0
+			PRINTFORMW 「はぁっ、はっ……なにを、しようと……うえぇっ……」
+			PRINTFORMW 妹紅は気持ち悪そうにしているが、無理やり飲み込まされた事による吐き気だけのようだ。
+			CFLAG:9510 = 1
+		ELSE
+			PRINTFORMW 「また、これ……はぁ、もしかして、何か仕込もうとしてるの？」
+			;触手中毒か恋慕
+			IF (ABL:35 >= 3 || TALENT:恋慕)
+				PRINTFORMW 「%K31_CALLNAME()%の望んだとおりにできなくて、ごめんなさい……」
+				CFLAG:9510 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「……だとしたら、いつも恨んでばっかりのこの体に感謝だね」
+				CFLAG:9510 = 2
+			ENDIF
+		ENDIF
+		RETURN 0
+	;寄生初成功　書き足す場合に備えフラグにちょっと余裕をもたせる
+	ELSEIF CFLAG:9510 < 5
+		;寄生初めてか二回目（触手の意図に気付いてなかった）
+		IF CFLAG:9510 < 2
+			PRINTFORMW 「んくっ、あうぅっ、なに、これ……あ、うぅっ……！」
+			PRINTFORMW 「からだの、なかで、なにかあばれてっ……まさ、か！？」
+		ELSE
+			PRINTFORMW 「あ、あれ……なんか、今までと、違う……ぁ……う、あぁっ……！」
+			PRINTFORMW 「からだの、なか、かゆいよ……！？」
+		ENDIF
+		PRINTFORMW どうやら妹紅の体は拒絶反応を起こしているようだが、寄生した触手はそのうち馴染むだろう。
+		CFLAG:9510 = 5
+		RETURN 0
+	;２回目以降
+	ELSE
+		;触手中毒　明らかに地の文と矛盾しているが、中毒3で恐怖するわけないだろ
+		IF ABL:35 >= 3
+			PRINTFORMW 「苦労しただろうね……私の体に入りこむのは」
+			PRINTFORMW 「ふふ、少し休んでいってね……」
+			CFLAG:9510 = 10
+		;恋慕で主人のプレイ
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「%K31_CALLNAME()%が植えつけたいって言うなら、我慢するけどっ……！」
+			PRINTFORMW 言葉とは裏腹に、妹紅の体は明らかに恐怖で震えている。
+			CFLAG:9510 = 8
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、うぅっ……どうしてこんな時に限って、ちゃんと体を治せないんだろう……」
+			PRINTFORMW 「いくら私が死にたくても、無理やり治したのに……」
+			CFLAG:9510 = 6
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手子宮責め	CFLAG:9521　エレクトさわる先生にはとてもお世話になりました
+;-------------------------------------------------
+IF SELECTCOM == 521
+	;触手中毒3以上
+	IF ABL:35 >= 3
+		PRINTFORMW 「だ、だいじょぶ、わらひ、しなないからっ、だからもっと、もっと入ってぇぇっ！」
+		PRINTFORMW 「あっ、きた、いっぱいきたっ、い、いいっ！　子宮突かれるのきもちいぃよおおぉっ♪」
+		PRINTFORMW 膨れ上がった腹をがくがくと震わせながら、妹紅は快楽に嬌声を上げている……
+		CFLAG:9521 = 4
+	;触手経験20以上で開発済み
+	ELSEIF EXP:触手経験 >= 20 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「あひっ、こんなっ、死ななくても痛いはずなのにぃ、い、いぃ、気持ちいいぃっ♪」
+		PRINTFORMW 膨れ上がった腹をがくがくと震わせながら、妹紅は快楽に喘いでいる……
+		CFLAG:9521 = 3
+	;触手経験20以上
+	ELSEIF EXP:触手経験 >= 20
+		PRINTFORMW 「え……や、あっ、いくら、壊れないからって、ここまでっ……ふぁっ！？」
+		PRINTFORMW 膨れ上がった自分の腹に妹紅の表情は青ざめているが、その声はどこか上ずっている……
+		CFLAG:9521 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ひっ……！　やだ、いやだ、いくら、壊れないからって、こんなぁっ！」
+		PRINTFORMW 膨れ上がった自分の腹を見て、妹紅の表情は青ざめている……
+		CFLAG:9521 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手浣腸は浣腸(174)と兼任
+;-------------------------------------------------
+
+;-------------------------------------------------
+;シックスナイン CFLAG:9602
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:9602 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ……%K31_CALLNAME()%、大丈夫？　姿勢、辛くない……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「わざわざこんな変な姿勢までしたいの、こんなの……？」
+		ENDIF
+		CFLAG:9602 = 1
+		RETURN 0
+	ELSE
+		;恋慕+C感覚Lv4以上
+		IF TALENT:恋慕 && ABL:Ｃ感覚 > 3
+			PRINTFORMW 「んっ、あ、あっ、やっ、%K31_CALLNAME()%の、なめなきゃ、ふあぁっ♪」
+			PRINTFORMW 愛撫でかなり感じているのか、妹紅の熱い吐息がこちらの性器にかかる……
+			CFLAG:9602 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ふ、うぅんっ、%K31_CALLNAME()%、疲れたなら休んでていい、私だけでするから……」
+			CFLAG:9602 = 5
+		;C感覚Lv4以上
+		ELSEIF ABL:Ｃ感覚 > 3
+			PRINTFORMW 「はぅ、ふぁっ、むり……そんなにされたら、口、うごかせない……」
+			CFLAG:9602 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ、あうぅ、あまり刺激されたら、集中できない……」
+			CFLAG:9602 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （吐きそう……）
+			CFLAG:9602 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;３P CFLAG:9610
+;-------------------------------------------------
+IF SELECTCOM == 610
+	;どっちかのが口に入ってる
+	IF TFLAG:130 == 3 || TFLAG:131 == 3
+		;初めて
+		IF CFLAG:9610 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「んぐっ！？　ん、んう、んんっ……」
+				PRINTFORMW 妹紅は一瞬苦痛の声を漏らしかけたが、自分から押さえ込んだ……
+			;それ以外
+			ELSE
+				PRINTFORMW 「んぐっ！？　んー、んんっ、んうー！」
+				PRINTFORMW 驚きに目を見開いた妹紅の顔を押さえつけ、奉仕に集中させた……
+			ENDIF
+			SIF CFLAG:5101 == 0 && (TFLAG:130 == 2 || TFLAG:131 == 2)
+				CFLAG:5101 = 1
+			SIF CFLAG:5109 == 0 && (TFLAG:130 == 1 || TFLAG:131 == 1)
+				CFLAG:5109 = 1
+			CFLAG:9610 = 1
+			RETURN 0
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「んっ！　ん、んむ、ちゅっ、んむっ……」
+				PRINTFORMW 妹紅はなんとか奉仕を続けようとしている……
+				CFLAG:9610 = 5
+			;V感覚Lv3以上＋A感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「んむっ、んんん、んんー……」
+				PRINTFORMW 感じているのか、妹紅の熱っぽい吐息が口内のペニスに直接かかってくる……
+				CFLAG:9610 = 4
+			;それ以外
+			ELSE
+				PRINTFORMW 「んっ、んむっ、んうっ、んんんっ！」
+				PRINTFORMW 妹紅がこちらを見上げる目は、明らかにやめるよう懇願していた……
+				CFLAG:9610 = 2
+			ENDIF
+			RETURN 0
+		ENDIF
+	;口に入れない
+		;初めて
+		IF CFLAG:9610 == 0
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「えっ、二人同時にって……ん、ぐっ、ああっ！？」
+			;それ以外
+			ELSE
+				PRINTFORMW 「なっ、二人同時にって、ちょっ、ひぎっ！？」
+			ENDIF
+			PRINTFORMW 同時に前後から責められ、妹紅は呼吸することさえできず口を開閉させている……
+			CFLAG:9610 = 1
+			SIF CFLAG:5101 == 0
+				CFLAG:5101 = 1
+			SIF CFLAG:5109 == 0
+				CFLAG:5109 = 1
+			RETURN 0
+		;二回目以降
+		ELSE
+;			;恋慕　こっち書いたら下をELSEIFに
+;			IF TALENT:恋慕
+;				PRINTFORMW 
+;				PRINTFORMW 
+;				CFLAG:9610 = 5
+			;V感覚Lv3以上＋A感覚Lv3以上
+			IF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「おぐっ、あんっ、あぁ、ふぁっ……い、いぃっ、もっとぉっ！」
+				PRINTFORMW あまりの快感に涙を流しながらも、妹紅の腰は淫らに動き快感を貪っている……
+				CFLAG:9610 = 4
+;			;屈服刻印Lv3
+;			ELSEIF MARK:屈服刻印 == 3
+;				PRINTFORMW 
+;				CFLAG:9610 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「ひっ、おっ……あぁっ、た、すけっ、うぁっ！？」
+				PRINTFORMW 圧迫感と快感を前後から与えられ、妹紅は詰まった息でかろうじて助けを求めている……
+				CFLAG:9610 = 2
+			ENDIF
+			RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;挿入Ｇスポ責め	CFLAG:9614
+;-------------------------------------------------
+IF SELECTCOM == 614
+	;初めて
+	IF CFLAG:9614 == 0
+		PRINTFORMW 「ひぐっ、やっ、おかひっ、ここ、おかひぃよ、こすらないでぇ！？」
+		PRINTFORMW ここを重点的に責められたことが無かったのか、妹紅は髪を振り乱し悶えている……
+		CFLAG:9614 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あっはぁっ！？　き……たぁっ、しゅごいっ、ここしゅごいよぉ！」
+			PRINTFORMW 「ころして、んうっ、しんじゃうくらいきもちよくしてぇ♪」
+			CFLAG:9614 = 4
+		;V感覚3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「やっ、待――んあぁっ♪　よわいのぉ、こすられるのらめぇっ♪」
+			PRINTFORMW 「ひくっ、んぅっ、うあっ、あっんあぁっふあぁんっ♪」
+			CFLAG:9614 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめっ、ういちゃうっ、こし、ういちゃ……うあぁっんっ♪」
+			CFLAG:9614 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;挿入子宮口責め　CFLAG:9615
+;-------------------------------------------------
+IF SELECTCOM == 615
+	;初めて
+	IF CFLAG:9615 == 0
+		PRINTFORMW 「はぁっ、んふっ！？　あ、あっ、なか、たたかれてっ……！？」
+		PRINTFORMW 「ひぐっ、ふあぁっ、ふかい、よぉっ♪」
+		CFLAG:9615 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あふっ……き……たぁっ、わたし、おくまでおかされたぁ♪」
+			PRINTFORMW 「うごいて、もっと、わたしのなかぜんぶおかしてぇっ！」
+			CFLAG:9615 = 4
+		;V感覚3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「うぁ、ま、た、おくに……なか、ぜんぶ、こすられるぅ♪」
+			PRINTFORMW 「あぁっ、はあぁっ、んあぁっ、あああああああっ♪」
+			CFLAG:9615 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ……こん、なっ、ふかいとこまで、しげきされてぇ……」
+			CFLAG:9615 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_31_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;輝夜が主人の時には対応してません
+SIF NO:MASTER == 30
+	RETURN 0
+;精神崩壊時はスキップ
+SIF TALENT:167 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K31_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K31_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG:8001～8020を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:8001
+;-------------------------------------------------
+LOCAL = PALAM:10 + UP:10
+IF LOCAL > PALAMLV:2 && CFLAG:8001 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「んっ……いい感じ……」
+	;それ以外
+	ELSE
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「さっさと乾かしたいよ。私の炎で、これを」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ふん……別に、ちょっと体が火照ってるだけだ」
+		ENDIF
+	ENDIF
+	CFLAG:8001 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:8002
+;-------------------------------------------------
+LOCAL = PALAM:13 + UP:13
+IF LOCAL > PALAMLV:2 && CFLAG:8002 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「だめ、私、%K31_CALLNAME()%を、欲しいよ……」
+	;それ以外
+	ELSE
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「……薬なんかで悦ばせて、嬉しい？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「違う……感じて、なんかっ……！」
+		ENDIF
+	ENDIF
+	CFLAG:8002 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:8003
+;-------------------------------------------------
+LOCAL = PALAM:15 + UP:15
+IF LOCAL > PALAMLV:2 && CFLAG:8003 == 0
+	PRINTFORMW 慌てて顔を背けた妹紅の頬が、僅かに赤くなっているのが見えた。
+	CFLAG:8003 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:8004
+;-------------------------------------------------
+LOCAL = PALAM:17 + UP:17
+IF LOCAL > PALAMLV:2 && CFLAG:8004 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「なにか私、悪いこと……した……？」
+	;それ以外
+	ELSE
+		PRINTFORMW 「……肝試しのお化け役程度なら、貴方を見ただけで裸足で逃げ出すよ」
+	ENDIF
+	CFLAG:8004 = 1
+ENDIF
+
+;-------------------------------------------------
+;絶頂系　ご教授下さったID:FIDwtTUwさんに感謝
+;-------------------------------------------------
+Q = 0
+Q += (NOWEX:0) ? 1 # 0
+Q += (NOWEX:1) ? 1 # 0
+Q += (NOWEX:2) ? 1 # 0
+Q += (NOWEX:3) ? 1 # 0
+;これで、LOCALに入っている数値が何重絶頂か？の数字となる。これだと０～４まで。
+;……正直よくわかんないけど、そうらしいよ？
+;なんか知らんがLOCAL使ったら他の口上からエラー出てきたのでQに変更……EmuEraのバージョンアップのせいかもしれないけど
+;本体側で一文字変数Qがありませんように……
+;（一応日常生活とぱんくしょん・キャラ売却や解放で無かったし大丈夫なはずだと思いたい）
+;-------------------------------------------------
+;四重絶頂 CFLAG:8030
+;-------------------------------------------------
+IF Q == 4
+	IF 1;一括置換によりIF-ENDIFを崩さないため、形式的にIFを残す
+		PRINTFORMW 「や、なにこっ、やめっ、あ、あああっ、ふぁっ、あああああああっ！！」
+		PRINTFORMW 妹紅は一気に押し寄せた快感に、白目を剥きながら体を震わせた……
+		IF TFLAG:11 > 0
+			PRINTFORMW 「あっ、あぁ……はぁっ、はぁ、せーえき、なかから、溢れて……」
+		ELSEIF TFLAG:12 > 0
+			PRINTFORMW 「あっ、あぁ……はぁっ、はぁ、せーえき、おしりから、溢れて……」
+		ELSE
+			PRINTFORMW 「あっ、あぁ……はぁっ、はぁ、だめ、わたし、おかしく、なる……」
+		ENDIF
+		CFLAG:8030 = 1
+	ENDIF
+;-------------------------------------------------
+;三重絶頂 CFLAG:8031
+;-------------------------------------------------
+ELSEIF Q == 3
+	;周回中に四重絶頂経験済みで1/2
+	IF RAND:2 == 0 && CFLAG:8030 > 0
+		PRINTFORMW 「あぁっ、イく、たくさんきてる、ひぐっ、イっちゃうぅぅぅぅぅぅ！」
+		PRINTFORMW 嬌声を上げながらも、妹紅の体は快感をより大きくしようと腰を振っている……
+		PRINTFORMW 「うあっ、ああっ、ふああっ……もっと……もっとすごいの、ほしい……」
+		CFLAG:8031 = 2
+	ELSE
+		PRINTFORMW 「あぁっ、イく、たくさんきてる、ひぐっ、イっちゃうぅぅぅぅぅぅ！」
+		PRINTFORMW 妹紅は口から涎を垂れるのにも構わず嬌声を上げ、その体を悶えさせている……
+		CFLAG:8031 = 1
+	ENDIF
+;-------------------------------------------------
+;二重絶頂 CFLAG:8035 
+;CFLAG:8030～8045で二重絶頂～四重絶頂のつもりだったが8040は膣内射精∨絶頂、8041は尻穴射精Ａ絶頂に使う……かも
+;-------------------------------------------------
+;ELSEIF Q == 2
+;	PRINTL 二重絶頂での口上～～～
+;二重くらいなら被ってもいいか　二重書くことになったら消して一つ一つの絶頂消す
+ELSEIF NOWEX:0 > 0 || NOWEX:1 > 0 || NOWEX:2 > 0 || NOWEX:3 > 0
+;-------------------------------------------------
+;C絶頂 CFLAG:8005
+;-------------------------------------------------
+	IF NOWEX:0 > 0
+		IF CFLAG:8005 == 0
+			PRINTFORMW 「やっ、なに、ここで、こんなっ……」
+			PRINTFORMW 漏れ始めた熱い吐息に合わせて更に刺激すると、妹紅は首を震わせて嬌声を上げた。
+			PRINTFORMW 「あ、ふぁっ、だめ、もうがまんできなっ、あ、ああああああっ！？」」
+			CFLAG:8005 = 1
+		ELSE
+			PRINTFORMW 「ひあっ、あっ、またきてるっ、きちゃってるぅう！」
+			CFLAG:8005 = 2
+		ENDIF
+	ENDIF
+;-------------------------------------------------
+;B絶頂 CFLAG:8008
+;中出しで長くなる可能性のあるVかAが最後に来るように並び替え
+;-------------------------------------------------
+	IF NOWEX:3 > 0
+		IF CFLAG:8008 == 0
+			PRINTFORMW 「え、なんで、胸、こんな……！？」
+			PRINTFORMW ぴんと勃った乳首を弄ると、妹紅は疑問を持つ理性すら吹き飛んで快感に呑まれた。
+			PRINTFORMW 「ふぁっ、ち、乳首から、なにかきて、きちゃってぇっ！」」
+			CFLAG:8008 = 1
+		ELSE
+			PRINTFORMW 「やっ、ちくび、ふるえ、て、おかひ、くぅ！？」
+			CFLAG:8008 = 2
+		ENDIF
+	ENDIF
+;-------------------------------------------------
+;V絶頂 CFLAG:8006
+;-------------------------------------------------
+;もこたんはeraの設定上もうV絶頂経験済みらしいのでそこを踏まえて……
+	IF NOWEX:1 > 0
+		;恋慕持ちで同時に膣に射精された
+		;見覚えがあると思ったらルーミア口上でも似たような文言が……
+		IF TALENT:恋慕 && TFLAG:11 > 0
+			PRINTFORMW 「ああ、ひあぁっ、イく、わたしイっちゃう、あっ、その顔、%K31_CALLNAME()%もイきそ、なんだ？」
+			PRINTFORMW 「ならだして、なかにだしっ、ああっ、あ――♪　きてる、%K31_CALLNAME()%の……あったかい……」
+			CFLAG:8006 = 3
+		;同時に膣に射精された
+		ELSEIF TFLAG:11 > 0
+			PRINTFORMW 「ふぁ、ああっ、イっちゃう、やっ、だめっ、なかにだすのは、や、いやぁっ！？」
+			PRINTFORMW 快感に呑まれた妹紅は静止の言葉さえ言えず、膣内に射精されると同時に絶頂を迎えた。
+		CFLAG:8006 = 2
+		ELSE
+			PRINTFORMW 「ひぐっ、イっちゃう、なかがイっちゃうよぉっ！」
+		CFLAG:8006 = 1
+		ENDIF
+	ENDIF
+;-------------------------------------------------
+;A絶頂 CFLAG:8007
+;-------------------------------------------------
+	IF NOWEX:2 > 0
+		IF CFLAG:8007 == 0
+			PRINTFORMW 「やっ、なにこれ、やだっ、こんなのっ、知らなっ……！」
+			PRINTFORMW 妹紅は初めて感じる尻からの快感に震えている……
+			CFLAG:8007 = 1
+		ELSE
+			;恋慕持ちで同時に尻に射精された
+			IF TALENT:恋慕 && TFLAG:12 > 0
+				PRINTFORMW 「ひあっ、きてっ、おしりにだして、私といっしょにきもちよく、ふあぁっ♪」
+				PRINTFORMW 「でてる、おしりのなか、%K31_CALLNAME()%のあったかいのが、はいってきたぁ……」
+				CFLAG:8007 = 4
+			;同時に尻に射精された
+			ELSEIF TFLAG:12 > 0
+				PRINTFORMW 「やだっ、尻なんかに出されて感じるなんて、やっ、やああああっ！」
+				PRINTFORMW 尻穴に射精されると、妹紅は仰け反りながら悲鳴の混じった嬌声を上げた。
+				CFLAG:8007 = 3
+			ELSE
+				PRINTFORMW 「やぁっ、だめっ、おしり、おしり感じちゃ、あっ、ああぁっ！？」
+				CFLAG:8007 = 2
+			ENDIF
+		ENDIF
+	ENDIF
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG:8009
+;再生処女や生娘イベントに対応する気も起きないしカット
+;-------------------------------------------------
+;セックスで射精させた CFLAG:8010 CFLAG:8011
+;絶頂関連と統合、なのでたぶんここはあんまり使われない
+;-------------------------------------------------
+;アナルセックス（絶頂してない）
+ELSEIF TFLAG:12 > 0 && NOWEX:2 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ひゃっ！？　おしりに、出て……」
+		PRINTFORMW 「あ……後ろのでも、満足してくれたかな……？」
+		CFLAG:8011 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「うわ、尻の中に……さっさと抜いてよ……」
+		CFLAG:8011 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「いっ、いやぁ、出て……なんで尻なんかで気持ちよくなるんだお前！？」
+		CFLAG:8011 = 2
+	ENDIF
+;膣内射精で絶頂してない
+ELSEIF TFLAG:11 > 0 && NOWEX:1 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「あっ、あぁ……あったかいのが出て……」
+		PRINTFORMW 「どう、%K31_CALLNAME()%……私のなか、気持ちよかった？」
+		CFLAG:8010 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「あぁ……私のなかに、精液が……」
+		CFLAG:8010 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「や、やだっ、抜いて、早く抜いてっ！」
+		CFLAG:8010 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG:8012
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「あ……手でも、悦んでくれたんだ？」
+		CFLAG:8012 = 3
+;	;奉仕精神Lv3
+;	ELSEIF ABL:奉仕精神 >= 3
+;		PRINTFORMW 
+;		CFLAG:8012 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……言っておくけど、私は身支度に頓着してないから手の綺麗さはそっちと変わらない」
+		PRINTFORMW 「そんな私なんかの手で出すなんて、あんまり褒められることじゃないと思うんだ」
+		CFLAG:8012 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:15 > 0
+		;精液中毒Lv3
+		IF ABL:精液中毒 >= 3
+			PRINTFORMW 「んっ……おいし……、あ、%K31_CALLNAME()%の萎えてきちゃってる……また立たせないと」
+			PRINTFORMW 「もっと精液、飲みたいよ……」
+			CFLAG:8013 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ん……んぐっ！？　んっ、ぢゅるるるるっ、ごくっ……げほっ、けほっ」
+			PRINTFORMW 「あ、大丈夫。どうせ私は病気になんかならないんだ、飲めって言うなら頑張るよ」
+			CFLAG:8013 = 3
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んっ、んんんっ！？　んーっ、んむっ、んん……」
+			PRINTFORMW 吐かないように命じると、妹紅は嫌がりながらもなんとか飲み込んだ……
+			CFLAG:8013 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、んんんっ！？　んーっ、ぶはっ、このっ……」
+			PRINTFORMW 妹紅は耐え切れないとばかりに、即座に精液を吐き出した……
+			CFLAG:8013 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:15 > 0
+		;恋慕
+		IF TALENT:恋慕
+			IF TALENT:貧乳
+				PRINTFORMW 「よかった……こんな胸なんかでも気持ちよくさせられて……」
+			ELSE
+				PRINTFORMW 「あ……私なんかの胸で気持ちよくなった？」
+			ENDIF
+			CFLAG:8014 = 3
+;		;奉仕精神Lv3以上
+;		ELSEIF ABL:奉仕精神 >= 3
+;			IF TALENT:貧乳
+;				PRINTFORMW 
+;			ELSE
+;				PRINTFORMW 
+;			ENDIF
+;			CFLAG:8014 = 2
+;		;それ以外
+		ELSE
+			IF TALENT:貧乳
+				PRINTFORMW 「ええ……こんな胸で気持ちよくなるって……」
+			ELSE
+				PRINTFORMW 「……汚いなぁ、もう」
+			ENDIF
+			CFLAG:8014 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスで射精させた CFLAG8022
+;-------------------------------------------------
+IF TFLAG:26 > 0
+	;初めて
+	IF CFLAG:8022 == 0
+		PRINTFORMW 「あれ……何か、かかって……」
+		PRINTFORMW 「え、えええっ！？　うそ、接吻で射精してるよ！」
+		CFLAG:8022 = 1
+		RETURN 0
+	ELSE
+		;相愛
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「……前にも思ったけど、%K31_CALLNAME()%接吻で射精する体で大丈夫？　ちゃんと生活できてる？」
+			CFLAG:8022 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「……接吻ですら、満足できたって言うなら、嬉しいよ」
+			PRINTFORMW （機嫌を損ねないためにはこういうべきだ、きっと）
+			CFLAG:8022 = 4
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「……こんな程度の快感で射精できたら、何もかもで気持ちよくなれそうだ」
+			PRINTFORMW 「人生幸せそうで、少し羨ましいよ」
+			CFLAG:8022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「そっちが接吻で射精する早漏なのは百歩譲って許すけど、私にかけないで……」
+			CFLAG:8022 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足で射精させた CFLAG8021　
+;-------------------------------------------------
+IF TFLAG:24 > 0
+	;相愛で主人のプレイ
+	IF TALENT:相愛 && ASSIPLAY == 0
+		PRINTFORMW 「足で感じたみたいね？　まあ、%K31_CALLNAME()%の変態趣味は今に始まったことじゃないか」
+		PRINTFORMW 「それにそんな%K31_CALLNAME()%を好きなんだから、私も変態だ」
+		CFLAG:8021 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「あ……足でもいいんだ？　私は、%K31_CALLNAME()%が満足なら、いいよ」
+		CFLAG:8021 = 3
+	;サドっ気
+	ELSEIF ABL:サドっ気 >= 3
+		PRINTFORMW 「足なんかで出さないでよ、気色悪い」
+		PRINTFORMW 「まぁでも、毎回これで済ませられるなら私は楽だからいいのか」
+		CFLAG:8021 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ええ……足なんかで出すの？　どういう趣味よ……」
+		PRINTFORMW （輝夜だったらノリノリで弄るんだろうけど、私は無理……）
+		CFLAG:8021 = 1
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;射精した＋噴乳した(母乳体質のふたなりのみ) CFLAG:8023
+;-------------------------------------------------
+IF TFLAG:30 > 0 && TFLAG:31 > 0
+	;初めて
+	IF CFLAG:8023 == 0
+		PRINTFORMW 「ひ、やああああっ！」
+		PRINTFORMW 「やぁっ、なにこれっ、しゃせーしながら母乳がぁ！？」
+		IF CFLAG:8015 == 0
+			PRINTFORMW 「あ、あぁっ……本当に、射精するようになってるんだ、私の体」
+			CFLAG:8015 = 1
+		ENDIF
+		IF CFLAG:8016 == 0
+			PRINTFORMW 「……母乳も、出るようになってるなんて」
+			CFLAG:8016 = 1
+		ENDIF
+		RETURN 0
+	ELSE
+		IF 1;一括置換によりIF-ENDIFを崩さないため、形式的にIFを残す
+			PRINTFORMW 「で、出ちゃう！　母乳とせーえき、両方でちゃうよぉっ！」
+			PRINTFORMW 妹紅は噴乳と射精の快感を同時に味わい、白い液体をまき散らしながら震えている……
+			CFLAG:8023 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG:8015
+;-------------------------------------------------
+ELSEIF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:8015 == 0
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「……本当に、射精するようになってるんだ、私の体」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……あ、あぁ……本当の男みたいに出しちゃった……何やってるんだろう、私」
+		ENDIF
+		CFLAG:8015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;射精中毒
+		IF ABL:射精中毒 > 2
+			PRINTFORMW 「あっ、うあっ、ああああああっ！　いいっ、せーえきだすのきもちいぃっ♪」
+			CFLAG:8015 = 4
+		;恋慕かつ主人が女
+		ELSEIF TALENT:恋慕 && TALENT:MASTER:オトコ == 0
+			PRINTFORMW 「ふあぁ、ああああっ！　出てる、出しちゃってるよぉ、%K31_CALLNAME()%っ！」
+			CFLAG:8015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、あああぁっ……どんどん、女じゃなかったみたいになってく……」
+			CFLAG:8015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG:8016
+;-------------------------------------------------
+ELSEIF TFLAG:31 > 0
+	;初めて
+	IF CFLAG:8016 == 0
+		PRINTFORMW 「う、うわっ……母乳だ、母乳が出てる、どういうこと！？」
+		SIF TALENT:妊娠
+			PRINTFORMW 「……いや、考えれば、わかるか」
+		CFLAG:8016 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		IF TALENT:妊娠
+			;グッド妊娠
+			IF CFLAG:76 == 1
+				PRINTFORMW 「早く子供に、このミルクを飲ませてあげたい……♪」
+			;バッド妊娠
+			ELSE
+				PRINTFORMW 「あーあ……本当に妊娠しちゃったんだ、私……」
+			ENDIF
+			CFLAG:8016 = 5
+		;噴乳中毒
+		ELSEIF ABL:噴乳中毒 > 2
+			PRINTFORMW 「はぁっ、だめぇっ、母乳、とまんないぃ……♪」
+			CFLAG:8016 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「んっ……私の母乳、どう……？」
+			CFLAG:8016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW （……さすがに母乳には不死身になる効用はないよね？）
+			CFLAG:8016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;死亡時口上　まあ実際は死なない（念のためEX化に備えて保険かけとく）
+;-------------------------------------------------
+IF BASE:0 <= 0 && TALENT:蓬莱人
+	PRINTFORMW 「……」
+	PRINTFORMW 「………」
+	PRINTFORMW 「…………」
+	;相愛
+	IF TALENT:相愛
+		PRINTFORMW 「あ、ごめん。ちょっと死んでた」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「……あ、ごめんなさい。一回死んじゃった」
+	ELSE
+		PRINTFORMW 「……私や輝夜じゃなかったら死んでるよ、これ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_31_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;輝夜が主人の時には対応してません
+SIF NO:MASTER == 30
+	RETURN 0
+;精神崩壊時はスキップ
+SIF TALENT:167 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K31_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K31_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG:8096
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8096 == 0
+	;相愛
+	IF TALENT:相愛
+		PRINTFORMW 「……死なないとは言っても無痛症じゃないんだ。少しは加減して欲しい」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「私の痛がってる顔を見て%K31_CALLNAME()%が喜ぶなら……我慢する」
+	ELSE
+		PRINTFORMW 「……傷を与えることじゃなくて、痛みを与えることが目的なんだ」
+		PRINTFORMW 「腐ってるね、貴方の臓腑は」
+	ENDIF
+	CFLAG:8096 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG:8097
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8097 == 0
+	PRINTFORMW 「なに、これ……やめてっ、私、おかしく……！？」
+	CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG:8098
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8098 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「%K31_CALLNAME()%に従うなんて、当然のこと……」
+	ELSE
+		PRINTFORMW （……残念だけどもう、どうしようもなさそうだ）
+	ENDIF
+	CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;恐怖刻印Lv3取得 CFLAG:8095
+;-------------------------------------------------
+IF TFLAG:43 == 3 && CFLAG:8095 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ご、ごめんなさい、私、何か気に障ること、した……？」
+	ELSE
+		PRINTFORMW （……なんで……なんでこんなこと、平気で出来るんだ？）
+		PRINTFORMW （お化け役が消えたお化け屋敷なんかより、ずっと怖いよ……）
+	ENDIF
+	CFLAG:8095 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG:8099
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8099 == 0
+	;相愛
+	IF TALENT:相愛
+		PRINTFORMW 「さすがに私でも怒るよ、%K31_CALLNAME()%……」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「……これくらい、我慢、しないと……私は、奴隷なんだ」
+	ELSE
+		PRINTFORMW 「……殺してやるという言葉すら、お前には生温い」
+	ENDIF
+	CFLAG:8099 = 1
+ENDIF
+
+
+;-------------------------------------------------
+;恥辱刻印Lv3取得 CFLAG:8100
+;-------------------------------------------------
+IF TFLAG:46 == 3 && CFLAG:8100 == 0
+	;恋慕
+	;もこたんの　すごい　ネガティブ思考
+	IF TALENT:恋慕 && TALENT:相愛 == 0
+		PRINTFORMW 「私は奴隷……父上から認められなかった娘……下衆な扱いも当然……」
+	ELSE
+		PRINTFORMW 「舌を噛んで、身を投げて死ねる体なら、まだ逃れる手段もあったのに……」
+	ENDIF
+	CFLAG:8100 = 1
+ENDIF
+
+;-------------------------------------------------
+;イベント口上集 FLAG(TFLAG200の中身＋8100)
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_BEFORE
+;輝夜が主人の時には対応してません
+SIF NO:MASTER == 30
+	TFLAG:153 = 1
+;精神崩壊時はスキップ
+SIF TALENT:精神崩壊
+	TFLAG:153 = 1
+
+;-------------------------------------------------
+;コマンド実行拒否(SELECTCOMで分岐)
+;-------------------------------------------------
+@KOJO_31_DENIAL_MESSAGE, ARG
+IF TALENT:恋慕 == 0
+	PRINTFORMW 「ふん、寝言は寝てから言えば？」
+	CFLAG:8101 = 1
+ENDIF
+
+;-------------------------------------------------
+;[親愛]取得
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE72
+IF CFLAG:8172 == 0
+	PRINTFORMW （やっぱり、私は%K31_CALLNAME()%が好きみたいだ）
+	PRINTFORMW （この人を見ているだけで、幸せになれる）
+	SIF TALENT:相愛 == 0
+		PRINTFORMW （――もう、それだけでいいのかもね）
+	PRINTFORMW （ありがとう、私に生きがいをくれて……）
+	SIF CFLAG:7999 == 0
+		CFLAG:7999 = 1
+	SIF TALENT:相愛 == 0
+		PRINTFORMW 妹紅はある程度自分の気持ちに素直になった
+	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:抑圧 = 0
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:魅惑 == 0
+			PRINTFORMW 心を押し込めようとしなくなったことで、%CALLNAME:TARGET%はより魅力的に見えるようになった
+			PRINTFORMW %CALLNAME:TARGET%は[魅惑]を習得した
+		TALENT:魅惑 = 1
+	ENDIF
+	CFLAG:8172 = 1
+ENDIF
+
+;-------------------------------------------------
+;[反抗的]消滅（恋慕限定）
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE55
+IF TALENT:恋慕 && CFLAG:8172 == 0
+	PRINTFORMW （やっぱり、私は%K31_CALLNAME()%が好きみたいだ）
+	PRINTFORMW （この人を見ているだけで、幸せになれる）
+	SIF TALENT:相愛 == 0
+		PRINTFORMW （――もう、それだけでいいのかもね）
+	PRINTFORMW （ありがとう、私に生きがいをくれて……）
+	SIF CFLAG:7999 == 0
+		CFLAG:7999 = 1
+	SIF TALENT:相愛 == 0
+		PRINTFORMW 妹紅はある程度自分の気持ちに素直になった
+	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:抑圧 = 0
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:魅惑 == 0
+			PRINTFORMW 心を押し込めようとしなくなったことで、%CALLNAME:TARGET%はより魅力的に見えるようになった
+			PRINTFORMW %CALLNAME:TARGET%は[魅惑]を習得した
+		TALENT:魅惑 = 1
+	ENDIF
+	CFLAG:8172 = 1
+ENDIF
+
+;-------------------------------------------------
+;[男嫌い]消滅（恋慕限定）
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE57
+IF TALENT:恋慕 && CFLAG:8172 == 0
+	PRINTFORMW （やっぱり、私は%K31_CALLNAME()%が好きみたいだ）
+	PRINTFORMW （この人を見ているだけで、幸せになれる）
+	SIF TALENT:相愛 == 0
+		PRINTFORMW （――もう、それだけでいいのかもね）
+	PRINTFORMW （ありがとう、私に生きがいをくれて……）
+	SIF CFLAG:7999 == 0
+		CFLAG:7999 = 1
+	SIF TALENT:相愛 == 0
+		PRINTFORMW 妹紅はある程度自分の気持ちに素直になった
+	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:抑圧 = 0
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+		TALENT:解放 = 1
+		CFLAG:13 |= 1
+	ENDIF
+	IF CFLAG:6000 == 1 && TALENT:魅惑 == 0
+			PRINTFORMW 心を押し込めようとしなくなったことで、%CALLNAME:TARGET%はより魅力的に見えるようになった
+			PRINTFORMW %CALLNAME:TARGET%は[魅惑]を習得した
+		TALENT:魅惑 = 1
+	ENDIF
+	CFLAG:8172 = 1
+ENDIF
+
+;-------------------------------------------------
+;[淫乱]取得　妹紅の素質上確実によく付けられるだろうし
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE75
+IF 1
+	IF TALENT:恋慕
+		PRINTFORMW （あれ……なんだろ、体が疼いて、たまらない……）
+		PRINTFORMW （%K31_CALLNAME()%と、契りたいよ……）
+	ELSE
+		PRINTFORMW （……おかしい。なんでこんなに気持ちよくなってるんだろう）
+		PRINTFORMW （自棄になって伽をしたことはあるけど、こんな気持ちになったことはなかった）
+		PRINTFORMW （どうしてなのか、もう一度試して……ああ、何を考えてるんだ私は！）
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;弁当作成 CFLAG8211
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE400
+IF 1
+	;初めて
+	IF CFLAG:8211 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「……真っ当な家で平和に暮らすことに生きがいを求めて、花嫁修業したこともあるんだ」
+			PRINTFORMW 「結果は……いや、忘れていいよ」
+			PRINTFORMW 嫌な過去を思い出したのか、妹紅は無表情で台所に向かった。
+		;それ以外
+		ELSE
+			PRINTFORMW 「私は変なもの食べてもお腹壊さないから、綺麗かどうか気を遣わなくなるんだ」
+			PRINTFORMW 「そんな私の料理で腹を壊しても、知らないよ？」
+		ENDIF
+			CFLAG:8211 = 1
+	ELSE
+		;相愛一回目
+		IF TALENT:相愛 && CFLAG:8211 < 6
+				PRINTFORMW 「……ごめん、つい笑っちゃって。嬉しいんだ」
+				PRINTFORMW 「ごく普通の家庭でありふれた光景を……やっと、手に入れられたのが」
+				PRINTFORMW 「じゃあ、愛する%K31_CALLNAME()%のために、頑張って料理作ってくる！」
+			CFLAG:8211 = 6;XYZ
+		ELSEIF TALENT:相愛
+				PRINTFORMW 「……また、私の料理が欲しい？」
+				PRINTFORMW 「うん……今更だけど……ちゃんと夫婦なんだ、私達は」
+				PRINTFORMW そう言って台所に向かう妹紅の表情は、本当に嬉しそうに笑っていた。
+			CFLAG:8211 = 7
+		;恋慕でグッドエンドフラグオン
+		ELSEIF TALENT:恋慕 && CFLAG:7999 == 1
+				PRINTFORMW 「……こうしてると……まるで……」
+				PRINTFORMW 「その……普通の家庭みたいだって……思った」
+				PRINTFORMW 消え入るような声だったが、最後まで確かに%CALLNAME:MASTER%の耳に届いた。
+			CFLAG:8211 = 5
+		ELSEIF TALENT:恋慕
+				PRINTFORMW 「……こうしてると……まるで……」
+				PRINTFORMW 「なんでもない……」
+				PRINTFORMW （……普通の家庭みたいだなんて、言える身分じゃない。心のなかにしまっておく）
+			CFLAG:8211 = 4
+		ELSEIF ABL:料理技能 >= 3
+			PRINTFORMW 「意外と、上手くなれるものなんだ。知らなかった」
+			PRINTFORMW （……でも、食べさせる相手が残念だ）
+			CFLAG:8211 = 3
+		ELSE
+			PRINTFORMW 「また料理？　何をやらせたいんだか……」
+			CFLAG:8211 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;主人の料理を食べる CFLAG8216
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE431
+IF 1
+	;初めて
+	IF CFLAG:8216 == 0
+		;主人の調理技能3以上
+		IF ABL:MASTER:70 > 2
+			IF TALENT:恋慕
+				PRINTFORMW 「す、凄いよ%K31_CALLNAME()%、これ本当においしい！」
+			ELSE
+				PRINTFORMW 「こんなことができるなら普通に暮らせばいいのに、なんで調教なんか……」
+			ENDIF
+		;反発ありで調理技能0
+		ELSEIF ABL:MASTER:70 < 1 && MARK:9 > 0
+			IF TALENT:恋慕 && TALENT:相愛 == 0
+				PRINTFORMW 「う……うん、あれだ、独創的な味？」
+			ELSE
+				PRINTFORMW 「これなら絶食した後一度餓死して蘇ったほうがマシだ」
+			ENDIF
+		;それ以外
+		ELSE
+			IF TALENT:恋慕
+				PRINTFORMW 「うん、まぁ、おいしかった。ごちそうさま」
+			ELSE
+				PRINTFORMW 「……一人で食べるほうが気楽なんだけどね」
+			ENDIF
+		ENDIF
+		CFLAG:8216 = 1
+	ELSE
+		IF RAND:2 == 0 && TALENT:相愛 && ABL:MASTER:料理技能 >= 5
+			PRINTFORMW 「料理がおいしいのは、もちろんだけど……」
+			PRINTFORMW 「%K31_CALLNAME()%の顔を見ながらだと、おいしさが何倍にも感じられる！」
+			CFLAG:8216 = 10
+		ELSEIF TALENT:相愛 && ABL:MASTER:料理技能 >= 2
+			PRINTFORMW 「%K31_CALLNAME()%の作った料理を、こうやって、二人きりで食べられて……」
+			PRINTFORMW 「なんでもないことだけど、大切なことだね」
+			CFLAG:8216 = 9
+		ELSEIF TALENT:恋慕 && ABL:MASTER:料理技能 >= 5
+			PRINTFORMW 「こんな、おいしいもの食べさせて貰えるなんて……う、嬉しいけど、その……」
+			PRINTFORMW 「私なんかが、%K31_CALLNAME()%と一緒に食べていいのかって……思ったり……」
+			CFLAG:8216 = 8
+ 		ELSEIF MARK:反発刻印 > 0 && ABL:MASTER:料理技能 >= 5
+			PRINTFORMW （認めたくないけど、凄くおいしい。料理だけなら、何回でも食べたい……）
+			CFLAG:8216 = 7
+		ELSEIF TALENT:恋慕 && ABL:MASTER:料理技能 >= 2
+			PRINTFORMW 「ありがとう……ここに来る前はあんまり、ちゃんとした食事ができなかったから……」
+			PRINTFORMW 「こういうのは、凄く、嬉しいよ」
+			CFLAG:8216 = 5
+ 		ELSEIF ABL:MASTER:70 > 2 && MARK:9 == 0
+			PRINTFORMW 「ま、まぁ、私、餓死しないけどお腹は減るし……おいしいものは、食べたいよ、うん」
+			CFLAG:8216 = 4
+		ELSEIF ABL:MASTER:70 < 1 && MARK:9 > 0
+			IF TALENT:恋慕 && TALENT:相愛 == 0
+				PRINTFORMW 「う……うん、あれだ、独創的な味？」
+			ELSE
+				PRINTFORMW 「これなら絶食した後一度餓死して蘇ったほうがマシだ」
+			ENDIF
+			CFLAG:8216 = 3
+		ELSE
+			IF TALENT:相愛
+				PRINTFORMW 「こういう風に、一緒に食べられるって……いいよね」
+			ELSEIF TALENT:恋慕
+				PRINTFORMW 「誘ってくれて……ありがとう」
+			ELSE
+				PRINTFORMW 「なんでいちいち誘ってくるかはわからないけど、ごちそうさま」
+			ENDIF
+			CFLAG:8216 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;売却
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;相愛　つまり浮気＝他の女に親愛つけてる
+	;相愛で売るなんておにちくすぎだろ……
+	IF TALENT:相愛
+		PRINTFORMW 「――え？　売る？　なん、で」
+		PRINTFORMW %CALLNAME:MASTER%の言葉を聞いた妹紅は、呆然としながら自分の指を見た。
+		PRINTFORMW ……常に肌身離さず、今だって指輪が嵌められている、指を。
+		PRINTFORMW 「だって、この指輪は――あの、言葉は！」
+		PRINTFORMW そのまま顔を上げることが……こちらを見ることができないまま、彼女は言葉を続ける。
+		PRINTFORMW まるで今すぐに消えてしまいそうな、儚い声だった。
+		PRINTFORMW 「そう言えば、他の奴隷が……%K31_CALLNAME()%との愛を風潮してたっけ」
+		PRINTFORMW 「結局、私以外のほうがいいんだ」
+		PRINTFORMW 小さく、けれどはっきりと呟かれた言葉とともに、ようやく顔が上がる。
+		PRINTFORMW その顔は――以前の妹紅に戻っていた。
+		PRINTFORMW %CALLNAME:MASTER%が指輪を渡す前、恋心を胸に秘め続けていた、妹紅に。
+		PRINTFORMW 「わかったよ。売るってことはお金に困ってるんだ」
+		PRINTFORMW 「どれくらい値が付いた？　私なんかじゃ、大した値段が付かないと思うけどね」
+		PRINTFORMW 「少しは%K31_CALLNAME()%の助けになってたら、私が思い残すことはない」
+		PRINTFORMW 「……幸せになって」
+		PRINTFORMW そう言って、妹紅は自分から歩いて出て行った。
+		PRINTFORMW 彼女は最後まで、%CALLNAME:MASTER%の前で涙を流そうとはしなかった。
+		PRINTFORMW その場にはただ……妹紅が置いていった指輪だけが、ぽつりと、残っている。
+	;恋慕　分岐あるので長いように見えるが、実は相愛時よりちょっと長いだけ
+	ELSEIF TALENT:恋慕
+		;最初に売ると言った
+		IF CFLAG:6001 == 1
+			PRINTFORMW 売却の旨を伝えると、妹紅はぽつりと呟いた。
+			PRINTFORMW 「……そう。とうとう、その時が来たんだ。分かってたはずなのにね、私」
+		ELSE
+			PRINTFORMW 売却の旨を伝えると、妹紅はひどく狼狽した。
+			PRINTFORMW 「そ、それ、話が違うよ！　確か%K31_CALLNAME()%、私を自分のものにするって……」
+			PRINTFORML 状況が変わった。それだけ言うと、妹紅はしばらく震えていたが、
+			PRINTFORM 最後には
+		ENDIF
+		PRINTFORMW じっとこちらの顔を見つめてきた。今にも消えてしまいそうな、儚い瞳で。
+		PRINTFORMW 「……最後に、ひとつ聞いてひとつ言いたいことがあるんだ。いい？」
+		PRINTFORMW 最後だからいいだろうと許可すると、妹紅はゆっくりと、迷いながら口を開き始める。
+		PRINTFORML 「まず、聞きたいことは……私、どれくらいの値段で売れた？」
+		PRINTL [0] 高く売れた、と答える。
+		PRINTL [1] 二束三文だった、と答える。
+		$INPUT_SELLLOOP
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW 「高く売れたの、私が？　でも……よかった。最後に%K31_CALLNAME()%の役に立てた」
+		ELSEIF RESULT == 1
+			PRINTFORMW 「そう……頑張ってきたけど、結局私は駄目な奴隷で役立たずだ」
+		ELSE
+			GOTO INPUT_SELLLOOP
+		ENDIF
+		PRINTFORMW 「それでもう一つの、言いたいことはね……その……私、わたしは……」
+		WAIT
+		PRINTFORMW 「その、気付いてたかどうか知らないけど、私……は、%K31_CALLNAME()%を、愛して、います」
+		PRINTFORMW そこまで言って、妹紅は目を背けた。
+		PRINTFORMW その様子は告白に対する反応を見届けることに怯えて、逃げたようにも見えた。
+		IF MARK:反発刻印 == 3
+			PRINTFORML 「最近の%K31_CALLNAME()%はひどかったから、言っておきたかった」
+		ELSE
+			PRINTFORML 「人を誘拐して好き勝手した%K31_CALLNAME()%への、ささやかな復讐」
+		ENDIF
+		PRINTFORMW 「私みたいな奴に愛されることなんてきっと嫌な事だから……立派なトラウマになるよ」
+		PRINTFORMW そのまま妹紅は表情を隠すように背を向けて歩き出し、最後に一言だけ呟いた。
+		PRINTFORMW 「……さようなら」
+	;淫乱＋反発刻印Lv3
+	ELSEIF TALENT:淫乱 && MARK:反発刻印 == 3
+		PRINTFORMW 「私を売るの？　いや、別にいい。私もそろそろ離れたかったし」
+		PRINTFORMW 「快感に溺れてまた退屈を凌げそうだってわかったのは、感謝してるけど……」
+		PRINTFORMW 「……最近は気持ちよくなれるどころの話じゃないし」
+		PRINTFORMW 「快感で生きがいを探すなら、ここを離れた方がよさそう」
+		PRINTFORMW 気怠げに言い捨てると、妹紅はこちらに背を向けて歩いていった。
+	;反発刻印Lv3
+	ELSEIF MARK:反発刻印 == 3
+		PRINTFORMW 「なんだかんだで輝夜はいいやつだって分かったよ」
+		PRINTFORMW 「輝夜は殺すためとは言え何度も何度も会いに行きたくなるけど……」
+		PRINTFORMW 「お前とはもう、二度と会いたくも無い」
+		PRINTFORMW 普段の彼女には似ても似つかない冷たい様子で言い捨て、妹紅は背を向ける。
+		PRINTFORMW その代わりか、最後にこちらにくれた一瞥は、熱線のようだった。
+		PRINTFORMW 「――もし会うとすれば必殺できる状況でしか会わないから、そのつもりでいるがいい」
+	;淫乱
+	ELSEIF TALENT:淫乱
+		PRINTFORMW 「昔、生きがいになるものを探して、捨て鉢に快感に身を任せて失敗したけど……」
+		PRINTFORMW 「私と相手が下手だっただけなんだ。おかげでもう一回試してみる気が起きた」
+		PRINTFORMW 「……ま、次の相手も上手い相手かどうかって問題はあるんだけど」
+		PRINTFORMW 気怠げに言い捨てると、妹紅はこちらに背を向けて歩いていった。
+	;それ以外
+	ELSE
+		IF CFLAG:6001 == 1
+			PRINTFORMW 「……売るって……いや、確かに前から言われてたけど」
+			PRINTFORMW 「私を買う奴なんて、本当にいたんだって意外だった」
+		ELSE
+			PRINTFORMW 「あれ？　自分のものにするって言ってたと思うけど、売るんだ」
+			PRINTFORMW 「まぁ、当然か。私みたいなのを自分のものにしても意味がないよ」
+			PRINTFORMW 「それにしてもまだいるんだ、私を買う奴なんて」
+		ENDIF
+		PRINTFORMW 「私なんかを買わせる辺り、貴方はかなりの腕前の詐欺師ね」
+		PRINTFORMW 「そして買わされた奴はよっぽどの間抜け……うん、逃げ出しやすそうだ」
+		PRINTFORMW 妹紅は自分でうんうんと頷いた後、感慨もないとばかりにあっさりと背を向けた。
+		SIF TALENT:魅力 == 1
+			PRINTFORMW 結局、彼女は最後まで自分の魅力に気付いた様子はなかった。
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;売却時に狂気脱走
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE180
+IF 1
+	IF TALENT:相愛
+		PRINTFORMW （……嫌だ。いやだ、いやだ、いやだ！）
+		PRINTFORMW （%K31_CALLNAME()%は私に指輪をくれた、私を選んでくれた！）
+		PRINTFORMW （私はずっとあの人の隣にいられるはずなんだ、ずっとずっと！）
+		PRINTFORMW （%K31_CALLNAME()%が私を売り払うだなんて、きっと何かの間違い）
+		PRINTFORMW （ずっと側にいてくれって言ったのは、%K31_CALLNAME()%……だから、私はずっと一緒にいなきゃ、おかしい……）
+		PRINTFORMW （そう、きっとそう――それなら帰らなくちゃ、どんなことをしても）
+		WAIT
+		SETCOLOR 255,0,0
+		PRINTFORMW 邪魔を、するなら――
+		RESETCOLOR
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG:8240
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	IF TALENT:相愛
+		PRINTFORMW 「ちゅるっ……おはよう！　朝から元気、%K31_CALLNAME()%のは」
+		PRINTFORMW 「せっかくだから、朝ごはんの前に一回気持ちよくなっていってよ？」
+		CFLAG:8240 = 3
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「おはよう……もしかして嫌だった、これ？　え、なんでこんなことしてるかって？」
+		PRINTFORMW 「その、えっと……できるだけ気持ちよくさせるのは、奴隷の務めだから」
+		;好きだからに決まってるよね
+		CFLAG:8240 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……おはよう。なんでこんなことやってるのかって？」
+		PRINTFORMW 「う～ん、安眠妨害して健康状態を悪くさせて早死させるため……かなぁ」
+		CFLAG:8240 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝キス CFLAG8243
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE143
+IF 1
+	IF TALENT:相愛
+		PRINTFORMW 「ちゅっ……おはよう、%K31_CALLNAME()%」
+		PRINTFORMW 「……ふふっ。幸せ者だ、私」
+		CFLAG:8243 = 2
+	ELSE
+		PRINTFORMW 「ちゅっ……あ、おはよう、%K31_CALLNAME()%……」
+		PRINTFORMW 「この接吻は、その……%K31_CALLNAME()%の気分をできるだけ悪くしないように起こす手段はないかなって……」
+		CFLAG:8243 = 1
+	ENDIF
+	;ファーストキス判定
+	SIF CFLAG:9006 == 0
+		CFLAG:9006 = 1
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG:8250　必ず恋慕
+;今更だけど調教後セックスってアナルの場合も150だから、
+;テンプレートで∨感覚だけで分岐させるようになってるのは変な気がしないでもない
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;相愛
+	IF TALENT:相愛
+		PRINTFORMW 「んっ……あ、もういいの%K31_CALLNAME()%……？　確かに、私も十分気持ちよくなれたけど」
+		PRINTFORMW 「ね。せっかくだし、もっとしようよ……？」
+		CFLAG:8250 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「あ……どう、%K31_CALLNAME()%……？　気持ちよかった？　嫌じゃなかった……？」
+		PRINTFORMW 「その……もし気持ちよかったなら、もっと……」
+		CFLAG:8250 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰 CFLAG:8251
+;報告は処理が複雑なので考慮しない
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「うぅ……%K31_CALLNAME()%、%K31_CALLNAME2()%、%K31_CALLNAME2()%……！」
+		PRINTFORMW 妹紅は寂しげに%CALLNAME:MASTER%の名前を何度も連呼している……
+		CFLAG:8251 = 3
+;	;自慰中毒Lv3以上
+;	ELSEIF ABL:自慰中毒 >= 3
+;		PRINTFORMW 
+;		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「なんで、私……こんなことに、おぼれて……っ！」
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後アナニー CFLAG:8251
+;報告は処理が複雑なので考慮しない
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE152
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「うぅ……%K31_CALLNAME()%、%K31_CALLNAME2()%、%K31_CALLNAME2()%……！」
+		PRINTFORMW 妹紅は寂しげに%CALLNAME:MASTER%の名前を何度も連呼している……
+		CFLAG:8251 = 3
+;	;自慰中毒Lv3以上
+;	ELSEIF ABL:自慰中毒 >= 3
+;		PRINTFORMW 
+;		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「なんで、私……こんなことに、おぼれて……っ！」
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;レズプレイ CFLAG:8254
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE154
+IF 1
+	;助手が輝夜
+	IF NO:ASSI == 30
+		PRINTFORMW 「か、輝夜、そ、その……やぁっ！？」
+		PRINTFORMW 『ん……んむっ……ぷはっ……言いたいことはわかってるわ、さっさとしましょ？』
+		PRINTFORMW 「……お前には敵わないよ」
+		CFLAG:8254 = 5
+	;助手が慧音
+	ELSEIF NO:ASSI == 26
+		PRINTFORMW 「慧音、その……」
+		PRINTFORMW 『構わないさ。あの人の助手なんだから、ちゃんと妹紅の面倒を最後まで見てやらないと』
+		PRINTFORMW 「ありがとう……ちゅっ……」
+		CFLAG:8254 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「付き合わせてごめん、でも、%K31_CALLNAME()%がいない寂しさに耐え切れないんだ……」
+		CFLAG:8254 = 3
+;	;レズ中毒Lv3以上
+;	ELSEIF ABL:レズ中毒 >= 3
+;		PRINTFORMW 
+;		CFLAG:8254 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「%CALLNAME:ASSI%は助手なんだから、奴隷の面倒を最後まで見ないと……んっ……」
+		CFLAG:8254 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;レズプレイ69 CFLAG:8254
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE155
+IF 1
+	;助手が輝夜
+	IF NO:ASSI == 30
+		PRINTFORMW 「か、輝夜、そ、その……やぁっ！？」
+		PRINTFORMW 『ん……んむっ……ぷはっ……言いたいことはわかってるわ、さっさとしましょ？』
+		PRINTFORMW 「……お前には敵わないよ」
+		CFLAG:8254 = 5
+	;助手が慧音
+	ELSEIF NO:ASSI == 26
+		PRINTFORMW 「慧音、その……」
+		PRINTFORMW 『構わないさ。あの人の助手なんだから、ちゃんと妹紅の面倒を最後まで見てやらないと』
+		PRINTFORMW 「ありがとう……ちゅっ……」
+		CFLAG:8254 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「付き合わせてごめん、でも、%K31_CALLNAME()%がいない寂しさに耐え切れないんだ……」
+		CFLAG:8254 = 3
+;	;レズ中毒Lv3以上
+;	ELSEIF ABL:レズ中毒 >= 3
+;		PRINTFORMW 
+;		CFLAG:8254 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「%CALLNAME:ASSI%は助手なんだから、奴隷の面倒を最後まで見ないと……んっ……」
+		CFLAG:8254 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG:8258
+;こっちは必ず膣、そして恋慕か淫乱
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;相愛
+	IF TALENT:相愛
+		PRINTFORMW 「はっ、ふあぁっ、どうっ、%K31_CALLNAME2()%？」
+		PRINTFORMW 「だしてっ、気持ちよくなってっ、%K31_CALLNAME()%のこども、欲しいっ！」
+		;まあ夜這いじゃ子供できないけど
+		CFLAG:8258 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「おねがい、もっとっ、もっと私の中にいてっ、%K31_CALLNAME2()%！」
+		CFLAG:8258 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ、だめっ、寝させないっ、私をこんな体にしたそっちがっ、悪いんだからぁ！」
+		CFLAG:8258 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;妊娠　にんっしんっ
+;CFLAG:76でグッドバッド判別
+;父親判別はCFLAG:78からCFLAG:70に変更（70 == 1:主人,2:助手,3:奴隷 と対応）
+;CFLAG:6020 キャラ問わず望んだ妊娠をした
+;CFLAG:6021 主人の子供を妊娠
+;CFLAG:6022 輝夜の子供を妊娠
+;CFLAG:6029 バッド妊娠
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE170
+IF 1
+	;マスターの子供を孕んだ
+	IF CFLAG:70 == 1
+		;グッド妊娠(主人の子供)　Q.おい、グッドじゃねえぞこれ　A.早くエンゲージリングを渡す作業に戻るんだ
+		IF CFLAG:76 == 1 
+			;初めて
+			IF CFLAG:6021 == 0
+				IF TALENT:相愛
+					PRINTFORMW 「やっとできたね……私達の子供。長かったなぁ……」
+					PRINTFORMW 「%K31_CALLNAME()%が選んだ私の、子供。だからきっとかわいくなるよね？」
+					PRINTFORMW 「それくらいは……開き直れるようになったよ」
+				ELSE
+					;売ると言った
+					IF CFLAG:6001 == 1 && TALENT:烙印 == 0 && TALENT:隷属 == 0
+						PRINTFORMW 「あ……売る予定なのに、孕んで、ごめんなさい……」
+						PRINTFORMW 「でも、お願い、堕ろさせないで……生ませて！　自分の子供として認めて！」
+						PRINTFORMW 縋りつく妹紅を振り払って部屋を出ると、扉の向こうから咽び泣く声が響いた。
+						PRINTFORMW （ごめん、ね……私なんかが、お母さんで、ごめんね……）
+					ELSE
+						PRINTFORMW 「できたね……%K31_CALLNAME()%の子供」
+						PRINTFORMW 「これで私はもう、%K31_CALLNAME()%の奴隷だよね？　%K31_CALLNAME()%だけのものだよね……？」
+					ENDIF
+				ENDIF
+				CFLAG:6020 = 1
+				CFLAG:6021 = 1
+			;二回目以降
+			ELSE
+				IF TALENT:相愛
+					PRINTFORMW 「%K31_CALLNAME()%との子供が、また……ふふっ」
+					PRINTFORMW 「家庭を築けることって、それだけでここまで幸せになれるんだ……」
+				ELSE
+					;売ると言った
+					IF CFLAG:6001 == 1 && TALENT:烙印 == 0 && TALENT:隷属 == 0
+						PRINTFORMW 「ごめんなさい、ごめんなさい、ごめんなさい、また孕んで、ごめんなさい！」
+						PRINTFORMW 「奴隷として価値が下がるのは分かってるけど、だけど、それでも……」	
+						PRINTFORMW 「%K31_CALLNAME()%の子供を、生ませて、下さい……」
+					ELSE
+						PRINTFORMW 「ねぇ、%K31_CALLNAME()%は他の女にもこうやって何回も孕ませてる？」
+						PRINTFORMW 「もし私だけなら、凄く嬉しい……ありえないだろうけど」
+					ENDIF
+				ENDIF
+			ENDIF
+		;バッド妊娠
+		ELSE
+		 	;初めて
+		 	IF CFLAG:6021 == 0
+				PRINTFORMW 「……とうとう、か。お前なんかの、こどもが、お腹の中に」
+				PRINTFORMW 「お似合いって天啓なのかな。穢れた私はお前と結ばれるのがお似合いだってさ」
+				PRINTFORMW 「…………もう、疲れた。生きるのに」
+				PRINTFORMW 糸の切れた人形のように、妹紅はベッドへ倒れ込んだ。
+				CFLAG:6021 = 1
+			;二回目以降
+			ELSE
+				PRINTFORMW 「ははっ……どこまで穢されれば許されるんだろ、私は……」
+				PRINTFORMW 疲れ果てたように、妹紅は乾いた笑いを漏らした。
+			ENDIF
+		ENDIF
+		SIF CFLAG:6021 == 2 || CFLAG:6021 == 4
+			CFLAG:6021 = 3
+
+	;輝夜の子を孕んだ
+	ELSEIF CFLAG:70 == 2 && NO:ASSI == 30
+		;グッド妊娠
+		IF CFLAG:76 == 1
+			;初めて
+			IF CFLAG:6022 == 0
+				PRINTFORMW 「あ……輝夜、その……」
+				PRINTFORMW 『私の子供孕んだんでしょ、知ってるわよ。なんで言葉に困ってるのかしら？』
+				PRINTFORMW 「そ、その……だって……何を言えばいいか……」
+				PRINTFORMW 『言えばいいじゃない、何でも。なに、妹紅は私の子供孕むの、嫌だった？』
+				PRINTFORMW 「私は……嫌じゃない。けど輝夜が困るよ。だって、私は輝夜が拒絶した男の……」
+				PRINTFORMW 『何言ってるの、嬉しいわ。そうそう……私、妹紅のこと、好きよ』
+				PRINTFORMW 「！！！？？？」
+				PRINTFORMW 『あ、妹紅が顔を真っ赤にして倒れた』
+				CFLAG:6020 = 1
+				CFLAG:6022 = 1
+			;二回目以降
+			ELSE
+				PRINTFORMW 『またできたの、となると……ねぇ妹紅、蓬莱山妹紅って名乗る気ない？』
+				PRINTFORMW 「……いきなり何を言うんだお前は」
+				PRINTFORMW 『あら、気に食わなかった？　じゃあ私が藤原輝夜になるべきなのかしら……』
+					IF TALENT:恋慕
+						PRINTFORMW 「そ、その、結婚の話されても、私は、あの人が……」
+						PRINTFORMW 『いいじゃない、多夫一妻制で』
+					ELSE
+						PRINTFORMW 「こ、こんな場所で、お互い奴隷なのに、そんな話なんか……」
+						PRINTFORMW 『こんな場所だからこそなんでもありでしょ。大切なのは心の持ちようよ』
+					ENDIF
+				PRINTFORMW 『それとも妹紅は、私のこと、嫌い？』
+				PRINTFORMW 「嫌いじゃない……むしろ愛してる、けど、それとこれとは……」
+				PRINTFORMW 『……ふふっ』
+			ENDIF
+		;バッド妊娠
+		ELSE
+			;初めて
+			IF CFLAG:6022 == 0
+				PRINTFORMW 「なんで！　なんで輝夜なんかの子供を……！」
+				PRINTFORMW 『…………』
+				PRINTFORMW 「何か言え！　父上を拒絶した癖に、私を孕ませた癖に！」
+				PRINTFORMW 『言っても、どうにもならないわ……ここにいる限り、私達はどうしようもないもの』
+				PRINTFORMW 「ふざけるな、お前の子供じゃないか、お前の……！」
+				PRINTFORMW 『妹紅の気が済まないというなら殴ればいいわ。それでも足らないなら殺せばいい』
+				PRINTFORMW 『私も妹紅と同じ立場になれば、きっと八つ当たりせずにはいられないから……』
+				PRINTFORMW 「う、うぅっ、うああああああああああああっ……」
+				CFLAG:6022 = 1
+			;二回目以降
+			ELSE
+				PRINTFORMW 『……私に怒らないの？』
+				PRINTFORMW 「お前に怒っても無意味だし……それに、怒る気力もない。今日はもう寝させて……』
+				PRINTFORMW 『そう……ごめんね、妹紅』
+			ENDIF
+		ENDIF
+	
+	;その他
+	ELSE
+		;グッド妊娠
+		IF CFLAG:76 == 1
+			IF TALENT:相愛
+				PRINTFORMW 「え、えっと、その……%K31_CALLNAME()%がやらせたことだし、これ、浮気じゃないよね？」
+			ELSEIF TALENT:恋慕
+				PRINTFORMW 「……ごめんなさい。でも、自分の子じゃないからって堕ろさせないで下さい」
+				PRINTFORMW 「女の子だったら奴隷にしていいから、だから、堕ろすことだけは……」
+				PRINTFORMW 「妊娠してる間に私を調教するのもいいから、生ませて……」
+			ELSE
+				PRINTFORMW 「まぁ、貴方に孕まされるよりはマシだね」
+				PRINTFORMW 「……もし堕ろさせるつもりだったら、全力で抵抗する」
+			ENDIF
+			CFLAG:6020 = 1
+		;バッド妊娠
+		ELSE
+			;初めて
+			IF CFLAG:6029 == 0
+				IF TALENT:相愛
+					PRINTFORMW 「……なんで%K31_CALLNAME()%以外の相手と子供作らなきゃいけないんだ」
+					PRINTFORMW そう言い捨てると、%CALLNAME:MASTER%を部屋から追い出して妹紅は扉を閉めた。
+				ELSEIF TALENT:恋慕
+					PRINTFORMW 「%K31_CALLNAME()%はこれで嬉しいの？　そう……」
+					PRINTFORMW 妹紅は悲しそうに目を伏せると、ベッドに寝転んだ。
+				ELSE
+					PRINTFORMW 「……ま、お前の子供を孕まされるよりはマシかもね」
+					PRINTFORMW 「そう思わないと、とても生きてけないよ……」
+				ENDIF
+				CFLAG:6029 = 1
+			ELSE
+				IF TALENT:相愛
+					PRINTFORMW 「私、いい加減……%K31_CALLNAME()%との子供を作りたい」
+					PRINTFORMW そう言ってこちらを睨む妹紅の握り拳からは、血が滲んでいる……
+				ELSEIF TALENT:恋慕
+					PRINTFORMW （%K31_CALLNAME()%はもう……私に見向きも、してくれないの……？）
+				ELSE
+					PRINTFORMW 「ははっ……どこまで穢されれば許されるんだろ、私は……」
+					PRINTFORMW 疲れ果てたように、妹紅は乾いた笑いを漏らした。
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;解放
+;-------------------------------------------------
+;刺殺
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE182
+IF 1
+	PRINTFORMW 「私は死ぬことがなく、そしてお前は確実に地獄に堕ちる」
+	PRINTFORMW 「だから――これで永遠にお別れだ」
+ENDIF
+
+;奴隷を連れてきた　被害者は70%くらいの確率で慧音、残りは輝夜
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE190
+IF 1
+	PRINTFORMW 「さすがに堂々と乗り込むのは危険だからこっそり寝込みを襲って来たんだ」
+	PRINTFORMW 「今頃大騒ぎだろうけど……反撃が来ても%K31_CALLNAME()%の警備は万全だよね？」
+ENDIF
+
+;戻ってきた(反発)
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE192
+IF 1
+	PRINTFORMW 「なんでっ、なんでそんな、そんな顔、されたくらいでっ……」
+	PRINTFORMW 「殺せば会わずに、もう二度を会わずにすむのにっ、私は！」
+ENDIF
+
+;戻ってきた
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE193
+IF 1
+	PRINTFORMW 「……どうせ、今まで何度も何度も住み家を変えてきたんだ」
+	PRINTFORMW 「今更あんなボロ屋に拘る必要なんてないし……ここに、住むよ」
+ENDIF
+
+;-------------------------------------------------
+;触手同化 
+;rev5は恋慕服従限定だがrev6では同じ関数で恋慕服従じゃない時にも出るようになる模様
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE256
+IF 1
+	IF TALENT:服従 || TALENT:恋慕
+		PRINTFORMW （%K31_CALLNAME()%が、呼んでる……早く出なきゃ……）
+		PRINTFORMW （…………あれ？）
+		PRINTFORMW （%K31_CALLNAME()%、もこうって言葉、使ってるけど、どんな意味、だっけ……？）
+		PRINTFORMW （まあいいや……きっと、どうでもいいことだ）
+		PRINTFORMW （早く出なきゃ……%K31_CALLNAME()%の召喚に応じなきゃ……）
+		;うーん、キャラ触手あるキャラに使ったほうがいい内容だな……
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手生贄
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE257
+IF 1
+	;触手中毒3以上＋恋慕
+	IF ABL:触手中毒 >= 3 && TALENT:恋慕
+		PRINTFORMW 妹紅は周りを覆い始める触手と%CALLNAME:MASTER%をぼんやりと交互に見つめている。
+		PRINTFORMW その表情は怒っているわけでも後悔しているわけでも、悲しんでいるわけでもなかった。
+		PRINTFORMW 「ねぇ、%K31_CALLNAME()%は私を閉じ込めても何か悔いや問題が残るわけじゃないよね？」
+		PRINTFORML 「……なら、いい。私が%K31_CALLNAME()%に会えないことは%K31_CALLNAME()%にとって問題ないのなら、
+		PRINTFORMW 私は永遠に触手と契っていれば、いいだけ……」
+		PRINTFORMW 「これに気持ちよくされるのは好きだし、これを通して%K31_CALLNAME()%の役に……なら……」
+		PRINTFORMW 最後の言葉を聞き取る前に、妹紅は触手の中に消えていった……
+	;触手中毒3以上
+	ELSEIF ABL:触手中毒 >= 3 
+		PRINTFORMW 「ふふっ、いいよ……私が嬲られている限り、君たちも永遠に生きられるんだよね？」
+		PRINTFORMW 「犯して、私を永遠に気持ちよくしてっ、それしか考えられないくらいっ！」
+		PRINTFORMW その身に纏わり付く触手を妹紅は受け入れ、嬉しそうに体を差し出した。
+		PRINTFORMW 生贄を手に入れた触手もまたその体を愛撫し、触手の蠢く音に妹紅の嬌声が混じりだす。
+		PRINTFORMW 生きる理由を探し続けていた彼女には、これが一番幸せな結末だったのかもしれない。
+		PRINTFORMW 永遠に与えられる快楽という結末が……
+	ELSEIF TALENT:恋慕 == 1 || TALENT:服従 == 1
+		PRINTFORMW 「えっ、そんな、私何か%K31_CALLNAME()%の気に障るようなことした……！？」
+		PRINTFORMW 答えを待つ余裕すら与えず、触手は妹紅に絡みつく。
+		PRINTFORMW 一瞬びくりとしたものの、妹紅は自分の抵抗を押し殺して触手を受け入れた……
+		PRINTFORMW 「……それが……%K31_CALLNAME()%の命令なら……従う……」
+		PRINTFORMW 「死ねない体を利用して永遠に触手の糧となれっていうなら……するよ……」
+		PRINTFORMW 「さよう……なら……」
+	ELSE
+		PRINTFORMW 「なっ、やだっ、死なないからって、こんな、こんな……」
+		PRINTFORMW 妹紅は触手に絡みつかれた片腕を自分で切り落とそうとまでしたが、
+		PRINTFORMW その暇もなく全身を絡みつかれ、もがくことすら出来ずに触手の中へ消えていった。
+		PRINTFORMW 「……呪ってやる」
+		PRINTFORMW 「…………この意志が続く限り、お前を呪ってやる！」
+		PRINTFORMW 最後に、沸騰するような視線で怨嗟を残して。
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手種付（事後）
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE259
+IF 1
+	IF ABL:35 >= 3
+;		PRINTFORMW 
+	;精神崩壊するパターン
+	ELSEIF EXP:50 < 10 && ABL:35 == 0 && TALENT:161 == 0 && TALENT:162 == 0 && TALENT:167 == 0 && TALENT:168 == 0 && TALENT:169 == 0
+		PRINTFORMW 妹紅はしばらく体を痙攣させていたが、痙攣が止まってから動き出す気配がなかった。
+		PRINTFORMW 涙と涎を床に零しながら、僅かに吐息を漏らすだけだ……
+;	ELSE
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手出産
+;書きだすと止まらない。淫妖蟲とか大好きですからー！
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE260
+IF 1
+	IF CFLAG:8360 == 0
+		IF ABL:35 >= 3
+			PRINTFORMW 「ぃっ――あ、あっ、い、いぃっ、い、ぐっ、ぅ……！」
+			PRINTFORML 陣痛に妹紅が体を反り返らせると、頭を現した幼体が引っかかったように暴れ始める。
+			PRINTFORMW 妹紅は詰まらせていた息をようやく形にし、息を切らせながら嬌声を上げ始めた。
+			PRINTFORMW 「うっ――ひっ、あひっ、しゅごいぃっ！　子宮も膣も、中から刺激されてるぅ♪」
+			PRINTFORMW 「あばれて、もっと元気にうごいて、お母さん、死なないからぁんっ！？」
+			PRINTFORMW 「そ、そこっ、よわいのぉ！　私、赤ちゃんにきもちよくされてるぅぅぅぅ！！！
+			PRINTFORMW 「イ、イッちゃう、赤ちゃん産んでイくぅ、うまれてぇ、ふあぁっうぅっ！！？」
+			PRINTFORMW 妹紅の体が痙攣すると共に、へその緒で繋がった幼体が全身を現して零れ落ちた。
+			PRINTFORMW 「イ、イっちゃった……赤ちゃん、産み落としながら、イッちゃった……」
+			PRINTFORMW 未だ余韻に体を震わせる妹紅の胸に、へその緒が繋がったままの幼体が這い上がってくる。
+			PRINTFORMW それを見た妹紅は、愛おしげな視線を幼体へと向けた……
+			PRINTFORMW 「かわいい……また……うみたいなぁ……年をとらない私を疎ましがらない素敵な種族……」
+			PRINTFORMW 「それに、この子達とは永遠に一緒にいられる……やっと、幸せな家族を作れるんだ……」
+			;……[狂気]だろこりゃ
+		ELSE
+			PRINTFORMW 「っ、ひっ……！　ふ、ふぅっ、ぃ、ゃ……」
+			PRINTFORML 自分の中から頭を現した幼体を見てショックを受けたのか、
+			PRINTFORMW 妹紅は産道を締めて産むまいと無駄な抵抗を始めた。
+			PRINTFORMW それに苛立ったか、触手は妹紅の腹に巻きついてぎゅうっと押し始める……
+			PRINTFORMW 「やっ、押さないでぇっ！　なかにいるのと膣がひっかかってぇ、ひぃっ！」
+			PRINTFORMW 「な、なかから、なかから広げられてぇ！　あっ、あっあっあっ、あぁぁぁっー！！？」
+			PRINTFORMW 外と中、両方の触手から刺激され、とうとう妹紅は触手を出産した……
+			PRINTFORMW 膣を刺激されたことで苦痛のみならず絶頂も味わい妹紅はしばらく呆然としていたが、
+			PRINTFORMW 焦点の合わない瞳でへその緒が繋がったままの幼体を見つめると、弱々しく悲鳴を上げた。
+			PRINTFORMW 「で、でてる、これが、こど、も……？」
+			PRINTFORMW 「いや……こんなのいやぁ……人の形さえしてない子供なんてぇ……嫌……」
+		ENDIF
+		CFLAG:8360 = 1
+	ELSE
+		IF ABL:35 >= 3
+			PRINTFORMW 「ぃっ――あ、あっ、い、いぃっ、い、ぐっ、ぅ……！」
+			PRINTFORML 陣痛に妹紅が体を反り返らせると、頭を現した幼体が引っかかったように暴れ始める。
+			PRINTFORMW 妹紅は詰まらせていた息をようやく形にし、息を切らせながら嬌声を上げ始めた。
+			PRINTFORMW 「うっ――ひっ、あひっ、しゅごいぃっ！　子宮も膣も、中から刺激されてるぅ♪」
+			PRINTFORMW 「あばれて、もっと元気にうごいて、お母さん、死なないからぁんっ！？」
+			PRINTFORMW 「そ、そこっ、よわいのぉ！　私、赤ちゃんにきもちよくされてるぅぅぅぅ！！！
+			PRINTFORMW 「イ、イッちゃう、赤ちゃん産んでイくぅ、うまれてぇ、ふあぁっうぅっ！！？」
+			PRINTFORMW 妹紅の体が痙攣すると共に、へその緒で繋がった幼体が全身を現して零れ落ちた。
+			PRINTFORMW 「イ、イっちゃった……今回も赤ちゃん、産み落としながら、イッちゃった……」
+			PRINTFORMW 未だ余韻に体を震わせる妹紅の胸に、へその緒が繋がったままの幼体が這い上がってくる。
+			PRINTFORMW それを見た妹紅は、愛おしげな視線を幼体へと向けた……
+			PRINTFORMW 「あはは……また……うめたぁ……こうやって、どんどん家族ふやせるんだ……素敵」
+			CFLAG:8360 = 3
+		ELSE
+			PRINTFORMW 「っ、ひっ……！　ふ、ふぅっ、ぃ、ゃ……」
+			PRINTFORMW 今回も妹紅は産道を締め、幼体を産むまいと無駄な抵抗を行っていた。
+			PRINTFORMW だが外にいる触手達はあらかじめ妹紅の膣に潜り込み、産道を広げ出ようとしない……
+			PRINTFORMW 「あ、あばれてるぅ！　でてくるのとはいってきたのが、いっしょに膣せめてるぅ！」
+			PRINTFORMW 「な、なかから、なかから広げられてぇ！　あっ、あっあっあっ、あぁぁぁっー！！？」
+			PRINTFORMW 外と中、両方の触手から刺激され、とうとう妹紅は触手を出産した……
+			PRINTFORMW 膣を刺激されたことで苦痛のみならず絶頂も味わい妹紅はしばらく呆然としていたが、
+			PRINTFORMW 焦点の合わない瞳でへその緒が繋がったままの幼体を見つめると、弱々しく悲鳴を上げた。
+			PRINTFORMW 「いや……もういやぁ……人の形さえしてない子供なんてぇ……嫌……」
+			CFLAG:8360 = 2
+		ENDIF
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;鎮静茶使用
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE309
+;初回
+IF CFLAG:8409  == 0
+	;恋慕or服従
+	IF TALENT:恋慕 || TALENT:服従
+		PRINTFORMW 「こういう精神的な処方をしたこと、なかったな……死なないのは体だけなのに」
+	;それ以外
+	ELSE
+		PRINTFORMW 「こういうの飲んだことないから嬉しいけど、精神的負担の原因が目の前にいるのはねぇ」
+	ENDIF
+	CFLAG:8409 = 1
+ELSE
+	;恋慕or服従
+	IF (TALENT:恋慕 || TALENT:服従)
+		PRINTFORMW 「ありがとう……%K31_CALLNAME()%からこういうものを貰えるのは、嬉しいよ」
+		CFLAG:8409 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「気遣ってくれるくらいなら逃がしてくれない？」
+		CFLAG:8409 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;栄養剤使用
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE310
+;相愛がなく恋慕or服従
+IF TALENT:相愛 == 0 && (TALENT:恋慕 || TALENT:服従)
+	PRINTFORMW 「別に、私の体力なんか気にしなくてもいいのに……」
+	CFLAG:8410 = 2
+;それ以外
+ELSE
+	PRINTFORMW 「ま、確かに死なないだけで疲労はするからね」
+	CFLAG:8410 = 1
+ENDIF
+
+;-------------------------------------------------
+;ふたなり薬使用(TFLAG:99=1:消去時, 2:付加時)
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE311
+;初回
+IF CFLAG:8411 == 0
+	IF TALENT:相愛
+		PRINTFORMW 「やっ……なに、これ、股が、むずむず、してぇっ……！？」
+		PRINTFORMW 「相変わらずの変態っぷりだね、%K31_CALLNAME()%……」
+	ELSEIF TALENT:恋慕 || TALENT:服従
+		PRINTFORMW 「やっ……なに、これ、股が、むずむず、してぇっ……！？」
+		PRINTFORMW 「え、ちょっと、%K31_CALLNAME()%はこんなのがいいの……！？」
+	ELSE
+		PRINTFORMW 「やっ……なに、これ、股が、むずむず、してぇっ……！？」
+		PRINTFORMW 「きゃああああああああああああああああああああああ！？」
+		PRINTFORMW 「な、なに、なんなのこれぇ！？」
+	ENDIF
+	CFLAG:8411 = 1
+ELSE
+	;射精中毒
+	IF ABL:37 > 2
+		PRINTFORMW 「やっ……まさか、これぇっ……！？」
+		PRINTFORMW 「まぁ……射精は……気持ち、いいし？」
+		CFLAG:8411 = 4
+	ELSEIF (TALENT:恋慕 || TALENT:服従)
+		PRINTFORMW 「やっ……まさか、これぇっ……！？」
+		PRINTFORMW 「付けたり消したり……薬物実験中なのかな？」
+		CFLAG:8411 = 3
+	ELSE
+		PRINTFORMW 「やっ……まさか、これぇっ……！？」
+		PRINTFORMW 「また、これぇ？　もう勘弁して……」
+		CFLAG:8411 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;豊胸剤使用
+;素質分岐は薬使用前の素質で行うこと
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE320
+;巨乳→爆乳
+IF TALENT:爆乳
+	IF TALENT:相愛
+		PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+		PRINTFORMW 「まったく……こんな暮らしにくい胸で%K31_CALLNAME()%はどんなプレイをして欲しいのかな？」
+	ELSEIF TALENT:恋慕 || TALENT:服従
+		PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+		PRINTFORMW 「まぁ、大きくければ大きいほど%K31_CALLNAME()%が満足できるんだよね……」
+	ELSE
+		PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+		PRINTFORMW 「……過ぎたるは及ばざるが如し、って言葉を知らないわけ？」
+	ENDIF
+;普通→巨乳
+ELSEIF TALENT:巨乳
+	PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+	PRINTFORMW （もしかして私の胸、慧音に追いついた！？）
+;絶壁→貧乳
+ELSEIF TALENT:貧乳
+	PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+	PRINTFORMW 「うん、やっぱり真っ平らは見てて見苦しい！　最低でもこれくらいはないと！」
+;貧乳→普通　ビット演算の関係上ちゃんと TALENT == 0も入れないといけない（FLAG:11 == 1のとき誤爆する）
+ELSEIF TALENT:爆乳 == 0 && TALENT:巨乳 == 0 && TALENT:貧乳 == 0 && TALENT:絶壁 == 0
+	PRINTFORMW 「んっ……やっ、なんか、胸、へんっ、むずむずするっ……！」
+	PRINTFORMW （よし、この調子だと胸だけなら輝夜に勝てる！）
+ENDIF
+
+;-------------------------------------------------
+;虹の飴玉使用
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE339
+;初回（女→男）
+IF CFLAG:8439 == 0 && TALENT:オトコ
+	PRINTFORMW 「え……あ……え、え？」
+	;隷属or壊造人格
+	IF TALENT:壊造人格 || TALENT:隷属
+			PRINTFORMW 「んー、それで%K31_CALLNAME()%は今の私に何をして欲しいの？」
+	;相愛
+	ELSEIF TALENT:相愛
+		PRINTFORMW 「いくらなんでもちょっと突然すぎる！　戻れる保証はあるの？」
+		PRINTFORMW 「あるなら、いいけど……今度からちゃんと相談してからにして」
+	;それ以外
+	ELSE
+		PRINTFORMW 「う……うそ、うそだ……あんまり、だ、あんまり……あ、あは、あははははは！」
+		PRINTFORMW 「あ、あはは、あはははは、あんまり女として魅力がないから男にしたってこと？」
+		PRINTFORMW 「ははは、はは……はっ、ひぐっ、ぐすっ、うぅっ……」
+		PRINTFORMW 「もう……もう……やだ……変な薬に人生弄ばれるの、もうやだぁ……」
+		PRINTFORMW よほどショックだったのか、妹紅は泣き出してしまった……
+	ENDIF
+	CFLAG:8439 = 1
+;オトコ→女
+ELSEIF TALENT:オトコ == 0
+	;隷属or壊造人格
+	IF (TALENT:壊造人格 || TALENT:隷属)
+		PRINTFORMW 「女に戻って、今度は何をすればいい？」
+		CFLAG:8439 = 8
+	;相愛
+	ELSEIF TALENT:相愛
+		PRINTFORMW 「ふぅ、女に戻れてよかった……」
+		PRINTFORMW 「あんまり薬に体作り替えられるのは、正直、嬉しくないからね」
+		CFLAG:8439 = 6
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「……%K31_CALLNAME()%、やっぱり、私は女のほうがいいと思った？」
+		PRINTFORMW 「それとも……男としても、私、魅力なかった？」
+		PRINTFORMW 「あ、別に答えなくてもいいよ……ははは、あはは……はは……」
+		CFLAG:8439 = 4
+	ELSE
+		PRINTFORMW 「……戻れ、た？」
+		PRINTFORMW 「やっぱり、奴隷は女でいるほうが都合がいいってわけ？」
+		PRINTFORMW 「それとも……なんでもない。忘れて」
+		CFLAG:8439 = 2
+	ENDIF
+;女→オトコ（二回目以降）
+ELSE
+	;隷属or壊造人格
+	IF (TALENT:壊造人格 || TALENT:隷属)
+		PRINTFORMW 「男になって、今度は何をすればいい？」
+		CFLAG:8439 = 9
+	;相愛
+	ELSEIF TALENT:相愛
+		PRINTFORMW 「くっ……%K31_CALLNAME()%との結婚を望んだのは間違いなく私だしっ！」
+		PRINTFORMW 「変態だってとうにわかってた以上は、こんなことも受け入れてみせるよ、もう！」
+		CFLAG:8439 = 7
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「%K31_CALLNAME()%は……もしかして、男の私の方が好きなの？」
+		PRINTFORMW 「もしそうなら……もう……これで、いいかな……」
+		CFLAG:8439 = 5
+	ELSE
+		PRINTFORMW 「どうしてこんな変化に限って、蓬莱の薬は治してくれないんだろうね……」
+		CFLAG:8439 = 3
+	ENDIF
+ENDIF
+
+;;-------------------------------------------------
+;;通常の夜這い関連。行動内容が分からないので無難に。
+;;具体的な行動内容判明後の口上は480,481を参照。ただし騎乗位処女喪失だけはこっちで。
+;;-------------------------------------------------
+;IF TFLAG:200 == 405
+;	;奴隷がそこまでやる気ないときと結構やる気の場合、ただしどういう行動を具体的に取るかは不明
+;	;イマラチオや素股強制やセックスや逆レイプなどがありうる。事前には分からん。
+;	;(具体的なのはTFLAG:200=481で)
+;	;というわけでやる気をあるがどうか区別するための構文を探していたら、
+;	;その過程で分岐そのものがおかしいことが発覚、おいぃ！？
+;	;それなりに積極的な場合。
+;	IF GET_AGG(TARGET) >= 90 && GET_NIGHT_KOJO(0) == 2
+;		IF TALENT:相愛
+;			PRINTFORMW 「体が熱くて、眠れないんだ。だから、鎮めたくて」
+;			PRINTFORMW 「配偶者として、体調管理には付き合ってくれるよね……？」
+;		ELSEIF TALENT:恋慕 && TALENT:オトコ == 0 && TALENT:MASTER:オトコ
+;			PRINTFORMW 「さ、最悪だと思う？　自ら男のほうに夜這いしてくる女なんて……」
+;			PRINTFORMW 「常識外れだよね、き、嫌われるよね、でも、でも我慢できなくて……」
+;		ELSEIF TALENT:恋慕
+;			PRINTFORMW 「我慢できないの、%K31_CALLNAME()%のことばっかり考えちゃって、体が火照って……」
+;			PRINTFORMW 「迷惑かもしれないけど、お願い、夜の間付き合って……」
+;		ELSE
+;			PRINTFORMW 「体が、おかしくて……眠れ、ない……」
+;			PRINTFORMW 「散々私の体を弄んだのはそっちなんだから、その責任くらい取ってよ……！」		
+;		ENDIF
+;	;2の残りで乗り気じゃない場合。但しこっちでもアッー！は結構ノリ気っぽいのでカット
+;	ELSeIF GET_NIGHT_KOJO(0) == 2 && (TALENT:120 == 0 || TALENT:MASTER:120 == 0)
+;		IF TALENT:恋慕
+;			PRINTFORMW 「あ……う、うん、はしたないと、思われるかもしれないけど……」
+;			PRINTFORMW 「%K31_CALLNAME()%の言う通り、夜の間、付き合ってほしい……」
+;		ELSE
+;			PRINTFORMW 「ぅ……あうぅ、だ、だいたい、元々私の体を弄んだのはそっちだし……」
+;			PRINTFORMW 「私が夜這いしても、はしたない女ってわけじゃない……そっちの責任……」
+;		ENDIF
+;	;消極的の場合、こっちもどういう行動になるかは事前には分からん。(具体的なのはTFLAG:200=480か481で)
+;	;こちらもアッー！の場合を除外する、なおこっちは恋慕と淫乱がない
+;	ELSeIF GET_NIGHT_KOJO(0) == 1 && (TALENT:120 == 0 || TALENT:MASTER:120 == 0)
+;		PRINTFORMW 「べ、別に……あんたなんかとしたいわけじゃない……じゃないけど！」
+;		PRINTFORMW 「た、ただ、こんな情けない姿、調教をするような奴以外に見せられないし……」
+;	;積極的な場合(具体的なのはTFLAG:200=480で)
+;	ELSEIF GET_NIGHT_KOJO(0) == 3
+;		PRINTFORMW 「はぁっ、はっ、熱いんだ、自分が抑えられなくて、とても寝れない……」
+;		PRINTFORMW 「ぁ……あぁっ、も、だめっ、体の中が燃えて、気が狂いそうっ……！」
+;		PRINTFORMW いきなり部屋に入ってきた妹紅の眼は、熱病に浮かされたように蕩けている……
+;	ENDIF
+;ENDIF
+
+
+;;エンディングに絡むものは一番下
+;;-------------------------------------------------
+;;以下、売春時の口上です。EXP、CFLAG、ABL等の変数には必ず「COUNT」をはさむように気をつけてください。
+;;キャラの名前は%CALLNAME:TARGET%ではなく、%CALLNAME:COUNT%で表示します。ご注意ください。
+;;-------------------------------------------------
+;;売春宿で指名された時（お昼イベント）
+;;CFLAG:7980 売春婦として初めて表に出た（ビラ配り含む）＆売春で輝夜が来た
+;;-------------------------------------------------
+;IF TFLAG:200 == 1100
+;	;売春婦として初めて表に出た（ビラ配り含む）
+;	IF CFLAG:COUNT:7980 == 0
+;		PRINTFORMW 「……私はどこまで堕ちるんだ」
+;		PRINTFORMW 「仮にも貴族の娘だった私が、春を……助けて……誰か、助けて……！」
+;		CFLAG:COUNT:7980 = 1
+;	;求愛依存かつ、対多人数の時
+;	ELSEIF TALENT:COUNT:261 && (CFLAG:COUNT:1501 == 5 || CFLAG:COUNT:1501 == 6)
+;		PRINTFORMW 「私を選んでくれる人が、こんなにいる」
+;		PRINTFORMW 「なんて、素敵な生きがい……」
+;	;求愛依存かつ常連客
+;	ELSEIF TALENT:COUNT:265 && TALENT:COUNT:261
+;		PRINTFORMW 「そう……また私を……」
+;		PRINTFORMW 「私は見捨てられてなんかない、ちゃんと選ばれてるんだ……！」
+;	;求愛依存
+;	ELSEIF TALENT:COUNT:261
+;		PRINTFORMW 「私を見てくれる人、ちゃんといたんだ……よかった」
+;	;知り合いがやってくるイベントを発生させたい時専用の分岐です
+;	;RAND:Xで来る確率を変化。ITEM:1XXのXXに来て欲しいキャラ番号をいれてください。旧作キャラなら、2XXになる事もあります。
+;	;そのまま;を削ると、後ろの分岐と繋がらないので、必ず娼婦かつ多人数の時の分岐を「ELSEIF」になおしてください。
+;	;イベントオンの場合で妹紅がEX化していないと、輝夜が来る
+;	;……慧音はこういうところ来そうに無い上、万が一来たら馬鹿正直に突撃して捕まって調教される様しか思い浮かばねえ
+;	ELSEIF RAND:3 == 0 && ITEM:130 == 0 && CFLAG:COUNT:0 == 0 && CFLAG:COUNT:6000 == 1 && (CFLAG:COUNT:1501 == 5 || CFLAG:COUNT:1501 == 6)
+;		;初めて輝夜が来た
+;		IF CFLAG:COUNT:7980 == 1
+;			PRINTFORMW 『ここで妹紅が働いているって聞いたけど……まさかそんなはず……』
+;			PRINTFORMW 「え、輝夜！？　あ、違う、違うんだ、これは、これは……」
+;			PRINTFORMW 『……見下げ果てたわ、妹紅。とうとうこんな仕事をする下賎な女になるなんて』
+;			PRINTFORMW 「違う……したくて、こんなことしてるわけじゃ……お願い、輝夜でもいい、助けて！」
+;			PRINTFORMW 『ふん、私に頼みごとだなんていい度胸ね。助けて欲しいんなら土下座でも……え！？』
+;			PRINTFORMW 「おねがい。助けて、おねがい……」
+;			PRINTFORMW 『……私に、しかも即座に土下座する辺り、本当にのっぴきならない事態なのね』
+;			PRINTFORMW 『さすがに娼婦をそのまま買うなんて無理だし……何か策を考えておくわ』
+;			PRINTFORMW 「……え」
+;			PRINTFORMW 『しゃきっとしなさいよ。今日、貴方の春を買ったのは私』
+;			PRINTFORMW 『ちゃんと気持ちよくしてよね？　……契りながら作戦会議を、しましょう』
+;			CFLAG:COUNT:7980 = 2
+;		ELSE
+;			IF CFLAG:COUNT:7980 == 2
+;				;売春のERB見て頭捻った結果がこれだよ！
+;				;SPRING_BASEに蓬莱人かどうか見る場所なくね？→あれ？蓬莱人死んだふりしてね？と思った
+;				;まあ自分は最新の見てるわけでもなし、更新後できなくなっていたりするかもしれないけど
+;				PRINTFORMW 「あ……輝夜……また来たの？」
+;				PRINTFORMW 『一つ聞くけど。ここの連中は、貴方が不死身だと知っているのかしら？』
+;				PRINTFORMW 「ここの連中って、売春宿の連中のこと？　……さぁ？」
+;				PRINTFORMW 『そこが重要なのに。まぁいいわ、これを飲んでね』
+;				PRINTFORMW 「何、この瓶？」
+;				PRINTFORMW 『毒よ。蓬莱人ですらちょっと飲むだけで瀕死になるくらいの劇薬』
+;				PRINTFORML 「はぁ！？」
+;				PRINTFORMW 『話は最後まで聞きなさい』
+;				PRINTFORML 『知っているにせよ治療されるにせよ、生き返りたてじゃ消耗してて仕事は難しい』
+;				PRINTFORMW 『だから、消耗した妹紅は仕事から外される。まあ、この場合は一時凌ぎだけどね』
+;				PRINTFORML 『そして、死んだと思われたらチャンスよ、頑張って息を止めてなさい』
+;				PRINTFORMW 『私が遺体を買う死姦大好きな変態好事家のふりをして妹紅を助ける』
+;				PRINTFORMW 「……輝夜、お前、かなりせこい」
+;				PRINTFORMW 『せこくて結構、私の得意分野よ。というわけで、殺されてきてね？』
+;				PRINTFORMW 「……ひどい話だ。でも、ありがたいけど」
+;				;強制体力１
+;				BASE:COUNT:0 = 1
+;				CFLAG:COUNT:7980 = 3
+;			ELSE
+;				PRINTFORMW 「輝夜……ごめん」
+;				PRINTFORMW 『……まだ逃げることができていないのね』
+;				PRINTFORMW 「その、あの毒は？　あれをまた使って……」
+;				IF ITEM:129 == 0 || RAND:3 == 0
+;					PRINTFORMW 『なんとかまた用意出来たわ。春を買うお金と毒を用意するお金で家計に大打撃よ？』
+;					PRINTFORMW 「…………ありがとう」
+;					PRINTFORMW 『今度はうまくやりなさい』
+;					BASE:COUNT:0 = 1
+;				ELSE
+;					PRINTFORMW 『永琳が行方不明になってしまった今じゃ、作り直すのに相当手間が掛かるの……』
+;					PRINTFORMW 『だから、まだ今度ね』
+;					PRINTFORMW 「そ、そうか……」
+;					PRINTFORMW 『……幻想郷は一体どうなってしまったのかしら。もしかしたら私も妹紅のように』
+;					PRINTFORMW 「弱音吐くなよ！　あれだけ男を弄んだお前がこんな仕事するだなんて……」
+;					PRINTFORMW 『……ごめんね。永琳を失って少し弱気になったみたい』
+;					PRINTFORMW 『私を慰めていってね、妹紅……』
+;				ENDIF
+;			ENDIF
+;		ENDIF
+;	;娼婦かつ、対多人数の時
+;	ELSEIF TALENT:COUNT:260 && (CFLAG:COUNT:1501 == 5 || CFLAG:COUNT:1501 == 6) 
+;		PRINTFORMW 「えぇ……私を選んだ人がこんなに？　私、人気だってこと？」
+;		PRINTFORMW 「……まぁ、仕事だし、頑張る。客を死なせない程度に」
+;	;娼婦かつ常連客
+;	ELSEIF TALENT:COUNT:265 && TALENT:COUNT:260
+;		PRINTFORMW 「……私を気に入っているみたいだ、この人」
+;		PRINTFORMW 「まぁここで働いて、好き者はたくさんいるっていうのはもうわかったよ」
+;	;娼婦
+;	ELSEIF TALENT:COUNT:260
+;		PRINTFORMW 「私を指名？　じゃあ、化粧しないと」
+;		PRINTFORMW 「……私が、まともに見栄えを気にするようになるだなんて」
+;	;恋慕
+;	ELSEIF TALENT:COUNT:150
+;		PRINTFORMW 「%K31_CALLNAME3()%がやれって言ったんだ……従わないと……」
+;		PRINTFORMW （でも、側にいることすらできないだなんて……）
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 「なんで選ぶの……私なんかを……」
+;	ENDIF
+;ENDIF
+;
+;;-------------------------------------------------
+;;お外でビラくばり（お昼イベント：従順３、露出３以上の時のみ発生）
+;;-------------------------------------------------
+;IF TFLAG:200 == 1200
+;	;売春婦として初めて表に出た（ビラ配り含む）
+;	IF CFLAG:COUNT:7980 == 0
+;		PRINTFORMW 「……父上。私は、妹紅はこんな女になる娘だったから、相手にしなかったの？」
+;		CFLAG:COUNT:7980 = 1
+;	;求愛依存
+;	ELSEIF TALENT:COUNT:261
+;		PRINTFORMW 「ねぇ、そこの人。私と伽をしていく気はない？」
+;		PRINTFORMW 「ビラ配りばっかりで退屈なんだ。早くしてくれる人を見つけて、仕事に戻りたいよ……♪」
+;	;娼婦
+;	ELSEIF TALENT:COUNT:260
+;		PRINTFORMW 「ん、わざわざ寄ってきて……興味が沸いた？　私に？」
+;		PRINTFORMW 「まぁ私なんかでいいのら、お客さんを熱くしてみせる。だからいつでも来ていい」
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 「いきなり声を掛けてきて何を……どんな店のビラかって？　こういう店だ」
+;		PRINTFORMW 「でも、私なんかが配ってたら来る気も……え、私としたいって！？」
+;	ENDIF
+;ENDIF
+;
+;;-------------------------------------------------
+;;お昼ごはんを作ってみました（お昼イベント：従順３、料理３以上の時のみ発生）
+;;-------------------------------------------------
+;IF TFLAG:200 == 1300
+;	;求愛依存
+;	IF TALENT:COUNT:261
+;		PRINTFORMW 「貴方達は、みんなが私を愛してくれる手伝いをする大切な人達だからね……」
+;	;娼婦
+;	ELSEIF TALENT:COUNT:260
+;		PRINTFORMW 「貴方達抜きに、仕事はできないからね。色々とよろしくお願い」
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 「……あーあ、なんでこんな奴らにまで」
+;	ENDIF
+;ENDIF
+;
+;;売春はCOUNT挟むから呼称変えるにはCOUNTを挟んだ特別な呼称用の関数が必要……めんどくせえ……
+;
+;;-------------------------------------------------
+;;反発刻印取得時。この時点で既に反発刻印は取得済みなので、反発刻印のレベルによって分岐することも可能です。
+;;-------------------------------------------------
+;IF TFLAG:200 == 1800
+;	;娼婦
+;	IF TALENT:COUNT:260
+;		PRINTFORMW 「どうして、こうなってしまったんだろう、私……」
+;	;相愛
+;	ELSEIF TALENT:COUNT:153
+;		PRINTFORMW 「もう嫌、私はあの人のものになったはずなのに、なんでこんな事しないといけないんだ！」
+;	;恋慕
+;	ELSEIF TALENT:COUNT:150
+;		PRINTFORMW （結局、あの人は私がいくら他の人間に穢されようと気にしてくれない……）
+;		PRINTFORMW （体を投げ売っていくら稼いでも、振り向いて、くれないんだ……）
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 「こんな、体を売るような立場にまで、落ちぶれたくないっ！」
+;		PRINTFORMW 「これなら孤独のほうがよほどいい！」
+;	ENDIF
+;ENDIF
+;;-------------------------------------------------
+;;娼婦取得時
+;;-------------------------------------------------
+;IF TFLAG:200 == 1801
+;	PRINTFORMW （……そうか。どうせ私は親にもしっかりと相手をしてもらえず、恩人を殺して）
+;	PRINTFORMW （そう、私は汚れてた、とっくの昔に。貴族の娘だった、なんて何の意味もない）
+;	PRINTFORMW （そんな私には、こういう仕事が相応しいのかな……）
+;ENDIF
+;
+;;-------------------------------------------------
+;;求愛依存取得時
+;;-------------------------------------------------
+;IF TFLAG:200 == 1802
+;	PRINTFORMW 「笑ってた……全員、私と契って、笑みを浮かべてた」
+;	PRINTFORMW 「私を除け者にしない。年を取らないからって薄気味がらない」
+;	PRINTFORMW 「そっか……私の春を買ってくれるお客さんは、私を受け入れてくれるんだ……！」
+;ENDIF
+;;-------------------------------------------------
+;;妊娠　バッド妊娠6029　グッド妊娠6020
+;;ここはcountつけない
+;;-------------------------------------------------
+;;バッド
+;IF TFLAG:200 == 1810
+;	PRINTFORMW 「……はは。何、それ」
+;	PRINTFORMW 「一応、貴族の娘だったのに……親から見捨てられて、まっとうな人間じゃなくなって」
+;	PRINTFORML 「攫われて奴隷にさせられて、娼婦にまで身を貶められて……
+;	PRINTFORMW 　その果てに、誰が父親か分からない子を孕む？」
+;	PRINTFORMW 「あはは、あんまりにもおかしい人生で笑うしかない」
+;	IF TALENT:恋慕
+;		PRINTFORMW 「それでも……あの人が望む以上、春を売る事が私の生きる意味なんだろうか……」
+;	ELSE
+;		PRINTFORMW 「こんな人生なのに、生き続ける意味は……どこに、あるんだろう……」
+;	ENDIF
+;	SIF CFLAG:6029 == 0
+;		CFLAG:6029 = 1
+;ENDIF
+;
+;;娼婦　この口上が出た後にステータス変化する
+;IF TFLAG:200 == 1811
+;	;恋慕が消えて求愛依存が付くパターン
+;	IF CFLAG:70 != 3 && TALENT:150 && TALENT:153 == 0
+;		PRINTFORMW 「……誰でも、いつかこうなるって想像はできる」
+;		PRINTFORMW 「それでも、あの人は私に春を売らせ続けた。振り向いてくれなかった」
+;		PRINTFORMW 「それは結局、そういうことなんだろうね……」
+;	;相愛
+;	ELSEIF TALENT:153
+;		PRINTFORMW 「誰でも、いつかこうなるって想像はできる……それなのに、あの人は」
+;		PRINTFORMW 部屋に戻った妹紅は小さな箱を開けると、中に納められたものをじっと見つめた。
+;		PRINTFORMW 「あの人は、本当にまだ私のことを……ううん、私は、信じなきゃ。この指輪を」
+;	ELSE
+;		PRINTFORMW 「……覚悟は、してた。いつかはこうなるって」
+;		PRINTFORMW 「私は、もう……」
+;	ENDIF
+;	SIF CFLAG:6020 == 0
+;		CFLAG:6020 = 1
+;ENDIF
+;
+;;求愛依存
+;IF TFLAG:200 == 1812
+;	PRINTFORMW 「こうやって、私が愛されていた証を作って、見れるんだ……」
+;	PRINTFORMW 「何度も何度も、ここで働き続ける限り、永遠にこんな幸せを味わえる」
+;	PRINTFORMW 「なんて――素敵なことなんだろう！」
+;	SIF CFLAG:6020 == 0
+;		CFLAG:6020 = 1
+;ENDIF
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;CFLAG:8000　蓬莱人になる？　なげえ
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	PRINTFORMW そうして、%CALLNAME:MASTER%は指輪を差し出した。妹紅の気持ちにはもう気付いている。
+	PRINTFORMW こうでもしないと、彼女は自分の気持ちを永遠に押し殺すだろう。
+	PRINTFORMW ……だが。
+	PRINTFORMW 「だめだ、返す。私は、%K31_CALLNAME()%にふさわしくなんかないよ……」
+	PRINTFORMW この期に及んで指輪を突き返してきた。なぜと聞くと、妹紅は狼狽しながら首を振る。
+	PRINTFORMW 「だ、だって……私は、かわいくない。輝夜と比較すればそれこそ月とスッポンだ」
+	PRINTFORML 「父親にだって目をかけられず、内面だって恩人を殺して不老不死になった畜生」
+	PRINTFORMW 「そんな私なんかを、愛する必要なんてない。私は奴隷のままでいい」
+	IF CFLAG:6001 == 1
+		PRINTFORMW 「でもありがとう。こんなものをくれるなら、前に売るって言ったのは嘘なんだね」
+		PRINTFORMW 「それがわかっただけでも、私は十分……きゃっ！？」
+	ELSEIF CFLAG:6001 == 2
+		PRINTFORMW 「売らずに側に置いてさえくれれば、それで……きゃっ！？」
+	ENDIF
+	PRINTFORMW 相変わらずつまらないことを言い続ける妹紅を、抱きしめた。それでも、彼女は否定する。
+	PRINTFORML 「だめ……だめだよ%K31_CALLNAME()%、私みたいな女なんか……お願い、放して……」
+	PRINTFORMW 「これ以上されたら、私、我慢出来なくなっちゃうよ、それじゃ%K31_CALLNAME()%が、不幸に……んむっ！？」
+	PRINTFORMW 物理的に、黙らせた。こちらの唇を、妹紅の唇に合わせて。
+	PRINTFORMW 妹紅は暴れたが、それでも体も口も離さず抱きしめ続けること数分。
+	PRINTFORMW ついに諦めたように、舌を絡ませてきて……それを確認してから、口を離した。
+	PRINTFORMW 「……ばか、ばかばかばか、もう知らない、後悔しても、知らない！」
+	PRINTFORMW 妹紅の口調は変わらないが、%CALLNAME:MASTER%は確かに見た。指輪が受け取られる様子を。
+	IF TALENT:MASTER:蓬莱人 == 0 && (TALENT:親愛 || CFLAG:7999 == 1)
+		PRINTL 
+		PRINTFORMW そのまま妹紅は指輪をつけようとして……ふと、たどたどしく、言葉を紡ぎ出した。
+		PRINTFORMW 「……奇特な趣味を持つ%K31_CALLNAME()%に聞いておかなくちゃいけないことがあるんだ」
+		PRINTFORML 「私を愛するために、永遠に死ねない私を気遣って」
+		PRINTFORMW 「蓬莱人になる覚悟はある？　死ねない呪いを、背負うつもりはある？」
+		PRINTFORML %CALLNAME:MASTER%はその問いに……
+		PRINTL [0] 蓬莱人になる、と答えた。
+		PRINTL [1] じゃあやめておく、と答えた。
+		$INPUT_K31EDLOOP
+		INPUT
+		IF RESULT == 0
+			PRINTFORML 「……もう一度考え直して。その上で、聞かせて。辛いよ、後悔しかしないよ？」
+			PRINTL [0] しつこい！
+			PRINTL [1] そこまで言うならやめておく。
+			$INPUT_K31EDLOOP2
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「そう。そこまで、私を……ありがとう、そして、ごめん」
+				PRINTFORMW 「まだ、私は%K31_CALLNAME()%の気持ちを分かりきってなかったみたいだ」
+				PRINTFORMW そう言うと、妹紅は笑いながら指輪を付けた。本当の、心からの笑みだった。
+				PRINTFORMW 「……例えこの星が死を迎えても、永遠に私たちは一緒だね！」
+				CFLAG:8000 = 1
+				IF CFLAG:6000 == 1 && TALENT:悲観的 == 1
+					PRINTFORMW %CALLNAME:TARGET%は[悲観的]を失った
+					TALENT:悲観的 = 0
+				ENDIF
+				IF CFLAG:6000 == 1 && TALENT:自制心 == 1
+					PRINTFORMW %CALLNAME:TARGET%は[自制心]を失った
+					TALENT:自制心 = 0
+				ENDIF
+			ELSEIF RESULT == 1
+				PRINTFORMW 「まあそうだよ、蓬莱人になんかなるはずないか」
+				PRINTFORMW 当然だ、と言った様子で妹紅は溜息を吐いた。こちらが気遣うと、妹紅は首を振る。
+				PRINTFORMW 「大丈夫、落ち込んでなんかいない。%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ」
+				PRINTFORMW そう言うと妹紅は微笑みながら、指輪を付けた。
+			ELSE
+				GOTO INPUT_K31EDLOOP2
+			ENDIF
+		ELSEIF RESULT == 1
+			PRINTFORMW 「まあそうだよ、蓬莱人になんかなるはずないか」
+			PRINTFORMW 当然だ、と言った様子で妹紅は溜息を吐いた。こちらが気遣うと、妹紅は首を振る。
+			PRINTFORMW 「大丈夫、落ち込んでなんかいない。%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ」
+			PRINTFORMW そう言うと、妹紅は微笑みながら、指輪を付けた。
+		ELSE
+			GOTO INPUT_K31EDLOOP
+		ENDIF
+;迷ったものの、表示しないことに。
+;	ELSE
+;		PRINTFORMW そのまま妹紅は指輪をつけようとして……ふと、口を開きかけ、閉じた。
+;		PRINTFORMW （……蓬莱人になってくれないか、なんてとても言えない）
+;		PRINTFORMW （やめよう。好きだからこそ、%K31_CALLNAME()%には私のような想いをしてほしくない）
+;		PRINTFORMW （%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ）
+;		PRINTFORMW %CALLNAME:MASTER%に心中を伝えることなく、妹紅は指輪を付けた。
+	ENDIF
+;抑圧消去・解放付加は迷ったものの入れないことに。この段階で解放付いてなかったらグッドじゃないの確定だし
+;	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+;		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+;		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+;		TALENT:抑圧 = 0
+;		TALENT:解放 = 1
+;		CFLAG:13 |= 1
+;	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+;		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+;		TALENT:解放 = 1
+;		CFLAG:13 |= 1
+;	ENDIF
+	;主人が大甲斐性持ちで輝夜買ってるなら、輝夜が今もいるか調べる
+	SIF TFLAG:200 == 200 && TALENT:MASTER:大甲斐性 && ITEM:130 && GETCHARA(30, 1) != -1
+		CFLAG:7991 = 2
+ENDIF
+
+;-------------------------------------------------
+;青珊瑚の指輪使用時
+;CFLAG:8000　蓬莱人になる？　なげえ
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE205
+IF 1
+	PRINTFORMW そうして、%CALLNAME:MASTER%は指輪を差し出した。妹紅の気持ちにはもう気付いている。
+	PRINTFORMW こうでもしないと、彼女は自分の気持ちを永遠に押し殺すだろう。
+	PRINTFORMW ……だが。
+	PRINTFORMW 「だめだ、返す。私は、%K31_CALLNAME()%にふさわしくなんかないよ……」
+	PRINTFORMW この期に及んで指輪を突き返してきた。なぜと聞くと、妹紅は狼狽しながら首を振る。
+	PRINTFORMW 「だ、だって……私は、かわいくない。輝夜と比較すればそれこそ月とスッポンだ」
+	PRINTFORML 「父親にだって目をかけられず、内面だって恩人を殺して不老不死になった畜生」
+	PRINTFORMW 「そんな私なんかを、愛する必要なんてない。私は奴隷のままでいい」
+	IF CFLAG:6001 == 1
+		PRINTFORMW 「でもありがとう。こんなものをくれるなら、前に売るって言ったのは嘘なんだね」
+		PRINTFORMW 「それがわかっただけでも、私は十分……きゃっ！？」
+	ELSEIF CFLAG:6001 == 2
+		PRINTFORMW 「売らずに側に置いてさえくれれば、それで……きゃっ！？」
+	ENDIF
+	PRINTFORMW 相変わらずつまらないことを言い続ける妹紅を、抱きしめた。それでも、彼女は否定する。
+	PRINTFORML 「だめ……だめだよ%K31_CALLNAME()%、私みたいな女なんか……お願い、放して……」
+	PRINTFORMW 「これ以上されたら、私、我慢出来なくなっちゃうよ、それじゃ%K31_CALLNAME()%が、不幸に……んむっ！？」
+	PRINTFORMW 物理的に、黙らせた。こちらの唇を、妹紅の唇に合わせて。
+	PRINTFORMW 妹紅は暴れたが、それでも体も口も離さず抱きしめ続けること数分。
+	PRINTFORMW ついに諦めたように、舌を絡ませてきて……それを確認してから、口を離した。
+	PRINTFORMW 「……ばか、ばかばかばか、もう知らない、後悔しても、知らない！」
+	PRINTFORMW 妹紅の口調は変わらないが、%CALLNAME:MASTER%は確かに見た。指輪が受け取られる様子を。
+	IF TALENT:MASTER:蓬莱人 == 0 && (TALENT:親愛 || CFLAG:7999 == 1)
+		PRINTL 
+		PRINTFORMW そのまま妹紅は指輪をつけようとして……ふと、たどたどしく、言葉を紡ぎ出した。
+		PRINTFORMW 「……奇特な趣味を持つ%K31_CALLNAME()%に聞いておかなくちゃいけないことがあるんだ」
+		PRINTFORML 「私を愛するために、永遠に死ねない私を気遣って」
+		PRINTFORMW 「蓬莱人になる覚悟はある？　死ねない呪いを、背負うつもりはある？」
+		PRINTFORML %CALLNAME:MASTER%はその問いに……
+		PRINTL [0] 蓬莱人になる、と答えた。
+		PRINTL [1] じゃあやめておく、と答えた。
+		$INPUT_K31EDLOOP
+		INPUT
+		IF RESULT == 0
+			PRINTFORML 「……もう一度考え直して。その上で、聞かせて。辛いよ、後悔しかしないよ？」
+			PRINTL [0] しつこい！
+			PRINTL [1] そこまで言うならやめておく。
+			$INPUT_K31EDLOOP2
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「そう。そこまで、私を……ありがとう、そして、ごめん」
+				PRINTFORMW 「まだ、私は%K31_CALLNAME()%の気持ちを分かりきってなかったみたいだ」
+				PRINTFORMW そう言うと、妹紅は笑いながら指輪を付けた。本当の、心からの笑みだった。
+				PRINTFORMW 「……例えこの星が死を迎えても、永遠に私たちは一緒だね！」
+				CFLAG:8000 = 1
+				IF CFLAG:6000 == 1 && TALENT:悲観的
+					PRINTFORMW %CALLNAME:TARGET%は[悲観的]を失った
+					TALENT:悲観的 = 0
+				ENDIF
+				IF CFLAG:6000 == 1 && TALENT:自制心
+					PRINTFORMW %CALLNAME:TARGET%は[自制心]を失った
+					TALENT:自制心 = 0
+				ENDIF
+			ELSEIF RESULT == 1
+				PRINTFORMW 「まあそうだよ、蓬莱人になんかなるはずないか」
+				PRINTFORMW 当然だ、と言った様子で妹紅は溜息を吐いた。こちらが気遣うと、妹紅は首を振る。
+				PRINTFORMW 「大丈夫、落ち込んでなんかいない。%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ」
+				PRINTFORMW そう言うと妹紅は微笑みながら、指輪を付けた。
+			ELSE
+				GOTO INPUT_K31EDLOOP2
+			ENDIF
+		ELSEIF RESULT == 1
+			PRINTFORMW 「まあそうだよ、蓬莱人になんかなるはずないか」
+			PRINTFORMW 当然だ、と言った様子で妹紅は溜息を吐いた。こちらが気遣うと、妹紅は首を振る。
+			PRINTFORMW 「大丈夫、落ち込んでなんかいない。%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ」
+			PRINTFORMW そう言うと、妹紅は微笑みながら、指輪を付けた。
+		ELSE
+			GOTO INPUT_K31EDLOOP
+		ENDIF
+;迷ったものの、表示しないことに。
+;	ELSE
+;		PRINTFORMW そのまま妹紅は指輪をつけようとして……ふと、口を開きかけ、閉じた。
+;		PRINTFORMW （……蓬莱人になってくれないか、なんてとても言えない）
+;		PRINTFORMW （やめよう。好きだからこそ、%K31_CALLNAME()%には私のような想いをしてほしくない）
+;		PRINTFORMW （%K31_CALLNAME()%に愛されている。それだけで、私は十分なんだ）
+;		PRINTFORMW %CALLNAME:MASTER%に心中を伝えることなく、妹紅は指輪を付けた。
+	ENDIF
+;抑圧消去・解放付加は迷ったものの入れないことに。この段階で解放付いてなかったらグッドじゃないの確定だし
+;	IF CFLAG:6000 == 1 && TALENT:抑圧 && TALENT:解放 == 0
+;		PRINTFORMW %CALLNAME:TARGET%は[抑圧]を失った
+;		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+;		TALENT:抑圧 = 0
+;		TALENT:解放 = 1
+;		CFLAG:13 |= 1
+;	ELSEIF CFLAG:6000 == 1 && TALENT:解放 == 0
+;		PRINTFORMW %CALLNAME:TARGET%は[解放]を得た
+;		TALENT:解放 = 1
+;		CFLAG:13 |= 1
+;	ENDIF
+	;主人が大甲斐性持ちで輝夜買ってるなら、輝夜が今もいるか調べる
+	SIF TFLAG:200 == 200 && TALENT:MASTER:大甲斐性 && ITEM:130 && GETCHARA(30, 1) != -1
+		CFLAG:7991 = 2
+ENDIF
+
+;-------------------------------------------------
+;赤い首輪使用時
+;なお7991はエンゲージリングでも出番あるので注意
+;-------------------------------------------------
+;バッド妊娠したことあるとペアエンドは見れない
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE201
+IF 1
+	PRINTFORMW 「首輪……それを私に？　新手の調教？」
+	PRINTFORMW この首輪が意味することを教えてやると、妹紅は嬉しそうに笑った。
+	PRINTFORMW 「そんな……そんなものを私にくれるんだ！」
+	PRINTFORMW そう言って、ぐっと拳を握り締める。
+	PRINTFORMW 彼女の舞い上がりようは、%CALLNAME:MASTER%から見ていても少しばかり異常だ。
+	PRINTFORMW 不振に思った%CALLNAME:MASTER%が妹紅に聞くと、当然だと言った様子で彼女は答えた。
+	PRINTFORMW 「嬉しいに決まってる。だって、それは%K31_CALLNAME()%が私を絶対に手放さないって決めたってこと」
+	SIF CFLAG:6001 == 1
+		PRINTFORMW 「前に言った、売るって言葉に怯える必要がなくなったんだ」
+	PRINTFORMW 「嬉しくないはずがない！」
+	;赤い首輪時、ペアエンディングを判別する。今も輝夜・慧音がいたらフラグをオン
+	;とはいっても奴隷エンドはまだ未対応だけど
+	IF CFLAG:6002 == 0
+		;陥落素質の付いた助手輝夜と会ったことがある
+		SIF CFLAG:7991 > 0 && GETCHARA(30, 1) != -1
+			CFLAG:7991 = 2
+		;陥落素質の付いた助手慧音と会ったことがある
+		SIF CFLAG:7992 > 0 && GETCHARA(26, 1) != -1
+			CFLAG:7992 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;空晶石の首輪使用時
+;なお7991はエンゲージリングでも出番あるので注意
+;-------------------------------------------------
+;バッド妊娠したことあるとペアエンドは見れない
+@KOJO_31_MESSAGE_SUB_EVENT_SCENE206
+IF 1
+	PRINTFORMW 「首輪……それを私に？　新手の調教？」
+	PRINTFORMW この首輪が意味することを教えてやると、妹紅は嬉しそうに笑った。
+	PRINTFORMW 「そんな……そんなものを私にくれるんだ！」
+	PRINTFORMW そう言って、ぐっと拳を握り締める。
+	PRINTFORMW 彼女の舞い上がりようは、%CALLNAME:MASTER%から見ていても少しばかり異常だ。
+	PRINTFORMW 不振に思った%CALLNAME:MASTER%が妹紅に聞くと、当然だと言った様子で彼女は答えた。
+	PRINTFORMW 「嬉しいに決まってる。だって、それは%K31_CALLNAME()%が私を絶対に手放さないって決めたってこと」
+	SIF CFLAG:6001 == 1
+		PRINTFORMW 「前に言った、売るって言葉に怯える必要がなくなったんだ」
+	PRINTFORMW 「嬉しくないはずがない！」
+	;赤い首輪時、ペアエンディングを判別する。今も輝夜・慧音がいたらフラグをオン
+	;とはいっても奴隷エンドはまだ未対応だけど
+	IF CFLAG:6002 == 0
+		;陥落素質の付いた助手輝夜と会ったことがある
+		SIF CFLAG:7991 > 0 && GETCHARA(30, 1) != -1
+			CFLAG:7991 = 2
+		;陥落素質の付いた助手慧音と会ったことがある
+		SIF CFLAG:7992 > 0 && GETCHARA(26, 1) != -1
+			CFLAG:7992 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@単体エンディング関係
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+
+;蓬莱人になると答えたか既に蓬莱人
+IF CFLAG:8000 == 1 || TALENT:MASTER:蓬莱人 == 1
+	PRINTFORMW ベッドの上で、%CALLNAME:MASTER%は大きく息を吐いた。傍らには妹紅もいる。無論、裸だ。
+	PRINTFORML いつものように夜の営みを終え、心地よい疲労から眠りに就こうとした時……
+	PRINTFORMW 「起きてる？　聞いて欲しいことがあって」
+	PRINTFORMW 妹紅が、口を開いた。そちらを向くと、一糸纏わぬ彼女が穏やかに微笑んでいるのが見える。
+	PRINTFORML %CALLNAME:MASTER%の好意を受け入れた彼女は、同じ容姿ながらその見栄えが大きく変わった。
+	PRINTFORMW 決して自分を女らしく飾ろうとしない、自棄的な様子がなくなった結果だろう。
+	PRINTFORMW 今の彼女は、見る者を魅惑する美しさを持っていた。まるで、姫君のような。
+	PRINTFORMW 「私、攫われる前は、一人で碌に布団もかけないで寝てたんだ。風邪も引かないからってね」
+	PRINTFORMW 「今思えば、もったいない。こうやって触れ合うだけで……幸せなのに」
+	PRINTFORMW そう言って、妹紅は%CALLNAME:MASTER%の腕に自分の腕を絡ませた。
+	PRINTFORML 「富士の火口とも、私の炎とも違う熱。魂のある存在が持つ温かさ」
+	PRINTFORMW 「――それを感じるだけで、幸せになれたってことを知らなかったんだ」
+	PRINTFORMW 穏やかな顔で、妹紅は言う。%CALLNAME:MASTER%の体を、抱きしめて。
+	PRINTFORMW 最後に……彼女は熱を感じながら眠りに落ちる寸前に、こう結んだ。
+	PRINTFORMW 私と一緒にいてくれて、%K31_CALLNAME()%の熱をそばで感じさせてくれて、ありがとう……と。
+	PRINTW 
+	PRINTL 
+	PRINTFORML ――例え、太陽ですら寿命を迎えるほどの遠い未来でも。
+	PRINTFORMW その熱が絶えることは、永遠にない。
+	PRINTL 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%グッドエンド)
+	IF CFLAG:7000 == 1 && TALENT:MASTER:蓬莱人 == 0
+		PRINTFORMW %CALLNAME:MASTER%は蓬莱人になりました
+		;このへんはよく分からん……そもそも種族転生してからこれをやる暇人がいるのかどうかもわからん
+		;種族遺伝子を一旦全て初期化
+		FOR COUNT , 3200 , 3399
+			CFLAG:MASTER:COUNT = 0
+		NEXT
+		;[呪精]リセット
+		TALENT:MASTER:呪精 = 0
+		;種族素質全てリセット。
+		REPEAT 26
+			TALENT:MASTER:(COUNT+200) = 0
+		REND
+		;遺伝子を人間のものにする
+		CFLAG:MASTER:3200 = 100
+		TALENT:MASTER:蓬莱人 = 1
+	ENDIF
+ELSE
+	PRINTFORML %CALLNAME:MASTER%と結婚するにあたり、妹紅は一つ、条件を出した。
+	PRINTFORMW 共に歩くときはできるだけ手を繋いで温かさを感じさせて欲しい、と。
+	PRINTFORMW 理由を聞くと、妹紅は角が取れた穏やかな微笑を浮かべて、答えた。
+	PRINTFORML 「私、攫われる前は、一人で碌に布団もかけないで寝てたんだ。風邪も引かないからってね」
+	PRINTFORMW 「今思えば、もったいない。こうやって触れ合うだけで……幸せなのに」
+	PRINTFORMW そう言って、妹紅は%CALLNAME:MASTER%の腕に自分の腕を絡ませる。待ち切れないとばかりに。
+	PRINTFORML 「富士の火口とも、私の炎とも違う熱。魂のある存在が持つ温かさ」
+	PRINTFORMW 「――それを感じるだけで、私は幸せになれたってことを知らなかったんだ」
+	PRINTFORMW そして%CALLNAME:MASTER%はその言葉を律儀に守り、妹紅は何十年も温もりを感じ続けた。
+	PRINTW 
+	PRINTL 
+	PRINTFORML けれど――太陽ですらいつかは寿命を迎えるように。
+	PRINTFORMW %CALLNAME:MASTER%の熱もいつかは、絶える。
+	PRINTW 
+	DRAWLINE
+	PRINTFORML 蓬莱人以外のものを置き去りにするには、十分すぎる時間が流れてからのこと。
+	;輝夜が奴隷になっていないか、主人の手元におる　なげえ……
+	;ルーミアといいハッピーエンド以外にばかり力が入るのはどうにかならんのか俺は
+	IF ITEM:130 == 0 || CFLAG:7991 == 2
+		PRINTFORMW 竹林に住む妖精や妖怪たちを通じて、人里にある噂が立つようになった。
+		PRINTFORML 曰く――竹林の中にある屋敷に、永遠に老いることのない美しい姫が二人いる。
+		PRINTFORMW 一人は活発に振舞う黒髪の姫。もう一人は一度も目覚めたことの無い銀髪の眠り姫――と。
+		;……えーりん？姫って感じじゃないし。どっちかっつーと妃？
+		PRINTFORMW 噂の片一方である姫、蓬莱山輝夜は今日もある一室で思い出を脳裏に走らせる。
+		PRINTFORMW 人肌の温かさを持つように作られた布団で眠る、もう一人の姫を見下ろしながら。
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML 『……自分の眠りを、私に操作して欲しい？』
+		PRINTFORMW あの日輝夜が聞いた言葉は、妹紅が自分に頭を下げていること以上に衝撃的な内容だった。
+		PRINTFORMW それを分かっているのかいないのか、妹紅は頭を上げずに言葉を続ける。
+		PRINTFORML 「会いたいんだ、%K31_CALLNAME()%に。わかってる、%K31_CALLNAME()%はもう死んでるし亡霊になったわけでもない」
+		PRINTFORMW 「でも、夢の中なら会えると思って……だから、一緒にいる夢を、見続けたい」
+		PRINTFORMW 「輝夜の能力なら、術をかけられる私自身が受け入れて協力すればできるよね？」
+		PRINTL 
+		PRINTFORML 永遠に眠り続けること。その中で、醒めない夢の中で、二人の暮らしを永遠にすること。
+		PRINTFORMW それが、%CALLNAME:MASTER%の死後、生きがいを失った妹紅のたどり着いた答えだった。
+		PRINTL 
+		PRINTFORMW 妹紅の言葉を聞いて、輝夜は静かに口を開いた。咎めるように。
+		PRINTFORML 『わかってると言ったわね？　ならやめなさい。それはただの夢』
+		PRINTFORMW 『過去に戻れも想い人に会えもしない、ただの現実逃避よ』
+		PRINTFORML そのまま輝夜は顔を上げない妹紅の後頭部を穴が開くほど睨め付けていたが、
+		PRINTFORMW 彼女が微動だにしない様子に肩を竦めるしかなかった。諦めたような声とともに。
+		PRINTFORML 『あーあ、退屈になっちゃうなー、術を使う私自身にはこんな逃避方法かけられないのに』
+		PRINTFORMW 「……ごめん」
+		PRINTFORMW 『謝らないでよ、今更。それに永遠に眠るっていうのはある意味、殺すようなもの』
+		PRINTFORML 『ならそれは私の役目。二度と目覚めないよう術を維持して、永遠に殺し続けてあげる』
+		PRINTFORMW そう言って、輝夜は妹紅に背を向けた。どこか寂しそうな様子を、声色に滲ませて。
+		PRINTFORMW 『……準備をするわ。いい部屋を用意するから、そこで永遠に惰眠を貪りなさい』
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML 永遠亭の一室。そこで妹紅は、目覚めることの無いことのない眠りに沈んでいる。
+		PRINTFORMW 彼女の物語は、これでおしまいだ。
+		PRINTFORMW だが、もし続きがあるとすればそれは夢。昔紡いでいた頃の暮らしの再現、或いは空想。
+		PRINTFORMW 妹紅はただ――思いに満ちた日々を、自らの中で永遠に繰り返す。
+		PRINTL 
+		PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%ノーマルエンド)
+	;個人的にノーマルはグッドよりなんか綺麗なような気がして気に入っている。でも別離なのに鬱っぽくないなぁ……
+	ELSE
+		PRINTFORMW 妹紅は妖怪の山の頂上から、幻想郷を見下ろしていた。
+		PRINTFORML 「……ねぇ、どう思う、岩笠。今の私を」
+		PRINTFORMW 呟く声は、何の感慨もない。そもそも、感情自体が擦り切れて減損してきている。
+		PRINTFORMW ……もう、輝夜も%CALLNAME:MASTER%もいない。
+		PRINTFORML 今となっては、妹紅は%CALLNAME:MASTER%が恨めしかった。ああ、それが妹紅に残った感情だ。
+		PRINTFORMW 一度温かさを知ってしまった分、それを失ってはとても生きていけなかった。
+		PRINTFORML 「こうなるくらいならいっそ、無理矢理にでも私の肝を食べさせればよかったのに」
+		PRINTFORMW 「でも今の私みたいになった%K31_CALLNAME()%は見たくないし、気遣って我慢した事は正しかったのかな」
+		PRINTFORML 「……間違ってたのはそもそも、私なんかが%K31_CALLNAME()%を誑かしてしまったことだ」
+		PRINTFORMW 手に持っているものを、握り締める。骨とそれとが、嫌な音を立てるくらいに。
+		PRINTFORMW 代わりを探したところで誰も%CALLNAME:MASTER%の代わりになどなりはしない。
+		PRINTFORMW せめて輝夜が無事に残っていれば――想い人を失う孤独にも耐えられただろうに。
+		PRINTFORML 「代わりに岩笠が出来なかったこと……今、私が、するよ」
+		PRINTFORMW 表情のない顔で呟くと、妹紅は火口へ振り向いて、手に持っていた壺を、投げた。
+		PRINTFORML それは妹紅自身の体を材料として作り上げた、自己流の蓬莱の薬。
+		PRINTFORMW 咲耶姫と慧音の言っていたことが正しければ……この火口は火山活動を再開するだろう。
+		PRINTFORMW もっとも、そんなことはどうでもよかった。妹紅は縋りたかっただけ。
+		PRINTL 
+		PRINTFORMW 始まりにできなかったこと――そこからやり直したかった。それだけだ。
+		PRINTL 
+		PRINTFORMW 現実は無情だった。今更になって薬を勅命通りに捨てても、何も変わりはしない。
+		PRINTFORMW ただ、蓬莱の薬が投げ込まれた火口だけが……新たな熱を孕み始めるだけ。
+		PRINTFORMW それを見て、無表情のまま妹紅は呟いた。
+		PRINTL 
+		PRINTFORMW 「――ああ、そうか。間違いは、もっと前からだ」
+		PRINTFORMW 「望まれない子だった私は、生まれてきたことそのものが、間違いだったんだ……」
+		PRINTL 
+		PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%バッドエンド)
+		PRINTL 
+		PRINTL ------------------------------------GAMEOVER-----------------------------------
+		PRINTL 
+		PRINTW クリックかキーボード操作でゲームを終了します。
+		QUIT
+	;何回ひねっても！　何回ひねっても！欝エンド方面でRR妹紅口上に勝てる気がしないッ！
+	ENDIF
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------
+;@奴隷エンディング関係
+;-------------------------------------------------
+@KOJO_31_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+;輝夜とのペアエンド
+IF CFLAG:7991 == 2
+	PRINTFORMW 依然として%CALLNAME:MASTER%は調教師を続け、奴隷を捌いている。
+	PRINTFORML 輝夜と共に今日の雑務を終え今日は誰の相手をするか考えていると、
+	PRINTFORMW それを見計らったかのように妹紅が部屋に入ってきた。
+	PRINTFORMW 「そろそろ手が空く頃だと思って。面倒な作業の鬱憤も溜まってるだろうし、私が……」
+	PRINTFORMW 『ちょっと待って妹紅。私も丁度、仕事をしていたの。だから今日は私の番じゃない？』
+	PRINTFORMW 艶めかしい笑みと共に%CALLNAME:MASTER%にしな垂れる輝夜に、妹紅はむっとした表情を隠さない。
+	PRINTFORMW 「%K31_CALLNAME()%は私を絶対に手放さないって決めたんだ、私が%K31_CALLNAME()%と一緒にいないと！」
+	PRINTFORMW 『ふん、別に貴方を自分の物にするって決めただけで他を持たないわけじゃないでしょ』
+	PRINTFORMW 『ねぇ%CALLNAME:MASTER%？　当然、今嬲りたいのは私よね？』
+	PRINTFORMW そう言うやいなや、輝夜は%CALLNAME:MASTER%の服を解き、性器に舌を這わせ始めた。
+	PRINTFORMW 「抜け駆けはずるい！　私も……れろっ……」
+	PRINTFORMW 『やっ……ちょっと邪魔よ、舌がお互いに当たって妹紅とキスしてるみたいに……』
+	PRINTFORMW 「ちゅるっ、んっ、輝夜、これくらいで%K31_CALLNAME()%を気持ちよくするのを諦めちゃうんだ？」
+	PRINTFORMW 『い、言ってくれるじゃない、いいわよ、ついでに妹紅も舌も感じさせてやるんだから』
+	PRINTFORMW 妹紅も口での愛撫を開始し、二人はお互いの舌を絡ませながら奉仕を続けていく。
+	PRINTFORMW その淫靡な光景は%CALLNAME:MASTER%に黒と白、正反対な二人を所有した事実を実感させた……
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%＆輝夜奴隷エンド)
+;慧音とのペアエンド　未搭載　輝夜と違って全然ネタが思い浮かばない辺り、自分はやっぱりてるもこ派なんだなぁと
+;ELSEIF CFLAG:7992 == 2
+;	PRINTFORMW 
+;	PRINTFORMW 
+;	PRINTFORMW 
+;	PRINTFORMW 
+;	PRINTFORMW 
+;	PRINTFORMW 
+;	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}Bi (%CALLNAME:TARGET%＆慧音奴隷エンド)
+ELSE
+	PRINTFORMW 「%K31_CALLNAME()%、今日は何をすればいい？」
+	PRINTFORMW そうして、%CALLNAME:MASTER%は妹紅との性生活を続けている。
+	PRINTFORML あれだけ反抗的で性的な特権や快楽をうち捨てていた者が、
+	PRINTFORMW 本人も他人も最大限に悦びを味わえる存在になった。
+	PRINTFORMW だが、終わりではない。妹紅の肉体は決して衰えることのない、永遠に存在するもの。
+	PRINTFORMW そのことを考えるだけで、更に調教を続け完全な性奴隷とする欲求が生み出される。
+	PRINTFORMW %CALLNAME:MASTER%の調教の成果を、妹紅という形で永久に残せるのだから。
+	PRINTFORMW ……だが。
+	PRINTFORMW 「……%K31_CALLNAME()%？　何か不安なことでもある？」
+	PRINTFORMW 答えがないことに首を傾げた妹紅を、適当になだめ調教を開始する。
+	PRINTFORMW 妹紅の調教のおいてただ一つだけ、不安なことがある。
+	PRINTFORMW 自分が死んだ時、自分に依存するこの奴隷は不完全なものに戻るのではないか――と。
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+ENDIF
+
+
+PRINTFORMW 
+
+RETURN 0
+
+;-------------------------------------------------
+;呼称変更
+;-------------------------------------------------
+@K31_CALLNAME
+#FUNCTIONS
+IF ASSI > 0 && ASSIPLAY == 1 && NO:ASSI != 31
+	RETURNF @"%CALLNAME:PLAYER%"
+ELSEIF CFLAG:6999 == 0
+	RETURNF @"%CALLNAME:MASTER%"
+ELSEIF CFLAG:6999 == 1
+	RETURNF "ご主人様"
+ELSEIF CFLAG:6999 == 2
+	RETURNF "我が君"
+ELSEIF CFLAG:6999 == 3
+	RETURNF "主様"
+ELSEIF CFLAG:6999 == 4
+	RETURNF @"%CALLNAME:MASTER%さん"
+ELSEIF CFLAG:6999 == 5
+	RETURNF @"%CALLNAME:MASTER%様"
+ELSEIF CFLAG:6999 == 6
+	IF TALENT:MASTER:オトコ
+		RETURNF "旦那様"
+	ELSE
+		RETURNF "貴方"
+	ENDIF
+ELSEIF CFLAG:6999 == 7
+	IF TALENT:MASTER:オトコ
+		RETURNF "お兄様"
+	ELSE
+		RETURNF "お姉様"
+	ENDIF
+ELSEIF CFLAG:6999 == 8
+	IF TALENT:MASTER:オトコ
+		RETURNF "兄上"
+	ELSE
+		RETURNF "姉上"
+	ENDIF
+ELSEIF CFLAG:6999 == 9
+	IF TALENT:MASTER:オトコ
+		RETURNF "夫の君"
+	ELSE
+		RETURNF "姉君"
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;いわゆる「喘ぎ声系」
+;明らかに喘ぎ声に向かないのがちらほら……選んだ方が悪いんや！
+;-------------------------------------------------
+@K31_CALLNAME2
+#FUNCTIONS
+IF ASSI > 0 && ASSIPLAY == 1 && NO:ASSI != 31
+	RETURNF @"%CALLNAME:PLAYER%っ"
+ELSEIF CFLAG:6999 == 0
+	RETURNF @"%CALLNAME:MASTER%っ"
+ELSEIF CFLAG:6999 == 1
+	RETURNF "ご主人さまぁ"
+ELSEIF CFLAG:6999 == 2
+	RETURNF "我が君っ"
+ELSEIF CFLAG:6999 == 3
+	RETURNF "主さまぁ"
+ELSEIF CFLAG:6999 == 4
+	RETURNF @"%CALLNAME:MASTER%さんっ"
+ELSEIF CFLAG:6999 == 5
+	RETURNF @"%CALLNAME:MASTER%さまぁ"
+ELSEIF CFLAG:6999 == 6
+	IF TALENT:MASTER:オトコ
+		RETURNF "旦那さまぁ"
+	ELSE
+		RETURNF "あなたぁ"
+	ENDIF
+ELSEIF CFLAG:6999 == 7
+	IF TALENT:MASTER:オトコ
+		RETURNF "お兄さまぁ"
+	ELSE
+		RETURNF "お姉さまぁ"
+	ENDIF
+ELSEIF CFLAG:6999 == 8
+	IF TALENT:MASTER:オトコ
+		RETURNF "兄上っ"
+	ELSE
+		RETURNF "姉上っ"
+	ENDIF
+ELSEIF CFLAG:6999 == 9
+	IF TALENT:MASTER:オトコ
+		RETURNF "夫のきみっ"
+	ELSE
+		RETURNF "姉ぎみっ"
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;呼称変更　売春用
+;-------------------------------------------------
+@K31_CALLNAME3
+#FUNCTIONS
+IF CFLAG:COUNT:6999 == 0
+	RETURNF @"%CALLNAME:MASTER%"
+ELSEIF CFLAG:COUNT:6999 == 1
+	RETURNF "ご主人様"
+ELSEIF CFLAG:COUNT:6999 == 2
+	RETURNF "我が君"
+ELSEIF CFLAG:COUNT:6999 == 3
+	RETURNF "主様"
+ELSEIF CFLAG:COUNT:6999 == 4
+	RETURNF @"%CALLNAME:MASTER%さん"
+ELSEIF CFLAG:COUNT:6999 == 5
+	RETURNF @"%CALLNAME:MASTER%様"
+ELSEIF CFLAG:COUNT:6999 == 6
+	IF TALENT:MASTER:オトコ
+		RETURNF "旦那様"
+	ELSE
+		RETURNF "貴方"
+	ENDIF
+ELSEIF CFLAG:COUNT:6999 == 7
+	IF TALENT:MASTER:オトコ
+		RETURNF "お兄様"
+	ELSE
+		RETURNF "お姉様"
+	ENDIF
+ELSEIF CFLAG:COUNT:6999 == 8
+	IF TALENT:MASTER:オトコ
+		RETURNF "兄上"
+	ELSE
+		RETURNF "姉上"
+	ENDIF
+ELSEIF CFLAG:COUNT:6999 == 9
+	IF TALENT:MASTER:オトコ
+		RETURNF "夫の君"
+	ELSE
+		RETURNF "姉君"
+	ENDIF
+ENDIF

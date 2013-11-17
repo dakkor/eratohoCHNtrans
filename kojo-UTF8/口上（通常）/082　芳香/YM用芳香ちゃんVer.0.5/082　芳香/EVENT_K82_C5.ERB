@@ -1,0 +1,2127 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;82をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは500～599番のコマンド（触手コマンド）の口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;触手召喚＆触手召還
+;TEQUIP:90 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_500
+;解除時
+IF TEQUIP:90 == 0
+	IF CFLAG:7001 == 1 || TALENT:150 == 1
+		IF CFLAG:7002 == 1
+			IF ABL:35 == 5
+				PRINTFORM 「あひゅ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ひゅ…　ひゅごかった…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORML %CALLNAME:TARGET%は触手の責めが終わり投げ出されたにもかかわらず
+				PRINTFORMW その衝撃の波が未だ引かないのか体をびくりびくりと震わせている…
+			ELSEIF ABL:35 >= 3
+				PRINTFORM 「ひっぎゅっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM しょくしゅ…　すごかった…　ぞ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW 触手の責めが終わり投げ出された%CALLNAME:TARGET%の体は汚濁液によりべとべとにデコレーションされていた…
+			ELSE
+				PRINTFORM 「や、やっとおわった…　ひんっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW 触手の責めが終わり投げ出された%CALLNAME:TARGET%がびくりと体を震わせるとヴァギナやアヌスからどろりと汚濁液が溢れた…
+			ENDIF
+		ELSE
+			PRINTFORML 「や、やっと　おわった…」
+		ENDIF
+	ELSE
+		IF ABL:35 == 5
+			PRINTFORM 「しょくしゅ　もっと…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML %CALLNAME:MASTER%に屈しなかった%CALLNAME:TARGET%であったが触手の責めには心が折れてしまった様子で
+			PRINTFORMW 開放されてもなお刺激を求めようとしている…
+		ELSEIF ABL:35 >= 3
+			PRINTFORML 「く…　くせになんてなってにゃひぞ？　ほんとだぞ！！」
+			PRINTFORMW 触手から開放され自由になった%CALLNAME:TARGET%は口ではそう言っているが体が覚えこんでしまったのか股をすり合わせもじもじとしている…
+		ELSE
+			PRINTFORML 「も…　もう…　やだ…」
+			PRINTFORMW 触手から開放された%CALLNAME:TARGET%は汚濁液でべとべとに汚され襲われる前の元気さはドコへやら四肢を投げ出しぐったりとしている…
+		ENDIF
+	ENDIF
+;装着時
+ELSE
+	IF CFLAG:8100 == 0
+		PRINTFORML 「おー、せーががおなじの　つかってたぞー」
+		PRINTFORML %CALLNAME:TARGET%は触手を見たことがある様子でニコニコとしているが
+		PRINTFORMW これから自分に使われるという事まで想像が至らなかったようだ…
+		CFLAG:8100 = 1
+	ELSEIF CFLAG:7001 == 1
+		IF CFLAG:7002 == 1
+			IF ABL:35 >= 5
+				IF CFLAG:7010 >= 1
+					PRINTFORM 「あっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM えへへ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM しょくしゅ…　わたしのからだ…　こわれちゃう　な…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML 触手の責めがすっかりクセになってしまった%CALLNAME:TARGET%は
+					PRINTFORMW その姿を認識するだけで肉壺からは洪水のように愛液が溢れている…
+				ENDIF
+			ELSEIF ABL:35 >= 3
+				IF CFLAG:7010 >= 1
+					PRINTFORM 「しょ…しょくしゅあたまおかしくなっちゃう…　から…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW 触手の責めがクセになり始めているのか%CALLNAME:TARGET%はもじもじと股をすり合わせじっと見つめている…
+				ENDIF
+			ELSE
+				IF CFLAG:7010 >= 1
+					PRINTFORM 「あっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML しょくしゅ…　つよすぎるから…」
+					PRINTFORML %CALLNAME:TARGET%は敏感になり始めた体を触手に弄ばれる自分を想像してしまったのか
+					PRINTFORMW 顔を赤く染めながらももをしきりにすり合わせている…
+				ELSE
+					PRINTFORML 「おー、しょくしゅかー　こわさないてーどになー？」
+				ENDIF
+			ENDIF
+		ELSE
+			PRINTFORML 「やーめーろー！」
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:35 >= 5
+			PRINTFORM 「えへへ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しょくしゅきもちいから　ぶっこわしてほしい　ぞ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 触手の刺激がすっかりとクセになってしまった%CALLNAME:TARGET%は膣口を指で割り開きその刺激をねだるかのように腰をゆらゆら揺らし責めを待つ…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「えへへ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM こんなきもちいこと　しらなかった　ぞ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の刺激がクセになり始めた%CALLNAME:TARGET%の理性は蕩け始め触手へと異常な快楽を求め始めた…
+		ELSE
+		
+		ENDIF
+	ELSE
+		IF ABL:35 >= 5
+			PRINTFORM 「く、クセになんか…　なってないぞっ！！　あっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 口では強がる%CALLNAME:TARGET%だがその姿を認識すると快楽を思い出してしまったのか膝と肩を震わせ軽く絶頂してしまう…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「んっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML しょ…　しょくしゅはやめてほしい…　ぞ…？」
+			PRINTFORMW そういう%CALLNAME:TARGET%だがももをすり合わせもじもじとしている…
+		ELSE
+			PRINTFORMW 「やーめーろー　おんなのこは　だいじにあつかえって　ならわなかったかー？」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手挿入
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_501
+;解除時
+IF TEQUIP:20 == 0
+	IF CFLAG:7001 == 1
+		IF CFLAG:7002 == 1
+			IF CFLAG:7010 >= 1
+				IF ABL: 35 == 5
+					PRINTFORM 「いひっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM ぬけひゃ…　た…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML 乱暴に引き抜かれていく触手により%CALLNAME:TARGET%の性器はぼこぼこと歪に蠢き　ごぽりと音を立てるように抜けるが
+					PRINTFORMW その収まっていた洞穴は子宮口までぽっかりと口を開き責めの激しさを物語る…
+				ELSEIF ABL:35 >= 3
+					PRINTFORM 「ぬ…　ぬけひゃ…う…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM ぬけひゃうううぅうぅぅぅっ　ひぎっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML 触手の一際太い部分、カリの部分が%CALLNAME:TARGET%の肉壺から抜けるとほぼ同時にびくんと体を震わせ
+					PRINTFORMW 背を弓なりにそらし絶頂へと登ってしまった様子だ…
+				ELSE
+					PRINTFORM 「ひっ　いっ　ぎいいいぃいいぃぃいいぃっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML %CALLNAME:TARGET%は内臓を引きずり出されるような刺激に白目を向き体を強張らせ
+					PRINTFORMW 完全に抜け切るとだらりと四肢を脱力させた…
+				ENDIF
+			ELSE
+				PRINTFORMW 「こ、こわれて…　ないよなー…？」
+			ENDIF
+		ELSE
+			PRINTFORMW 「や、やっと…　おわ…った…」
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:35 == 5
+			PRINTFORM 「もっひょ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM もっひょ　しょくひゅちんちん…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 触手から与えられる快楽がすっかりとクセになった%CALLNAME:TARGET%は
+			PRINTFORMW 引き抜かれた後も肉壺の快楽を触手へねだる…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「しょっくひゅちんちん　たりなひ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM たりなひ　ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手から与えられる快楽がクセになり始めた%CALLNAME:TARGET%はぽっかり口を開いてしまった肉壺の縁を物寂しそうに撫で回している…
+		ELSE
+			PRINTFORM 「ひっぎっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM きもひよくにゃんか…　にゃってにゃひっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%は触手から与えられる強烈な快楽によりすっかり蕩け呂律の回らない口でそう強がっている…
+		ENDIF
+	ELSE
+		IF ABL:35 == 5
+			PRINTFORM 「こわれひゃった
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM わらひのからだ　きもひくて　こわれひゃった　ぞ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の快楽に完全に心の折れてしまった%CALLNAME:TARGET%は与えられる刺激を心の底から楽しんでいる…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「いひんっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ち、ちがうぞっ　きもちよくなってなんか…　あっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 触手に屈服しかけている%CALLNAME:TARGET%は肉の槍から与えられる快楽を否定しているが
+			PRINTFORMW 抜け落ちた肉壺を触手が軽く触れただけで熱の篭った声を漏らしてしまう…
+		ELSE
+			PRINTFORM 「いっ…　ひっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW や、やっと…　おわった…」
+		ENDIF
+	ENDIF
+	CFLAG:7038 = 0
+;装着時
+ELSEIF CFLAG:8101 == 0
+	PRINTFORML 「は…？　そ…そんなのはいるわけな…　いっぎひい"ぃい"い"ぃぃい"い"ぃぃっ」
+	PRINTFORML いつも受け入れている陰茎よりも一回りも二回りも太い触手を突き入れられ
+	PRINTFORMW 陰部はいびつに歪み腹部は異常に盛り上がっている…
+	CFLAG:8101 = 1
+	CFLAG:7038 = 1
+ELSE
+	IF CFLAG:7001 == 1
+		IF CFLAG:7002 == 1
+			IF CFLAG:7010 >= 1
+				IF ABL: 35 == 5
+					PRINTFORM 「きひゃっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM ぶっひょいにょ　はひってきひゃああぁぁあぁぁんっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML %CALLNAME:TARGET%は触手から与えられる快楽がすっかりとクセになってしまったようで
+					PRINTFORMW その性器を破壊しかねない暴力的な抽送すらも快楽へ変換し髪を振り乱しながらよがり狂っている…
+				ELSEIF ABL:35 >= 3
+					PRINTFORM 「ひゅごひ　ひゅごひぞっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM しょくひゅにっ　おまんひょこわされひゃたああぁぁあああぁぁぁぁんっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML 触手から与えられる快楽がクセになり始めた%CALLNAME:TARGET%は
+					PRINTFORMW 次第に理性も蕩け始め自らも腰を振るい快楽を高めている…
+				ELSE
+					PRINTFORM 「きっ　ひっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM ひょ…　ひょくひゅは　ちゅよしゅぎりゅ…　ぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORML 触手から与えられる快楽というモノを理性はまだまだ受け入れ切れていない%CALLNAME:TARGET%はソレを否定しているが
+					PRINTFORMW 呂律は回らず快楽に当てられ顔を真っ赤にし体は素直に楽しんでいるようだ…
+				ENDIF
+			ELSE
+				PRINTFORML 「わたしのからだ　こ…こわすなよー…？」
+				PRINTFORMW %CALLNAME:TARGET%はまだ触手から与えられる刺激を知らず体が壊れないか心配する方にばかり意識が向いている…
+			ENDIF
+		ELSE
+			PRINTFORML 「やーめーろー　こわれるだろー！！」
+			PRINTFORMW じたばたと暴れる%CALLNAME:TARGET%を触手は押さえつけその凶悪な槍をナカへと埋没させていく…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:35 == 5
+			PRINTFORM 「らいしゅひっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しょくひゅちんちん　わらひ　らいひゅきいいぃぃいいぃいっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 触手からの快楽がすっかりとクセになってしまった%CALLNAME:TARGET%は
+			PRINTFORMW 凶悪な肉の槍で貫かれているがその衝撃すら快楽へ変え髪を振り乱しながらよがり狂っている…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「いっぎ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ぎぎぎぃい"い"ぃい"ぃぃい"っ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM おまんひょ…　こわされ…ひゃった…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 性器を破壊しかねない凶悪な肉の槍をその肉壺により深く飲み込んだ%CALLNAME:TARGET%は
+			PRINTFORMW その暴力的な刺激にまだ慣れきっていないのか獣の様な喘ぎ声を上げ髪を振り乱している…
+		ELSE
+			PRINTFORM 「こ、こわれ…　いぎい"い"ぃぃい"い"ぃぃい"い"っ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 凶悪な肉の槍を肉壺の奥まで突き入れられた%CALLNAME:TARGET%は
+			PRINTFORMW 出し入れされる度首はがくがくと揺れ瞳からはぽろぽろと雫が落ちながらも快楽に悶えている…
+		ENDIF
+	ELSE
+		IF ABL:35 == 5
+			PRINTFORM 「あっ　はっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ばけもにょちんちんにっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM おかさりぇひぇっ　きもちくっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手に心を折られてしまった%CALLNAME:TARGET%はよだれや涙、鼻水をだらだらと流し零しながらそのその責めを心の底から楽しんでいる…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「きっ…　きもちくないっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM きもちくにゃひにょほおおぉぉぉおおおぉっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手に心を折られかけている%CALLNAME:TARGET%は口ではそういうものの突き入れられる度に声は裏返り理性が溶かされかけている様子だ…
+		ELSE
+			PRINTFORM 「やーめー　いひぎっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の暴力的な責めを受け　声は上擦ってしまう%CALLNAME:TARGET%だがまだまだ心は折れそうにない…
+		ENDIF
+	ENDIF
+	CFLAG:7038 = 1
+ENDIF
+
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手アナル挿入
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_502
+;解除時
+IF TEQUIP:25 == 0
+	IF CFLAG:7001 == 1
+		IF CFLAG:7012 >= 1
+			IF ABL:35 == 5
+				PRINTFORM 「ひぎっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM えへっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おひり…　こわれひゃったぞ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW 凶悪な肉の槍が引き抜かれた%CALLNAME:TARGET%のアヌスは未だ閉じる事無くぱくぱくと開閉を繰り返している…
+			ELSEIF ABL:35 >= 3
+				PRINTFORM 「いっ　ぎぃっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM くひぇににゃんか…　いひんっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORML 触手からの肛虐がクセになり始めた%CALLNAME:TARGET%は口では強がるも
+				PRINTFORMW 触手が抜け落ちぽっかりと穴が開いた括約筋の縁をブラシのような触手になでられびくりと体を震わせ声をあげてしまう…
+			ELSE
+				PRINTFORM 「ひっぎっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ひょくひゅ…　ちゅよひゅぎりゅ…
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORML 触手の肛虐が終わり投げ出された%CALLNAME:TARGET%は体中汚濁液や涙やよだれによりべとべとに汚れ
+				PRINTFORMW 触手からの肛虐により脳の快楽を受ける器官が焼き切れてしまったのか　空ろな瞳でそう呟いた…
+			ENDIF
+		ELSE
+			PRINTFORML 「こ…こわれて　ないよな…？」
+			PRINTFORMW 触手の肛虐が終わり投げ出された%CALLNAME:TARGET%はしきりに括約筋等が切れていないか%CALLNAME:MASTER%へ問いかけてくる…
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:35 == 5
+			PRINTFORM 「ん　ぎぎいぎいいいぃいぃぃぃっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM あはっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM こんにゃにふとひの…　はいってたんだにゃ…　あはっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW %CALLNAME:TARGET%は今までアヌスに収まっていた触手を蕩けた瞳で見つめながらソレを愛おしそうに撫で回している…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「んにっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ちがふっ　あはんっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM きもひよくにゃんか　なってなひっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ぞっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM んぎいいぃいぃいいぃんっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 口ではそう強がる%CALLNAME:TARGET%だが　触手の一際太い部分が抜け、括約筋をすりあげると白目を剥き叫び声のような喘ぎ声をあげる…
+		ELSE
+			PRINTFORM 「いっ　あひっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM んっ　ぎっ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML 触手から与えられる肛虐の快楽が強すぎるのか
+			PRINTFORMW 投げ出された%CALLNAME:TARGET%は体をびくびくと痙攣させしゃべることもままならずうわ言のように息が漏れる…
+		ENDIF
+	ELSE
+		IF ABL:35 == 5
+			PRINTFORM 「ぬいひゃりゃめっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ばけもにょちんちん　ぬいちゃりゃめええぇぇぇへええぇぇぇっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 触手の肛虐に心を折られた%CALLNAME:TARGET%は今まさに抜けようとしている触手を括約筋で締め付け抜け落ちないようにするが
+			PRINTFORMW 抜けようとしている触手の亀頭で擦られ一際強い快楽を味わい絶頂してしまう…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「ぬっ　ぬけひゃう…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM んぎぃっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ぬ、ぬけひゃった…　ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORMW 
+			PRINTFORMW 
+			PRINTFORML い、いや　きもひよくにゃんか…」
+			PRINTFORML 触手に心を折られかけている%CALLNAME:TARGET%は肛虐により乱れている自らの痴態に気が付いたのか
+			PRINTFORMW 顔を真っ赤にしながら否定をしている…
+		ELSE
+			PRINTFORM 「ひっ　あ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML や、やっと　おわった…」
+		ENDIF
+	ENDIF
+	CFLAG:7039 = 0
+;始めて
+ELSEIF CFLAG:8102 == 0
+	PRINTFORML 「いやいや　そんなのはいらないだろー　えっ…おしり…？　いっぎい"い"ぃぃい"い"い"ぃい"ぃぃい"ぃっ」
+	PRINTFORML 一際太い触手を初めて受け入れる%CALLNAME:TARGET%のアヌスはみちみちと音を立てるかのように拡がるが
+	PRINTFORMW 筋弛緩の効果のある粘液でも触手から分泌されているのか括約筋は切れる事無く飲み込みその暴力的な抽送を受けきっている…
+	CFLAG:8102 = 1
+	CFLAG:7039 = 1
+;装着時
+ELSE
+	IF CFLAG:7001 == 1
+		IF CFLAG:7012 >= 1
+			IF ABL:35 == 5
+				PRINTFORM 「おひりっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM こわひゃりぇへっ　きもちくなっちゃふっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORML すっかり触手の責めにハマってしまった%CALLNAME:TARGET%は暴力的な抽送を奥の奥まで受けきり
+				PRINTFORMW その体が壊れる事無く快楽を楽しんでいる…
+			ELSEIF ABL:35 >= 3
+				PRINTFORM 「あひっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おひりまんこっ　きもひ…　い、いや　くせににゃんか…　なってにゃひぞ…？　んっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM ほんとだ　いひんっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORML %CALLNAME:TARGET%は快楽に喘いでいたがふと自分の状況に気がついたのか
+				PRINTFORMW その状態を否定するがすぐに快楽の波に飲み込まれてしまう…
+			ELSE
+				PRINTFORMW 「こ、こわすな…よ…？」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ま、またおしりに…」
+		ENDIF
+	ELSEIF TALENT:150 == 1
+		IF ABL:35 == 5
+			PRINTFORM 「きひゃっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM きもちいばけもにょちんちんっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM %CALLNAME:TARGET%ばけもにょちんちんに　おひりこわひゃりぇりゅにょっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM らいひゅきっぎいいぃぃいいぃぃいぃひっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORML すっかりと触手の肛虐にハマってしまった%CALLNAME:TARGET%はアヌスを一突きされるだけで
+			PRINTFORMW 顔はみだらに歪みその快楽を心の底から楽しんでいる…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「おぐっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM お、おひりっ　こわさりぇひゃうっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM しょくひゅにこわひゃれひゃうぞおおぉぉぉぉおんっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の肛虐がクセになり始めた%CALLNAME:TARGET%は顔を真っ赤にしながらもその快楽を楽しんでいる…
+		ELSE
+			PRINTFORM 「いっぎ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML おひり…　ちゅよひゅぎりゅ　ぞ…」
+			PRINTFORMW %CALLNAME:TARGET%は触手の肛虐にまだまだ慣れていないが体はその快楽に反応してしまう…
+		ENDIF
+	ELSE
+		IF ABL:35 == 5
+			PRINTFORM 「ひんじゃうっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM ばけもにょちんちんに　おひりぶっこわひゃれてっ　あはっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM きもひくなって　またひんじゃうっ　ぞっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の肛虐により心を折られてしまった%CALLNAME:TARGET%は自らも体を揺らしながら心の底から快楽を楽しんでいる…
+		ELSEIF ABL:35 >= 3
+			PRINTFORM 「ひぎゅっ
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM こわれひゃった…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORM わらひのおひりまんこ…　こわれひゃった　ぞ…
+			SETCOLOR 0xFF0000
+			PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+			RESETCOLOR
+			PRINTFORML 」
+			PRINTFORMW 触手の肛虐を受ける%CALLNAME:TARGET%は抽送のたびにがくりと首を揺らし涙を零しながら弱弱しくも喘いでいる…
+		ELSE
+			PRINTFORML 「きっ　ひ…　や…　やめろー…」
+			PRINTFORMW %CALLNAME:TARGET%は触手の肛虐に怯え暴力的な抽送をその身に受ける…
+		ENDIF
+	ENDIF
+	CFLAG:7039 = 1
+ENDIF
+
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手クリ責め
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_503
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手乳首責め
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_504
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7017 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手ペニス責め
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_505
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手口辱
+;TEQUIP:42 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_506
+;解除時
+IF TEQUIP:42 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7021 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手緊縛
+;TEQUIP:40 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_507
+;解除時
+IF TEQUIP:40 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手鼻穴挿入
+;TEQUIP:44 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_508
+;解除時
+IF TEQUIP:44 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手メイデン
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_509
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+			CFLAG:7013 += 1
+			CFLAG:7015 += 1
+			CFLAG:7017 += 1
+			CFLAG:7019 += 1
+			CFLAG:7021 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手寄生
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_510
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手くすぐり
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_511
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手秘貝開き
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_512
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手パイズリ
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_513
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7017 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手素股
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_514
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手放電ペニス責め
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_515
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手Ｇスポ責め
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_520
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手子宮責め
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_521
+IF CFLAG:8013 == 0
+	
+ELSEIF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF CFLAG:8022 >= 1
+			IF CFLAG:7030 >= 50
+				IF ABL:35 == 5
+					IF CFLAG:8013 == 2
+						IF RAND:2 == 0
+							PRINTFORM 「ひっ　ひぎっ
+							SETCOLOR 0xFF0000
+							PRINTFORM %UNICODE(0x2665)%
+							RESETCOLOR
+							PRINTFORM うごかにゃっ　うごかにゃひでっ
+							SETCOLOR 0xFF0000
+							PRINTFORM %UNICODE(0x2665)%
+							RESETCOLOR
+							PRINTFORM ひぎゅっ　ちゅよしゅぎりゅっ　ぞっ
+							SETCOLOR 0xFF0000
+							PRINTFORM %UNICODE(0x2665)%
+							RESETCOLOR
+							PRINTFORML 」
+							PRINTFORMW 子宮に収まった触手が子宮内壁を抉るように動き回ると腹部はぼこりぼこりと膨らみ蠢きまわり%CALLNAME:TARGET%へと快楽を送る…
+						ELSE
+							PRINTFORM 「ぬけひゃうっ
+							SETCOLOR 0xFF0000
+							PRINTFORM %UNICODE(0x2665)%
+							RESETCOLOR
+							PRINTFORM ひきゅーぬけひゃうっ　ぞっ
+							SETCOLOR 0xFF0000
+							PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+							RESETCOLOR
+							PRINTFORML 」
+							PRINTFORMW 触手が%CALLNAME:TARGET%の内臓をかき回すかのように子宮を犯すと堪らないといった表情で喘ぎ狂っている…
+						ENDIF
+						
+						CFLAG:8013 = 1
+						
+					ELSEIF RAND:2 == 0
+						PRINTFORM 「ひっぎゅっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM しきゅーっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM わらひっ　ひきゅーおかひゃれりゅにょっ　らいひゅきっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW 触手をおくまで飲み込んだ%CALLNAME:TARGET%は触手により膨らんだ腹部を潤んだ瞳をしながら撫で回しいる…
+						CFLAG:8013 = 2
+					ELSE
+						PRINTFORM 「ひょくひゅちんちんがっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM しきゅーっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM ひぎゅうにぃいいぃいいぃぃいぃっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW 子宮を開発された%CALLNAME:TARGET%は触手をその身の奥まで飲み込み快楽に体を震わせている…
+						CFLAG:8013 = 2
+					ENDIF
+				ELSEIF ABL:35 >= 3
+					IF CFLAG:8013 == 2
+						PRINTFORM 「だめっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM だってばあぁぁあんっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW %CALLNAME:TARGET%は口では否定しながらも子宮に収まった触手が腹部をいびつに歪めるほど蠢くと髪を振り乱しよがっている…
+						CFLAG:8013 = 1
+					ELSE
+						PRINTFORM 「ひっあっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM あかひゃんのっ　ばしょだからっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM こわれひゃう　ぞっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW 触手は%CALLNAME:TARGET%の子宮内部へ入り込むとごつごつと内臓をたたき上げ快楽を与えている…
+						CFLAG:8013 = 2
+					ENDIF
+				ELSE
+					IF CFLAG:8013 == 2
+						PRINTFORM 「あっ　ひぎっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM もっ　もうやめっ…　あはぁっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW 子宮に収まった触手が蠢くと　%CALLNAME:TARGET%へと快楽という電撃を流し意識を引きずり戻す…
+						CFLAG:8013 = 1
+					ELSE
+						PRINTFORM 「い…　ぎっ
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORM あぁっ…
+						SETCOLOR 0xFF0000
+						PRINTFORM %UNICODE(0x2665)%
+						RESETCOLOR
+						PRINTFORML 」
+						PRINTFORMW %CALLNAME:TARGET%は触手に子宮まで貫かれ空ろな瞳で揺さぶられている…
+						CFLAG:8013 = 2
+					ENDIF
+				ENDIF
+			ELSE
+				IF ABL:35 == 5
+					PRINTFORM 「あっ　え、えへっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM しょくひゅちんちん…　おにゃか　いっぱひだ　ぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW %CALLNAME:TARGET%はぽろぽろと涙を流しながらも触手から与えられる子宮の快楽を楽しんでいる…
+				ELSEIF ABL:35 >= 3
+					PRINTFORM 「いぎっ　あっ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM こわれ…　ひゃう　ぞ…
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW 子宮まで触手をくわえ込んだ%CALLNAME:TARGET%の腹部は歪に膨らみその責めの異常さを物語る…
+				ELSE
+					PRINTFORM 「こわれひゃった
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM こわれひゃった　ぞ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORM あは　あははっ
+					SETCOLOR 0xFF0000
+					PRINTFORM %UNICODE(0x2665)%
+					RESETCOLOR
+					PRINTFORML 」
+					PRINTFORMW 触手に子宮まで貫かれた%CALLNAME:TARGET%は空ろな瞳をしうわ言のようにそう繰り返す…
+				ENDIF
+			ENDIF
+		ELSEIF CFLAG:8010 >= 1
+			IF ABL:35 == 5
+				PRINTFORM 「ひゅごひっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おきゅまでっ　あはっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM おにゃかっ　はっ　いっぱひっ　だぞっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は顔を真っ赤にしながら　子宮を責められる異常な快楽を楽しんでいる…
+			ELSEIF ABL:35 >= 3
+				PRINTFORM 「んぎいぃぃいぃっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM しょこっ　ちゅよひゅぎりゅっ　ぞっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は子宮という異常な快楽を受け歓喜の声をあげている…
+			ELSE
+				PRINTFORM 「あぎっ　あっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORM あは　あははっ
+				SETCOLOR 0xFF0000
+				PRINTFORM %UNICODE(0x2665)%
+				RESETCOLOR
+				PRINTFORML 」
+				PRINTFORMW %CALLNAME:TARGET%は触手から与えられる子宮への快楽により脳は焼ききれ壊れた笑いを続けている…
+			ENDIF
+		ELSE
+			PRINTFORMW 「ひっ　ど、どこはいって…」
+		ENDIF
+	ELSE
+		PRINTFORMW 「やーめーろー！　こーわーれーるー！！」
+	ENDIF
+ELSEIF TALENT:150 == 1
+	IF ABL:35 == 5
+		PRINTFORM 「んっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM せ、せまいトコ…　すき　なのかー…？
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM んひぃっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORML %CALLNAME:TARGET%の肉壺に収まっていた触手はその奥　子宮を目指し蠢き貫く
+		PRINTFORMW その刺激に%CALLNAME:TARGET%は体を震わせ軽く絶頂へと達する…
+	ELSEIF ABL:35 >= 3
+		PRINTFORM 「ひっ　ぎっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM ら、りゃめ…　ちゅよひゅぎ　りゅぞ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW 触手の子宮責めが強すぎるのか　突き入れられた%CALLNAME:TARGET%は目を白黒させ否定をするが顔は快楽によりすっかり蕩けている…
+	ELSE
+		PRINTFORM 「あ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM あはっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM あがっ…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW 触手に子宮まで貫かれた%CALLNAME:TARGET%の瞳からは光が消え責められ続けている…
+	ENDIF
+ELSE
+	IF ABL:35 == 5
+		PRINTFORM 「ひにゃあぁあぁぁんっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM ちんちんっ　あはっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM ばけもにょちんちんしゅごいっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM すごひぞっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%%UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW 触手に理性を砕かれてしまった%CALLNAME:TARGET%は子宮を責められる快楽をすっかり受け入れ乱れよがっている…
+	ELSEIF ABL:35 >= 3
+		PRINTFORM 「あは　あははっ
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORM こわれひゃった…　わたひのしきゅー…　こわれひゃ　った…
+		SETCOLOR 0xFF0000
+		PRINTFORM %UNICODE(0x2665)%
+		RESETCOLOR
+		PRINTFORML 」
+		PRINTFORMW 心が折れかけた%CALLNAME:TARGET%は触手の収まった自らの腹部を見て壊れた笑いを続けている…
+	ELSE
+		PRINTFORML 「あっ　ぎっ…　もう、やめ…」
+		PRINTFORMW 触手に子宮まで貫かれた%CALLNAME:TARGET%は力なくその責めが終わるのを待ち続けている…
+	ENDIF
+ENDIF
+
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7010 >= 2
+	CFLAG:7030 += 1
+ENDIF
+;-------------------------------------------------
+;触手浣腸
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_522
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手小腸責め
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_523
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手貫通
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_524
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手搾乳
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_525
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7017 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手乳腺挿入
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_526
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7017 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;触手カテーテル
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_527
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7014 >= 2 || CFLAG:7018 >= 2
+	CFLAG:7031 += 1
+ENDIF
+;-------------------------------------------------
+;触手採尿
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_528
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7014 >= 2 || CFLAG:7018 >= 2
+	CFLAG:7031 += 1
+ENDIF
+;-------------------------------------------------
+;触手耳穴挿入
+;TEQUIP:45 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_529
+;解除時
+IF TEQUIP:45 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手ヴァギナ拡張
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_530
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7010 >= 2
+	CFLAG:7032 += 1
+ENDIF
+;-------------------------------------------------
+;触手アナル拡張
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_531
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7012 >= 2
+	CFLAG:7033 += 1
+ENDIF
+;-------------------------------------------------
+;触手両穴拡張
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_532
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7010 >= 2
+	CFLAG:7032 += 1
+ENDIF
+
+IF CFLAG:7012 >= 2
+	CFLAG:7033 += 1
+ENDIF
+;-------------------------------------------------
+;触手産卵
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_533
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7010 >= 2
+	CFLAG:7030 += 1
+ENDIF
+;-------------------------------------------------
+;触手アナル産卵
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_534
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7012 >= 2
+	CFLAG:7033 += 1
+ENDIF
+;-------------------------------------------------
+;触手愛液採集
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_535
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手口内洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_540
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7021 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手膣内洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_541
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7011 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手腸内洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_542
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7013 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手膀胱洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_543
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7015 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+IF CFLAG:7014 >= 2 || CFLAG:7018 >= 2
+	CFLAG:7031 += 1
+ENDIF
+;-------------------------------------------------
+;触手鼻腔洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_544
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手耳穴洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_545
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手全穴洗浄
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_546
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手催眠
+;TEQUIP:92 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_550
+;解除時
+IF TEQUIP:92 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手鞭打ち
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_551
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手針責め
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_552
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手放電
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_553
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手吸血
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_554
+;PRINTFORMW 
+IF CFLAG:7001 == 1
+	IF CFLAG:7002 == 1
+		IF RAND:4 == 0
+			CFLAG:7019 += 1
+		ELSEIF RAND:3 == 0
+		
+		ELSEIF RAND:2 == 0
+		
+		ELSE
+		
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手強制回復
+;TEQUIP:91 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_560
+;解除時
+IF TEQUIP:91 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手排卵誘発
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_561
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手避妊膜塗布
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_562
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手発毛剤
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_563
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手脱毛剤
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_564
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手読心責め
+;TEQUIP:74 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_580
+;解除時
+IF TEQUIP:74 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手潮干狩り
+;(TEQUIP:95 & 1) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_581
+;解除時
+IF (TEQUIP:95 & 1) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手幽霊膣鏡
+;TEQUIP:21 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_582
+;解除時
+IF TEQUIP:21 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手強制飲酒
+;TEQUIP:42 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_583
+;解除時
+IF TEQUIP:42 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手精神制御
+;TEQUIP:77 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_584
+;解除時
+IF TEQUIP:77 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+
+;-------------------------------------------------
+;触手厄落とし
+;(TEQUIP:95 & 2) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_585
+;解除時
+IF (TEQUIP:95 & 2) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手腸内撮影
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_586
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手言葉責め
+;(TEQUIP:95 & 4) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_587
+;解除時
+IF (TEQUIP:95 & 4) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手鈴蘭媚薬
+;(TEQUIP:95 & 8) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_588
+;解除時
+IF (TEQUIP:95 & 8) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手官能図書
+;(TEQUIP:95 & 16) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_589
+;解除時
+IF (TEQUIP:95 & 16) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手妖精按摩
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_590
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手氷精手淫
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_591
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手淫脈探査
+;(TEQUIP:95 & 32) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_592
+;解除時
+IF (TEQUIP:95 & 32) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手最終審判
+;(TEQUIP:95 & 64) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_593
+;解除時
+IF (TEQUIP:95 & 64) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手百裂紅葉
+;(TEQUIP:95 & 128) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_594
+;解除時
+IF (TEQUIP:95 & 128) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;触手豊穣淫香
+;(TEQUIP:95 & 256) == 0で解除口上
+;-------------------------------------------------
+@KOJO_82_TRAIN_MESSAGE_S_COM_595
+;解除時
+IF (TEQUIP:95 & 256) == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

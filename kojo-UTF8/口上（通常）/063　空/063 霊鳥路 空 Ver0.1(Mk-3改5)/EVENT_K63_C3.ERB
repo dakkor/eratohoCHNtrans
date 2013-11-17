@@ -1,0 +1,971 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;63をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは300～399番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;クンニ強制
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_300
+;PRINTFORMW 
+
+;-------------------------------------------------
+;貝あわせ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_301
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足コキする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_302
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人フェラチオ
+;奴隷と助手が主人の竿に奉仕する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_303
+PRINTFORMW おくうと%CALLNAME:ASSI%の二人に、フェラチオさせた…
+;恋慕
+IF TALENT:150
+	PRINTFORMW 「ふふん、%CALLNAME:ASSI%には負けないんだからね！」
+	PRINTFORMW おくうは我先にとペニスに舌を這わせ始めた…
+;恋慕&助手がお燐	
+ELSEIF TALENT:150 && NO:ASSI == 62	
+	PRINTFORMW 「%CALLNAME:ASSI%と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうにペニスに舌を這わせ始めた…
+;恋慕&助手が知り合い
+ELSEIF TALENT:150 && NO:ASSI == 61 || NO:ASSI == 64 || NO:ASSI == 43 
+	PRINTFORMW 「ほらほら、%CALLNAME:ASSI%様！一緒に頑張りましょう！」
+	PRINTFORMW おくうは楽しそうにペニスに舌を這わせ始めた…
+;助手がお燐	
+ELSEIF NO:ASSI == 62	
+	PRINTFORMW 「%CALLNAME:ASSI%と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうにペニスに舌を這わせ始めた…
+;助手が知り合い	
+ELSEIF NO:ASSI == 61 || NO:ASSI == 64 || NO:ASSI == 43 || NO:ASSI == 62
+	PRINTFORMW 「%CALLNAME:ASSI%様と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうに胸をペニスに舌を這わせ始めた…
+ELSE
+	PRINTFORMW 「二人でしろだなんて…欲張りなんだから…」
+ENDIF
+
+;-------------------------------------------------
+;二本フェラチオ
+;奴隷が主人と助手の竿に奉仕する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_304
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人でパイズリ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_305
+PRINTFORMW おくうと%CALLNAME:ASSI%の二人に、パイズリをさせた…
+;恋慕
+IF TALENT:150
+	PRINTFORMW 「ふふん、%CALLNAME:ASSI%には負けないんだからね！」
+	PRINTFORMW おくうは我先にと胸をペニスに押し付け、擦り始めた…
+;恋慕&助手がお燐	
+ELSEIF TALENT:150 && NO:ASSI == 62	
+	PRINTFORMW 「%CALLNAME:ASSI%と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうに胸をペニスに押し付け、擦り始めた…		
+;恋慕&助手が知り合い
+ELSEIF TALENT:150 && NO:ASSI == 61 || NO:ASSI == 64 || NO:ASSI == 43 
+	PRINTFORMW 「ほらほら、%CALLNAME:ASSI%様！一緒に頑張りましょう！」
+	PRINTFORMW おくうは楽しそうに胸をペニスに押し付け、擦り始めた…
+;助手がお燐	
+ELSEIF NO:ASSI == 62	
+	PRINTFORMW 「%CALLNAME:ASSI%と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうに胸をペニスに押し付け、擦り始めた…	;助手が知り合い	
+;助手が知り合い	
+ELSEIF NO:ASSI == 61 || NO:ASSI == 64 || NO:ASSI == 43 || NO:ASSI == 62
+	PRINTFORMW 「%CALLNAME:ASSI%様と一緒だなんて…ちょっとドキドキしちゃうな…」
+	PRINTFORMW おくうは嬉しそうに胸をペニスに押し付け、擦り始めた…
+ELSE
+	PRINTFORMW 「二人でしろだなんて…欲張りなんだから…」
+ENDIF
+
+;-------------------------------------------------
+;二人で素股
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_306
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_307
+PRINTFORMW %CALLNAME:ASSI%を、おくうに犯させた…
+;助手がお燐	
+IF TALENT:150 && NO:ASSI == 62	
+	PRINTFORMW 「あぁん、お燐のおまんこ、凄く気持ちいいよ…♪」
+	PRINTFORMW 「このまま射精しちゃったら…私達の赤ちゃん出来るかな？」
+;助手が知り合い	
+ELSEIF NO:ASSI == 61 || NO:ASSI == 64 || NO:ASSI == 43 || NO:ASSI == 62
+	PRINTFORMW 「あぁん、%CALLNAME:ASSI%様のおまんこ、凄く気持ちいいよ…♪」
+	PRINTFORMW 「このまま射精しちゃったら…私達の赤ちゃん出来るかな？」
+ELSE
+ENDIF
+
+;-------------------------------------------------
+;助手のＡを犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_308
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手とキスする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_309
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人の尻を叩く
+;奴隷と助手にスパンキングする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_310
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻を二人で叩く
+;主人と助手が奴隷にスパンキングする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_311
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人のＶをフィスト
+;奴隷と助手にフィストファックする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_312
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人のＡをフィスト
+;奴隷と助手にアナルフィストする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_313
+;PRINTFORMW 
+
+;-------------------------------------------------
+;優しくする:コマンドの地の文丸写しである…
+;TFLAG:144で地の文が変化する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_320
+TFLAG:144 = 0
+PRINTFORM %CALLNAME:PLAYER%は
+IF RAND:17 == 0
+	TFLAG:144 = 17
+	PRINTFORML %CALLNAME:TARGET%の頭をなでた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML 「えへへ…♪な、なんだか照れちゃうな…」
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML 「ふふっ、褒められたのかなー？」
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML 「は、恥ずかしいよ…でも、ちょっとだけ嬉しい…かな？」
+	ELSE
+		PRINTFORML 「もう、子供じゃないんだから・・・」
+	ENDIF
+	;対象の髪の汚れ⇔調教者の指の汚れが相互に移動
+	STAIN:7 |= STAIN:PLAYER:1
+	STAIN:PLAYER:1 |= STAIN:7
+ELSEIF RAND:16 == 0
+	TFLAG:144 = 16
+	PRINTFORML おくうの部屋を片付け始めた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML 「それじゃ、一緒に掃除しよっか♪二人でならきっと楽しいよ♪」
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML 「あ、私がやるから！%CSTR:90%は休んでていいよ？」
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML 「今片付けなくても…しょうがないな…」
+	ELSE
+		PRINTFORML おくうは退屈そうにしている…
+	ENDIF
+ELSEIF RAND:15 == 0 && TEQUIP:56 == 1
+	TFLAG:144 = 15
+	PRINTFORML %CALLNAME:TARGET%の目を手で覆ってあげた…
+	IF TALENT:150 && TALENT:205 == 0 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の手をそっと外し、鏡に向かってほほ笑んだ…
+	ELSEIF MARK:3 >= 1 && TALENT:205 == 0
+		PRINTFORML %CALLNAME:TARGET%は鏡を見ずに済んで少し安心しているようだ…
+	ELSEIF TALENT:150 && TALENT:205
+		PRINTFORML %CALLNAME:TARGET%は写らない鏡を見ながらも、優しくほほ笑んだ…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%はされるがままになっている…
+	ENDIF
+ELSEIF RAND:14 == 0 && TEQUIP:56 == 1 && TALENT:205 == 0
+	TFLAG:144 = 14
+	PRINTFORML 鏡の中の%CALLNAME:TARGET%をじっと見つめた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は少し拗ねたように%CALLNAME:PLAYER%の顔を自分の方に向けた…
+	ELSEIF ABL:10 >= 3
+		PRINTFORML %CALLNAME:TARGET%は恥ずかしそうに目をそらした…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は睨みつけてきた…
+	ENDIF
+ELSEIF RAND:13 == 0 && TEQUIP:56 == 1 && TALENT:205 == 0
+	TFLAG:144 = 13
+	PRINTFORML %CALLNAME:TARGET%を後ろから抱きしめた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は鏡に映った自分と%CALLNAME:PLAYER%の姿を幸せそうに眺めている…
+	ELSEIF ABL:10 >= 3
+		PRINTFORML %CALLNAME:TARGET%は顔を真っ赤にしながらも、薄眼で鏡を見ている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は鏡から目をそらしている…
+	ENDIF
+ELSEIF RAND:12 == 0
+	TFLAG:144 = 12
+	PRINTFORML %CALLNAME:TARGET%の目を舐めた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML お返しとばかりに%CALLNAME:TARGET%も%CALLNAME:PLAYER%の目にキスをしてきた…
+		TCVAR:23 += 1
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は舐められた目をそっと撫でた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は小さく悲鳴をあげた…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%はのけぞるように%CALLNAME:PLAYER%から離れた…
+	ENDIF
+ELSEIF RAND:11 == 0
+	TFLAG:144 = 11
+	PRINTFORML %CALLNAME:TARGET%のお臍を舌でねぶった…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は優しく%CALLNAME:PLAYER%の頭をなでている…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%はお腹まで真っ赤にして照れている…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は慣れない感覚に呻き声をあげている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%をなんとか引き離そうとしている…
+	ENDIF
+ELSEIF RAND:10 == 0
+	TFLAG:144 = 10
+	PRINTFORML %CALLNAME:TARGET%の背筋を舐めあげた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は体をのけぞらせると、%CALLNAME:PLAYER%にもたれかかってきた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%の口から艶めかしい吐息が漏れた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は体を縮こまらせ、歯を食いしばっている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は暴れだし、%CALLNAME:PLAYER%から離れた…
+	ENDIF
+ELSEIF RAND:9 == 0
+	TFLAG:144 = 9
+	PRINTFORML %CALLNAME:TARGET%の腋に舌を這わせた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の髪に顔を埋めた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は恥ずかしそうにしているが、同時に悦びも感じているようだ…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は必死で%CALLNAME:PLAYER%から逃げようとしている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は肘を振り落とし、%CALLNAME:PLAYER%を引き剥がした…
+	ENDIF
+ELSEIF RAND:8 == 0
+	TFLAG:144 = 8
+	PRINTFORML %CALLNAME:TARGET%に膝枕をしてあげた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%を見上げると、にっこりとほほ笑んだ…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は太腿の感覚を確かめるように、すりすりと頭を動かしている…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%はおとなしくしている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の顔を見ないようにしている…
+	ENDIF
+ELSEIF RAND:7 == 0
+	TFLAG:144 = 7
+	PRINTFORML %CALLNAME:TARGET%の首筋やうなじに舌を這わせた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は後ろに手をまわし、%CALLNAME:PLAYER%の頭を抱き寄せた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は体を%CALLNAME:PLAYER%に預け、されるがままになっている…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は顔を真っ赤にして、いやいやをするように首を振った…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は逃げる機会をうかがっているようだ…
+	ENDIF
+ELSEIF RAND:6 == 0
+	TFLAG:144 = 6
+	PRINTFORML %CALLNAME:TARGET%を後ろから抱き締め、髪の香りを堪能した…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は前に回された%CALLNAME:PLAYER%の手を握りしめている…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:PLAYER%に抱きしめられて、%CALLNAME:TARGET%が安心しているように見えた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は少し震えている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は嫌そうに顔をしかめている…
+	ENDIF
+ELSEIF RAND:5 == 0
+	TFLAG:144 = 5
+	PRINTFORML %CALLNAME:TARGET%の耳元で愛をささやいた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は目をとろんとさせ、うっとりと%CALLNAME:PLAYER%にしなだれかかった…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は何も言わず、%CALLNAME:PLAYER%に抱きついた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は顔を真っ赤にしている。まんざらでもなさそうだ…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は白けたような顔で%CALLNAME:PLAYER%の話を聞き流している…
+	ENDIF
+ELSEIF RAND:4 == 0
+	TFLAG:144 = 4
+	PRINTFORML %CALLNAME:TARGET%の耳に息を吹きかけ、軽く舐めてから耳たぶを甘噛みした…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の頭をなでると、そのままキスをしてきた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%にとって、その感覚は不快ではないようだ…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:PLAYER%の舌が動くたび、%CALLNAME:TARGET%は小さく身を震わせた…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は不愉快だと言わんばかりに%CALLNAME:PLAYER%を睨んでいる…
+	ENDIF
+ELSEIF RAND:3 == 0
+	TFLAG:144 = 3
+	PRINTFORM %CALLNAME:TARGET%の全身を
+	IF PALAM:10 >= PALAMLV:4 && ITEM:60 > 0
+		PRINT ローションまみれにして、
+		;ローション1つ消費
+		CALL USE_PLURAL_ITEM, 60, 1
+		SOURCE:19 += 10000
+	ENDIF
+	PRINTFORML 優しく撫でさすった…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は慈しむような表情で、%CALLNAME:PLAYER%に抱きついてきた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は気持ち良さそうにしている…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は怯えたように自分の体を抱きしめている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の手を払った…
+	ENDIF
+	;対象の手の汚れ⇔調教者の指の汚れが相互に移動
+	STAIN:1 |= STAIN:PLAYER:1
+	STAIN:PLAYER:1 |= STAIN:1
+	;対象の胸の汚れ⇔調教者の指の汚れが相互に移動
+	STAIN:5 |= STAIN:PLAYER:1
+	STAIN:PLAYER:1 |= STAIN:5
+	;対象の足の汚れ⇔調教者の指の汚れが相互に移動
+	STAIN:6 |= STAIN:PLAYER:1
+	STAIN:PLAYER:1 |= STAIN:6
+	;対象の髪の汚れ⇔調教者の指の汚れが相互に移動
+	STAIN:7 |= STAIN:PLAYER:1
+	STAIN:PLAYER:1 |= STAIN:7
+ELSEIF RAND:2 == 0
+	TFLAG:144 = 2
+	PRINTFORM %CALLNAME:TARGET%の体に
+	IF PALAM:10 >= PALAMLV:4 && ITEM:60 > 0
+		PRINT ローションを垂らすと、
+		;ローション1つ消費
+		CALL USE_PLURAL_ITEM, 60, 1
+		SOURCE:19 += 10000
+	ENDIF
+	PRINTFORM 自分の体を擦りつけ
+	IF PALAM:10 >= PALAMLV:4
+		PRINT 、一緒にヌルヌルになっ
+	ENDIF
+	PRINTL た…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の首に手を回すと、そのまま唇を奪った…
+		;対象の口の汚れ⇔調教者の口の汚れが相互に移動
+		STAIN:0 |= STAIN:PLAYER:0
+		STAIN:PLAYER:0 |= STAIN:0
+		TCVAR:23 += 1
+		TCVAR:PLAYER:23 += 1
+		CFLAG:172 += (ASSIPLAY == 0) ? 1 # 0
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%も積極的に体を擦りつけている…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は石のように硬直していたが、やがておずおずと%CALLNAME:PLAYER%の体に触れてきた…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%はじたばたと暴れ、%CALLNAME:PLAYER%を振り払った…
+	ENDIF
+	;対象の胸の汚れ⇔調教者の胸の汚れが相互に移動
+	STAIN:5 |= STAIN:PLAYER:5
+	STAIN:PLAYER:5 |= STAIN:5
+ELSE
+	TFLAG:144 = 1
+	PRINTFORML %CALLNAME:TARGET%をくすぐった…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は楽しそうにキャッキャッと笑っている…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%もわずかにやり返してきた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は必死に笑いをこらえているのか、顔を赤くしたり青くしたりしている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は露骨に嫌そうな顔をして、%CALLNAME:PLAYER%から距離を取った…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_321
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パイズリする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_322
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_323
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_324
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_325
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ペニバン挿入
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_326
+;PRINTFORMW 
+
+;-------------------------------------------------
+;指チュパ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_327
+;PRINTFORMW 
+
+;-------------------------------------------------
+;首筋耳裏責め
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_328
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉愛撫
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_329
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉を舐める
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_330
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人でフェラする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_331
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ａ正常位させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_332
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ａ後背位させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_333
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ａ騎乗位する
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_334
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パイズリフェラする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_335
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナを拭く
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_336
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人で首筋耳裏責め
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_337
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人に犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_338
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ぱふぱふ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_340
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸枕
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_341
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳繰り合う
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_342
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳ビンタ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_343
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳の揉み合い
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_344
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お風呂を楽しむ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_345
+
+;-------------------------------------------------
+;お外を楽しむ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_346
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お嫁さんで楽しむ：これも地の文丸パクリ、そのうち書き直そう・・・
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_347
+IF RAND:5 == 0
+	PRINTFORML %CALLNAME:TARGET%をお姫様だっこしてあげた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の首に手をまわし、じっと見上げてくる…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は恥ずかしそうにしながらも、黙って%CALLNAME:PLAYER%に抱かれていた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は暴れこそしないが、体を硬直させている…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%が激しく暴れたため、危うく落としてしまうところだった…
+	ENDIF
+ELSEIF RAND:4 == 0
+	IF TEQUIP:59 == 1
+		PRINTFORML エプロンの紐を引っ張った…
+		IF TALENT:150 && RAND:3 >= 1
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の悪戯に、いやんいやんと身をくねらせている…
+		ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+			PRINTFORML %CALLNAME:TARGET%はそっと離れた。どうやらエプロンを脱ぐのが嫌なようだ…
+		ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+			PRINTFORML %CALLNAME:TARGET%がエプロンを脱ごうとしたので、%CALLNAME:PLAYER%は悪戯を断念した…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%がそのままエプロンを脱いでしまったので、つけ直す羽目になった…
+		ENDIF
+	ELSE
+		PRINTFORML ドレスの袖を引っ張った…
+		IF TALENT:150 && RAND:3 >= 1
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%の悪戯に、いやんいやんと身をくねらせている…
+		ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+			PRINTFORML %CALLNAME:TARGET%はそっと離れた。どうやらドレスを引っ張られるのが嫌なようだ…
+		ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+			PRINTFORML %CALLNAME:TARGET%がドレスを脱ごうとしたので、%CALLNAME:PLAYER%は悪戯を断念した…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%がそのままドレスを脱いでしまったので、つけ直す羽目になった…
+		ENDIF
+	ENDIF
+ELSEIF RAND:3 == 0
+	PRINTFORML %CALLNAME:TARGET%をぎゅっと抱きしめた…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%もしっかりと%CALLNAME:PLAYER%の体を抱きしめた…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%は恥ずかしそうにしながらも、そっと%CALLNAME:PLAYER%の頭を撫でた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は弱々しいながらも抵抗している…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は腕を突っ張っている…
+	ENDIF
+ELSEIF RAND:2 == 0 && TEQUIP:42 == 0
+	PRINTFORML %CALLNAME:TARGET%の名前を呼んだ…
+	IF TALENT:150 && RAND:3 >= 1
+		PRINTFORML %CALLNAME:TARGET%は満面の笑みで、返事の代わりに%CALLNAME:PLAYER%の名前を呼んだ…
+	ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+		PRINTFORML %CALLNAME:TARGET%はわずかに顔を紅潮させ、しっかりと返事をしてきた…
+	ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+		PRINTFORML %CALLNAME:TARGET%は消え入りそうなほど小声で返事をした…
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%を無視した…
+	ENDIF
+ELSE
+	IF TEQUIP:59 == 1
+		PRINTFORML %CALLNAME:TARGET%の新妻姿をじっと見つめた…
+		IF TALENT:150 && RAND:3 >= 1
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%を挑発するようにポーズをとっている…
+		ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+			PRINTFORML %CALLNAME:TARGET%は恥ずかしそうに%CALLNAME:PLAYER%を見つめている…
+		ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+			PRINTFORML %CALLNAME:TARGET%は部屋の隅っこに逃げてしまった…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%がエプロンを脱ごうとしたので、%CALLNAME:PLAYER%はあわてて押さえつけた…
+		ENDIF
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%の新妻姿をじっと見つめた…
+		IF TALENT:150 && RAND:3 >= 1
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:PLAYER%を挑発するようにポーズをとっている…
+		ELSEIF ABL:10 >= 4 && EXP:20 >= 250
+			PRINTFORML %CALLNAME:TARGET%は恥ずかしそうに%CALLNAME:PLAYER%を見つめている…
+		ELSEIF ABL:10 >= 2 && EXP:20 <= 150
+			PRINTFORML %CALLNAME:TARGET%は部屋の隅っこに逃げてしまった…
+		ELSE
+			PRINTFORML %CALLNAME:TARGET%がドレスを脱ごうとしたので、%CALLNAME:PLAYER%はあわてて押さえつけた…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お酒を飲ませる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_348
+;カルーア
+IF TFLAG:149 == 600
+	;PRINTFORMW 
+;ビール
+ELSEIF TFLAG:149 == 601
+	;PRINTFORMW 
+;ワイン
+ELSEIF TFLAG:149 == 602
+	;PRINTFORMW 
+;大吟醸酒
+ELSEIF TFLAG:149 == 603
+	;PRINTFORMW 
+;スピリタス
+ELSEIF TFLAG:149 == 604
+	;PRINTFORMW 
+;《神便鬼毒酒》
+ELSEIF TFLAG:149 == 605
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ふぉーゆーっ！
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_349
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お風呂場プレイ
+;TEQUIP:53 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_350
+;解除時
+IF TEQUIP:53 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;シャワー
+;TEQUIP:54 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_351
+;解除時
+IF TEQUIP:54 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;泡踊り
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_352
+;PRINTFORMW 
+
+;-------------------------------------------------
+;泡踊りする
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_353
+;PRINTFORMW 
+
+;-------------------------------------------------
+;たわし洗い
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_354
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蟲風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_360
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;鰻風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_361
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ローション風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_362
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;スライム風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_363
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;媚薬風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_364
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;水牢
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_365
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;精液風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_366
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;酒風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_367
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;トロロ風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_368
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;毛玉風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_369
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;蒸し風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_370
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;国士無双の薬風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_371
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;厄毒風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_372
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;岩盤浴
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_373
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;札束風呂
+;TEQUIP:55 == 0で解除口上
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_374
+;解除時
+IF TEQUIP:55 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;バター犬プレイ
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_380
+;PRINTFORMW 
+
+;-------------------------------------------------
+;犬に犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_381
+;PRINTFORMW 
+
+;-------------------------------------------------
+;犬を犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_382
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豚に犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_383
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豚を犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_384
+;PRINTFORMW 
+
+;-------------------------------------------------
+;馬のをフェラさせる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_385
+;PRINTFORMW 
+
+;-------------------------------------------------
+;馬に犯させる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_386
+;PRINTFORMW 
+
+;-------------------------------------------------
+;犬とキスさせる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_387
+;PRINTFORMW 
+
+;-------------------------------------------------
+;犬とキスさせる
+;-------------------------------------------------
+@KOJO_63_TRAIN_MESSAGE_S_COM_388
+;PRINTFORMW 

@@ -1,0 +1,2512 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;10をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;レミリア口上
+;基本的にコピペなのでインデントが1段ずれます。
+;TFLAG:95をぜひ利用したいところでしたが、屈服1->2->3->恋慕の流れがあるっぽいので5XXXを8XXXに移動して対応します
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下で全コマンド口上を表示させないようにする場合はRETURN 1を返す
+;========================================================
+@KOJO_10_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 1
+;口枷がある場合は戻る
+SIF TEQUIP:42
+	RETURN 1
+;失神中・失神回復時は戻る
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 1
+
+;幼児退行の時は特別な口上セットを使用
+IF TALENT:幼児退行 == 1
+	CALL KOJO_MESSAGE_COM_10_Y
+	RETURN 1
+ENDIF
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_0
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+				PRINTFORMW 『お姉様ぁ、ここ感じるでしょ？』
+				PRINTFORMW 「ひぁっ！ ん、ん、ふぅっ！ え、なんで……？ んぅっ！！」
+				PRINTFORMW 『ふふ、やっぱりぃ、ぜーんぶわたしと同じなんだからぁ…♪』
+		ELSEIF NO:ASSI == 9
+				PRINTFORMW 「あぁっ、んっ！ 咲夜っ、さくやぁっ……！」
+				PRINTFORML 『お嬢様にこんな…夢みたい……もっと、もっと可愛いお声を聞かせてくださいっ』
+				PRINTFORMW 咲夜は腕の中に抱いたレミリアを責め立てる手を徐々に早めていく……
+		ENDIF
+
+	;初めて
+	ELSEIF CFLAG:8221 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「んんっ、ぁ……優しくなんて…あっ、ぁ、私っ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、もっとしっかり奉仕しなさい…」
+		ENDIF
+		CFLAG:8221 = 1
+			RETURN 0
+
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && CFLAG:8221 <= 4
+			IF RAND:3 == 0
+				PRINTFORMW 「ふ、ぁ……ぁん……ふぅっ、んっ……あ、ぁぁ……んぅ」
+				PRINTFORML %CALLNAME:PLAYER%の愛撫を大人しく受けているレミリアの耳にフッと息を吹きかけてみる
+				PRINTFORMW 「きゃっ！ び、びっくりしたわ…変ないたずらしな――ひゃぅ！ か、噛んじゃやぁ！」
+				PRINTFORMW 耳の先を甘噛みしてみるとレミリアはピクン、と可愛らしく反応した
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んんっ、んっ……ふぁ、舌が…私っ、あっ、ぁ…」
+				PRINTFORMW 「もっと%CALLNAME:MASTER%で包み込んで……優しくして…」
+			ELSE
+				PRINTFORML 「ふくっ、っちゅ、ん、あっ、あむっ、っちゅ……」
+				PRINTFORMW レミリアと唾液の混ぜ合いをしながら愛汁を促すようにつぷつぷと秘所を攻めてやる
+				PRINTFORMW 小さな乳首や可愛らしい肉芽をキュッ、と弄るとレミリアは敏感に反応した
+			ENDIF
+			;CFLAG:8221 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && CFLAG:8221 <= 3
+			PRINTFORMW 「んんっ、ふぁ……キスなんて…あっ、いやっ！」
+			CFLAG:8221 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2 && (CFLAG:8221 <= 2)
+			PRINTFORMW 「…まだ足りないわよっ、しっかりしなさい」
+			CFLAG:8221 = 3
+		;それ以外
+		ELSEIF MARK:屈服刻印 <= 1 && (CFLAG:8221 <= 1)
+			PRINTFORMW 「そんなものなの？　なら自分でしたほうがましね」
+			CFLAG:8221 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_1
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORMW 『あは、おまんこからたくさんお汁垂れてるよ。お姉様の淫乱～』
+			PRINTFORMW 「ふぁっ！ だってフランが、中ほじくるみたいにっ…んぅっ！」
+			PRINTFORMW 『ちゅ、ん～～…じゅる、っちゅ……ん、える……はぁ…甘くておいし…♪』
+		ELSEIF NO:ASSI == 9
+			PRINTFORMW 『っはぁー…お嬢様の大切なところ…素敵すぎます……ん、ぢゅるっ！』
+			PRINTFORMW 「い、ぃぅ……やだ、変な音立てないでよぉっ…」
+			PRINTFORMW 『だってお嬢様のエッチなお汁、溢れて溢れて止まらないんです……ん、んううぅっ！』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8222 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「私のアソコを舐めるの？本当に変なことばかりするわね」
+			PRINTFORMW 「…いいわ、やってみなさい。どれ程のものか見てあげる」
+		;それ以外
+		ELSE
+			PRINTFORMW 「は、ははは。何よそれ、舐めるっていうの？」
+			PRINTFORMW 「いいわ。ふふ、この眺め、無様で」
+		ENDIF
+			CFLAG:8222 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8222 <= 3)
+			IF RAND:2 == 0
+				PRINTFORMW 「ふぁっ、あっ！ レミィもおまんこも、んくっ！ %CALLNAME:PLAYER%のモノなのぉ」
+				PRINTFORMW 「だからたくさん、味わってっ、ひぁぅん！ 欲しい、のぉっ♪」
+			ELSE
+				PRINTFORMW 「んっ、あぁっ。……っと、もっとぉ！」
+				PRINTFORMW 「ご主人様ぁ！　もっとレミィの舐めて！　溶けちゃうくらいペロペロしてぇ！」
+			ENDIF
+			;CFLAG:8222 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8222 <= 2)
+			PRINTFORMW 「そんな、広げないで……」
+			PRINTFORMW 徐々に硬さを増すクリトリスを舌で撫で回すと、レミリアの細い足が痙攣のように震えた
+			CFLAG:8222 = 3
+		;それ以外
+		ELSEIF CFLAG:8222 <= 1
+			PRINTFORMW 「さあ奉仕なさい、ご主人様。私が良いというまで舐め続けなさい」
+			CFLAG:8222 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_2
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML フランは細い指先の腹でレミリアの後門をキュと刺激する
+			PRINTFORMW 「ひっ！！ ん、ふぅっ！ フランっ、そっちは…だめぇっ…！」
+			PRINTFORMW 『えー、何がだめなの？ お姉様のうんちの穴、嬉しそうにひくひくしてるよ？』
+			PRINTFORML 「ん、んぅぅっ！ だめ、お尻なんかだめよぉっ、ふらぁぁん…！ ぅっっ！」
+			PRINTFORMW 『大丈夫、私もたっくさんお尻で気持ちよくしてもらったの、だからお姉様も一緒よ♪ えいっ』
+			PRINTFORML 「んっ、ん～！！！」
+			PRINTFORMW ツプと秘門に指が侵入するとレミリアは口の端から涎を垂らしてゾクゾクと快感に震える
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「ひぁっう！？ さくやぁっ、そこ、そこは、ちがっ！！」
+			PRINTFORMW 『ああ、お嬢様……不浄の穴もやっぱりとっても綺麗です…♪』
+			PRINTFORML 「やだっ、あ、ああ、あ、咲夜の指、ゾクゾクって――ぅぅっ、ふぅっ！」
+			PRINTFORMW 『ヒクヒク疼いて…気持ち良いんですね。恥ずかしがらず、素直になっていいんですよ』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8223 == 0
+		PRINTFORMW 「何っ？ えっ、ちょっとどこさわってんのよ！ うっ、指がお腹にっ…」
+		CFLAG:8223 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:潤滑 + UP:潤滑
+		;恋慕+潤滑Lv2以上
+		IF TALENT:恋慕 == 1 && P >= PALAMLV:2 && (CFLAG:8223 <= 4)
+			IF RAND:2 == 0
+				PRINTFORMW 「うぁぁっ！♪ 奥まで、ヌルっ、て入っちゃったぁっ♪」
+				PRINTFORMW %CALLNAME:PLAYER%はそのまま暖かいレミリアのアナルをほぐしてやる
+			ELSE
+				PRINTFORMW 「あぁ、ぁ、指でお尻の穴が広がって、んっ、ふぁ、ぁぁ♪」
+			ENDIF
+			;CFLAG:8223 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2 && (CFLAG:8223 <= 3)
+			PRINTFORMW 「んんっ、ぐっ…痛いけど、あれ…何だか変に…うっ、んっ」
+			CFLAG:8223 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8223 <= 2)
+			PRINTFORMW 「ふぁ……私、感じてる？ お、お尻でなんて、やっ……んっ！」
+			CFLAG:8223 = 3
+		;それ以外
+		ELSEIF CFLAG:8223 <= 1
+			PRINTFORMW 「あぐっ、指を広げるな…痛っ、ぐ、うっ…お尻が……」
+			CFLAG:8223 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_3
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 『ふふっ、やっぱりお姉様よりわたしのおっぱいの方が大きいわね』
+			PRINTFORMW 「なっ、そ、そんなことないわよっ！！」
+			PRINTFORMW 『ちっちゃくても、柔らかくてとっても気持ちいいわ♪』
+			PRINTFORMW 「ち、ちっちゃくなんか……んっ！ あ、ぁ、コリコリ、しないで…っ」
+		ELSEIF NO:ASSI == 9
+			PRINTFORMW 『お嬢様のおっぱいこんなに可愛らしいのに、先っぽは懸命に自己主張してますよ…♪』
+			PRINTFORMW 「やだっ、咲夜、私のおっぱいなんて……んっ！」
+			PRINTFORMW 『大丈夫です。咲夜が責任もって大きくしてさしあげますわ……』
+			PRINTFORMW 咲夜はレミリアの乳房を掴まえると、外から揉み上げる様に愛撫していく
+			; つ PAD
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8226 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「何をニヤニヤして……なっ！ うーっ、こ、殺してやる！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何をにやにやして見て……！ こ、殺す！」
+		ENDIF
+			CFLAG:8226 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8226 <= 3)
+			IF RAND:2 == 0
+				PRINTFORML 小さな乳首をきゅっきゅっと責めるとレミリアは恥ずかしそうに身をよじる
+				PRINTFORMW 「おっぱいなんて、私っ！ んっ！ やだぁ、もっとして…」
+			ELSE
+				PRINTFORMW 「小さいのがいいなんて、んっ…このろりこん、ぁ、あ……」
+			ENDIF
+			;CFLAG:8226 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3 && (CFLAG:8226 <= 2)
+			PRINTFORMW 「感じてなんか、んっ、う、ううぅっ……そんなぁ」
+			CFLAG:8226 = 3
+		;それ以外
+		ELSEIF CFLAG:8226 <= 1
+			PRINTFORMW 「っ、今すぐにやにやするのを止めないと……殺すわよ」
+			CFLAG:8226 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_4
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:処女 >= 1
+				PRINTFORML 「ふぁっ！ フラン、何してるの…？ んぅっ！」
+				PRINTFORMW 『んー、下準備よ』
+				PRINTFORMW レミリアの秘所の入り口付近をつぷつぷと弄りながらフランは答える
+				PRINTFORMW 『あっ、これかなー、お姉様の初めて』
+				PRINTFORMW 「え…？」
+				PRINTFORMW 『それじゃあ今からわたしがお姉様を大人にしてあげるわね、いくよっ』
+				PRINTFORMW 「あ、フランの、指が、、あ、ああぅっっ―――」
+			ELSE
+				PRINTFORMW 『ふふっ、お姉様のおまんこの中、あったかーい。何か欲しくてうずうずしてるんでしょ』
+				PRINTFORMW 「うっ、そ、そんな、そんなことないっ……ひぁぅ！」
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:処女 >= 1
+				PRINTFORML 『お嬢様、きっといつか、お嬢様の初めてもご主人様に奪われてしまいますから…』
+				PRINTFORMW 「え、咲夜、なにするの…？」
+				PRINTFORMW 『だから今、せめて痛みの少ないよう……』
+				PRINTFORMW 「へ…ぁ、あぁぁっ、指が、奥までっ――――！」
+			ELSE
+				PRINTFORMW 『お嬢様のここ、見た目は可愛らしいのに、中はすっかり大人ですね…♪』
+				PRINTFORMW 「あ、あんぅぅ！ さくやぁっ、おまんこの中ほじくっちゃだめぇ……」
+			ENDIF
+		ENDIF
+	;Gスポット刺激
+	ELSEIF SELECTCOM == 600 || (PREVCOM == 4 && ABL:PLAYER:技巧 >= 3 || PREVCOM == 600)
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8323 <= 3)
+			PRINTFORML 「くぅ、ううぅ、うんんっ……す、すご、ぃ！」
+			PRINTFORMW スポットを集中的に責めてやると、レミリアは全身を痙攣させ始めた
+			PRINTFORMW 緩んだ口の端から、涎の雫がこぼれていく
+			;CFLAG:8323 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8323 <= 2)
+			PRINTFORMW 「やぁ、やぁっ…ああっう！」
+			PRINTFORMW レミリアの細い腰が上がっていく。無意識に腰が動いてしまっているようだ
+			CFLAG:8323 = 3
+		;それ以外
+		ELSEIF CFLAG:8323 <= 1
+			PRINTFORML 「あ？…うっ！？」
+			PRINTFORMW 指で敏感なスポットを刺激すると、膣壁が痙攣する
+			PRINTFORMW レミリアの表情が徐々に蕩けていく
+			CFLAG:8323 = 2
+		ENDIF
+			RETURN 0
+	;指挿入れ
+	ELSE
+		;初めて
+		IF CFLAG:8313 == 0
+			;処女（処女でないキャラの場合は無記入でよい）
+			IF TALENT:処女 >= 1
+				;恋慕+従順Lv5
+				IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+					PRINTFORMW 「え、指…」
+					PRINTFORMW 「何でもないわ…。ご主人様の好きなようにすればいいじゃない…」
+				ELSEIF TALENT:恋慕 == 1
+					PRINTFORMW 「え、指…」
+				ELSE
+					PRINTFORMW 「何してんのよ…指なんて、え？」
+					PRINTFORMW 「うぅっ、まさかっ！？」
+				ENDIF
+					CFLAG:8313 = 1
+					RETURN 0
+			;非処女
+			ELSE
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「分かる。私の、中で…ご、ご主人様の指がっ」
+				;V感覚Lv3以上
+				ELSEIF ABL:Ｖ感覚 >= 3
+					PRINTFORMW 「うぁぁ…お腹の中、で……動いてっ！」
+				;それ以外
+				ELSE
+					PRINTFORMW 「つぅ、無礼者！いきなり指を入れるなんてっ」
+				ENDIF
+					CFLAG:8313 = 1
+					RETURN 0
+			ENDIF
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1 && (CFLAG:8313 <= 3)
+				PRINTFORML 「ご主人様ぁ、指もっ…いいから…。早くレミィをいっぱいにしてぇっ！」
+				PRINTFORMW 指を出し入れするたびにレミリアの花園は蜜を吹きこぼす
+				PRINTFORMW 水っぽい音が響くほどに、レミリアは濡れそぼっている
+				;CFLAG:8313 = 4
+			;V感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8313 <= 2)
+				PRINTFORMW 「あっ、おぉ…あっ」
+				PRINTFORMW レミリアの細く狭い子宮への道は%CALLNAME:MASTER%の指二本でもういっぱいだ
+				CFLAG:8313 = 3
+			;それ以外
+			ELSEIF CFLAG:8313 <= 1
+				PRINTFORMW 「くっ、そんなに掻き回したところで！」
+				CFLAG:8313 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_5
+
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_6
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:恋慕
+				PRINTFORMW 『はっ、ん、むっ、っちゅ、お姉様…♪』
+				PRINTFORMW 「んっ、っぷは、はぁっ、はぁっ…フラン……んっ」
+			ELSE
+				PRINTFORMW フランはレミリアの口唇を蹂躙するかのような一方的なキスを繰り返す
+				PRINTFORMW 『っちゅ、ちゅぅっ！ っじゅ、ん、ふっ！ んぅっ、お姉様のくちびる、おいし…♪』
+				PRINTFORMW 「んぅっ！ フランっ、まってぇっ、息……くるしっ――ん！」
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:恋慕
+				PRINTFORMW 『お嬢様、私の唾液、受け取ってくださぃっ、ん、じゅる……！』
+				PRINTFORMW 「あ、ん、っじゅ、ちゅる……咲夜ぁ、お返しよ……ぢゅっ♪」
+			ELSE
+				PRINTFORMW 『お嬢様の唇……あぁ、いただきます……んっ！♪』
+				PRINTFORMW 「やっ、咲夜っ……んむぅっ！？」
+				PRINTFORMW 咲夜はレミリアの頭を決して放すまいと抱きしめ、その幼い唇を蹂躙していく
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8227 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「え？ キス？」
+			PRINTFORMW 「ちゃ、ちゃんとはしたこと無いわ。だって吸血鬼にキスするなんて…」
+			PRINTFORMW 「ご主人様？ あっ、あんっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅっ、んんっ。…いきなり何するのよ」
+		ENDIF
+			CFLAG:8227 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8227 <= 4)
+			IF RAND:2 == 0
+				PRINTFORML 「ふぁっ、んむっ、、っちゅ、えろ、っじゅ、、、んくっ」
+				PRINTFORMW レミリアの小さな舌と舌を絡め合い、唾液をよくねぶってゆく
+				PRINTFORMW 少女の甘く濃厚な匂いが%CALLNAME:PLAYER%の口内に広がった
+			ELSE
+				PRINTFORML 「あぁ、ご主人様。んっ…んん。ぷぁ」
+				PRINTFORMW 「止めないで、もっとぉ。…あっ」
+			ENDIF
+			;CFLAG:8227 = 5
+		;好感度500
+		ELSEIF CFLAG:2 >= 500 && (CFLAG:8227 <= 3)
+			IF RAND:2 == 0
+				PRINTFORML 「ん、ちゅ……はむっ、ちゅ……ちゅっ……ぁ」
+				PRINTFORMW 恋人のように優しくキスをしてやると、レミリアはぽーっとした様子で%CALLNAME:PLAYER%を見つめる
+				PRINTFORMW （何だろ……なんだか、ドキドキ……する）
+			ELSE
+				PRINTFORML 小さな身体をそっと抱き寄せ、じっくりとキスを重ねこちらの愛情を注いでみせる
+				PRINTFORMW 「ちゅっちゅ、ん……なによ、こんなことして……好きになんか、ならないんだから……」
+			ENDIF
+			CFLAG:8227 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2 && (CFLAG:8227 <= 2)
+			PRINTFORMW 「んんぅ、はぁ。な、何するの。やめ…なさい」
+			CFLAG:8227 = 3
+		;それ以外
+		ELSEIF CFLAG:8227 <= 1
+			PRINTFORMW 「んっ……くっ。だからどうしたってのよ」
+			CFLAG:8227 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_7
+IF TEQUIP:54 == 0
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 「う、うう……フラン、見ないでよぉ……」
+			PRINTFORMW 『へえ、ふーん、お姉様って一人でするときそんな風にするんだ』
+			PRINTFORML 『なんだか気持ち良くなさそう……お姉様下手なのね』
+			PRINTFORMW 「だって、だって私……こんなこと、今まで知らな……ぁん」
+			PRINTFORML 『そうなんだ、わたしは退屈な時はいっつもしてたんだけどなぁ、お姉様ってお子様♪』
+			PRINTFORML 「え……そ、そうだったの……あ、ふっ……」
+			PRINTFORMW ずっと早くに目覚めていた妹に驚きながら、レミリアは目に涙を浮かべて自慰を続ける
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「あ、ああっ、ん、咲夜、さくやぁっ…！」
+			PRINTFORMW 『お嬢様っ、まさか私を想って？ ああ嬉しい、もっと私を使ってください…！』
+			PRINTFORML 「あ、んぅっ、咲夜がこんなに近くにいて、手が止まんないよぉっ……ふぅっん！！」
+			PRINTFORMW 『私も今夜、お嬢様の可愛らしいお姿を思い出して……してしまいそうですっ…♪』
+			PRINTFORML 「やだっ、やだぁっ、そんなこと、言わないでぇっ…！」
+			PRINTFORMW 咲夜に特等席でオナニーを見つめられながらも、レミリアの指は止まらずに水音を立てる
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8224 == 0
+		PRINTFORMW 「誇り高い吸血鬼の私が人前で慰めるなんてっ…うっ、ううっ」
+		CFLAG:8224 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3 && (CFLAG:8224 <= 4)
+			PRINTFORMW 「あっ！ あっ、ふぁぁ、んんっ！ みられて…うーっ、ぁ、ぁ、ゃぁっぁぁ♪」
+			PRINTFORMW レミリアはだらしなく口を開き涎をだらだらと垂れ流し、%CALLNAME:MASTER%を見つめながら妖艶によがり狂っている
+			;CFLAG:8224 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8224 <= 3)
+			PRINTFORMW 「あっ、んっ…もっとレミィを見て…はぁ、ふぁぁ♪」
+			PRINTFORMW 「ご主人様、ご主人様ぁ！」
+			CFLAG:8224 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3 && (CFLAG:8224 <= 2)
+			PRINTFORMW 「あっ、んっ…いやらしい目付きで私を見ないで…もう、やだぁ」
+			PRINTFORMW 「嫌なのに、手が。あぁっ、あっあっあぁ」
+			CFLAG:8224 = 3
+		;それ以外
+		ELSEIF CFLAG:8224 <= 1
+			PRINTFORMW 「っ、んっ…そんな下卑た目で私を見るな！……屈辱だわっ」
+			CFLAG:8224 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+
+;シャワー
+ELSEIF TEQUIP:54
+	;初めて
+	IF CFLAG:8312 == 0
+		PRINTFORMW 「これを使って一人でしろって、何がしたいのよ」
+		PRINTFORMW 「くっ、どうして私が人前でっ」
+		CFLAG:8312 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3 && (CFLAG:8312 <= 4)
+			PRINTFORMW 「あっあっうあぁ！凄い、シャワーがぁ！あぁぁぁん！」
+			PRINTFORMW 最大出力で水を吐き出すシャワーを縦スジに密着させ、レミリアは小さな乳房をこね回す
+			PRINTFORMW こうなると止めるまで自慰を続けるだろう、それこそ気絶するまで
+			;CFLAG:8312 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8312 <= 3)
+			PRINTFORMW 「あ、温かい……。んんっ、奥にクルっ」
+			PRINTFORMW 自分からもっとも感じる場所を探し、レミリアはシャワーを割れ目に当て続けた
+			CFLAG:8312 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3 && (CFLAG:8312 <= 2)
+			PRINTFORMW 「うぅ、ただ水が当たってるだけなのに……」
+			PRINTFORMW 流水に秘部を叩かれながら、レミリアは熱の篭ったため息をついている
+			CFLAG:8312 = 3
+		;それ以外
+		ELSEIF CFLAG:8312 <= 1 || FLAG:11 == 2
+			PRINTFORMW 「ぁ、っう…見るなっ！そんな目で、私をっ」
+			CFLAG:8312 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_9
+;PRINTFORMW 
+	IF PREVCOM == -1
+		CALL K10_STATUS
+	ELSEIF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:恋慕
+				PRINTFORML 『ねえねえお姉様。わたしと%CALLNAME:MASTER%のどっちの方が好きなの？』
+				PRINTFORMW 「えっ？ えっと、それは……」
+				PRINTFORMW フランの無邪気な問いにレミリアは顔を赤くして何度も二人を見比べる
+				PRINTFORML 「――――どっちも好きだから、二人とも、私の……」
+				PRINTFORMW 『えぇー、お姉様欲張り。でもわたしだって二人とも好きだから、わたしの♪』
+			ELSE
+				PRINTFORML 『じゃあちょっと休憩。お姉様お疲れ様♪』
+				PRINTFORMW 「はぁっ……フラン、もうこんなこと、やめましょう？」
+				PRINTFORML 『やめるって、なんで？ やめたら気持ち良いこと全部終わりだよ？』
+				PRINTFORMW 『それよりも、お姉様に私がどんなエッチされたのか教えてあげる♪ まずね――――』
+				PRINTFORML 「う、ぁ……や、やだぁっ！！」
+				PRINTFORMW 妹の口から一つ一つ告げられる妹の痴態の数々に、姉は目に涙を溜めて拒絶する
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:恋慕
+				PRINTFORML 「あ、あぁぁん、焦らさないでよ、ご主人様……」
+				PRINTFORMW 『ご主人様、早く命令してくださいぃ、咲夜我慢がっ…！』
+				PRINTFORMW 二人は今すぐにでも絡み合いたいとばかりに物足りなそうに身体を揺らしている
+			ELSE
+				PRINTFORMW 「さくやぁっ、こんなの嘘、嘘だよね、こいつをやっつける準備はできてるんだよね」
+				PRINTFORML 臆病な少女の顔を浮かべるレミリアを咲夜が抱き寄せると、レミリアは安心したように息を吐く
+				PRINTFORMW 「ぁ……咲夜……」
+				PRINTFORML 『――――お嬢様、早く楽になりましょう』
+				PRINTFORMW 「！！？」
+				PRINTFORMW その表情が一瞬にして恐怖のそれに変わると、レミリアは身動きできずに咲夜の腕の中でガタガタと震えだす
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8228 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ」
+			PRINTFORMW 身を離すと、レミリアは無意識に手を伸ばしてきた
+		;それ以外
+		ELSE
+			PRINTFORMW 「一息？見た目どおり体力が無いのね」
+		ENDIF
+			CFLAG:8228 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:欲情 >= PALAMLV:3 && (CFLAG:8228 <= 3)
+			PRINTFORMW 「止めないで…下さい。%CALLNAME:PLAYER%に触ってもらわないと、私……」
+			PRINTFORMW 四つん這いのまま、這うように%CALLNAME:MASTER%の元に来ると、レミリアは爪を立てて%CALLNAME:MASTER%の足にしがみ付いた
+			;CFLAG:8228 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8228 <= 2)
+			PRINTFORMW 「え？ご主人、様？」
+			PRINTFORMW 身体を離すと、レミリアは不安になったのか瞳を潤ませている
+			CFLAG:8228 = 3
+		;それ以外
+		ELSEIF CFLAG:8228 <= 1
+			PRINTFORMW 「疲れたのならこんな茶番終わりにしなさい」
+			CFLAG:8228 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_10
+;PRINTFORMW 
+	;初めて
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:恋慕
+				PRINTFORMW 「はっ、ああぁぁっん！ フラぁぁん！ お豆、ローターで壊れちゃうよぉっ！」
+				PRINTFORMW 『お姉様暴れないでよぉ、お豆を追いかけるの大変♪』
+			ELSE
+				PRINTFORMW 『ほらお姉様、ろーたーってとっても気持ちいいんだからぁ、ねー♪』
+				PRINTFORMW 「ひ、いたいっ、そんなに押し付けたらっ、いたいっ、よぉっ！」
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:恋慕
+				PRINTFORMW 『どうですか、ぶーん、って気持ち良いですよねお嬢様』
+				PRINTFORMW 「あっ、あ、あ、あ、うん、ろーたーで、クリトリス、気持ちい、い…♪」
+			ELSE
+				PRINTFORMW 「ひ、ぅっ！ やだっ、やめてっ、それどけてぇっ！」
+				PRINTFORMW 『気持ち良いんですねお嬢様、もっと、もっと可愛い姿を咲夜に見せてください…っ」
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8229 == 0
+		;屈服刻印Lv3+恋慕
+		IF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「何よそれ…えっ、音を立てて震えて…ごくっ、そ、それを当てるわけね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何かしら…音を立てて震えてる？ っ、まさかそれを…当てるわけ？」
+		ENDIF
+			CFLAG:8229 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8229 <= 3)
+			PRINTFORMW 「ふぁぁぁあっ、やだぁ、やだぁぁ！ 良すぎてバカになっちゃうっ」
+			PRINTFORMW 「このままじゃ、おまんここわれうぅぅ…ひぁ、ぁ、ふぁ、ううっ！」
+			;CFLAG:8229 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8229 <= 2)
+			PRINTFORMW 「駄目っ、ぁ♪ っ、止めなさい……はぁぁ、ぃゃ…とめてぇ、とめてよぉ！」
+			CFLAG:8229 = 3
+		;それ以外
+		ELSEIF CFLAG:8229 <= 1
+			PRINTFORMW 「うあぁ、ぁ、こんなもので……ひぅ…ぅ」
+			CFLAG:8229 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_11
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8231 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「見ただけで破壊力が分かるわ。それで私をいじめるのね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なるほど、凶悪そうなのを持ってきたわね」
+		ENDIF
+			CFLAG:8231 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8231 <= 3)
+			PRINTFORMW 「あふぁぁぁあっ、やっ、やぁぁっ！ 感じすぎちゃうっ」
+			PRINTFORMW 「痙攣止まんないのっ、このままじゃっ…壊、れ…っっっ！」
+			;CFLAG:8231 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8231 <= 2)
+			PRINTFORMW 「駄目よぉ…あひぃ！今すぐにぃ、っっっ！…やめてぇぇぇぇ！」
+			CFLAG:8231 = 3
+		;それ以外
+		ELSEIF CFLAG:8231 <= 1
+			PRINTFORMW 「うぅぅぅっ…こ、こんなものでぇ……ひっいっ」
+			CFLAG:8231 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:8301 < 2)
+		PRINTFORMW 「はぁっ、ああぁぁぁ！」
+		PRINTFORMW 脈動するバイブを引きずり出すと、それに引っ張られて膣内に溜まった愛液もどっと溢れ出した
+		CFLAG:8301 = 2
+	;それ以外
+	ELSEIF CFLAG:8301 < 1
+		PRINTFORMW 「っあ、くぅぅ」
+		PRINTFORMW バイブを勢いよく引き抜くと、濡れた音と共に獲物を失ったヴァギナが痙攣した
+		CFLAG:8301 = 1
+	ENDIF
+		RETURN 0
+;装着時
+ELSE
+	;初めて
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:処女 >= 1
+				PRINTFORMW 『お姉様ー、ほらこれ見て、ばいぶっていうのよ』
+				PRINTFORMW 「また分けわかんないもの持ってきて……で、それが何？」
+				PRINTFORMW 『えっとねえ、これが今からお姉様のおまんこの処女を突き破っちゃうの♪』
+				PRINTFORMW 「え……」
+				PRINTFORMW レミリアが抵抗するよりも早く、フランがその身体を押さえつける
+				PRINTFORMW 「やだ…うそっ……いやっ、やめてっ！！」
+				PRINTFORMW 『処女なんてどうせおちんちん挿れる時破れちゃうんだから、怖がらなくていいのよ』
+				PRINTFORMW 『ふふっ、お姉様が痛がると可哀想だから、ちゃんとわたしがぬるぬるにしてあげる♪』
+				PRINTFORMW じゅる、とフランはその張り方に涎を垂らすと奉仕するように舌で全体にまぶしていく
+				PRINTFORMW 『ん、ちゅ……ちゅる……ふふっ、準備でーきた。それじゃあ挿れるねー？』
+				PRINTFORMW 「うそ、うそぉっ、こんな形で、いや、フランっ！ お願いだからやめてぇっ！！」
+				PRINTFORMW 『先っぽ入ったぁ、それじゃあ一気に挿れちゃうから力抜いてね？ よいしょっと』
+				PRINTFORMW 「無理よぉっ！ おまんこに、おっきいの、むりぃっ…！ い、ぎぃ、ぅぅゥッッ！！」
+			ELSE
+				PRINTFORML 「ひっ、やだっフランっ、、そんなの入らなっ…！」
+				PRINTFORMW 極太のバイブを手に取り、それを自らの秘部に押し付ける妹にレミリアは悲鳴をあげる
+				PRINTFORMW 『大丈夫だよぉ、おまんこは丈夫にできてて、すぐ気持ち良くなっちゃうんだからっ』
+				PRINTFORML 「ひっ、い、っぎっ！！ あ、っく、っふぅぅぅっ！！」
+				PRINTFORMW 『ほーら全部入った。あはは、お姉様のおまんここんなに広がっちゃっていやらしい♪』
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:処女 >= 1
+				PRINTFORMW 『お嬢様、これを見てください……バイブといいます』
+				PRINTFORMW 「な、なによ、それ……一体何よ」
+				PRINTFORMW 『これは……お嬢様の初めてのお相手となる方、ですわ……』
+				PRINTFORMW 咲夜はバイブの先端に唾液を垂らして滑りを作るとそれをレミリアの処女へと宛がう
+				PRINTFORMW 「さ、さ、さくや、わ、私っ、こんなのやだっ、絶対やだぁぁっ！！」
+				PRINTFORMW 『お嬢様、こんな形でしかお嬢様の初めてをもらえない咲夜を、許してください…っ』
+				PRINTFORMW 「ひっっぎぃ、い、アァァぁぁぁぁぁッッ！！！」
+			ELSE
+				PRINTFORMW 「ひぃっ！ やだっ、咲夜、これ中で動いてっ、やだぁっ、こんなの怖いよぉっ！！」
+				PRINTFORMW 『大丈夫です、それは女性が感じることのできる動きをしてくれる道具なんです』
+				PRINTFORMW 『お嬢様も立派なレディーになれますから、今暫くご辛抱ください…♪』
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8230 == 0
+		;処女
+		IF TALENT:処女 >= 1
+			;恋慕or従順Lv5
+			IF TALENT:恋慕 == 1 || ABL:従順 >= 5
+				PRINTFORMW 「そんなもので……痛っ、太すぎる…あぐっ、入ってきてっ、う、うううっ！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「まさかそんなもので！？ くっ、寄るな……ひっ…や、やめなさい！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「それを挿入したら、ご主人様のも入れてくれるの？」
+				PRINTFORMW 頷いてみせると、レミリアは恐る恐る秘部を指で広げた
+			;それ以外
+			ELSE
+				PRINTFORMW 「こんな、こんなもので私をっ。くそっ、止めろ！」
+			ENDIF
+		ENDIF
+			CFLAG:8230 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8230 <= 3)
+			PRINTFORMW 「おまんこが、ぁ、ふるえちゃってる、すごいっ♪ こんなの我慢できないっ、ぁ、あ゛ぁっ！」
+			PRINTFORMW レミリアの小さなヴァギナを埋め尽くしたバイブの出力を徐々に上げる
+			PRINTFORMW 強すぎる刺激に意識が飛んでいるのか、何も聞こえなくなっているようだ
+			;CFLAG:8230 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8230 <= 2)
+			PRINTFORMW 「振動が、っ、ふぁ、ぁ、そんな……んっ、んんっ！」
+			CFLAG:8230 = 3
+		;それ以外
+		ELSEIF CFLAG:230 <= 1
+			PRINTFORMW 「こんなものに蹂躙されるなんて…」
+			CFLAG:8230 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:8302 < 3)
+		PRINTFORMW 「はぁはぁ。だいぶ、ほぐれたでしょ。……ねぇ」
+		PRINTFORMW レミリアは自分の指でアナルを割り広げ、トロンとした目で%CALLNAME:MASTER%自身の侵入を待っている
+		;CFLAG:8302 = 3
+	;A感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && (CFLAG:8302 < 2)
+		PRINTFORMW 「あぅ、はぁぁっ。き、気持ち良くない……。私は、変態じゃ」
+		CFLAG:8302 = 2
+	;それ以外
+	ELSEIF CFLAG:8302 < 1
+		PRINTFORMW 「痛っ、くぅぅっ。お尻が切れたらどうする気よ、この下郎」
+		CFLAG:8302 = 1
+	ENDIF
+		RETURN 0
+;装着時
+ELSE
+	;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 『お姉様ー、お尻高く上げてよぉ、そうじゃないと挿れらんない』
+			PRINTFORMW 「いやよぉっ、そんなのお尻に挿れるなんてぇっ！」
+			PRINTFORML 『わたしはいっつもこれで気持ち良くなってるのよ、だから、お姉様……もっ！』
+			PRINTFORMW 「っく、ひぃっ！！」
+			PRINTFORMW 下から上へ乱暴にアナルバイブが差し込まれ、レミリアは悲鳴を上げて背を仰け反らせる
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「それいやよぉっ！ それ挿れたらお尻が変になるのよ咲夜ぁっ！」
+			PRINTFORMW 『お嬢様、女性はお尻で感じる人も多いのです、だから恥ずかしがらないでください』
+			PRINTFORMW 「そんなこと、言ったってぇっ…！ んひぁううっ！！」
+			PRINTFORMW 『お尻で感じてしまうお嬢様の顔、とってもいやらしくてステキですわ…』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8232 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ、冷たい…えっ、それをお尻にいれるわけ？」
+			PRINTFORMW 「大丈夫かしら…う、んんんっ！？ そんな、震えるなんて聞いてないわ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「どこに入れて！？ うっ、ぐうう、お腹がっ」
+		ENDIF
+			CFLAG:8232 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && (CFLAG:8232 <= 4)
+			PRINTFORMW 「ぁ、ぁぁ……私っ、お尻でよがっちゃう変態吸血鬼になっちゃった…」
+			PRINTFORMW 「お腹の中のずくずくが♪ ふぅ、ふぁ、ぁぁぁ、こんなのらめぇ♪」
+			;CFLAG:8232 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8232 <= 3
+			PRINTFORMW 「やっぱり気持ち悪いわ……んっ、でもこの感じ、もう少し、もう少しだけっ」
+			CFLAG:8232 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && (CFLAG:8232 <= 2)
+			PRINTFORMW 「…ぇ、ぇ、やだっ、ふぁ…お尻でなんて私って変態なのかしら…」
+			CFLAG:8232 = 3
+		;それ以外
+		ELSEIF  CFLAG:8232 <= 1
+			PRINTFORMW 「う、ううぅ、この異常者め…覚えてなさい、っ、ぐぅぅ」
+			CFLAG:8232 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+
+;装着時
+ELSE
+	;PRINTFORMW 
+
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_20
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:処女 >= 1
+				PRINTFORML 『お姉様ぁっ♪ ねえ聞いてっ！』
+				PRINTFORMW 「なに、どうしたのっ？」
+				PRINTFORMW 『あのね、あのね、お姉様の初めては、わたしにくれるんだってっ！♪』
+				PRINTFORMW 『わたし、お姉様がまだ、って聞いたときは、絶対わたしがもらうって決めてたんだからっ！♪』
+				PRINTFORMW フランはレミリアを押し倒すと、股を割り開かせ股間のそれを押し当てる
+				PRINTFORMW 「あ、あぁっ、フランいや、やだよぉっ……」
+				PRINTFORMW 『そんなこと言ってももう我慢できないっ、お姉様、わたしが初めてでもいいでしょ？』
+				PRINTFORML 「え、そんな……うっ、うっぁぁぁぁぁっッ！！」
+				PRINTFORMW レミリアが妹の無垢な瞳に迷っている間に、フランは腰を落としレミリアを貫いていた
+				PRINTFORMW 「ぃっ、ひっ、ひっ……ひぅっ……」
+				PRINTFORMW 『あは、やったぁ…わたしがお姉様の初めて……ずーっと覚えててね……』
+				PRINTFORMW 『ん、んぅっ！ お姉様の処女おまんこ気持ちいいよぉっ、動く、ねっ♪』
+				PRINTFORMW 「んっ、ぎっ、ひぁぁっ！ ひ、ひぅっ、いたい、フラン、いたいぃっ…！」
+			ELSE
+				PRINTFORMW 『はぁっ、あぁぁぁっ♪ お姉様のおまんこ、気持ちいいよぉっ』
+				PRINTFORMW 「い、っひぅっ、っく、フランの、おっきぃぃっ…！」
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:処女 >= 1
+				PRINTFORML 「いたぁっ！ 咲夜っ、いたぁぃぃっ！！」
+				PRINTFORMW 『血が…！？ お嬢様、そんな……私がお嬢様の初めての相手なんてっ！』
+				PRINTFORMW 「う、うん、咲夜が、私の、初めての人……」
+				PRINTFORMW 『あ、ああぁっ、そんなこと考えるだけでっ、申し訳ありませんお嬢様…っ！！』
+				PRINTFORMW 「いぎっ！！ ひ、ひんっ！！ やだっ咲夜いたいよぉぉぉッ！！」
+			ELSE
+				PRINTFORMW 「は、はぁぁ、咲夜を、近くに感じるよぉ……ちゅ」
+				PRINTFORMW 『お嬢様と交わるなんて、私、いつも夢見てましたわ……んっ』
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8237 == 0
+		;処女
+		IF TALENT:処女 >= 1
+			;恋慕 従順Lv5
+			IF TALENT:恋慕 == 1 || ABL:従順 >= 5
+				PRINTFORMW 「おちんちんが、中に入ってきてっ……っ、あぐっ！ いっ！！？」
+				PRINTFORMW 「はぁ……はぁ、ごめんなさい、私がこんなにちっちゃいから、ぁ…ちゅ……」
+				PRINTFORMW %CALLNAME:MASTER%はレミリアに口付けをし落ち着かせると、一気に最後の抵抗を押し破った
+			;それ以外
+			ELSEIF ABL:従順 >= 5
+				PRINTFORMW 「おちんちんが、中に入ってきてっ……っ、あぐっ！ いっ！！？」
+			ELSE
+				PRINTFORMW 「まさかっ、ぁ、いやっ…ぅぐっ、ぁ、入ってきてる！！？」
+				PRINTFORMW 「咲夜ぁ！ たすけてっ！！ やだっ、こんなのやだぁぁぁ！」
+				PRINTFORMW %CALLNAME:MASTER%は泣き叫んで暴れるレミリアを床に押さえつけると、体に見合った幼い割れ目を強引に押し破った
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁ、これだとご主人様の顔が良く見える」
+				PRINTFORMW 「ねぇ、キスして。キスしてくれたら思いっきりしてもいいから…」
+				PRINTFORMW レミリアのおねだりに応えキスしながら、幼い秘裂にゆっくりと硬直したものを押し込んでいった
+			;それ以外
+			ELSE
+				PRINTFORMW 「うっ、ぐぅぅ」
+				PRINTFORMW 暴れる小さな身体を押さえつけると、そのまま肉槍をあてがい、一気に割れ目に突き込んだ
+			ENDIF
+		ENDIF
+			CFLAG:8237 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;欲望の塊モード
+		IF TEQUIP:16 >= 1 && CFLAG:8827 == 0
+			IF TALENT:恋慕 || ABL:従順 >= 5
+				IF CFLAG:7890 >= 1
+					IF RAND:2 == 0
+						PRINTFORMW 「子作りっ、子作りぃっ♪ いいのぉっ！！♪ ふぁぁぁぁんッッ！」
+						PRINTFORML 「あ、あぁぁんっ！♪ だめ、だめぇっ、これは赤ちゃんつくるエッチなのにぃッッ！♪」
+						PRINTFORMW セックスの快楽がレミリアの理性を失わせていき、獣のような生殖行為が続けられる
+					ELSE
+						PRINTFORML 「ふっ、んぅっ！ パン、パンってエッチな音鳴ってる…！ んっんっんっ！♪」
+						PRINTFORMW %CALLNAME:PLAYER%とレミリアの動きが重なると、肉のぶつかり合う音が淫猥に響き渡る
+						PRINTFORMW 「あぁん♪ パパとママがこんないやらしいセックスしてたら、赤ちゃんもすごく淫乱な子になっちゃうね♪」
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「私も動くの…？ うん、いいよ……んっ――――」
+						PRINTFORMW %CALLNAME:PLAYER%の要求通り、レミリアは従順な様子でその腰の動きを合わせてゆく
+					ELSE
+						PRINTFORMW 「…ぁっ、ぁっ…んぅっ……ふっ」
+						PRINTFORMW レミリアはただ%CALLNAME:PLAYER%にされるがままの状態で、ギッ、ギッとベッドの音だけが部屋に響いた
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「いやぁっ、赤ちゃん産むなんて、やだっ、やだぁぁっ…！」
+					PRINTFORMW すっかり弱気になったレミリアは性器を貫かれる振動にガクンガクンと身体を揺らす
+				ELSE
+					PRINTFORMW 「この私が、お前の子供なんてぇっ…！ んっ、ぐぅぅ、ひぁっ！！」
+					PRINTFORMW 狭い膣の奥をぐりぐりと強く抉ってやるとレミリアは悲鳴をあげて身を捩る
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8237 <= 4)
+			IF RAND:3 == 0
+				PRINTFORML 「私の中に、おっきいのが…入って……くぅっ！ かた、いっ…！」
+				PRINTFORMW つぷりと亀頭が縦スジを割り開いて収まり、そこからは少女のワレメの暖かさの中に%CALLNAME:PLAYER%の肉棒は収まってゆく
+				PRINTFORMW 未だ性行為には早すぎる未発達の性器にできるだけ負荷を加えないようにと注挿するが、熱くぬめった結合部の感触にお互いの理性はあっけなく溶けてしまってゆく
+				PRINTFORML 「ふあっ！ はっ、うんぅっ！……はぁはぁっ、あっ！ あ、熱い、熱いよぉぉ！」 
+				PRINTFORMW %CALLNAME:PLAYER%はレミリアの首筋に吸い付き、柔らかい肌に浮かんだ珠のような汗を舐め取っていく
+				PRINTFORMW レミリアは女として愛されることをすっかり覚えてしまい、%CALLNAME:PLAYER%の背に手を回して、僅かでも長く、深い挿入をねだって腰を揺らめかしている
+			ELSEIF RAND:2 == 0
+				PRINTFORML %CALLNAME:MASTER%は幼い割れ目にゆっくりとペニスを刺し入れていく
+				PRINTFORMW 「ふぁ、ぁ、ひゃぁんっ♪ じ、じらさないでよう、ぅ、うぁ、ぁ、ぁぁん！」
+				PRINTFORMW 「おちんちんすごいっ♪ 私、壊れちゃうわよぉ……せ、せーし、はやくだしてっ！」
+				PRINTFORML 膣の食い締めを楽しむためにゆっくりと突き、ゆっくりと抜く
+				PRINTFORMW 時に掻き回し、擦り、緩急をつけて責めるとレミリアの嬌声は一層甲高くなる
+			ELSE
+				PRINTFORML 「ひぅく！ あ、ああぁっ！ おちんちん、良いよぉっ、ふぁっ！ もっとぉ！」
+				PRINTFORMW レミリアは%CALLNAME:PLAYER%の背に手を回し、細い足で%CALLNAME:PLAYER%の腰を掴まえる
+				PRINTFORML 「ふぁぁっ、すごく、感じるぅっ！♪ このまま来てっ、来てぇっ！」
+				PRINTFORMW %CALLNAME:PLAYER%は望まれるままにレミリアの幼い性器を最奥まで犯し抜いてゆく
+			ENDIF
+			;CFLAG:8237 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:5237 <= 3)
+			PRINTFORMW %CALLNAME:MASTER%は幼い肢体の締まり具合に我を忘れて腰を打ち付けている
+			PRINTFORMW 「あぁ、い、ぁぁっ、裂けるッ、ふぁ、ぁ、何でこんなので、私がっ……ぁ」
+			PRINTFORMW 「ひっ、正気に戻りなさいっ、ぁ、ぁぁ♪ ふぁ、だ、だめ……とまって！」
+			CFLAG:8237 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8237 <= 2)
+			PRINTFORMW 「うっ、うーーっ、は、早く終わりなさいっ！」
+			CFLAG:8237 = 3
+		;それ以外
+		ELSEIF CFLAG:8237 <= 1
+			PRINTFORMW 「かっはぁっ、ぐっ」
+			PRINTFORMW 異物の侵入を拒む肉道を無理矢理貫いた。慣れていないせいか流石にレミリアも辛そうだ
+			CFLAG:8237 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_21
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:処女 >= 1
+				PRINTFORML 『お姉様ぁっ♪ ねえ聞いてっ！』
+				PRINTFORMW 「なに、どうしたのっ？」
+				PRINTFORMW 『あのね、あのね、お姉様の初めては、わたしにくれるんだってっ！♪』
+				PRINTFORMW 『わたし、お姉様がまだ、って聞いたときは、絶対わたしがもらうって決めてたんだからっ！♪』
+				PRINTFORMW フランはレミリアに背後からのし掛かると、腰を掴まえて股間のそれを押し当てる
+				PRINTFORMW 「あ、あぁっ、フランいや、やだよぉっ……」
+				PRINTFORMW 『お姉様そんなに暴れちゃいやよぉっ、わたしでいいでしょ？ いくね、いくからねっ』
+				PRINTFORML 「え、そんな……うっ、うっぁぁぁぁぁっッ！！」
+				PRINTFORMW フランは逃げようとするレミリアへ、乱暴にも一気に貫き上げた
+				PRINTFORMW 「ぃっ、ひっ、ひっ……ひぅっ……」
+				PRINTFORMW 『あは、やったぁ…わたしがお姉様の初めて……ずーっと覚えててね……』
+				PRINTFORMW 『ん、んぅっ！ お姉様の処女おまんこ気持ちいいよぉっ、動く、ねっ♪』
+				PRINTFORMW 「んっ、ぎっ、ひぁぁっ！ ひ、ひぅっ、いたい、フラン、いたいぃっ…！」
+			ELSE
+				PRINTFORML 『あはっあははっ、ねえわたしたち、今犬さんみたいに交尾してるんだよぉっお姉様』
+				PRINTFORMW 「やだっフラン、そんなこと言っちゃいやぁっ…！ ひ、ひんっ！！ あうぅっッ！！」
+				PRINTFORMW 『でもお姉様のおまんこ、おちんちん欲しくてきゅんきゅん言ってるよぉっ、交尾、交尾ぃっ♪』
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:処女 >= 1
+				PRINTFORML 「いたぁっ！ 咲夜っ、いたぁぃぃっ！！」
+				PRINTFORMW 『血が…！？ お嬢様、そんな……私がお嬢様の初めての相手なんてっ！』
+				PRINTFORMW 「う、うん、咲夜が、私の、初めての人……」
+				PRINTFORMW 『あ、ああぁっ、そんなこと考えるだけでっ、申し訳ありませんお嬢様…っ！！』
+				PRINTFORMW 「いぎっ！！ ひ、ひんっ！！ やだっ咲夜いたいよぉぉぉッ！！」
+			ELSE
+				PRINTFORML 『お嬢様、後ろから失礼しますっ……ん、ふぅぅっ！！ 入って、くっ！』
+				PRINTFORMW 「ん、っぃっ！！ 咲夜のおっきいの、深く、裂けちゃう、よぉっ…！」
+				PRINTFORMW 『咲夜はっ、咲夜はすぐに、すぐに終わりますからぁっ！ あ、ふぅっく！』
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8238 == 0
+		;処女
+		IF TALENT:処女 >= 1
+			;恋慕or従順Lv5
+			IF TALENT:恋慕 == 1 || ABL:従順 >= 5
+				PRINTFORMW 「おちんちんが私のをなぞってる……っ、あぐっ！ いっ！！？」
+				PRINTFORMW 「はぁはぁ、ごめんなさい、私がこんなにちっちゃいから、んっ……」
+				PRINTFORMW %CALLNAME:MASTER%はレミリアを背後から抱きしめ落ち着かせると、一気に最後の抵抗を押し破った
+			;それ以外
+			ELSE
+				PRINTFORMW 「まさかっ、ぁ、いやっ…ぅぐっ、ぁ、入ってきてる！！？」
+				PRINTFORMW 「咲夜ぁ！ たすけてっ！！ やだっ、こんなのやだぁぁぁ！」
+				PRINTFORMW %CALLNAME:MASTER%は泣き叫ぶレミリアを床に押さえつけると、体に見合った幼い割れ目を強引に押し破った
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「吸血鬼を犬みたいに扱うなんて。恐れを知らないわね」
+				PRINTFORMW 非難の言葉を並べながら、レミリアは小さなお尻を見せ付けるように上げた
+				PRINTFORMW その目は、尻尾があったら千切れるくらいに振っていそうなほど、期待に輝いている…
+			;それ以外
+			ELSE
+				PRINTFORMW 「あ、あぐぅぅぅぅ…！」
+				PRINTFORMW 逃げようとするレミリアの小さな体を抱え込み、きついヴァギナを押し開きながら挿入した
+			ENDIF
+		ENDIF
+			CFLAG:8238 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;欲望の塊モード
+		IF TEQUIP:16 >= 1 && CFLAG:8827 == 0
+			IF TALENT:恋慕 || ABL:従順 >= 5
+				IF CFLAG:7890 >= 1
+					IF RAND:2 == 0
+						PRINTFORMW 「子作りっ、子作りぃっ♪ いいのぉっ！！♪ ふぁぁぁぁんッッ！」
+						PRINTFORML 「あ、あぁぁんっ！♪ だめ、だめぇっ、これは赤ちゃんつくるエッチなのにぃッッ！♪」
+						PRINTFORMW セックスの快楽がレミリアの理性を失わせていき、獣のような生殖行為が続けられる
+					ELSE
+						PRINTFORML 「ふっ、んぅっ！ パン、パンってエッチな音鳴ってる…！ んっんっんっ！♪」
+						PRINTFORMW %CALLNAME:PLAYER%とレミリアの動きが重なると、肉のぶつかり合う音が淫猥に響き渡る
+						PRINTFORMW 「あぁん♪ パパとママがこんないやらしいセックスしてたら、赤ちゃんもすごく淫乱な子になっちゃうね♪」
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「私も動くの…？ うん、いいよ……んっ――――」
+						PRINTFORMW %CALLNAME:PLAYER%の要求通り、レミリアは従順な様子でその腰の動きを合わせてゆく
+					ELSE
+						PRINTFORMW 「…ぁっ、ぁっ…んぅっ……ふっ」
+						PRINTFORMW レミリアはただ%CALLNAME:PLAYER%にされるがままの状態で、ギッ、ギッとベッドの音だけが部屋に響いた
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「いやぁっ、赤ちゃん産むなんて、やだっ、やだぁぁっ…！」
+					PRINTFORMW すっかり弱気になったレミリアは性器を貫かれる振動にガクンガクンと身体を揺らす
+				ELSE
+					PRINTFORMW 「この私が、お前の子供なんてぇっ…！ んっ、ぐぅぅ、ひぁっ！！」
+					PRINTFORMW 狭い膣の奥をぐりぐりと強く抉ってやるとレミリアは悲鳴をあげて身を捩る
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8238 <= 4)
+			IF RAND:3 == 0
+				PRINTFORML 「あ、あはぁぁっん！ 素敵よぉっ！ もっと、私を、犯してぇっ！♪」
+				PRINTFORMW バッグからの突き上げという性交に、レミリアは理性を半分も飛ばした状態でよがり狂う
+				PRINTFORMW 「奥まで、そうっ、おちんちん押し付けてぇっ！！ ふっ、んっ、んぅっっ！！♪」
+				PRINTFORMW 怒張を突き入れられる度に愛液を撒き散らすレミリアにおしおきをしてやろうと、%CALLNAME:PLAYER%はは深いところまで挿入した後に、内側を抉るように強く擦り付ける
+				PRINTFORML 「い――――あ、っぎ――――♪」
+				PRINTFORMW レミリアはぱくぱくと口を開閉させながら、雌としての悦びに身を震わせている
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「私のぉっ、おまんこ、ご主人様の、モノ、なんだからぁっ♪」
+				PRINTFORML 「だからっ、だからぁっ、好きなようにっ、おちんちんで、使って、ひぐぅっ！♪」
+				PRINTFORMW ごりゅ、ごりゅ、と深いピストンでレミリアを使って欲棒を扱き上げる
+				PRINTFORMW すっかり肉棒の形に拡張されてしまった幼い膣壁がぴったりと%CALLNAME:PLAYER%へと吸い付いてくる
+			ELSE
+				PRINTFORMW %CALLNAME:PLAYER%は膣の中身を掻き出すような早いペースでペニスの出し入れを始めた
+				PRINTFORMW 「ふぁ、ぁ、ひゃぁんっ♪ お、おちついてよ、ぅ、うぁ、ぁ、ぁぁん！」
+				PRINTFORML 「おちんちんすごいっ♪ 私、壊れちゃうわよぉ……せ、せーし、はやくだしてっ！」
+				PRINTFORMW 肉と肉がぶつかる音が響くほどの速さで責め立てるとレミリアの背が反る
+				PRINTFORMW 掻き出された蜜が水溜りになるほどに滴った
+			ENDIF
+			CFLAG:8238 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8238 <= 3)
+			PRINTFORMW %CALLNAME:PLAYER%は幼い肢体の締まり具合を楽しむように、ギリギリまで抜き、また奥まで貫くを繰り返す
+			PRINTFORMW 「あぁ、い、ぁぁっ、裂けるッ、ふぁ、ぁ、何でこんなので、私がっ……ぁ」
+			PRINTFORMW 「ひっ、早く抜きなさいっ、ぁ、ぁぁ♪ ふぁ、だ、だめ……とまって！」
+			CFLAG:8238 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8238 <= 2)
+			PRINTFORMW 「うぅ、ワンと言えばいいっていうのかしらっ」
+			CFLAG:8238 = 3
+		;それ以外
+		ELSEIF CFLAG:8238 <= 1
+			PRINTFORMW 「こんな、犬みたいなっ。この辱め、忘れないわよ！」
+			CFLAG:8238 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_22
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 『この格好、お姉様のエッチな顔、たくさん見れるよぉっ♪』
+			PRINTFORMW 「ん、ふぅっ、フラン、そんなの恥ずかしい…っ」
+			PRINTFORML 『わたしだって恥ずかしいんだからぁっ、お姉様がこんなに近くにいてっ』
+			PRINTFORMW 「あっ、ああっ、ん、ふっ、ふっふっ、んぅっ、ふらぁん……」
+			PRINTFORMW 『お姉様ぁ、一緒にたくさんエッチになろ…♪』
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「さくやぁっ、さくやぁっ、すき、、、ん、ちゅ、ふぅっ、すきよぉっ……」
+			PRINTFORMW 『ふぁっ、ん、んちゅ、お嬢様、ん、愛して、いますっ、ん、ふぅっ』
+			PRINTFORMW 二人はまるで思いを遂げ合った恋人のように、お互いを激しく貪り合っている
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8315 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この姿勢、初めてするけど案外いいわね」
+			PRINTFORMW 「ご主人様にこんなにも近づけるなんて」
+			PRINTFORMW レミリアが首に手を回し抱きついてきた
+		;それ以外
+		ELSE
+			PRINTFORMW 「何でアンタの顔を見ながら…」
+			PRINTFORMW 「…そんなに近づけないでもらえるかしら」
+			PRINTFORMW 体を離そうとするレミリアを抱きすくめ、有無を言わさず挿入を開始した
+		ENDIF
+			CFLAG:8315 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;欲望の塊モード
+		IF TEQUIP:16 >= 1 && CFLAG:8827 == 0
+			IF TALENT:恋慕 || ABL:従順 >= 5
+				IF CFLAG:7890 >= 1
+					IF RAND:2 == 0
+						PRINTFORMW 「子作りっ、子作りぃっ♪ いいのぉっ！！♪ ふぁぁぁぁんッッ！」
+						PRINTFORML 「あ、あぁぁんっ！♪ だめ、だめぇっ、これは赤ちゃんつくるエッチなのにぃッッ！♪」
+						PRINTFORMW セックスの快楽がレミリアの理性を失わせていき、獣のような生殖行為が続けられる
+					ELSE
+						PRINTFORML 「ふっ、んぅっ！ パン、パンってエッチな音鳴ってる…！ んっんっんっ！♪」
+						PRINTFORMW %CALLNAME:PLAYER%とレミリアの動きが重なると、肉のぶつかり合う音が淫猥に響き渡る
+						PRINTFORMW 「あぁん♪ パパとママがこんないやらしいセックスしてたら、赤ちゃんもすごく淫乱な子になっちゃうね♪」
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「私も動くの…？ うん、いいよ……んっ――――」
+						PRINTFORMW %CALLNAME:PLAYER%の要求通り、レミリアは従順な様子でその腰の動きを合わせてゆく
+					ELSE
+						PRINTFORMW 「…ぁっ、ぁっ…んぅっ……ふっ」
+						PRINTFORMW レミリアはただ%CALLNAME:PLAYER%にされるがままの状態で、ギッ、ギッとベッドの音だけが部屋に響いた
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「いやぁっ、赤ちゃん産むなんて、やだっ、やだぁぁっ…！」
+					PRINTFORMW すっかり弱気になったレミリアは性器を貫かれる振動にガクンガクンと身体を揺らす
+				ELSE
+					PRINTFORMW 「この私が、お前の子供なんてぇっ…！ んっ、ぐぅぅ、ひぁっ！！」
+					PRINTFORMW 狭い膣の奥をぐりぐりと強く抉ってやるとレミリアは悲鳴をあげて身を捩る
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8315 <= 4)
+			IF RAND:3 == 0
+				PRINTFORML 「はっ、あっ、あっ、あんっ！ %CALLNAME:PLAYER%って、エッチの時、そんな顔するのね♪」
+				PRINTFORMW レミリアはトロンとした表情で%CALLNAME:PLAYER%を見つめ、何度も唇をついばむ
+				PRINTFORMW 「ねえ、私が動いてあげるからっ、%CALLNAME:PLAYER%は私のおまんこだけ、感じてぇっ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:PLAYER%……んっ！ ふむっ、んっ、っちゅ！ ちゅ、んむっ！」
+				PRINTFORMW 二人の顔が近づくと深く絡み合うキスが始まり、お互いは一向にそれを離そうとしない
+				PRINTFORMW 荒い鼻息が交じりつつ、%CALLNAME:PLAYER%が腰を揺すり始めると、レミリアは上下に動き出す
+				PRINTFORMW トロンとした甘美な快楽を感じながら、息のあった動きで二人は高まっていった
+			ELSE
+				PRINTFORML 「ごしゅじんさまぁ…。あふ、むぅ」
+				PRINTFORMW 子供のように抱きついてくるレミリアと唇を合わせる。自分から舌を絡め、レミリアは悦びに涎の雫を垂らす
+				PRINTFORMW 「あぁ、愛しているのぉ。だからレミィのこといっぱい可愛がってぇっ！」
+				PRINTFORMW 子犬のような吸血鬼を抱きしめ、最奥を擦るように責める。レミリアは膣壁を痙攣させながら歓喜の表情を浮かべた
+			ENDIF
+			;CFLAG:8315 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8315 <= 3)
+			PRINTFORMW 「うっ、うっ、っ。はぁ、太いよ…」
+			PRINTFORML 「%CALLNAME:PLAYER%の、逞しいのが。レミィのアソコを、いっぱいにっ！」
+			PRINTFORMW レミリアの膣襞が幾重にもペニスに絡みつく
+			PRINTFORMW 注挿のたびに棹を愛液が伝うほど、彼女は女の悦びに目覚めていた
+			CFLAG:8315 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8315 <= 2)
+			PRINTFORML 「うぎぃぃぃっ、太すぎぃ、よぉ！」
+			PRINTFORMW まだこなれていないレミリアの陰裂を、彼女の体重を利用して深々と貫く
+			PRINTFORMW すでに処女ではないというのに、レミリアのヴァギナはペニスを痛いほど締め付ける
+			CFLAG:8315 = 3
+		;それ以外
+		ELSEIF CFLAG:8315 <= 1
+			PRINTFORMW 「ち、近付かないで。くぅ、うぐぅ…」
+			PRINTFORMW 羽のように軽い身体を抱き上げて抵抗を封じると、有無を言わさず挿入した
+			CFLAG:8315 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_23
+;PRINTFORMW 
+IF SELECTCOM == 23 && TEQUIP:56 == 0
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 『お姉様、もっとこっちに身体寄せてぇっ……ん、ふっ、ふっ♪』
+			PRINTFORMW 「フラン、たくさんしてぇっ、ひぁっ！ あ、おちんちん、ふか、ぃっ…」
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 『お嬢様ぁ、咲夜は、咲夜は、お嬢様の小さな身体が大好きなんですぅっ、ずっと、可愛がっていたい……』
+			PRINTFORMW 「あ、あぁぁん♪ 咲夜の変態、ロリコン……ん、くぅっ！♪」
+			PRINTFORMW 『それでいいですから、お嬢様、もっと、もっと全部触れさせてくださいぃっ、んっ！』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8316 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ねぇ、背中に何か当たってるんだけど」
+			PRINTFORMW 背後から抱きしめると、レミリアは小ぶりな尻をぐりぐりと一物に押し付けてきた
+			PRINTFORMW そのまま腋の下に手を入れて抱き上げると、ゆっくりと落としていく
+		;それ以外
+		ELSE
+			PRINTFORMW 「うわぁっ、離せっ！くっ、何をする気！？」
+			PRINTFORMW レミリアを背後から抱き上げると、じたばたと抵抗する
+			PRINTFORMW が、ちょうど足を広げているので都合はよかった
+			PRINTFORMW 気付かれてさらに暴れられる前に、レミリアの身体を落とし深々と突き刺した
+			PRINTFORMW 「あがぁっ、ひぃ。いたぁっっっ」
+		ENDIF
+			CFLAG:8316 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;欲望の塊モード
+		IF TEQUIP:16 >= 1 && CFLAG:8827 == 0
+			IF TALENT:恋慕 || ABL:従順 >= 5
+				IF CFLAG:7890 >= 1
+					IF RAND:2 == 0
+						PRINTFORMW 「子作りっ、子作りぃっ♪ いいのぉっ！！♪ ふぁぁぁぁんッッ！」
+						PRINTFORML 「あ、あぁぁんっ！♪ だめ、だめぇっ、これは赤ちゃんつくるエッチなのにぃッッ！♪」
+						PRINTFORMW セックスの快楽がレミリアの理性を失わせていき、獣のような生殖行為が続けられる
+					ELSE
+						PRINTFORML 「ふっ、んぅっ！ パン、パンってエッチな音鳴ってる…！ んっんっんっ！♪」
+						PRINTFORMW %CALLNAME:PLAYER%とレミリアの動きが重なると、肉のぶつかり合う音が淫猥に響き渡る
+						PRINTFORMW 「あぁん♪ パパとママがこんないやらしいセックスしてたら、赤ちゃんもすごく淫乱な子になっちゃうね♪」
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「私も動くの…？ うん、いいよ……んっ――――」
+						PRINTFORMW %CALLNAME:PLAYER%の要求通り、レミリアは従順な様子でその腰の動きを合わせてゆく
+					ELSE
+						PRINTFORMW 「…ぁっ、ぁっ…んぅっ……ふっ」
+						PRINTFORMW レミリアはただ%CALLNAME:PLAYER%にされるがままの状態で、ギッ、ギッとベッドの音だけが部屋に響いた
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「いやぁっ、赤ちゃん産むなんて、やだっ、やだぁぁっ…！」
+					PRINTFORMW すっかり弱気になったレミリアは性器を貫かれる振動にガクンガクンと身体を揺らす
+				ELSE
+					PRINTFORMW 「この私が、お前の子供なんてぇっ…！ んっ、ぐぅぅ、ひぁっ！！」
+					PRINTFORMW 狭い膣の奥をぐりぐりと強く抉ってやるとレミリアは悲鳴をあげて身を捩る
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8316 <= 4)
+			IF RAND:3 == 0
+				PRINTFORMW 「あはっ、私の身体、全部楽しむなんてぇっ。欲張りものぉ、んぅっ！♪」
+				PRINTFORMW 小振りな乳房や可愛らしいクリを摘むと、幼いワレメがキュッと%CALLNAME:PLAYER%を締め上げる
+			ELSEIF RAND:2 == 0
+				PRINTFORMW %CALLNAME:PLAYER%はレミリアの幼さを犯しながら、レミリアに自分で慰めるように伝える
+				PRINTFORML 「こんなのぉっ私ぃっ！ エッチすぎるぅっ！♪ はっ、あはっ、ああっんん！！♪」
+				PRINTFORMW 秘所を貫かれながらする自慰に、レミリアは真っ赤になりながらもその手は止まらない
+				PRINTFORMW 「ひぁぅっ！ おちんちんとめてぇっ！♪ きもち、よすぎてぇっ！ 変になるぅぅ！♪」
+			ELSE
+				PRINTFORML 「ごひゅひぃんひゃまぁ！！」
+				PRINTFORMW 挿入したまま全ての性感帯を刺激され、レミリアは呂律が回らないほどに蕩けている
+				PRINTFORMW すでに一回出し入れするだけで潤んだ膣は痙攣し、棹どころか袋まで濡らすほど白濁蜜が溢れている
+				PRINTFORMW 涎でべちょべちょになった唇を指でこねくり回すと、レミリアは嬉しそうに指を咥え舐めしゃぶった
+			ENDIF
+			;CFLAG:8316 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8316 <= 3)
+			PRINTFORML 「あ、あああぁぁぁぁぁんっ」
+			PRINTFORMW 座ったまま突き刺せば、ペニスはいとも簡単にレミリアの一番深い部分まで届く
+			PRINTFORMW 異物を歓迎するかのように蠢き、亀頭を刺激する膣壁を掻き分けながら注挿すれば、レミリアは獣のような声を上げる
+			PRINTFORMW 突き刺したままコチコチになった乳首とクリトリスを捻ると、小さな吸血鬼は悦びの痙攣を始めた
+			CFLAG:8316 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8316 <= 2)
+			PRINTFORML 「あっ、あっあっあっ。…こんな、ことしてぇ。ぐすっ」
+			PRINTFORMW 両足を持って注挿を繰り返しながら、レミリアに命じて自ら乳房と秘裂をいじらせた
+			PRINTFORMW 屈辱に顔を真っ赤にし、目からは涙を零しながらもレミリアは自分の身体を責め立てる
+			CFLAG:8316 = 3
+		;それ以外
+		ELSEIF CFLAG:8316 <= 1
+			PRINTFORMW 「ふっ、ぅぅぅっ。…んんっ、うぅ、あっう」
+			PRINTFORMW 深々と挿入された肉棒に縫いとめられ、レミリアは身動きが取れなくなっている
+			PRINTFORMW そのまま乳首と肉豆をこねくり回すと、押し殺した喘ぎ声を漏らす
+			CFLAG:8316 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612 || (SELECTCOM == 23 && TEQUIP:56)
+	;初めて
+	IF CFLAG:8317 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:8317 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:5317 <= 5)
+			PRINTFORMW 
+			CFLAG:8317 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8317 <= 4)
+			PRINTFORMW 
+			CFLAG:8317 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && ABL:露出癖 >= 3 && (CFLAG:8317 <= 3)
+			PRINTFORMW 
+			CFLAG:8317 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8317 <= 2)
+			PRINTFORMW 
+			CFLAG:8317 = 3
+		;それ以外
+		ELSEIF CFLAG:8317 <= 1
+			PRINTFORMW 
+			CFLAG:8317 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_24
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			IF TALENT:処女 >= 1
+				PRINTFORMW %CALLNAME:MASTER%はレミリアに、自ら処女をフランに捧げるように命令した
+				PRINTFORMW 『お姉様ぁっ、早く、早くぅっ♪』
+				PRINTFORMW 「う、うぅっ、なんで私、こんな……よりによって、妹に……」
+				PRINTFORMW 恐る恐るといった調子で、レミリアはスジを怒張の先端へと合わせる
+				PRINTFORMW 『あはは、これわたしがお姉様に入る瞬間がよく見えるよ♪』
+				IF TALENT:ASSI:ふたなり == 1
+					PRINTFORMW ビキ、ビキと期待に震えるフランの先端がレミリアの処女をゆっくり割り開く
+				ELSE
+					PRINTFORMW 黒光りするフランに装着された張り型がレミリアの処女をゆっくり割り開く
+				ENDIF
+				PRINTFORMW 「ぁ……やっぱり、だめよぉっ、こんなことっ！！」
+				PRINTFORMW 『えっ、やだっ、やめちゃいやぁっ！！』
+				PRINTFORMW 腰を浮かせようとするレミリアの足を掴んで、フランはそれを無理矢理引き寄せた
+				PRINTFORML 「あぁぁぁァァァッッ！！ ひ、あああ、あ、、ぁぁぁっ……」
+				PRINTFORMW 姉妹は深々と繋がり合い、姉の純潔の証が二人の結合部を伝って妹へと垂れ落ちた
+				PRINTFORMW 『あは、やったぁ…わたしがお姉様の初めて……ずーっと覚えててね……』
+			ELSE
+				PRINTFORML 『わたしのおちんちん気持ちいっ？ お姉様おまんこ、すごいことになってるよぉっ♪』
+				PRINTFORMW 「ん、んふぅ！ だめえっ、私が腰振ってるのなんて見ちゃだめよぉっ、フランぅっ♪」
+				PRINTFORMW 『わたしはお姉様のおまんこすっごく気持ちいいよぉっ、あ、はぁぁん！♪』
+			ENDIF
+		ELSEIF NO:ASSI == 9
+			IF TALENT:処女 >= 1
+				PRINTFORML 「いたぁっ！ 咲夜っ、いたぁぃぃっ！！」
+				PRINTFORMW 『血が…！？ お嬢様、そんな……私がお嬢様の初めての相手なんてっ！』
+				PRINTFORMW 「う、うん、咲夜が、私の、初めての人……」
+				PRINTFORMW 『あ、ああぁっ、そんなこと考えるだけでっ、申し訳ありませんお嬢様…っ！！』
+				PRINTFORMW 「いぎっ！！ ひ、ひんっ！！ やだっ咲夜いたいよぉぉぉッ！！」
+			ELSE
+				PRINTFORML 『ぁぁ、お嬢様が自ら、私のモノを、咥えて……とても、とてもいやらしいです…』
+				PRINTFORMW 「あ、はぁぁあん！ さくやのおちんちんで、おまんことまんないよおぉっ！」
+			ENDIF
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8245 == 0
+		;処女
+		IF TALENT:処女 >= 1
+			;恋慕＋従順Lv5
+			IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+				PRINTFORMW 幼い体をぷるぷると震わせながら、うっとりとした表情でペニスに割れ目を添え――
+				PRINTFORMW 「%CALLNAME:MASTER%に初めてを捧げるところ、ちゃんと見ていて…っ、ぁ、ぁ、っ、んんんっ！」
+				PRINTFORMW レミリアは膜を貫かれる痛みに歓喜の表情を浮かべながら、ペニスの根元までゆっくりと腰を降ろしていった
+			;それ以外
+			ELSE
+				PRINTFORMW 「アンタみたいなやつに……痛っ、ひっ、やだっ！ 咲夜ぁ、さくやぁ……」
+				PRINTFORMW レミリアは%CALLNAME:MASTER%のペニスに小さな割れ目を添えると、ぼろぼろと涙を零し始めた
+				PRINTFORMW ぶるぶると震えながらゆっくりと腰を降ろしていくレミリアの姿に満足すると
+				PRINTFORMW 彼女の細い腰を掴み一気にペニスの根元まで打ちつけた
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「う、んんっ。はぁはぁ」
+				PRINTFORMW レミリアは%CALLNAME:MASTER%の上に跨ると、腰をグラインドさせ、ぴたりと閉じた割れ目をペニスにこすり付ける
+				PRINTFORMW ひとしきり愛液をまぶすと、ギンギンに膨張したペニスに小さな手を添え、片手で開いた割れ目にあてがう
+				PRINTFORMW 「はぁぁぁ……。ご主人様のが、入ってっ」
+				PRINTFORMW ゆっくりと腰を落とし、小さな膣にペニスを飲み込むレミリア
+				PRINTFORMW こつっ、と先端が子宮口とキスすると、レミリアはふるっと身体を震わせた
+			;それ以外
+			ELSE
+				PRINTFORMW 「アンタみたいなやつに……痛っ、ひっ、やだっ！ 咲夜ぁ、さくやぁ……」
+				PRINTFORMW レミリアは%CALLNAME:MASTER%のペニスに小さな割れ目を添えると、ぼろぼろと涙を零し始めた
+				PRINTFORMW ぶるぶると震えながらゆっくりと腰を降ろしていくレミリアの姿に満足すると
+				PRINTFORMW 彼女の細い腰を掴み一気にペニスの根元まで打ちつけた
+			ENDIF
+		ENDIF
+			CFLAG:8245 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;欲望の塊モード
+		IF TEQUIP:16 >= 1 && CFLAG:8827 == 0
+			IF TALENT:恋慕 || ABL:従順 >= 5
+				IF CFLAG:7890 >= 1
+					IF RAND:2 == 0
+						PRINTFORMW 「子作りっ、子作りぃっ♪ いいのぉっ！！♪ ふぁぁぁぁんッッ！」
+						PRINTFORML 「あ、あぁぁんっ！♪ だめ、だめぇっ、これは赤ちゃんつくるエッチなのにぃッッ！♪」
+						PRINTFORMW セックスの快楽がレミリアの理性を失わせていき、獣のような生殖行為が続けられる
+					ELSE
+						PRINTFORML 「ふっ、んぅっ！ パン、パンってエッチな音鳴ってる…！ んっんっんっ！♪」
+						PRINTFORMW %CALLNAME:PLAYER%とレミリアの動きが重なると、肉のぶつかり合う音が淫猥に響き渡る
+						PRINTFORMW 「あぁん♪ パパとママがこんないやらしいセックスしてたら、赤ちゃんもすごく淫乱な子になっちゃうね♪」
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「私も動くの…？ うん、いいよ……んっ――――」
+						PRINTFORMW %CALLNAME:PLAYER%の要求通り、レミリアは従順な様子でその腰の動きを合わせてゆく
+					ELSE
+						PRINTFORMW 「…ぁっ、ぁっ…んぅっ……ふっ」
+						PRINTFORMW レミリアはただ%CALLNAME:PLAYER%にされるがままの状態で、ギッ、ギッとベッドの音だけが部屋に響いた
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「いやぁっ、赤ちゃん産むなんて、やだっ、やだぁぁっ…！」
+					PRINTFORMW すっかり弱気になったレミリアは性器を貫かれる振動にガクンガクンと身体を揺らす
+				ELSE
+					PRINTFORMW 「この私が、お前の子供なんてぇっ…！ んっ、ぐぅぅ、ひぁっ！！」
+					PRINTFORMW 狭い膣の奥をぐりぐりと強く抉ってやるとレミリアは悲鳴をあげて身を捩る
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8245 <= 4)
+			IF RAND:5 == 0
+				PRINTFORMW 「ふふ、んっんっ♪ ねーぇ、されてるのどう？ ぁん、おちんちんかたぁくして♪」
+				PRINTFORMW レミリアは%CALLNAME:PLAYER%の顔を覗き込みながら腰を止めることなく打ち付ける
+				PRINTFORMW 「はんっ、ぁぁんっ、ふぁっ……可愛い顔…このまま犯し抜いてあげるぅっ♪」
+			ELSEIF RAND:4 == 0
+				PRINTFORML 「うっぐっ、は、ああぁっ、ちょっとぉ、おちんちん大きくしすぎなんだからぁ」
+				PRINTFORMW 「私のおまんこじゃ、、きつぅっ♪ これから、もっとおっきくするくせに、ばかぁ♪」
+				PRINTFORMW レミリアは悪態を吐きながらも、%CALLNAME:PLAYER%と繋がる悦びに蜜液を垂らし続ける
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「あぅっ、ん♪ ねぇっ、私の腰使い、どう？ いやらしくて、んっ、最高でしょっ？」
+				PRINTFORML 「%CALLNAME:MASTER%が仕込んだん、だからっ、良くないわけ、ないよぉ、ふぁっ！♪」
+				PRINTFORMW レミリアは%CALLNAME:PLAYER%の腰に手を置き、肉棒を圧迫するように前後に腰をふる
+				PRINTFORML 「おちんちん、すごい、よぉっ、もっと、もっとするのぉっ！♪」
+				PRINTFORMW そして我慢できなくなったかのように、淫らな音を立てながら上下の結合を始めた
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あっ、ん、んぅっ！ あ、あぁぁん！ はっ、う、ん……んっ！」
+				PRINTFORMW レミリアは幼い声色を艶めかしい悦声に変え、一心に%CALLNAME:MASTER%の肉棒を貪る
+				PRINTFORMW 「はぁっ、あっ、こんなに固くして……んっ、んぅッ！ 早くイってぇッ♪」
+			ELSE
+				PRINTFORMW 「んっ、ぁっ、私のおまんこきつきつで、いいでしょっ、ぁっ、んんぅ♪」
+				PRINTFORML レミリアが小振りな腰を浮かすたびに、きゅぅっと狭い膣壁がペニスを吸い上げ
+				PRINTFORMW %CALLNAME:MASTER%に眩暈がするほどの快感をあたえた
+			ENDIF
+			;CFLAG:8245 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8245 <= 3)
+			PRINTFORMW 「んっ、ぁ、このままじゃ、私までっ、ぁ、っぁぁ、ぁんっ」
+			CFLAG:8245 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8245 <= 2)
+			PRINTFORMW 「私っ、うっ……何でこんな事をしてるのかしら、これじゃ……」
+			CFLAG:8245 = 3
+		;それ以外
+		ELSEIF CFLAG:8245 <= 1
+			PRINTFORMW 「さっさと、果ててしまいなさい」
+			CFLAG:8245 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_26
+;さくやぁ！ 何やってるのよ！！ はやく、そいつを殺してよぉ！！！
+;
+;あなた……まさかフランと…！
+;やだぁ、お姉様邪魔しないでよっ！！
+
+	;初めて
+	IF CFLAG:8259 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うぅ、ぐす。ご主人様…」
+			PRINTFORMW 涙で顔をぐしゃぐしゃにしながら、レミリアは%CALLNAME:MASTER%が%CALLNAME:ASSI%と激しく交わる姿を見ている
+			PRINTFORMW どうやらレミリアは他の女に%CALLNAME:MASTER%を奪われるのではないかと、不安でたまらないようだ
+		;それ以外
+		ELSE
+			PRINTFORMW 「汚らわしい。そんなものを私に見せ付けてどうするつもりよ」
+			PRINTFORMW 吐き捨てて、レミリアは目を逸らした
+			PRINTFORMW だがいくら目を背けようとも、%CALLNAME:ASSI%が上げる悲鳴と、結合部が交わる粘っこい水音はレミリアの耳を犯す
+		ENDIF
+			CFLAG:8259 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8259 <= 2)
+			PRINTFORMW 「ご、ごしゅじん…さま。うぐ、ひっく。ヤダよ、ご主人様…」
+			PRINTFORMW 相変わらず%CALLNAME:MASTER%が%CALLNAME:ASSI%と行為を始めるとレミリアは泣き出す
+			PRINTFORMW ベッドの上に一人残されたレミリアはシーツがくしゃくしゃになるほど力を込めて握り締めている
+			;CFLAG:8259 = 3
+		;それ以外
+		ELSEIF CFLAG:8259 <= 1
+			PRINTFORMW 「まるで発情期の獣じゃない。いいわ、私のことはいいからいつまでもそこで盛ってなさい」
+			PRINTFORMW レミリアは%CALLNAME:MASTER%のことを貶しながらも、その視線を%CALLNAME:ASSI%の陰部から外せなくなっている
+			PRINTFORMW 目の前で繰り返される激しい交合に頬を赤らめ、徐々に呼吸を乱し始めている
+			CFLAG:8259 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+				PRINTFORMW 「ひぁぁっ！！ う、っぐぅっ！ お尻でなんて、へん、へんよぉぉっっ！！」
+				PRINTFORMW 『変だよね、痛いよね、でも気持ち良いんだよね…♪ わたしも、お姉様のうんちの穴、気持ち良いよ…♪』
+				PRINTFORMW 「ひゃうぅぅっ！！ い、んああぁぁぁっ！！ フランっ、まってぇっ！ あぁぁん！！」
+		ELSEIF NO:ASSI == 9
+				PRINTFORML 「あ、あぁぁぁん！！ なんでお尻なのよぉっ！ 咲夜のばかぁっ！ ばかぁぁっ！！」
+				PRINTFORMW 『お嬢様、もっと、もっとイケナイ場所で乱れる姿を見せてください……！♪』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8239 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あぐっ、いっ …お尻の穴におちんちんが…んっ、良くなれるかしら？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あぐっ、い、痛っ！ …お尻でなんて、どこまでも腐った奴！」
+		ENDIF
+			CFLAG:8239 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && (CFLAG:8239 <= 4)
+			PRINTFORMW 「ひっ、ひぐっ！ おちんちんがお腹の中を擦れて、んんっ、んっ、ぁっ」
+			PRINTFORMW 「これじゃ、おなかの中身がでてきちゃうぅ、うぁ、ああっ、ああん♪」
+			;CFLAG:8239 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8239 <= 3)
+			PRINTFORMW 「うぐっ、まだ痛いっ、ううっ、優しくして……お願い、慣れてないから…んっ、ぁ」
+			CFLAG:8239 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && (CFLAG:8239 <= 2)
+			PRINTFORMW 「んうっ、苦しいのに…そんなこれって気持ちいい？ はぅっ、ぁ…」
+			CFLAG:8239 = 3
+		;それ以外
+		ELSEIF  CFLAG:8239 <= 1
+			PRINTFORMW 「ぐうっ、痛い！ お尻で感じるわけが…自慰行為もいい加減にしなさいっ！」
+			CFLAG:8239 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_31
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+;助手を犯すコマンドと同じ
+CALL KOJO_10_TRAIN_MESSAGE_S_COM_26
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_40
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORMW 『うぅ、ん、ふぅっ、おちんちん、もっと強く擦ってぇっ…』
+			PRINTFORMW 「う、うぅっ、なんでよりによって、こんなに大きいのよぉっ」
+			PRINTFORMW 『だってお姉様が触ってくれてるって考えたら……どんどん元気になるの…♪』
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「あ、ほんもの、なの……？」
+			PRINTFORMW 『はいっ、咲夜のいやらしいおちんぽです、お嬢様の、モノです…♪ ひぁっ！』
+			PRINTFORMW 「わっ、あつい……びくびくって、動いてる……」
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8241 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「手でさせるわけね…直ぐに%CALLNAME:MASTER%に許しを請わせて見せるわ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……こんな汚物、ほんと握りつぶしてしまいたいわ」
+		ENDIF
+			CFLAG:8241 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8241 <= 3)
+			IF RAND:3 == 0
+				PRINTFORMW 「手でする前にこうしたらもっと気持ち良くできるでしょ……んっ」
+				PRINTFORMW レミリアはツっと透明な唾液を%CALLNAME:PLAYER%の亀頭へと垂しながら、それを全体に塗すようにして手淫を始める
+				PRINTFORMW 「私の唾液でおちんちんぬるぬるでくちゃくちゃいってる…♪ これなら、ほら……こんなに強く擦っても気持ちいいんでしょ？ いつでもイっていいよ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふふっ、おちんちん震え、もうすごいわっ…」
+				PRINTFORMW 「ほら私の小さな手で擦られて、我慢なんてしなくていいのよ♪」
+			ELSE
+				PRINTFORMW 「はぁ、はぁ、さっさと射精しなさいっ……私に早くせーしをぶっかけて！」
+				PRINTFORMW レミリアは涎を零しながら、愛欲で煌く瞳を%CALLNAME:MASTER%に向けている
+			ENDIF
+			;CFLAG:8241 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8241 <= 2)
+			PRINTFORMW 「ふふ、もうぴくぴくしてるじゃない、そう、感じてるわけ…ね」
+			PRINTFORMW レミリアは%CALLNAME:MASTER%を嘲笑すると細い指をカリ首に絡め、上下に激しく扱き始めた
+			CFLAG:8241 = 3
+		;それ以外
+		ELSEIF CFLAG:8241 <= 1
+			PRINTFORMW 「きりが無いわね…本当に気持ち良いのかしら」
+			CFLAG:8241 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_41
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 「ん、っちゅ、ちゅる…えろ、えろ……ん、んぷっ……ちゅ、ちゅっ、ぢゅっ、」
+			PRINTFORMW 『は、ん、ふぅっ、ん、ふぁっ、お姉様、とっても上手よ……』
+			PRINTFORMW （これ、フランのおちんちん……なんか、暖かくて、美味しい……）
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 『あっはぁぁ、あっ、お嬢様ぁそんなに激しいと、咲夜のおちんぽ取れてしまいますっ』
+			PRINTFORMW 「ん、ふぅっ、っえろ、こんな危ないモノ、取れてしまいなさいっ、ちゅゅゅぅっ！！」
+			PRINTFORMW 『ひやぁぁぁぁっ！！♪ お嬢様それだめですぅぅっッッ！♪』
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8242 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「そんなに期待した目で見られても……その、困るわよ、んっ、ちゅるっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「アンタのなんて舐める気は、っ、臭いっ！ ぅ、むぐっ！」
+		ENDIF
+			CFLAG:8242 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8242 <= 3)
+			IF RAND:3 == 0
+				PRINTFORML 「うん、口で、してあげる……」
+				PRINTFORML 「ちゅ、、、えろ、、んっ、んちゅ、ちゅっ……」
+				PRINTFORML 「ふぁ…れろ、ずぷっ、っちゅっ、くぷっ、、っぷ、じゅぷ、っちゅぢゅ、ずるる…」
+				PRINTFORMW 初めは愛おしそうに奉仕を始めるが、すぐに夢中になったかのような前後運動が始まる
+				PRINTFORMW （ん、あぁぁ……私、おちんちん大好きになってる……どうしよぉ…♪）
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ぷぁっ、んっぷ、えろっ、…っじゅ、すごい、におぃ…♪」
+				PRINTFORMW 熱っぽい瞳を浮かべたレミリアに奉仕されると、%CALLNAME:PLAYER%はゾクゾクと身の震えを感じる
+				PRINTFORMW 「もうすぐ出そうなんだって、わかる……ん、じゅりゅ、ん～～っちゅうゅゅ！」
+			ELSE
+				PRINTFORMW 「じゅっ、じゅるるっ…んっもうでそうなの？ おちんちんなんだかくるしそう」
+				PRINTFORMW 「はむっ、んっ、せーしっ、らせるらけらしてっ！ ぺろっ、ちゅるっ、ちゅうううっ」
+				PRINTFORMW レミリアは舌を淫靡に突き出して、ペニスがヒクヒクと跳ねる様を期待深げな瞳で見守っている
+			ENDIF
+			;CFLAG:8242 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8242 <= 2)
+			PRINTFORMW 「ちゅ、ちゅるぅ、くちゅっ…ふぁ、どうかしら？ じゅっ、じゅるるっ」
+			PRINTFORMW レミリアの小さな舌がペニスの先端をねぶり、包み込んでいる
+			CFLAG:8242 = 3
+		;それ以外
+		ELSEIF CFLAG:8242 <= 1
+			PRINTFORMW 「む、むぐっ、ぷぁ…何でこんな汚物を……ん、ちゅ、ちゅるっ」
+			CFLAG:8242 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_42
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8243 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「うっ、胸で？……何見てるのよ、どうせ私のなんて……ぐすっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、今度は胸で楽しませろって！？ ……そんなに殺されたいのかしら」
+		ENDIF
+			CFLAG:8243 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8243 <= 3)
+			PRINTFORMW 「んっ、ふっ、んぁっ、%CALLNAME:MASTER%の変態っぷりには、呆れるわよ」
+			PRINTFORMW 「……もうせーし出ちゃうんでしょ、このロリコンっ、んっ、ちゅっ」
+			;CFLAG:8243 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8243 <= 2)
+			PRINTFORMW 「んっ、んっ、私だってできるんだから……ぁ、ちょっと出てきたわね」
+			CFLAG:8243 = 3
+		;それ以外
+		ELSEIF  CFLAG:8243 <= 1
+			PRINTFORMW 「んっ、ううっ、どうすればいいのよっ、こんなの無理だわ！」
+			CFLAG:8243 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_43
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 11
+			PRINTFORML 『あぁぁん、お姉様のおまた、暖かいよぉ……』
+			PRINTFORMW 「ん、んぅっ、フランの固くて、熱くて、私、おかしくなっちゃいそうよ……」
+			PRINTFORML 『ねえお姉様、おちんちん、お姉様のおまんこに挿れたいよぉっ、だめ？』
+			PRINTFORMW 「だ、だめっ、それはだめなのぉっ！ そんなことしたら、私っ…！」
+		ELSEIF NO:ASSI == 9
+			PRINTFORML 「ねえ咲夜、こんなことでも、気持ち良いの？」
+			PRINTFORMW 『は、はいっ、お嬢様のおまんこに擦られるなんて、咲夜はどうにかなってしまいそうです』
+			PRINTFORMW 「そんなものなの…？ あ、びくびくって、咲夜のおちんちん今すごい動いたわ……」
+		ENDIF
+	;初めて
+	ELSEIF CFLAG:8244 == 0
+		;恋慕有り
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そんなっ、擦り付けろだなんて……%CALLNAME:MASTER%ってなかなか残酷ね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……良く意味が分からなかったわ、もう一度言いなさい……股、ねぇ」
+		ENDIF
+			CFLAG:8244 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕おねだり
+		IF TALENT:恋慕 && TALENT:処女 == 1 && CFLAG:8829 == 0
+			PRINTFORMW 「んっ、っふっ、んっ……んぅ……はぁ……」
+			PRINTFORMW レミリアは重苦しく甘い吐息を吐きながら眼を細めて%CALLNAME:PLAYER%を見つめる
+			PRINTFORMW 「ねぇ……あのね、私たち……そろそろ、一つになってもいいよね…？」
+			PRINTFORMW 「私はいつでも準備できてるから……ご主人様に、早く私の全部、もらって欲しいの」
+			PRINTFORMW 「ずっとずっと誰にもあげなかった私の初めて、きっとすごく気持ち良いんだから…♪」
+			PRINTFORMW まるで%CALLNAME:PLAYER%の暴走を誘うように、レミリアは焦らした腰使いを続ける
+			PRINTFORMW 「ほら、さきっぽ入っちゃいそう……このまま、私が挿れてもいいかな？」
+			CFLAG:8829 = 1
+		;恋慕有り
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8244 <= 2)
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ、ふぁっ……おまんこが擦れて、嫌ぁ、このままじゃ、ぁ、ぁ」
+			ELSE
+				PRINTFORMW 「どう？ つるつるのおまんこで、擦られる気分、はぁっ♪」
+				PRINTFORMW 「私は、おっきくて、熱いおちんちんで擦れてっ、とっても、良い、んぅっ！♪」
+			ENDIF
+			;CFLAG:8244 = 3
+		;それ以外
+		ELSEIF CFLAG:8244 <= 1
+			PRINTFORMW 「んっ、こんなので気持ちよくなれるのかしら……」
+			CFLAG:8244 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+	IF ASSIPLAY && ASSI > 0
+	;初めて
+	ELSEIF CFLAG:8112 == 0
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「なに、踏んでほしいの。いいよ、ふふっ」
+			PRINTFORMW レミリアはサドの心がくすぐられたのか、蔑んだ目で%CALLNAME:PLAYER%を見下ろす
+			PRINTFORMW 「ほらもっと腰を上げなさいよっ、踏まれたいんでしょ？ そう、いいわ……よっ！」
+			PRINTFORMW ぐんっ、と体重がかけられ、%CALLNAME:PLAYER%は苦悶の表情を浮かべた
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORML %CALLNAME:PLAYER%が剥き出しのペニスを近づけると、レミリアは小さく悲鳴をあげる
+			PRINTFORMW 「ひっ！ え…、あ、なに？ 踏めって、この私、が？」
+			PRINTFORMW 「……は、はは、いいわよ……存分に踏んであげるわ、よっ！」
+			PRINTFORMW こちらのことは全く意に介さない一方的な足扱きが%CALLNAME:PLAYER%へと与えられる
+			PRINTFORML 「全く、いつも強気なお前が、こんなどうしようもない性癖を持っていたとはねぇ…」
+			PRINTFORMW レミリアは久しぶりに元気を取り戻したかのように、嗜虐的な笑みが絶えない
+		ELSE
+			PRINTFORMW 「なに、踏んで欲しい？ その粗末なモノをか」
+			PRINTFORML 「はははっ！ そうか、私を掴まえたのは、そういう願望を持っていたからなのか」
+			PRINTFORMW 「誘拐犯の上にど変態とは、呆れるよっ」
+			PRINTFORMW 「いいよ、シてあげる。なんなら私の家で毎日踏んでやる待遇に置いてやろうか」
+		ENDIF
+		CFLAG:8112 = 1
+	ELSE
+		IF MARK:屈服刻印 == 3
+			A = RAND:9
+			IF TALENT:PLAYER:早漏 && A >= 3
+				IF RAND:3 == 0
+					PRINTFORMW 「踏まれただけであっという間にこんなに大きくして、家畜以下のプライドね」
+					PRINTFORMW 「あら、怒った？ でもねぇ%CALLNAME:PLAYER%の粗末なモノ、さっきから喜んで仕方無いみたいよ？」
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「ちょっとぉ、%CALLNAME:PLAYER%の情けないソレ、あと一扱きでイっちゃうんじゃない？」
+					PRINTFORML 「気持ちいいです、早漏チンポ踏んでくださいって言いなさいよ、そしたら、ねえ？」
+					PRINTFORMW %CALLNAME:PLAYER%を見下しながら、レミリアは口の端を吊り上げて笑う
+				ELSE
+					PRINTFORMW 「ふふっ、足でしてるのにひどいことになってるわよ、%CALLNAME:PLAYER%の早漏チンポ」
+					PRINTFORMW 「ビクビクって震えっぱなしで、いつ撒き散らすかわかったもんじゃないね、最ッ低」
+				ENDIF
+			ELSEIF A == 2 || A == 7 || A == 8
+				PRINTFORMW 「はぁ、私の足ほど大きくして、一体なんなのかしら」
+				PRINTFORMW 「ガチガチで押し返されちゃうわよ、熱くて焼きごてでも擦ってる気分だわ」
+			ELSEIF A == 1 || A == 3 || A == 5
+				PRINTFORMW 「足でねえ、まさか”足”で射精なんか、するわけないよねぇ？ ふふっ」
+				PRINTFORMW 「もしこんなんで出したら、自分は変態です、って声にするんだよ？ わかった？」
+			ELSEIF A == 0 || A == 6 || A == 4
+				PRINTFORMW 「いいねぇ、この格好。まるで主人と発情期の犬みたいだね」
+				PRINTFORMW 「私が主人になって毎日踏んであげようか？ ふふっ、この粗末なモノも喜んでるよ」
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「くそっ、なんで私が、こんなことっ…！」
+				PRINTFORMW 「ああっもう！ さっさと射精しなさいよ！ 見てて不愉快なのよ！！」
+				PRINTFORMW 扱きとはほど遠い乱暴な足遣いに、%CALLNAME:PLAYER%のモノは敏感に反応する
+			ELSE
+				PRINTFORML 「ふっ、ふふっ、このまま、踏みつぶしてやるわ…！」
+				PRINTFORMW レミリアは残虐な笑みを浮かべながら、全力で%CALLNAME:PLAYER%のモノを踏みつぶす
+				PRINTFORMW だが幼女の力の足りなさ加減が、絶妙な快楽に変わり%CALLNAME:PLAYER%は苦悶に呻く
+				PRINTFORMW 「あーっもうっ！ なんで気持ち良くなってんのよ！ 気持ち悪いのよこの変態がっ！」
+			ENDIF
+		ENDIF
+	ENDIF
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8255 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「それを塗ってヌルヌルにしようってのね」
+			PRINTFORMW 「いい趣味じゃない、ご主人様。ちゃんといっぱい可愛がってよ？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「…またよく分からない物を持ってきたわね」
+			PRINTFORMW 「それをどうするのよ」
+		ENDIF
+			CFLAG:8255 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8255 <= 2)
+			PRINTFORMW 「あはぁ、すごくぬめぬめして、変な気分になってくる」
+			PRINTFORMW %CALLNAME:MASTER%に全身を撫でられながら、レミリアは頬を上気させ目をとろんとさせている
+			;CFLAG:8255 = 3
+		;それ以外
+		ELSEIF CFLAG:8255 <= 1
+			PRINTFORMW 「冷たいわよ、これ」
+			PRINTFORMW 「…なんで羽にまで塗ってるのよ！　べちゃべちゃじゃない！」
+			CFLAG:8255 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+	IF CFLAG:8813 == 0
+		PRINTFORMW さて、これからレミリアという少女を調教するわけだが……
+		PRINTFORMW 「なにこれ、変な色をした水ね……」
+		PRINTFORMW まずは媚薬を使ってこの少女の生意気そうな精神を一気に切り崩すこととした
+		PRINTFORMW 「飲めって？ は、そんなの嫌に決まってる」
+		PRINTFORMW そっぽを向くレミリアはやはり幼い外見とはいえ、なかなかの気丈さを持っているようだ
+		PRINTFORMW 仕方ないので無理矢理飲ますしかないだろう
+		PRINTFORMW 「ん、なによ……ちょっ！ ん、んぅっ！？」
+		PRINTFORMW 振り向いた瞬間唇と奪い、そのまま抑え付けて口に含んだ媚薬を全て流し込んだ
+		PRINTFORMW 「ん、っくっ、げほっげほっ……お前なんかが、この私にキスをする、なんて……」
+		PRINTFORMW キッっとこちらを睨み付けるレミリアだが、即効性の媚薬が効果を表し始めた
+		PRINTFORMW 「な、なに、身体が熱く……っ、そうか、今の、催淫剤……」
+		PRINTFORMW 「こんなので、吸血鬼である私が……はぁ、はぁっ……！」
+		PRINTFORMW レミリアは必死で否定しようとするが、息遣いは荒くなり、身体が震え始めている
+		PRINTFORMW 徐々に、徐々に無意識にも足が開かれレミリアの性器が%CALLNAME:MASTER%の視線に晒された
+		PRINTFORMW 穢れを知らない少女の縦スジが、まるで何かを求めるようにヒクヒクと卑猥に震えている
+		PRINTFORMW 「…ぁっ！ や、み、見るなぁ！」
+		PRINTFORMW 慌ててレミリアは隠すも、その刺激的な光景はしっかりと%CALLNAME:MASTER%の目に焼き付く
+		PRINTFORMW さて、どうしてやろうか。と%CALLNAME:MASTER%はニヤニヤと口元を歪めてレミリアを見つめた
+		CFLAG:8813 = 1
+		CFLAG:8256 = 1
+	;初めて
+	ELSEIF CFLAG:8256 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「今更、薬なんて使わなくたって…」
+			PRINTFORMW 「…いいわ、ご主人様がそう望むなら」
+			PRINTFORMW 「思いっきり乱れたレミィを可愛がって」
+		;それ以外
+		ELSE
+			PRINTFORMW 「これ、薬ね？ふん、笑わせるわ。吸血鬼である私を薬でどうにかできると思ってるの？」
+			PRINTFORMW 「いいわ飲んであげる。私を甘く見ないことね」
+			PRINTFORMW そう言うと、レミリアは瓶に入った薬を一息に呷った
+			PRINTFORMW 上手い具合に挑発に乗った。本来なら危険な濃度の媚薬を、レミリアは疑いもせず飲んだ…
+		ENDIF
+			CFLAG:8256 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8256 <= 2)
+			PRINTFORMW 「ねえ、ご主人様。口移しで飲ませて」
+			PRINTFORMW 「いいでしょ？　たまにはそういう趣向があっても」
+			CFLAG:8256 = 3
+		;それ以外
+		ELSEIF CFLAG:8256 <= 1
+			PRINTFORMW 「ぅ、それ…」
+			PRINTFORMW 薬の入った瓶を見ると、何か思い出したのかレミリアは顔を強張らせた
+			PRINTFORMW 「もう引っかからないわよ、誰が飲むもんですか」
+			PRINTFORMW 抵抗するが、無理矢理口をこじ開けて流し込んでやった
+			CFLAG:8256 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+	;恋慕+おもらし癖
+	IF TALENT:恋慕 && TALENT:おもらし癖 && (CFLAG:8319 < 4)
+		PRINTFORMW 「そんなに私の情けないところを見たいの？」
+		PRINTFORMW 「…いいわ、%CALLNAME:PLAYER%にだけよ。こんな姿を見せるのは」
+		PRINTFORMW 素直に薬を飲みながら、レミリアは頬を赤くしている
+		;CFLAG:8319 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕 && (CFLAG:8319 < 3)
+		PRINTFORMW 「いい加減にしなさいよ。そんな薬を使うなんて」
+		PRINTFORMW 口では非難しながら、レミリアは積極的に薬を受け入れている
+		CFLAG:8319 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8319 < 2)
+		PRINTFORMW 「ご、ご主人様の命令なら……っ」
+		PRINTFORMW そうは言いながらもレミリアの表情から嫌悪は消えない
+		PRINTFORMW 大人しく薬を飲みながら、レミリアは目の端に涙をいっぱいに溜めている
+		CFLAG:8319 = 2
+	;それ以外
+	ELSEIF CFLAG:8319 < 1
+		PRINTFORMW 「アンタの見てる前でお漏らししろっての？ふざけないで！！」
+		PRINTFORMW 逃げようとしたレミリアを組み伏せ、強引に口を開けさせると有無を言わさず薬を流し込んだ
+		CFLAG:8319 = 1
+	ENDIF
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+	IF CFLAG:8391 == 0
+		;無理矢理
+		IF ABL:10 <= 2
+			PRINTFORML 「え、なに……んっ！？」
+			PRINTFORMW 抵抗する素振りを見せるレミリアを%CALLNAME:MASTER%は素早く組み伏せ、薬を飲ませた
+		;口移し
+		ELSEIF ABL:PLAYER:12 >= 3
+			PRINTFORML 「ん、んぅっ！ あ、んむ……ちゅ……ちゅぅ」
+			PRINTFORMW レミリアを抱き寄せ、深いキスを交わしながら薬を押し込んでゆく
+		ENDIF
+		PRINTFORMW 「なんなのよ、これっ……え、赤ん坊を作る薬？」
+		PRINTFORMW 「わ、私、人間じゃないのにっ、本当に赤ちゃんなんてできるわけないじゃないっ！」
+		PRINTFORMW レミリアは少し怒気を含んだ様子で%CALLNAME:MASTER%を見つめる
+		PRINTFORMW なら試してみようと%CALLNAME:MASTER%は、はち切れん程にそそり立った繁殖棒をレミリアへと見せつけた
+		IF TALENT:恋慕 || ABL:従順 >= 5
+			PRINTFORMW ―――子作りモード―――
+		ELSE
+			PRINTFORMW ―――強姦モード―――
+		ENDIF
+	CFLAG:8391 = 1
+	ELSEIF CFLAG:7890 >= 1 && (TALENT:恋慕 || ABL:従順 >= 5)
+		PRINTFORMW 「ぁ……またこの薬、ってことは……」
+		PRINTFORMW %CALLNAME:PLAYER%が怖いのかどうか聞いてみると、レミリアはふるふると首を振る
+		PRINTFORMW 「もう、怖くないわ……さあ早く子作りしましょ♪」
+		PRINTFORMW ―――子作りモード―――
+	ELSE
+		IF CFLAG:7827 == 1
+			PRINTFORMW 「ん、んくぅっ、こんなの、無駄よぉっ、やめ、なさいよっ……」
+			PRINTFORML 懐妊剤を飲ませては見たが……よく考えて見れば、
+			PRINTFORMW 十に満たるかどうか分からないレミリアにそもそもの効果があるのかどうかはわからない
+		ELSEIF TALENT:恋慕 || ABL:従順 >= 5
+			PRINTFORMW 「ん、ふん、ん、っくっ……また、これっ……」
+			PRINTFORMW 「私を孕ませようなんて、本気……なの？ 無理に、決まってるじゃない……」
+			PRINTFORML %CALLNAME:MASTER%は不安そうな顔をするレミリアの手を引き、そっと胸の中に抱き寄せてやった
+			PRINTFORMW 「ぁ……」
+			PRINTFORMW ―――子作りモード―――
+		ELSE
+			PRINTFORMW 「く、そっ！ こんなこと、もう、やめろぉっ！！」
+			PRINTFORMW レミリアは下半身を剥き出しで迫る%CALLNAME:MASTER%を恐怖に怯えた表情で睨み付ける
+			PRINTFORMW ―――強姦モード―――
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+	;初めて
+	IF CFLAG:8325 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あぁん、もう終わり？興が乗ってきたところだったのに」
+			PRINTFORMW 仕舞われるエプロンを見て、レミリアは名残惜しげに呟いた
+		;それ以外
+		ELSE
+			PRINTFORMW 「ああもうっ、顔から火が出そうとはこのことね！」
+			PRINTFORMW 「恥ずかしくて人前でなんて絶対に出来ないわね！」
+		ENDIF
+			CFLAG:8325 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8325 <= 2)
+			PRINTFORMW 「ふふっ、一時だけど良い夢が見れたわ」
+			PRINTFORMW どことなく陰のある笑顔で、レミリアは呟いた
+			CFLAG:8325 = 3
+		;それ以外
+		ELSEIF CFLAG:8325 <= 1
+			PRINTFORMW 「はあ、やってる間よりも終わってからの方が恥ずかしいわね」
+			PRINTFORMW ベッドにぺたんと腰掛けたレミリアは、顔をうつむけてそう呟いた
+			CFLAG:8325 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;装着時
+ELSE
+	;PRINTFORMW 
+	;初めて
+	IF CFLAG:8324 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「面白いものを出してきたわね」
+			PRINTFORMW 「家事なんてできないけど、これを着てる間は旦那様とでも呼べばいいのかしら」
+		;それ以外
+		ELSE
+			PRINTFORMW 「…これから犯そうって相手に着せるなんて趣味が悪すぎるわ」
+			PRINTFORMW 「それとも何も考えてないのかしら」
+		ENDIF
+			CFLAG:8324 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8324 <= 2)
+			PRINTFORMW 「旦那様、可愛い幼な妻に無理させないでくださいね」
+			PRINTFORMW エプロンを身に着けると、ポーズを決めてみせるレミリア
+			PRINTFORMW 言えば絶対に否定するだろうが、かなり乗り気の様子だ
+			;CFLAG:8324 = 3
+		;それ以外
+		ELSEIF CFLAG:8324 <= 1
+			PRINTFORMW 「…いいわ、着けてあげる」
+			PRINTFORMW 「これ着てると、嫌に優しくなるし」
+			;きつい調教をすると愛情経験が稼げないですからね。
+			CFLAG:8324 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_10_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

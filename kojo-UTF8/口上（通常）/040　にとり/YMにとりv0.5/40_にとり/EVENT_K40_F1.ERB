@@ -1,0 +1,71 @@
+;==============================================================
+;にとり口上
+;小規模な関数はこっちに
+;==============================================================
+@K40_NAMEINPUT
+	PRINTL 名前を入力してください
+		PRINTL 　
+		$INPUT_LOOP_6
+		INPUTS
+		STRLENS RESULTS
+		IF RESULT > 14
+			PRINTFORML 「ん……？　ちょっと長くて、わかんなかった」
+			GOTO INPUT_LOOP_6
+		ELSEIF RESULTS == ""
+			GOTO INPUT_LOOP_6
+		ELSE
+			IF RESULTS == "にとり"
+				PRINTFORML 「珍しいこともあるもんだね、同じ名前だよ」
+			ELSE
+				PRINTFORML 「%RESULTS%？」
+			ENDIF
+			PRINTL [0] はい
+			PRINTL [1] いいえ
+			$INPUT_LOOP_7
+			INPUT
+			IF RESULT == 0
+				MASTERNAME = %RESULTS%
+				PRINTFORMW %CALLNAME:MASTER%は、名前%MASTERNAME%を教えた
+			ELSEIF RESULT == 1
+				GOTO INPUT_LOOP_6
+			ELSE
+				GOTO INPUT_LOOP_7
+			ENDIF
+		ENDIF
+RETURN 0
+
+@K40_NAMEINPUT_2
+	PRINTL 名字を入力してください
+		PRINTL 　
+		$INPUT_LOOP_NAME_3
+		INPUTS
+		STRLENS RESULTS
+		IF RESULT > 14
+			PRINTFORML 「ん……？　ちょっと長くて、わかんなかった」
+			GOTO INPUT_LOOP_NAME_3
+		ELSEIF RESULTS == ""
+			GOTO INPUT_LOOP_NAME_3
+		ELSE
+			IF RESULTS == "河城"
+				PRINTFORML 「珍しいこともあるもんだね、同じ名字だよ」
+			ELSE
+				PRINTFORML 「%RESULTS%？」
+			ENDIF
+			PRINTL [0] はい
+			PRINTL [1] いいえ
+			$INPUT_LOOP_NAME_4
+			INPUT
+			IF RESULT == 0
+				CSTR:90 = %RESULTS%
+				PRINTFORMW %CALLNAME:MASTER%は、名字%CSTR:90%を教えた
+			ELSEIF RESULT == 1
+				GOTO INPUT_LOOP_NAME_3
+			ELSE
+				GOTO INPUT_LOOP_NAME_4
+			ENDIF
+		ENDIF
+RETURN 0
+
+;@K40_BESTIALITY
+;獣姦関係で何かできないか　好感度とか
+;FLAG:72

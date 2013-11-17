@@ -1,0 +1,4108 @@
+;-------------------------------------------------
+;※勝手にぱるコン！（仮名）ver. 0.95にて変換したファイルです※
+;（RR1317系列用構文をYM用構文に置換したものです）
+;-------------------------------------------------
+;サニーミルク調教時、スターサファイア口上
+;サニーの逆レイプと助手を犯させるのスター口上書いていたら「あ、俺スタ×サニ派なんだ」と気付いたので本能に従いました
+;スターの数少ない個性素質「小悪魔」全開で。これあるからスターは調教自慰コマンド簡単に出せるので助かります
+;-------------------------------------------------
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG 501を使用
+;-------------------------------------------------
+@LES_EVENTTRAIN_K45_M47
+;-------------------------------------------------
+;初調教時 CFLAG501
+;-------------------------------------------------
+IF CFLAG:5501 == 0
+	DRAWLINE
+	PRINTFORMW 「ちょっとー。悪ふざけも大概にしないと怒るわよ」
+	PRINTFORMW 『まあまあここは落ち着いて裸になった気持ちで腹を割って話し合いましょう』
+	PRINTFORMW 「その腹の中にどれくらい薄皮饅頭入っているのやら」
+	CFLAG:5501 = 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG500
+;-------------------------------------------------
+;屈服刻印Lv1
+ELSEIF CFLAG:5501 < 2 && MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 『あはっ、サニー。私が来るまできょときょとして落ち着きがないったら』
+	PRINTFORMW 「まあどこに隠れてどうやってあんたに一撃くれてやろうかと考えてたわけよ」
+	CFLAG:5501 = 2
+;屈服刻印Lv2
+ELSEIF CFLAG:5501 < 3 && MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 『サニー、ベッドの下に隠れても私の能力で丸わかりよ』
+	PRINTFORMW 「わかってるわよ！……ちょっと顔会わせたくなかっただけよ」
+	PRINTFORMW 『嫌われたわね』
+	CFLAG:5501 = 3
+;屈服刻印Lv3
+ELSEIF CFLAG:5501 < 4 && MARK:2 == 3 && EXP:12 < 1000 && ABL:32 < 3
+	DRAWLINE
+	PRINTFORMW 「ねえスター、今更なんだけどなんでこんなことしているわけ？」
+	PRINTFORMW 「そりゃ『えっちさせてー』って言われたら嫌だけどこのやり方よりかはマシなはずよ」
+	PRINTFORMW 『じゃあ、えっちさせて？』
+	PRINTFORMW 「遅いわよッ！……本当に、そう初めから言ってくれたら、私も嫌がったりしないで……」
+	PRINTFORMW 「その……」
+	PRINTFORMW 『強引にしたのは悪かったわ。ごめんなさい。サニーのこと思ったら歯止めが効かなくって』
+	PRINTFORMW 「これからはいくらでもしていいから、きちんと優しくしてね？」
+	CFLAG:5501 = 4
+;陥落イベント
+ELSEIF CFLAG:5501 < 5 && EXP:12 >= 1000 && ABL:32 >= 3 && MARK:9 == 0
+	DRAWLINE
+	PRINTFORMW 「つくづく、スターの考えていることってよくわかんない」
+	PRINTFORMW 「ずっとずっと傍に居続けて、最近はえっちぃことのし合いっこもするけど全然わかんない」
+	PRINTFORMW 「そんな私見て、スターはずっとにこにこしてる！そんなにおかしいの？」
+	PRINTFORMW 「私……やっぱりスターのおもちゃなんだよね」
+	PRINTFORMW 『サニーは私が嫌い？』
+	PRINTFORMW 「嫌いだったら今頃レーザーで頭吹き飛ばしてるわ」
+	PRINTFORMW 『うふふ。私もサニーが好き。それでいいじゃない』
+	PRINTFORMW 「む、むー。やっぱりおもちゃにされてる！私たち友達じゃなかったっけ！？」
+	PRINTFORMW 『おもちゃにすることもできる、立派なパートナーじゃない』
+	PRINTFORMW 「……ぁ」
+	PRINTFORMW 『ね？』
+	PRINTFORMW 「うんっ」
+	CFLAG:5501 = 5
+;-------------------------------------------------
+;調教開始時（二回目以降）
+;-------------------------------------------------
+;反発刻印Lv3
+ELSEIF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW 「あっち行けーッ！来るなーッ、来んなーーーーッ！！」
+	PRINTFORMW スターめがけて枕やシーツなどが飛んできた
+;屈服刻印Lv0
+ELSEIF MARK:2 == 0
+	DRAWLINE
+	PRINTFORMW 「退屈よー。早く家に帰って人間からかって遊ぼーよー」
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 『どう、慣れてきた？』
+	PRINTFORMW 「スターがそういう性格なのは前から慣れてるわ」
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 『サニー、お待たせ～』
+		PRINTFORMW 「待っているのは正気のスターなんだけど……」
+	ELSE
+		PRINTFORMW 『私の足音聞こえたとたん、びくぅってしたでしょ？』
+		PRINTFORMW 「ちょ……ちょっとは」
+	ENDIF
+;屈服刻印Lv3+陥落前
+ELSEIF MARK:2 == 3 && CFLAG:5501 < 5
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 『サニー、私の服脱がせてくれない？』
+		PRINTFORMW 「仕方ないなぁ。自分でやってよー、それくらい」
+	ELSE
+		PRINTFORMW 『サニー、お洋服脱がせてあげるわね』
+		PRINTFORMW 「自分でするわよ、これくらいっ」
+	ENDIF
+;陥落済み
+ELSEIF CFLAG:5501 >= 5
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:3 == 0
+		PRINTFORMW 「スター！もう遅いわよっ、待ってたんだから」
+		PRINTFORMW 『わわっ、引っ張らないで！こけちゃう！こけちゃうってば！』
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「前の疲れはすっかり取れた？じゃないと今日の私にゃついてこれないわよっ」
+		PRINTFORMW 『ふふっ、お手柔らかにお願いね』
+	ELSE
+		PRINTFORMW 『お待たせ、サニー』
+		PRINTFORMW 「待った待った待ちくたびれた～っ！待たせて溜まった物は体で払ってもらうんだから！」
+	ENDIF
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@LES_EVENTEND_K45_M47
+
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW 「あっち行け！あっち……行ってよォ……ひぐっ」
+	PRINTFORMW 「スター、帰ってきてよ……いつものスター……帰ってきてぇ……」
+	RETURN 1
+
+;屈服刻印Lv1未満
+ELSEIF MARK:2 <= 1
+	DRAWLINE
+	PRINTFORMW 「もう、えっち！さっさと出てけ！」
+	PRINTFORMW 『言われなくてもすたこらさっさよ』
+	PRINTFORMW 「あ、いや……うぅっ、次会ったら謝ろうかしら」
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 「今度来る時はせめておみやげ持ってきてよー。甘いものとかー」
+		PRINTFORMW 『媚薬入りキャンディーね、わかったー』
+		PRINTFORMW 「二度と来んなーーーーーッ」
+	ELSE
+		PRINTFORMW 「はー……今回もお疲れさまでした」
+		PRINTFORMW 『お疲れ様でした。ゆっくり休んでね。まだまだ先は長いから』
+		PRINTFORMW 「やんなっちゃうわー……」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && CFLAG:5501 < 5
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 『日に日にサニー、上手になっているわね。このままじゃ私追い抜かれそう』
+		PRINTFORMW 「そりゃスターをひぃひぃ言わせるために鍛えてるんだから。でも今日は疲れたー」
+		PRINTFORMW 『お疲れ様。根を詰めちゃだめよ』
+	ELSE
+		PRINTFORMW 「今日も楽しかったけど、今度は何して遊ぼっか？」
+		PRINTFORMW 『今のうちに決めておきましょうか』
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3＋陥落済み＋体力500未満
+ELSEIF MARK:2 == 3 && CFLAG:5501 >= 5 && BASE:0 < 500
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 「はぁ……はァ……す、スター……生きてる？」
+		PRINTFORMW 『す、凄かったわ……あーこのまま溶けて死んでもいいかも』
+	ELSE
+		PRINTFORMW 「まだまだ……鍛えなきゃ、ね」
+		PRINTFORMW 『うん……』
+	ENDIF 
+	RETURN 1
+
+;屈服刻印Lv3＋陥落済み
+ELSEIF MARK:2 == 3 && CFLAG:5501 >= 5
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 「次に遊ぶために。次に次に遊ぶために……休憩？」
+		PRINTFORMW 『いくら妖精でも、限界があるもの。すっかりお日様浴びたら、また遊びましょ』
+	ELSE
+		PRINTFORMW 『じゃ、今日はこのくらいにして、お風呂入って寝ましょ』
+		PRINTFORMW 「ふふふ……お風呂？お風呂……お風呂♪」
+		PRINTFORMW 『もう、サニーはえっちな妖精なんだから……』
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係（45をキャラ番号に置換、47を助手のキャラ番号に置換）
+;コマンド実行時に出力されます
+;--------------------------------------------------
+@LES_MESSAGE_COM_K45_M47
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG 561～645を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG561
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:5561 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			PRINTFORMW 「スター…だめ…私、触られただけなのに」
+			PRINTFORMW 『大丈夫、優しくしてあげるから。これからはずっと優しくしてあげるから…』
+		;それ以外
+		ELSE
+			PRINTFORMW 「きゃはははっ！スター、やめてよぉ、くすぐったいったらぁ！」
+			PRINTFORMW 『……私、ヘタなのかしら』
+		ENDIF
+			CFLAG:5561 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み+屈服刻印Lv3
+		IF CFLAG:5501 >= 5 && MARK:2 == 3
+		IF RAND:2 == 0
+			PRINTFORMW 二匹の妖精はベッドの上できゃっきゃと無邪気に絡み合っている
+		ELSE
+			PRINTFORMW 「スターばっか、んっ、責めて、ずる、いっ、イィっ！」
+			PRINTFORMW 『サニーこそ自分ばかり気持ちよくなってずるいわっ、可愛いわっ、愛してるわっ！』
+		ENDIF
+			CFLAG:5561 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+		IF RAND:2 == 0
+			PRINTFORMW 『サニーの髪の毛一本まで愛してあげるからね……』
+			PRINTFORMW 「ちょっ、息っ、くすぐった……はん……」
+		ELSE
+			PRINTFORMW 『もう、お股閉じちゃだ～め』
+			PRINTFORMW 「だって、これ以上は、だめ、だめぇっ！」
+		ENDIF
+			CFLAG:5561 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+		IF RAND:2 == 0
+			PRINTFORMW 『サニー……クリよりおっぱいで感じてる？』
+			PRINTFORMW 「さわ、られると、背筋まで、なんか、来るッ」
+		ELSE
+			PRINTFORMW 「スター、焦らさないでェ。なんか、なんか変なの、おかしいの……」
+			PRINTFORMW 『もう、堪え性がないったら……♪』
+		ENDIF
+			CFLAG:5561 = 3
+		;それ以外
+		ELSEIF MARK:2 <= 1
+		IF RAND:2 == 0
+			PRINTFORMW 『どうサニー？気持ち良くなってきた？』
+			PRINTFORMW 「マッサージならもっとちゃんと揉んでよぉ」
+		ELSE
+			PRINTFORMW 「んもぅっ、スターのくすぐり魔！いつかやり返してやるわ」
+			PRINTFORMW 『その時のためにちゃんとやり方教えてあげるわね』
+		ENDIF
+			CFLAG:5561 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG562
+;岩清水 CFLAG563
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:5562 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			PRINTFORMW 「スター…何もそこまでして気持ち良くしてくれなくっても構わないんだよ？」
+			PRINTFORMW 『もう、私はなんのためにいると思っているの？』
+			PRINTFORMW 「えらく哲学的な問題ね…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「スター！？だめっ、そこ、おしっこ出るとこ…ひゃっ！」
+			PRINTFORMW 『あらぁ？間違ったかなぁ』
+		ENDIF
+			CFLAG:5562 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW サニーに慈しむように髪を撫でられたスターは一層激しく彼女にむしゃぶりついた
+		ELSE
+			PRINTFORMW 『大人の人間はこのあたり毛だらけよね。サニーがホント妖精で良かった』
+			PRINTFORMW 「ちくちくしそうだもんね」
+		ENDIF
+			CFLAG:5562 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 『もむっ？…もーっ、ふとももで顔挟まないでよぉ』
+			PRINTFORMW 「ついつい」
+			CFLAG:5562 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「そんなとこ、おいしいの…？」
+			PRINTFORMW 『私ので良ければ味見してみる？』
+			CFLAG:5562 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611 || (SELECTCOM == 1 && TEQUIP:56)
+	;陥落済み+露出癖Lv3以上+C感覚Lv3以上
+	IF CFLAG:5501 >= 5 && ABL:14 >= 3 && ABL:0 >= 3
+		PRINTFORMW 
+		CFLAG:5563 = 6
+	;陥落済み
+	ELSEIF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5563 = 5
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:0 >= 3 && ABL:14 >= 3
+		PRINTFORMW 
+		CFLAG:5563 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 
+		CFLAG:5563 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5563 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG564
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:5564 == 0
+		PRINTFORMW 
+		CFLAG:5564 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5564 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5564 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5564 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5564 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG565
+;シャワーオナニー CFLAG566
+;-------------------------------------------------
+;通常自慰（シャワー無し）
+IF SELECTCOM == 7 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:5565 == 0
+		PRINTFORMW 『さぁサニー。いつもみたいにおなにーしてくれる？』
+		PRINTFORMW 「い、いつもっ！？」
+		PRINTFORMW 『姿は光の屈折で消しても私には意味がないのよ？』
+		PRINTFORMW 「み、見ていたの！？」
+		PRINTFORMW 『中途半端に輪郭だけ見えるものだから余計に興奮しちゃったわ』
+		CFLAG:5565 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋自慰中毒Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:30 >= 3
+		IF RAND:3 == 0
+			PRINTFORMW 「スター、お願い、手ぇ握って。それだけで、それだけでいいから！」
+			PRINTFORMW 『仕方ないわね……ちゃんと私が見てないとダメなんだから』
+			PRINTFORMW 「だめなの、私、スターがいないともうだめなの、おかしくなっちゃうの！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「スター…来て…お願い、よぉ……一人じゃ、んっ…切なすぎるからぁ…」
+			PRINTFORMW スターはふらふらと伸びようとする手に、はっとして首を左右に振るが
+			PRINTFORMW 目の焦点が再びサニーで結ばれるとごくりと喉を慣らして唾を呑み込んだ
+		ELSE
+			PRINTFORMW 自ら生む快楽に溺れきったサニーをスターはどこか遠い目で眺めている
+		ENDIF
+			CFLAG:5565 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+		IF RAND:3 == 0
+			PRINTFORMW 「私今日自分でして何回イっちゃうかな……スター、数えててくれる？」
+			PRINTFORMW 『サニー見ていたら興奮して数えきれないかも……』
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「おまんこ……スター、おまんこちょうだい！おまんこ見せて！」
+			PRINTFORMW 『サニーが私をおかずにしてる……サニーが私をおかずにしてる！」
+		ELSE
+			PRINTFORMW 「スターに見てもらわないと感じられなくなっちゃった…責任取ってくれるわよね？」
+			PRINTFORMW 『もう、サニーったら』
+		ENDIF
+			CFLAG:5565 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「はぁ……あ、ぁ、あん……」
+			PRINTFORMW とろんととろけた瞳で一人絶頂に達しようとするサニーにスターは股間を濡らした
+		ELSE
+			PRINTFORMW 「見ないで……スター、こんなの見ないでよ……」
+		ENDIF
+			CFLAG:5565 = 3
+		;それ以外
+		ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「スターはいつも一歩引いて一体何を見てるのよ？」
+			PRINTFORMW 『そりゃサニー以外ないでしょう』
+		ELSE
+			PRINTFORMW 「ホント見るのが好きね」
+			PRINTFORMW 『そうでもないわ。サニーたちと悪戯している方が楽しいわよ』
+		ENDIF
+			CFLAG:5565 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;シャワーオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:54
+	;初めて
+	IF CFLAG:5566 == 0
+		PRINTFORMW 
+		CFLAG:5566 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋自慰中毒Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:30 >= 3
+			PRINTFORMW 
+			CFLAG:5566 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5566 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 
+			CFLAG:5566 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5566 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラされる(ふたなり/オトコのみ) CFLAG567
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:5567 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5567 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5567 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5567 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5567 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG568
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:5568 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「舐めな……！私のおっぱいはミルクなんか出ないわよっ」
+			PRINTFORMW 『出たらしゃぶりついているわよ』
+		;それ以外
+		ELSE
+			PRINTFORMW 「も、もう！女の子同士でもやっていいことと悪いことがあるのよ！」
+			PRINTFORMW 『じゃあこれくらいはいいことね。んっ、私より小さいかしら』
+		ENDIF
+			CFLAG:5568 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW 「おっぱ……い、ぃ、いい……もっといぢめてぇ」
+		ELSE
+			PRINTFORMW 『サニーの胸、すごくどきどきしてるわよ』
+		ENDIF
+			CFLAG:5568 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 『サニーの心もこれくらい鷲掴みにしてみたいものね』
+			PRINTFORMW 「ぶっそうなこと言わないでよ……」
+			CFLAG:5568 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「乳首……つねらないでぇ」
+			PRINTFORMW 『おっぱいがそんなにいいの？』
+			CFLAG:5568 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キス CFLAG569
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:5569 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「…改めて」
+			PRINTFORMW 『どうしたの？』
+			PRINTFORMW 「いや、ちゅーだけってのも新鮮というかまずそれから始めるべきだったっていうか」
+			PRINTFORMW 『……そんなこと言われるとちょっとやりにくいわ』
+			PRINTFORMW 「じゃあ…まぁ…いくわよ？」
+			PRINTFORMW 『…………(こくり)』
+			PRINTFORMW ………………
+			PRINTFORMW …………
+			PRINTFORMW ……
+			PRINTFORMW ちゅっ
+			PRINTFORMW 「「ぷはぁっ！」」
+			PRINTFORMW 『サニー思い切り遅すぎ！酸欠で死ぬかと思ったわ！』
+			PRINTFORMW 「スターこそいつもリードしてくれるくせに！」
+		;それ以外
+		ELSE
+			PRINTFORMW 『じゃんけんぽん！』
+			PRINTFORMW 「え？あ、それ！」
+			PRINTFORMW 『あっち向いてほい！』
+			PRINTFORMW ちゅっ
+			PRINTFORMW 「……ぇえ゛っ！？ちょっ、スター！」
+			PRINTFORMW 『お粗末様です』
+		ENDIF
+			CFLAG:5569 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW (スターの髪…おめめ…羽根…膝がおまんこに擦り寄って……)
+			PRINTFORMW (サニーの歯…おしり…羽根…胸がおっぱいに擦れ合って……)
+			CFLAG:5569 = 4
+		;従順Lv2以上
+		ELSEIF ABL:10 >=2
+			PRINTFORMW 「なんでキスが愛の証なのかしら」
+			PRINTFORMW 『やり続ければそのうちわかるものでしょうよ』
+			CFLAG:5569 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 『サニー、嫌そうね。私のキス下手かしら』
+			PRINTFORMW 「八重歯舐めなきゃもうちょっとマシかも」
+			CFLAG:5569 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG570
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:5570 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5570 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋欲情Lv3以上
+		IF CFLAG:5501 >= 5 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 
+			CFLAG:5570 = 4
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5570 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5570 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG571
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:5571 == 0
+		;屈服刻印Lv3+陥落済み
+		IF MARK:2 == 3 && CFLAG:5501 >= 5
+			PRINTFORMW 『さて問題よサニー？この機械、どんな風に使うんでしょう？』
+			PRINTFORMW 「スターのやることはなんだって気持ちいいことに決まってるじゃない」
+			PRINTFORMW 『嬉しいこと言ってくれるじゃないの』
+			PRINTFORMW 「あっー」
+		;それ以外
+		ELSE
+			PRINTFORMW 『さて問題よサニー？この機械、どんな風に使うんでしょう？』
+			PRINTFORMW 「どうせロクでもないことでしょ…」
+			PRINTFORMW 『ふふっ、せーいかーいっ。じゃあご褒美に使わせてあげる』
+			PRINTFORMW 「ふみゅ？ひゃあんっ！？」
+		ENDIF
+			CFLAG:5571 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋屈服刻印Lv3
+		IF CFLAG:5501 >= 5 && MARK:2 == 3
+			PRINTFORMW 『よがってよだれこぼしてしょうがないったら…。んちゅっ、サニーの唾、おいしっ』
+			CFLAG:5571 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 『自分からお股開くようになったのね。感心感心』
+			PRINTFORMW 「スターにだけよ…」
+			CFLAG:5571 = 3
+		;それ以外
+		ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「やけに…使い慣れているわね」
+			PRINTFORMW 『おなにーする時便利なのよ。終わったら置いておくわね』
+			PRINTFORMW 「いや持って帰ってよ」
+		ELSE
+			PRINTFORMW 『嫌だったらぱんつはいてもいいのよ。そのかわり後で染みたっぷりのそれ頂戴ね』
+			PRINTFORMW 「なんに使うつもりよ！？」
+			PRINTFORMW 『皆まで言わせるなんてサニーったら変態さん♪』
+		ENDIF
+			CFLAG:5571 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG572　CFLAG573
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:5572 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;陥落済み＋従順Lv5
+			IF CFLAG:5501 >= 5 && ABL:10 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		;非処女
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		ENDIF
+			CFLAG:5572 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5572 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5572 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5572 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5573 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5573 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;Ｅマッサージャ CFLAG574
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:5574 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5574 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5574 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5574 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5574 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG575　CFLAG576
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5575 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5575 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5575 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5575 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5575 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5575 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5576 = 3
+	;A感覚Lv3以上
+	ELSEIF ABL:2 >= 3
+		PRINTFORMW 
+		CFLAG:5576 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5576 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG577　CFLAG578
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30 == 1
+	;初めて
+	IF CFLAG:5577 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5577 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5577 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5577 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5578 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5578 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG579　CFLAG580
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35 == 1
+	;初めて
+	IF CFLAG:5579 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5579 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5579 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5579 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5580 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5580 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG581　CFLAG582
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35 == 2
+	;初めて
+	IF CFLAG:5581 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5581 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5581 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5581 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5582 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5582 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG583　CFLAG584
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30 == 2
+	;初めて
+	IF CFLAG:5583 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5583 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5583 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5583 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5584 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5584 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG585
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:5585 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;陥落済み＋従順Lv5
+			IF CFLAG:5501 >= 5 && ABL:10 >= 5
+				PRINTFORMW 『やっと気を許してくれたことだしここまでがんばった二人にはご褒美がいるわね』
+				PRINTFORMW 「おっ、祝賀会？いいわね♪お酒も肴もたくさん用意してどんちゃんやりましょ」
+				PRINTFORMW 『お赤飯も炊かないとね』
+				PRINTFORMW 「それはちょっと違うんじゃない？」
+				PRINTFORMW 『違わないわよ。今にわかるからちょっと寝転んで』
+				PRINTFORMW 「？？？」
+			;それ以外
+			ELSE
+				PRINTFORMW 仰向けに寝そべってと指示されたサニーは素直にそうしたが不安げにスターを見上げた
+				PRINTFORMW 「なんか……怖いわよスター」
+				PRINTFORMW 『怖くもないし難しいことでもないわ。サニーは寝ていたらいいだけ』
+				PRINTFORMW 『これからサニーを丸ごと愛してずたずたにしてあげる……』
+				PRINTFORMW サニーが声にもならない悲鳴を喉元まで出しかかった瞬間、スターは太股を掴んだ
+				PRINTFORMW 『行くわね』
+				PRINTFORMW 「や、やめ」
+			ENDIF
+		;非処女
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		ENDIF
+			CFLAG:5585 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW 二匹の妖精はお互いの名を呼び合いながら激しく腰を打ち据え、愛しあった
+		ELSE
+			PRINTFORMW 「スターのすごい挿入ってるっ。揺さぶって！何もわからなくなるまで揺さぶって！」
+			PRINTFORMW 『私の方が先にっ、なんにもわからなくなっちゃいそう』
+		ENDIF
+			CFLAG:5585 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5585 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5585 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5585 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG586
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:5586 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;陥落済み＋従順Lv5
+			IF CFLAG:5501 >= 5 && ABL:10 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		;非処女
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		ENDIF
+			CFLAG:5586 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5586 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5586 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5586 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5586 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルセックス CFLAG587
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:5587 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5587 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5587 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5587 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5587 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5587 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG588
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:5588 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5588 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5588 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5588 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG589
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:5589 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「こうするのが男の人のおなにー？なの？なんつーか随分アバウトね」
+			PRINTFORMW 『も、もうっ、乱暴に擦らないでよ。これで繊細なんだから』
+		;それ以外
+		ELSE
+			PRINTFORMW 「…スターにこんな趣味があったとは」
+			PRINTFORMW 『優しくしてね？』
+		ENDIF
+			CFLAG:5589 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 「ねぇ、かぷってしちゃだめ？」
+			PRINTFORMW 『だぁーめ。手のテクニックを上げてもらわなくちゃ』
+			CFLAG:5589 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「これ…どこまで大きくなるのよ？」
+			PRINTFORMW 『サニーと私の愛情分くらい？』
+			CFLAG:5589 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「びくびくってして、怖いの？」
+			PRINTFORMW 『サニーの手つきが…っ、雑すぎるの……！』
+			CFLAG:5589 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG590
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:5590 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「……味、しないわね」
+			PRINTFORMW 『おしょうゆでもかけてみる？』
+			PRINTFORMW 「塩辛くってやってらんなくなると思うわ」
+			PRINTFORMW 『じゃあクリームとか』
+			PRINTFORMW 「愛情が最高の調味料でしょ」
+			PRINTFORMW 『あは、じゃ頑張って愛情エキス出さないとだめね』
+		;それ以外
+		;スーパーでサニーレタス見ると過剰反応するようになった昨今。鈴仙もレタスたらふく食うと肉パイにされるんだろうか
+		ELSE
+			PRINTFORMW 「おちんちんくわえるって……何食べたらそんな発想出てくるのかしら」
+			PRINTFORMW 『サニー、とか？』
+			PRINTFORMW 「レタスでも食べてゆっくり寝た方がいいんじゃない？」
+		ENDIF
+			CFLAG:5590 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 
+			PRINTFORMW 
+			CFLAG:5590 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			PRINTFORMW 
+			CFLAG:5590 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 『痛い痛い！サニー歯ぁ当たってる歯が！』
+			PRINTFORMW 「当ててんのよ」
+			CFLAG:5590 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG591
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:5591 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「…そりゃスターのお願いなんだからやってあげたい気持ちは満々よ。けど無理が…」
+			PRINTFORMW 『サニーのおっぱいがいいの。おっきくなくたって平べったくたって』
+			PRINTFORMW 『私はサニーが一生懸命してくれたら嬉しいの』
+		;それ以外
+		ELSE
+			PRINTFORMW 「自分にできること言ってよ！やれるもんならやってみてよスター！」
+			PRINTFORMW 「ええわかってるわ。スターは私よりおっきい。ルナよりおっきい。でも挟める？」
+			PRINTFORMW 「挟むだけのものがない！それが私たち妖精！巫女に勝つより不可能よ！」
+			PRINTFORMW 『逆に考えるのよ、サニー』
+			PRINTFORMW 「？」
+			PRINTFORMW 『これができたら巫女にも勝てる……巫女だってできるかどうか怪しいんだから』
+			PRINTFORMW 「！」
+			PRINTFORMW 『さあサニー！私と貴女の力を合わせて巫女を屈服させちゃいましょう！』
+			PRINTFORMW 「わかったスター！私やってみせる！」
+		ENDIF
+			CFLAG:5591 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 『サニーの胸どきどきしてる……おちんちんからどくどく伝わってるわ』
+			PRINTFORMW 「スターのもぴくぴくして……イく？イっちゃう？」
+			CFLAG:5591 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「乳首におちんちん擦りつけないでよぉ」
+			PRINTFORMW 『サニーにもちょっとは感じてもらいたいの』
+			CFLAG:5591 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「スターこれ本当に気持ちいいの？」
+			PRINTFORMW 『サニーがしてくれるならなんだって最高よ』
+			CFLAG:5591 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG592
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:5592 == 0
+		;陥落済み有り
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5592 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み有り
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5592 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5592 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG593
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:5593 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;陥落済み＋従順Lv5
+			IF CFLAG:5501 >= 5 && ABL:10 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		;非処女
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		ENDIF
+			CFLAG:5593 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5593 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5593 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5593 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5593 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG594
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:5594 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5594 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5594 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5594 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5594 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5594 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5594 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG595
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:5595 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5595 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5595 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5595 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5595 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5595 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5595 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG596
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:5596 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5596 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5596 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5596 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5596 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5596 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5596 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG597　CFLAG:5598
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41 == 1
+	;初めて
+	IF CFLAG:5597 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5597 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5597 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5597 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5597 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5597 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5597 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5598 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5598 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG599　CFLAG:5600
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:5599 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5599 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5599 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5599 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5599 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5599 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5599 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5600 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5600 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ CFLAG601　CFLAG:5602
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 226 && TEQUIP:42 == 1
+	;初めて
+	IF CFLAG:5601 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5601 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5601 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5601 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5601 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5601 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5601 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 226 && TEQUIP:42 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5602 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5602 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;浣腸 CFLAG603
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 174 && TEQUIP:25 == 7
+	;初めて
+	IF CFLAG:5603 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5603 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5603 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5603 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5603 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5603 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;排泄 CFLAG604
+;-------------------------------------------------
+IF TEQUIP:25 == 0 && SELECTCOM == 174
+	;初めて
+	IF CFLAG:5604 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5604 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5604 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5604 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5604 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5604 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローション使用 CFLAG605
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:5605 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「うわっ、べっちゃべちゃあ」
+			PRINTFORMW 『後で一緒にお風呂入ればいいじゃない』
+			PRINTFORMW 「そこでもえっちぃことするくせに」
+			PRINTFORMW 『期待しているくせに』
+		;それ以外
+		ELSE
+			PRINTFORMW 「んもぅっ、スター何すんのよ！どろっどろになっちゃったじゃない！」
+			PRINTFORMW 『サニーミルクのあんかけ風・スターサファイア仕立て♪』
+			PRINTFORMW 「あんたから料理してやる！」
+			PRINTFORMW サニーはスターに躍りかかると二匹揃ってどろどろになるまで絡み合った
+		ENDIF
+			CFLAG:5605 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「ルナが拾ってきた本のムッキムキお兄さんがこんな感じにてかてかしてたわよね？」
+			PRINTFORMW 『サニーも鍛える？』
+			CFLAG:5605 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こうてかてかすると姿もくらましやすいわね」
+			PRINTFORMW 『私にサニーのお得意は通用しないわよ』
+			CFLAG:5605 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬使用 CFLAG606
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:5606 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「そんなんホントに効くのかしら」
+			PRINTFORMW 『呑むのはタダなんだからいいじゃない』
+		;それ以外
+		ELSE
+			PRINTFORMW 銚子を二本持ってきたスターはサニーの前で正座して
+			PRINTFORMW 『まま一杯』
+			PRINTFORMW と杯に注いでやった
+			PRINTFORMW 「……なんか入ってるわね」
+			PRINTFORMW 『あ、バレてる』
+			PRINTFORMW 「きのこの毒見毎回させられているからね！」
+			PRINTFORMW 『なーんにも入ってないってばぁ。ほらっ』
+			PRINTFORMW くいっ、とサニーに差し出した杯をスターは呑み干した
+			PRINTFORMW サニーは一瞬もう一つ用意された杯に手を伸ばしかけるが、ぶんぶんと首を横に振る
+			PRINTFORMW 「あんたさっき『バレた』って言ったでしょーが！」
+			PRINTFORMW 『言ったわねぇ……でも、いいわ。それら。独りで呑むもの』
+			PRINTFORMW サニーに背中を向けたスターはちびちび銚子を傾ける
+			PRINTFORMW 「……あの、いや、ごめん」
+			PRINTFORMW 『……っく、ひっく』
+			PRINTFORMW 「酔いが早いわね……」
+			PRINTFORMW 『っく……ふふ。うふふ』
+			PRINTFORMW 「ちょっとスター……？スター？このお酒何入ってんのよ！？」
+			PRINTFORMW サニーがスターの手から銚子をひったくり匂いを確かめようと隙を見せた途端
+			PRINTFORMW がばりと顔を上げたスターはサニーの両頬を両手で挟み込み口付けした
+			PRINTFORMW 驚きで硬直するサニーの歯をスターの舌がこじ開け酒を流し込む
+			PRINTFORMW 二人の唇から酒が零れ、サニーの喉がこくりと動いた
+			PRINTFORMW ぺたり尻餅をついたサニーに押され、銚子が酒を撒きながらころころ床を転がる
+			PRINTFORMW 「……ひっく……ひくっ……っく……ふふ」
+			PRINTFORMW 『うふふ、ふふ、うふふふふ』
+		ENDIF
+			CFLAG:5606 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 口移しで呑ませたはずのスターだがやがて二人はお互いの口を貪り合い
+			PRINTFORMW どちらともなくベッドに倒れ絡み合い嬌声を上げ始めた
+			CFLAG:5606 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅっ、お酒は万病の薬だけど飲みすぎはよくないのよ？」
+			PRINTFORMW 『呑むでしょ？』
+			PRINTFORMW 「呑む」
+			CFLAG:5606 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオカメラ使用 CFLAG607
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:5607 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 『サニー、好きな食べ物は？』
+			PRINTFORMW 「甘いも……は？すたーのくちびるです……？なに？」
+			PRINTFORMW 『好きな飲み物は何かしら？』
+			PRINTFORMW 「お酒…え？すたーのよだれ……？スターさっきからなんで後ろで看板出してるの？」
+			PRINTFORMW 『ここ後で編集ね』
+		;それ以外
+		ELSE
+			PRINTFORMW 『さて……私たちの愛の記録でも撮りましょうか』
+			PRINTFORMW 「あ、何それスターばっかりずるい。私にもいぢらせてよ」
+			PRINTFORMW 『壊したら体で弁償してもらうわよー』
+		ENDIF
+			CFLAG:5607 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW 『サニー、こっち来て。私の隣に一緒に座って』
+			PRINTFORMW 「えー、まだるっこしい。いきなりでいいじゃない」
+			PRINTFORMW 『全編絡みシーンばかりだと飽きられるの。減り張りよ減り張り』
+		ELSE
+			PRINTFORMW 「ところでさぁスター。これ、なんで私たちだけのヒメゴト？にしないの？」
+			PRINTFORMW 『私たち二人で誰かがおちんちんしこしこしてくれるって素敵じゃないかしら』
+			PRINTFORMW 「そうかなぁ」
+		ENDIF
+			CFLAG:5607 = 3
+		;それ以外
+		ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 『サニー、ほら笑顔。いや仏頂面も可愛いんだけどそう思うのはなぜか私だけだから』
+			PRINTFORMW 「誰かに見られるのも嫌だけどあんたにばかり見られるのも嫌ね……」
+		ELSE
+			PRINTFORMW 『サニー、この前買ってくれたお客さんたちから反響があったわよ！』
+			PRINTFORMW 『妖精なんてどこにだっているけれど妖精同士っていう新機軸は成功したみたいね！』
+			PRINTFORMW 『あ、私が一家に一台欲しいっていう反響ある。どうする？』
+			PRINTFORMW 「さっさと行っちゃえ」
+		ENDIF
+			CFLAG:5607 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG608　CFLAG:5609
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:5608 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5608 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋露出癖Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:14 >= 3
+			PRINTFORMW 
+			CFLAG:5608 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 
+			CFLAG:5608 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5608 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5609 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5609 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG610
+;-------------------------------------------------
+IF SELECTCOM == 26
+	;初めて
+	IF CFLAG:5610 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5610 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5610 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5610 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG611
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:5611 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5611 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 
+			CFLAG:5611 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5611 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5611 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フィスト系コマンド CFLAG612
+;-------------------------------------------------
+IF SELECTCOM == 231 || SELECTCOM == 232 || SELECTCOM == 233
+	;初めて
+	IF CFLAG:5612 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5612 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5612 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5612 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5612 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5612 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG613　CFLAG:5614
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:5613 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5613 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み+触手経験20以上（消費基本値が三分の一になる）
+		IF CFLAG:5501 >= 5 && EXP:53 >= 20
+			PRINTFORMW 
+			CFLAG:5613 = 4
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5613 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5613 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;陥落済み+触手経験20以上（消費基本値が三分の一になる）
+	IF CFLAG:5501 >= 5 && EXP:53 >= 20
+		PRINTFORMW 
+		CFLAG:5614 = 3
+	;陥落済み
+	ELSEIF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5614 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5614 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・通常版 CFLAG615以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;指挿入れ CFLAG615
+;Gスポット刺激 CFLAG616
+;-------------------------------------------------
+IF SELECTCOM == 4 || SELECTCOM == 600
+	;Gスポット刺激
+	IF SELECTCOM == 600 || (PREVCOM == 4 && ABL:PLAYER:12 >= 3 || PREVCOM == 600)
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5616 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5616 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5616 = 2
+		ENDIF
+			RETURN 0
+	;指挿入れ
+	ELSE
+		;初めて
+		IF CFLAG:5615 == 0
+			;処女（処女でないキャラの場合は無記入でよい）
+			IF TALENT:0 == 1 && EXP:0 == 1
+				;陥落済み+従順Lv5
+				IF CFLAG:5501 >= 5 && ABL:10 >= 5
+					PRINTFORMW 
+				;それ以外
+				ELSE
+					 PRINTFORMW
+				ENDIF
+					CFLAG:5615 = 1
+					RETURN 0
+			;非処女
+			ELSE
+				;陥落済み
+				IF CFLAG:5501 >= 5
+					PRINTFORMW 
+				;V感覚Lv3以上
+				ELSEIF ABL:1 >= 3
+					PRINTFORMW 
+				;それ以外
+				ELSE
+					PRINTFORMW 
+				ENDIF
+					CFLAG:5615 = 1
+					RETURN 0
+			ENDIF
+		;二回目以降
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+				CFLAG:5615 = 4
+			;V感覚Lv3以上
+			ELSEIF ABL:1 >= 3
+				PRINTFORMW 
+				CFLAG:5615 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 
+				CFLAG:5615 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG617
+;-------------------------------------------------
+IF SELECTCOM == 18 &&  TEQUIP:54
+	;初めて
+	IF CFLAG:5617 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5617 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5617 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5617 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG618
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:5618 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5618 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5618 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5618 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5618 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5618 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG619
+;乱れ牡丹 CFLAG620
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:5619 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5619 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5619 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5619 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5619 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5619 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612 || (SELECTCOM == 23 && TEQUIP:56)
+	;初めて
+	IF CFLAG:5620 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5620 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み+露出癖Lv3以上+V感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:14 >= 3 && ABL:1 >= 3
+			PRINTFORMW 
+			CFLAG:5620 = 6
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5620 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3 && ABL:14 >= 3
+			PRINTFORMW 
+			CFLAG:5620 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5620 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5620 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG621
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:5621 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5621 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 
+			CFLAG:5621 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5621 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5621 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG622
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;陥落済み+おもらし癖
+	IF CFLAG:5501 >= 5 && TALENT:45
+		PRINTFORMW 
+		CFLAG:5622 = 4
+	;陥落済み
+	ELSEIF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5622 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 
+		CFLAG:5622 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5622 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG623 解除 CFLAG624
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:5623 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5623 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み+露出癖Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:14 >= 3
+			PRINTFORMW 
+			CFLAG:5623 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5623 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 
+			CFLAG:5623 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5623 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 103 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:5624 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5624 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5624 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5624 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG625 解除 CFLAG626
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:5625 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 「ね、スター。髪の洗いっこしない？」
+			PRINTFORMW 『ルナとならいいけどサニーは雑だから嫌よ』
+			PRINTFORMW 「そんなに雑かな…はぁ。ちょっと残念」
+			PRINTFORMW 『サニーの髪は私が洗ったげるわよ』
+			PRINTFORMW 「私はスターとあらいっこしたいのっ」
+			PRINTFORMW 『それじゃ、しっかり髪の洗い方教えたげる』
+		;それ以外
+		ELSE
+			PRINTFORMW 二匹は仲良く並んで脱衣所に向かった。談笑しながら服を脱いで行く
+			PRINTFORMW 「そういやこの前死神に会ったけど服は剥ぎ取らないのかな、あの人」
+			PRINTFORMW 『服を引っかけるのに良さそうな木の枝もなかったし』
+			PRINTFORMW 『最近の三途の川は服を着て渡ってもいいんでしょう』
+		ENDIF
+			CFLAG:5625 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5625 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5625 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 350 && TEQUIP:53 == 0
+	;初めて
+	IF CFLAG:5626 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 『どう？ちゃんと髪の洗い方、覚えたかしら』
+			PRINTFORMW 「今度一緒に入った時わかるわよ。見てるといいわ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5626 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5626 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5626 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;新妻プレイ CFLAG627 解除 CFLAG628
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:5627 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5627 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5627 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5627 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:5628 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5628 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5628 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5628 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG629
+;強制放尿 CFLAG630
+;-------------------------------------------------
+IF SELECTCOM == 111 || SELECTCOM == 620
+	;強制放尿
+	IF SELECTCOM == 620 || SELECTCOM == 111 && ((TALENT:45 == 0 && ABL:10 >= 4 && ABL:11 >= 3 && ABL:21 >= 3) || (TALENT:45 && TEQUIP:12 == 0))
+		;陥落済み+おもらし癖+野外プレイ
+		IF CFLAG:5501 >= 5 && TALENT:45 && TEQUIP:52
+			PRINTFORMW 
+			CFLAG:5630 = 5
+		;陥落済み+おもらし癖
+		ELSEIF CFLAG:5501 >= 5 && TALENT:45
+			PRINTFORMW 
+			CFLAG:5630 = 4
+		;露出癖Lv5
+		ELSEIF ABL:14 >= 5
+			PRINTFORMW 
+			CFLAG:5630 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5630 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5630 = 1
+		ENDIF
+	;放尿
+	ELSE
+		;陥落済み+おもらし癖+野外プレイ
+		IF CFLAG:5501 >= 5 && TALENT:45 && TEQUIP:52
+			PRINTFORMW 
+			CFLAG:5629 = 5
+		;陥落済み+おもらし癖
+		ELSEIF CFLAG:5501 >= 5 && TALENT:45
+			PRINTFORMW 
+			CFLAG:5629 = 4
+		;露出癖Lv5
+		ELSEIF ABL:14 >= 5
+			PRINTFORMW 
+			CFLAG:5629 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5629 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5629 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・アナル関連 CFLAG631以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;アナル舐め CFLAG631
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:5631 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5631 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5631 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5631 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5631 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG632 終了時CFLAG633
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25 == 5
+	;初めて
+	IF CFLAG:5632 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5632 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5632 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5632 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5632 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5632 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5633 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		CFLAG:5633 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5633 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル CFLAG634
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:5634 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5634 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5634 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5634 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5634 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5634 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG635
+;-------------------------------------------------
+IF SELECTCOM == 31
+	;初めて
+	IF CFLAG:5635 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5635 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5635 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5635 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5635 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5635 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG636
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:5636 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5636 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5636 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5636 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5636 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5636 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG637
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:5637 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5637 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5637 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5637 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5637 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5637 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG638
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:5638 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5638 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;陥落済み+潤滑Lv2以上
+		IF CFLAG:5501 >= 5 && P >= PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5638 = 5
+		;陥落済み+潤滑Lv2未満
+		ELSEIF CFLAG:5501 >= 5 && P < PALAMLV:2
+			PRINTFORMW 
+			CFLAG:5638 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5638 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5638 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;空気浣腸 開始時CFLAG639 終了時CFLAG640
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 175 && TEQUIP:25 == 8
+	;初めて
+	IF CFLAG:5639 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5639 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5639 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5639 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5639 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5639 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 175 && TEQUIP:25 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5640 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		CFLAG:5640 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5640 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;拡張バルーン 開始時CFLAG641 終了時CFLAG642
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 173 && TEQUIP:25 == 6
+	;初めて
+	IF CFLAG:5641 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5641 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5641 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5641 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5641 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5641 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 173 && TEQUIP:25 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5642 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		CFLAG:5642 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5642 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル電極 開始時CFLAG643 終了時CFLAG644
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 171 && TEQUIP:25 == 4
+	;初めて
+	IF CFLAG:5643 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5643 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5643 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5643 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5643 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5643 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5644 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		CFLAG:5644 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5644 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG645
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:5645 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5645 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み+従順Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:10 >= 5
+			PRINTFORMW 
+			CFLAG:5645 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5645 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5645 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5645 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;レズ調教コマンド CFLAG646以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;クンニ強制 CFLAG646
+;-------------------------------------------------
+IF SELECTCOM == 300
+	;初めて
+	IF CFLAG:5646 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5646 = 1
+			RETURN 0
+	ELSE
+		;陥落済み+レズっ気Lv5以上+C感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:22 >= 5 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5646 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5646 = 4
+		;レズっ気Lv3以上+C感覚Lv3以上
+		ELSEIF ABL:22 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5646 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5646 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;貝あわせ CFLAG647
+;-------------------------------------------------
+IF SELECTCOM == 301
+	;初めて
+	IF CFLAG:5647 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5647 = 1
+			RETURN 0
+	ELSE
+		;陥落済み+レズっ気Lv5以上+C感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:22 >= 5 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5647 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5647 = 4
+		;レズっ気Lv3以上+C感覚Lv3以上
+		ELSEIF ABL:22 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5647 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5647 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;３P CFLAG648
+;-------------------------------------------------
+IF SELECTCOM == 610
+	;初めて
+	IF CFLAG:5648 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5648 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5648 = 5
+		;V感覚Lv3以上＋A感覚Lv3以上
+		ELSEIF ABL:1 >= 3 && ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5648 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5648 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5648 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯させる CFLAG649
+;-------------------------------------------------
+IF SELECTCOM == 307
+	;初めて
+	IF CFLAG:5649 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5649 = 1
+			RETURN 0
+	ELSE
+		;陥落済み+レズっ気Lv5以上+C感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:22 >= 5 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5649 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5649 = 4
+		;レズっ気Lv3以上+C感覚Lv3以上
+		ELSEIF ABL:22 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5649 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5649 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｗフェラ（主人と助手のペニスを舐めさせる） CFLAG650
+;-------------------------------------------------
+IF SELECTCOM == 304
+	;初めて
+	IF CFLAG:5650 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5650 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 
+			CFLAG:5650 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5650 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5650 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足コキする（奴隷のペニスを）CFLAG651
+;-------------------------------------------------
+IF SELECTCOM == 302
+	;初めて
+	IF CFLAG:5651 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5651 = 1
+			RETURN 0
+	ELSE
+		;陥落済み+マゾっ気Lv3以上+C感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5651 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5651 = 4
+		;マゾっ気Lv3以上+C感覚Lv3以上
+		ELSEIF ABL:21 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5651 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5651 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ダブルフェラ（主人のペニスを奴隷と助手に舐めさせる） CFLAG652
+;-------------------------------------------------
+IF SELECTCOM == 303
+	;初めて
+	IF CFLAG:5652 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5652 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋奉仕精神Lv5
+		IF CFLAG:5501 >= 5 && ABL:13 >= 5
+			PRINTFORMW 
+			CFLAG:5652 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5652 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5652 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シックスナイン CFLAG653
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:5653 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5653 = 1
+			RETURN 0
+	ELSE
+		;陥落済み+奉仕精神Lv3以上+C感覚Lv3以上
+		IF CFLAG:5501 >= 5 && ABL:13 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5653 = 6
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5653 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:13 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			CFLAG:5653 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5653 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5653 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・東方キャラ専用 CFLAG654以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;吸血 CFLAG654
+;-------------------------------------------------
+IF SELECTCOM == 400
+	;初めて
+	IF CFLAG:5654 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5654 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5654 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5654 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5654 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5654 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5654 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;暗闇 開始時CFLAG655 終了時CFLAG656
+;-------------------------------------------------
+IF SELECTCOM == 401
+	;初めて
+	IF CFLAG:5655 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5655 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み＋マゾっ気Lv5以上
+		IF CFLAG:5501 >= 5 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:5655 = 6
+		;陥落済み＋マゾっ気Lv3以上
+		ELSEIF CFLAG:5501 >= 5 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5655 = 5
+		;陥落済み
+		ELSEIF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5655 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:5655 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5655 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;陥落済み
+	IF CFLAG:5501 >= 5
+		PRINTFORMW 
+		CFLAG:5656 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5656 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;半霊を犯す CFLAG657
+;-------------------------------------------------
+IF SELECTCOM == 440
+	;処女
+	IF TALENT:0 == 1 && EXP:0 == 0
+		;初めて
+		IF CFLAG:5657 == 0
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+				CFLAG:5657 = 1
+				RETURN 0
+		;二回目以降
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+				CFLAG:5657 = 5
+			;屈服刻印Lv3＋V感覚Lv3以上
+			ELSEIF MARK:2 == 3 && ABL:1 >= 3
+				PRINTFORMW 
+				CFLAG:5657 = 4
+			;屈服刻印Lv3
+			ELSEIF MARK:2 == 3
+				PRINTFORMW 
+				CFLAG:5657 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 
+				CFLAG:5657 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	;非処女
+	ELSE
+		;初めて
+		IF CFLAG:5657 == 0
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+				CFLAG:5657 = 1
+				RETURN 0
+		;二回目以降
+		ELSE
+			;陥落済み
+			IF CFLAG:5501 >= 5
+				PRINTFORMW 
+				CFLAG:5657 = 5
+			;屈服刻印Lv3＋V感覚Lv3以上
+			ELSEIF MARK:2 == 3 && ABL:1 >= 3
+				PRINTFORMW 
+				CFLAG:5657 = 4
+			;屈服刻印Lv3
+			ELSEIF MARK:2 == 3
+				PRINTFORMW 
+				CFLAG:5657 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 
+				CFLAG:5657 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;尻子玉抜き CFLAG658
+;-------------------------------------------------
+IF SELECTCOM == 402
+	;初めて
+	IF CFLAG:5658 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5658 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5658 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+			CFLAG:5658 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5658 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係（45をキャラ番号に置換、47を助手のキャラ番号に置換）
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@LES_MESSAGE_PALAMCNG_K45_M47
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 1
+	RETURN 0
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG 511～726を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG511
+;-------------------------------------------------
+P = PALAM:10 + UP:10
+IF P > PALAMLV:2
+	;初めて
+	IF CFLAG:5511 == 0
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 『もー……私までこんなんなっちゃったじゃないのぉ』
+			PRINTFORMW 「おあいこでしょ。これを自業自得っていうんだわ。あー楽しかった」
+			PRINTFORMW 『ふんっ、これからもっと楽しくしてあげるわ』
+		;それ以外
+		ELSE
+			PRINTFORMW 「す、スター、これ……何？私おもらししちゃったの？」
+			PRINTFORMW 『色々入れるために滑り良くする生命の神秘エキスよ』
+			PRINTFORMW 『サニーはもう少し慣らした方がいいけど』
+			PRINTFORMW 「うわぁ、嫌な予感しかしない……」
+		ENDIF
+			CFLAG:5511 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG512
+;-------------------------------------------------
+P = PALAM:13 + UP:13
+IF P > PALAMLV:2
+	IF CFLAG:5512 == 0
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「しゅたぁー…ごめんね…こんな…っく、気持ち良くなるにゃんて知らなかったから」
+			PRINTFORMW 『お気に召したよーでぇー……ひくっ、にゃにぃよぉーりよぉー』
+		;それ以外
+		ELSE
+			PRINTFORMW 「何これ……熱いよ…熱い…のに……抱っこしてほしいの…怖い…よぉ、スター……」
+			PRINTFORMW 『大丈夫。私がきちんと教えてあげるから、力抜いて。深呼吸して』
+			PRINTFORMW スターは優しくサニーの背中をさすり続けた…
+		ENDIF
+			CFLAG:5512 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG513
+;-------------------------------------------------
+P = PALAM:15 + UP:15
+IF P > PALAMLV:2
+	IF CFLAG:5513 == 0
+		PRINTFORMW 「スター……お願い……だから、これ以上見ないでよ……」
+		PRINTFORMW 『そんなもったいないこと、できるわけないでしょう？』
+		CFLAG:5513 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG514
+;-------------------------------------------------
+P = PALAM:17 + UP:17
+IF P > PALAMLV:2
+	IF CFLAG:5514 == 0
+		PRINTFORMW 「こんなんスターじゃない……こんなことするのスターじゃない……ッ」
+		PRINTFORMW 歯の根が合わずにがちがち言わせたまま、サニーはスターを見上げた
+		CFLAG:5514 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてC絶頂 CFLAG515
+;-------------------------------------------------
+IF NOWEX:0 > 0
+	IF CFLAG:5515 == 0
+		PRINTFORMW 舌っ足らずながらも淫らな喘ぎ声を上げたサニーはとろりとした目でスターを見上げた
+		PRINTFORMW 「さ……さっき……、なに……した、の？」
+		PRINTFORMW 『もうやめてほしい？』
+		PRINTFORMW 「……くっ、うっ、うぅ……っ」
+		PRINTFORMW 泣きそうなサニーの頭をスターは撫で上げた
+		CFLAG:5515 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてV絶頂 CFLAG516
+;-------------------------------------------------
+IF NOWEX:1 > 0
+	IF CFLAG:5516 == 0
+		PRINTFORMW 「スター！奥が！お腹の奥ゥッ！あ、あっ、ああ、ぁぁああぁあん！！」
+		CFLAG:5516 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてA絶頂 CFLAG517
+;-------------------------------------------------
+IF NOWEX:2 > 0
+	IF CFLAG:5517 == 0
+		PRINTFORMW 床に倒れ伏し虚ろな目をするサニーの耳元に、スターは何事か囁いた
+		PRINTFORMW しばらくしてサニーは虚ろな目から涙を流し、シーツに顔をうずめて嗚咽をこらえた
+		CFLAG:5517 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてB絶頂 CFLAG518
+;-------------------------------------------------
+IF NOWEX:3 > 0
+	IF CFLAG:5518 == 0
+		PRINTFORMW 『えっ、ちょっと待っ……まさか、おっぱいでここまで……』
+		PRINTFORMW 「あ……あんたね……加減……しな、さいよ……」
+		PRINTFORMW 『サニーがえっちすぎるのよぉ』
+		CFLAG:5518 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG519
+;-------------------------------------------------
+IF TFLAG:0 > 0 && CFLAG:5519 == 0
+	;陥落済みかつ主人のセックスによる処女喪失
+	IF TFLAG:2
+		;陥落済み＋従順Lv5
+		IF CFLAG:5501 >= 5 && ABL:10 >= 5
+			PRINTFORMW 
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;陥落済み＋従順Lv5
+		IF CFLAG:5501 >= 5 && ABL:10 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;陥落済み＋従順Lv5
+		IF CFLAG:5501 >= 5 && ABL:10 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+		CFLAG:5519 = 1
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精させた CFLAG520 CFLAG290
+;-------------------------------------------------
+IF TFLAG:11 > 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5520 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			CFLAG:5520 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5520 = 2
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG521
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;奉仕精神Lv5
+	IF ABL:13 >= 5
+		PRINTFORMW 
+		CFLAG:5521 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 
+		CFLAG:5521 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:5521 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG522
+;-------------------------------------------------
+IF TFLAG:15 > 0
+	;フェラ、イラマチオの場合
+	IF SELECTCOM == 41 || SELECTCOM == 230
+		;精液中毒Lv5
+		IF ABL:31 >= 5
+			PRINTFORMW 
+			CFLAG:5522 = 5
+		;精液中毒Lv3
+		ELSEIF ABL:31 >= 3
+			PRINTFORMW 
+			CFLAG:5522 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5522 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5522 = 1
+		ENDIF
+	;パイズリの場合(CFLAG289)
+	ELSEIF SELECTCOM == 42
+		;奉仕精神Lv5
+		IF ABL:13 >= 5
+			PRINTFORMW 
+			CFLAG:5289 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			CFLAG:5289 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5289 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG523
+;-------------------------------------------------
+IF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:5523 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5523 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5523 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5523 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG524
+;-------------------------------------------------
+IF TFLAG:31 > 0
+	;初めて
+	IF CFLAG:5524 == 0
+		;従順Lv4以上
+		IF ABL:10 >= 4
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5524 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;従順Lv4以上
+		IF ABL:10 >= 4
+			PRINTFORMW 
+			CFLAG:5524 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5524 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｃ感覚Lv5でＣ絶頂50以上 CFLAG525
+;-------------------------------------------------
+IF ABL:0 >= 5 && EX:0 >= 50 && NOWEX:0 > 0
+	;初めて
+	IF CFLAG:5525 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5525 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5525 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5525 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ感覚Lv5でＶ絶頂50以上 CFLAG526
+;-------------------------------------------------
+IF ABL:1 >= 5 && EX:1 >= 50 && NOWEX:1 > 0
+	;初めて
+	IF CFLAG:5526 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5526 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5526 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5526 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ感覚Lv5でＡ絶頂50以上 CFLAG527
+;-------------------------------------------------
+IF ABL:2 >= 5 && EX:2 >= 50 && NOWEX:2 > 0
+	;初めて
+	IF CFLAG:5527 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5527 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5527 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5527 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ感覚Lv5でＢ絶頂50以上 CFLAG528
+;-------------------------------------------------
+IF ABL:3 >= 5 && EX:3 >= 50 && NOWEX:3 > 0
+	;初めて
+	IF CFLAG:5528 == 0
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5528 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;陥落済み
+		IF CFLAG:5501 >= 5
+			PRINTFORMW 
+			CFLAG:5528 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5528 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係（45をキャラ番号に置換）
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@LES_MESSAGE_MARKCNG_K45_M47
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG557
+;-------------------------------------------------
+IF TFLAG:40 == 3
+	IF CFLAG:5557 == 0
+		PRINTFORMW サニーは目玉を零さんばかりに瞼を開き苦鳴を上げてのたうち回った
+		PRINTFORMW 部屋中の物が散らかされサニーの流血によって赤い彩りが添えられてゆく
+		PRINTFORMW 陸に打ち上げられた魚のように暴れ回っていたサニーは力尽き倒れ
+		PRINTFORMW 唇の端から血泡を吹き出し時折思い出したかのように痙攣している
+		CFLAG:5557 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG558
+;-------------------------------------------------
+IF TFLAG:41 == 3
+	IF CFLAG:5558 == 0
+		PRINTFORMW 「……な…に……今、の……？」
+		PRINTFORMW 『大分良かったみたいね』
+		PRINTFORMW 「もっと……もっとほしい！もっとちょーだいっ！なんでもするからっ」
+		PRINTFORMW 『じゃ、跪いたり私を見上げるのやめてくれる？私とサニーは対等よ？』
+		PRINTFORMW 「え……？あっ！？……うっ、うぅっ」
+		CFLAG:5558 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG559
+;-------------------------------------------------
+IF TFLAG:42 == 3
+	IF CFLAG:5559 == 0
+		PRINTFORMW 「スター……わかった……もう…これから……あんたに従うわ……」
+		PRINTFORMW 『そんなのしなくていいわ。でも、素直になってくれたのは嬉しい。サニーはいい子ね』
+		PRINTFORMW スターに撫でられたサニーの表情は、徐々に晴れやかなものに戻りつつあった
+		CFLAG:5559 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG560
+;-------------------------------------------------
+IF TFLAG:44 == 3
+	IF CFLAG:5560 == 0
+		PRINTFORMW 「あんたなんかもう絶交よ！家に帰ったらあんたの部屋なんかないんだから！」
+		PRINTFORMW 『もうここが私とサニーの愛の巣なのに……』
+		CFLAG:5560 = 1
+	ENDIF
+ENDIF
+

@@ -1,0 +1,1650 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは調教開始時・終了時・調教中イベント・エンディング口上用関数などが置いてあります。
+;このファイル内で他の関数を呼び出す処理のある関数は、削除せず残すことを推奨します。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;衣玖口上
+;解説などをここに書くとよい
+;==============================================================
+;衣玖口上
+;気力:1000 / 
+;処女 / 大人しい / 無関心 / 保守的 / 一線越えない / 貞操観念 / 習得早い / 舌使い / 献身的 / 魅力 / 魅惑 / 鼓舞 / Ｖ敏感 / Ａ鈍感 / 巨乳 / 
+;従順:Lv1 / 技巧:Lv1 / 
+;自慰経験:5 / 
+;天子:120% /
+;--------------------------------------------------------------;
+;【口上・ライセンス】                                          ;
+;この口上は口上まとめ又は修正・加筆者のみ再配布する事ができる。;
+;修正・加筆が目的だった場合、文章の改変が許可される。この口上が:
+;別の口上の上書き又はゴミ箱に送られると口上作者のライフに500ポ ;
+;イントダメージを与える。				       ;
+;--------------------------------------------------------------;
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_51
+RETURN 1
+
+;========================================================
+;専用口上表示の固定化判定
+;========================================================
+;口上表示の専用口上使用設定において、選択肢を専用口上のみに固定化させたい場合は2を、専用口上＋地の文のみに固定化させたい場合は3を返すようにしてください
+;なお、1を返した(またはこの関数をコメントアウト等で使用できないようにした)場合は両方の選択肢が出るように、1・2・3以外の数値を返した時はエラー回避のため専用口上を使用できないようになっています
+@KOJO_51_DISPLAY_SETTINGS
+RETURN 2
+
+;========================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;========================================================
+@KOJO_51_EXTRA_INITIALIZATION
+IF CFLAG:8001 == 0
+	PRINTFORMW %CALLNAME:TARGET%の素質イベントを発生しますか？
+	PRINTL [0] はい　　状況が変われば考え変わるよ
+	PRINTL [1] いいえ　そのままの君が一番だよ
+	$INPUT_LOOP
+	INPUT
+	;はい　　状況が変われば考え変わるよ
+	IF RESULT == 0
+		PRINTFORMW -素質イベントが発生します-
+		CFLAG:8001 = 1
+	;いいえ　そのままの君が一番だよ
+	ELSEIF RESULT == 1
+		PRINTFORMW -素質イベントが発生しません-
+		CFLAG:8001 = 2
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+ENDIF
+CFLAG:7899 = 1
+
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_51_SLAVE_MESSAGE_TRAIN_START
+;2週目以降、調教開始時にエクストラモードの設定を行っていなければ設定イベントをCALL
+IF CFLAG:7899 == 0
+	CALL KOJO_51_EXTRA_INITIALIZATION
+ENDIF
+
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+
+DRAWLINE
+
+;調教開始口上分岐
+IF CFLAG:8002 == 0
+	TRYCALL K51_MESSAGE_START_1
+;助手の有無をチェック（いない場合は調教開始時へ飛ぶ）
+ELSEIF ASSI >= 0
+	CALL K51_KOJO2_ASSI
+ELSE
+	TRYCALL K51_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時 CFLAG:8002
+;-------------------------------------------------
+@K51_MESSAGE_START_1
+IF CFLAG:8002 == 0
+	CFLAG:5450 = 0
+	PRINTFORML 「私…攫われたのですね…」
+	PRINTFORML %CALLNAME:MASTER%は何も言わずにじっと見つめている
+	PRINTFORMW 「一体何をなさるつもりですか？」
+	CFLAG:8002 = 1
+	RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;簡易助手口上（Y1を助手のキャラ番号に置換)
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;-------------------------------------------------
+; 助手が天子	CFLAG:8004
+;-------------------------------------------------
+@K51_KOJO2_ASSI
+IF NO:ASSI == 52
+	;初めて
+	IF CFLAG:8004 == 0
+		CFLAG:5450 = 0
+		;天子を連れて戻ってきた場合
+		IF CFLAG:5420 == 1
+			PRINTFORML 「あら総領娘様、ご機嫌麗しゅうございます」
+			PRINTFORML 『白々しいわね%CALLNAME:TARGET%！あんたがこんな所に連れてきたくせによくもそんなっ！』
+			PRINTFORML 「でも%CALLNAME:MASTER%様と一緒に私の所に来たという事は%CALLNAME:MASTER%様の手伝いに来たって事ですよね？」
+			PRINTFORML 『そ、それは…』
+			PRINTFORMW 「恥ずかしがる事はありませんよ総領娘様、一緒に楽しみましょうね」
+		;その他の場合
+		ELSE
+			PRINTFORML 「そ、総領娘様!?」
+			PRINTFORML 『あんたは確か%CALLNAME:TARGET%……だったかしら？』
+			PRINTFORML 「総領娘様、いなくなったから心配しておりましたがこんな所に……」
+			PRINTFORML 『ごめんね%CALLNAME:TARGET%…私ねこれから%CALLNAME:MASTER%と一緒にあんたを調教しなきゃならないのよ』
+			PRINTFORMW 「どうして…総領娘様！目を覚ましてください!!」
+		ENDIF
+		CFLAG:8004= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		CFLAG:5450 = 0
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8004 <= 2)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 「二人とも来ましたか」
+				PRINTFORML 『%CALLNAME:TARGET%！今日こそあんたの足腰を立たせなくするからね』
+				PRINTFORMW 「ふふ、それは楽しみです」
+			;その他の場合
+			ELSE
+				PRINTFORML 「%CALLNAME:MASTER%様、総領娘様、いらっしゃいませ」
+				PRINTFORML %CALLNAME:MASTER%に%CALLNAME:TARGET%が寄り添い舌を絡ませる
+				PRINTFORML 『こいつの何処がいいのやら』
+				PRINTFORMW その光景を見ていた%CALLNAME:ASSI%の口からはため息が漏れていた
+			ENDIF
+			CFLAG:8004 = 3
+		;その他の場合
+		ELSE
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 「総領娘様！脱出の機会はきっとあります、ですからお気を確かに!!」
+				PRINTFORML 『脱出？何を言っているの、こんないい所から抜け出す訳ないじゃない』
+				PRINTFORML 『大丈夫よあんたにもたっぷりとここの良さを教えてあげるから』
+				PRINTFORMW 「ああ…あああ……」
+			;その他の場合
+			ELSE
+				PRINTFORML 「総領娘様、気をしっかり持って脱出の機会を窺いましょう」
+				PRINTFORML 『脱出の機会ねぇ…本当にあると思うの？』
+				PRINTFORML 「当然ですよ！きっとチャンスが来るはずです」
+				PRINTFORML 『そ、そうね、きっと来るよね』
+				PRINTFORMW 〔そんなチャンスがあったらとっくに一人で抜け出しているって〕
+			ENDIF
+			CFLAG:8004 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;口上のある助手が居ない場合は、調教開始時の口上へ飛ぶ
+ELSE
+	CALL K51_MESSAGE_START_2
+ENDIF
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K51_MESSAGE_START_2
+CFLAG:5450 = 0
+;恋慕
+IF CFLAG:8002 < 5 && TALENT:恋慕 == 1
+	CFLAG:5450 = 0
+	;エキストラモード選択コマンド[0]選択
+	IF CFLAG:8001 == 1
+		PRINTFORMW 「……………」
+		PRINTFORMW %CALLNAME:MASTER%が来ても%CALLNAME:TARGET%はボーッと天井を眺めている
+		PRINTFORMW しばらく待っても気づく気配がないので%CALLNAME:MASTER%はそっと肩を叩いた
+		PRINTFORMW 「きゃあ!!%CALLNAME:MASTER%ですかいつの間にいるのですかビックリします！」
+		PRINTFORMW そう言いながら%CALLNAME:TARGET%は微笑んでいる
+		PRINTFORMW 「私考えていたのです…ここに連れてこられてから今までのことを」
+		PRINTFORMW 「私、%CALLNAME:MASTER%にいろんな事をされました…いろんな事です」
+		PRINTFORMW 「最初は嫌だったのに次第に受け入れられるようになりました…」
+		PRINTFORMW 「嫌だった行為が次第に好きに…あと、ごにょごにょ」
+		PRINTFORMW 最後の所が聞き取れなかった%CALLNAME:MASTER%は再度%CALLNAME:TARGET%に聞きました
+		PRINTFORMW 「え？あ、あの…」
+		PRINTFORMW なにやらモジモジしている…業を煮やした%CALLNAME:MASTER%は%CALLNAME:TARGET%の両ほっぺを引っ張った
+		PRINTFORMW 「いいまふ、いいまふはらひっはんはいへ～」
+		PRINTFORMW 「うぅ…あ、あと%CALLNAME:MASTER%もごにょごにょ」
+		PRINTFORMW %CALLNAME:MASTER%は首を傾げた
+		PRINTFORMW 「%CALLNAME:MASTER%の事が好きになったのです！好きになってしまったのです!!」
+		PRINTFORMW そう言いながら涙を溜めながら言う%CALLNAME:TARGET%をそっと抱き寄せた
+		PRINTFORMW 「あっ！……良いのですか私みたいな女が傍にいても…」
+		PRINTFORMW %CALLNAME:MASTER%は頷く
+		PRINTFORMW 「嬉しい…ありがとうございます%CALLNAME:MASTER%様、私は%CALLNAME:MASTER%様のものです」
+		PRINTFORMW ‐‐‐[保守的]と[一線を越えない]を失いました‐‐‐
+		TALENT:保守的 = 0
+		TALENT:一線越えない = 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「……………」
+		PRINTFORMW %CALLNAME:MASTER%が来ても%CALLNAME:TARGET%はボーッと天井を眺めている
+		PRINTFORMW しばらく待っても気づく気配がないので%CALLNAME:MASTER%はそっと肩を叩いた
+		PRINTFORMW 「きゃあ!!%CALLNAME:MASTER%ですかいつの間にいるのですかビックリします！」
+		PRINTFORMW そう言いながら%CALLNAME:TARGET%は微笑んでいる
+		PRINTFORMW 「私考えていたのです…ここに連れてこられてから今までのことを」
+		PRINTFORMW 「私、%CALLNAME:MASTER%にいろんな事をされました…いろんな事です」
+		PRINTFORMW 「最初は嫌だったのに次第に受け入れられるようになりました…」
+		PRINTFORMW 「嫌だった行為が次第に好きに…あと、ごにょごにょ」
+		PRINTFORMW 最後の所が聞き取れなかった%CALLNAME:MASTER%は再度%CALLNAME:TARGET%に聞きました
+		PRINTFORMW 「え？あ、あの…」
+		PRINTFORMW なにやらモジモジしている…業を煮やした%CALLNAME:MASTER%は%CALLNAME:TARGET%の両ほっぺを引っ張った
+		PRINTFORMW 「いいまふ、いいまふはらひっはんはいへ～」
+		PRINTFORMW 「うぅ…あ、あと%CALLNAME:MASTER%もごにょごにょ」
+		PRINTFORMW %CALLNAME:MASTER%は首を傾げた
+		PRINTFORMW 「%CALLNAME:MASTER%の事が好きになったのです！好きになってしまったのです!!」
+		PRINTFORMW そう言いながら涙を溜めながら言う%CALLNAME:TARGET%をそっと抱き寄せた
+		PRINTFORMW 「あっ！……良いのですか私みたいな女が傍にいても…」
+		PRINTFORMW %CALLNAME:MASTER%は頷く
+		PRINTFORMW 「嬉しい…ありがとうございます%CALLNAME:MASTER%様、私は%CALLNAME:MASTER%様のものです」
+	ENDIF
+	CFLAG:8002 = 5
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF CFLAG:8002 < 4 && MARK:屈服刻印 == 3
+	CFLAG:5450 = 0
+	PRINTFORMW 「本気なのですね……本気で私をどうこうしようと考えているのですね」
+	CFLAG:8002 = 4
+	RETURN 1
+;屈服刻印Lv2
+ELSEIF CFLAG:8002 < 3 && MARK:屈服刻印 == 2
+	CFLAG:5450 = 0
+	PRINTFORMW 「%CALLNAME:MASTER%の思い通りにはなりませんよ」
+	CFLAG:8002 = 3
+	RETURN 1
+;屈服刻印Lv1
+ELSEIF CFLAG:8002 < 2 && MARK:屈服刻印 == 1
+	CFLAG:5450 = 0
+	PRINTFORMW 「こんな事が許されると思っているのですか」
+	CFLAG:8002 = 2
+	RETURN 1
+	
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	;元旦
+	IF DAY:5 == 1 && DAY:6 == 1
+		;すでに元旦を見た場合
+		IF CFLAG:5401 == 1
+			CFLAG:5401 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「あけましておめでとうございます！今年もよろしくお願いしますね」
+			PRINTFORMW %CALLNAME:TARGET%はにっこりと笑った
+			CFLAG:5401 = 1
+		ENDIF
+	;節分
+	ELSEIF DAY:5 == 2 && DAY:6 == 3
+		;すでに節分を見た場合
+		IF CFLAG:5402 == 1
+			CFLAG:5402 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「今日は節分の日ですね　鬼でも見つけて豆を投げつけていましょうか？」
+			PRINTFORML %CALLNAME:MASTER%は%CALLNAME:TARGET%の秘部を弄った
+			PRINTFORMW 「きゃあ！もう～%CALLNAME:MASTER%様ったらその豆じゃありませんよ～」
+			CFLAG:5402 = 1
+		ENDIF
+	;バレンタインデー
+	ELSEIF DAY:5 == 2 && DAY:6 == 14
+		;すでにバレンタインデーを見た場合
+		IF CFLAG:5400 == 1
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「%CALLNAME:MASTER%様♪」
+			PRINTFORML %CALLNAME:TARGET%が上機嫌に駆け寄ってくる
+			PRINTFORML 「ふふ、はいこれチョコです！本命ですよ」
+			PRINTFORML 渡されたチョコを%CALLNAME:MASTER%は美味しそうに食べる隣で%CALLNAME:TARGET%は満足そうに見つめる
+			PRINTFORMW これは３月１４日のホワイトデーで返す必要がありそうだ
+			CFLAG:5400 = 1
+		ENDIF
+	;桃の節句
+	ELSEIF DAY:5 == 3 && DAY:6 == 3
+		;すでに桃の節句を見た場合
+		IF CFLAG:5403 == 1
+			CFLAG:5403 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「今日は女の子の日です厄神様が忙しい日でもありますね。くるくるくる～」
+			CFLAG:5403 = 1
+		ENDIF
+	;ホワイトデー
+	ELSEIF DAY:5 == 3 && DAY:6 == 14
+		;すでにバレンタインデーを見た場合
+		IF CFLAG:5400 == 1
+			CFLAG:5400 = 0
+			PRINTFORML 「%CALLNAME:MASTER%様、何ですか用って？」
+			PRINTFORML 今日はホワイトデー、%CALLNAME:MASTER%はバレンタインデーのお礼のプレゼントを用意している
+			PRINTFORMW それは……
+			PRINTL [0] 無難に！マシュマロだ！
+			PRINTL [1] 無難に？自分の精液だ！
+			$INPUT_LOOP
+			INPUT
+			;無難に！マシュマロだ！
+			IF RESULT == 0
+				PRINTFORML 「わぁマシュマロですね。ふふ、%CALLNAME:MASTER%様ありがとうございます」
+				PRINTFORMW %CALLNAME:TARGET%はにっこりと笑った
+			;無難に？自分の精液だ！
+			ELSEIF RESULT == 1
+				PRINTFORML %CALLNAME:MASTER%はおもむろに衣服を脱ぐとその雄々しく反り返ったモノを%CALLNAME:TARGET%に見せつけた
+				PRINTFORML 「きゃぁぁ！何しているのですか!!………ん？もしかして」
+				PRINTFORML 「もしかしてホワイトデーだから精液がプレゼントですか？………いつも貰っていますのに……」
+				;妊娠である
+				IF TALENT:妊娠 == 1
+					PRINTFORML 呆れつつも%CALLNAME:MASTER%のモノを擦りながら
+					PRINTFORMW 「では、今日はいつも以上に激しく愛してくださいね」
+					RETURN 0
+				;その他の場合
+				ELSE
+					PRINTFORML %CALLNAME:MASTER%のモノを擦りながら
+					PRINTFORMW 「それともプレゼントは赤ちゃんなのかしら？」
+				ENDIF
+			ELSE
+				GOTO INPUT_LOOP
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		ENDIF
+	;端午の日
+	ELSEIF DAY:5 == 5 && DAY:6 == 5
+		;すでに端午の日を見た場合
+		IF CFLAG:5404 == 1
+			CFLAG:5404 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「男の子の日ですね。男の子の成長または出世を願って鯉のぼりを上げます。私たちも上げますか？」
+			PRINTFORMW %CALLNAME:MASTER%は鯉ではなくリュウグウノツカイが上がっている想像をしていた
+			CFLAG:5404 = 1
+		ENDIF
+	;七夕（オゾンより下なら問題ない）
+	ELSEIF DAY:5 == 7 && DAY:6 == 7
+		;すでに七夕を見た場合
+		IF CFLAG:5405 == 1
+			CFLAG:5405 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「彦星と織姫が１年に１度会える日ですね…１年に１度しか会えないって何か切ないですね」
+			PRINTFORML %CALLNAME:TARGET%は%CALLNAME:MASTER%に寄り添い
+			PRINTFORMW 「それに比べて私は何時でも会えます……いつまでも一緒に居たいです%CALLNAME:MASTER%様…」
+			CFLAG:5405 = 1
+		ENDIF
+	;クリスマス
+	ELSEIF DAY:5 == 12 && DAY:6 == 25
+		;すでにクリスマスを見た場合
+		IF CFLAG:5406 == 1
+			CFLAG:5406 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「クリスマスです……プレ…プレゼントは……プレゼントは私です!!!」
+			PRINTFORMW %CALLNAME:TARGET%が飛びついてきた
+			CFLAG:5406 = 1
+		ENDIF
+	;大晦日
+	ELSEIF DAY:5 == 12 && DAY:6 == 31
+		;すでに大晦日を見た場合
+		IF CFLAG:5407 == 1
+			CFLAG:5407 = 0
+			;乱数分岐:4
+			IF RAND:4 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+				PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「今回は私の相手なのですね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+				PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「今年最後の日です！これが終わったら大掃除でもしましょうか？」
+			CFLAG:5407 = 1
+		ENDIF
+	;妊娠
+	ELSEIF TALENT:妊娠 == 1
+		;乱数分岐:4
+		IF RAND:4 == 0
+			PRINTFORMW 「生まれてくる日が今か今かと待ち遠しいです」
+		;乱数分岐:3
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「出来る限り体に負担の少ないのでお願いしますね」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ああ、このお腹の中には%CALLNAME:MASTER%様との愛の結晶が宿っているのね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「%CALLNAME:MASTER%様今のうちに名前考えておいてくださいね」
+		ENDIF
+	;その他の場合
+	ELSE
+		;乱数分岐:4
+		IF RAND:4 == 0
+			PRINTFORML 「%CALLNAME:MASTER%様、今日もよろしくお願いします」
+			PRINTFORMW 一糸纏わぬ姿の%CALLNAME:TARGET%がいた
+
+		;乱数分岐:3
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「今回は私の相手なのですね」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「%CALLNAME:MASTER%様…待っていましたよ……」
+			PRINTFORMW 潤んだ瞳で%CALLNAME:MASTER%を見つめている
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ふふ、%CALLNAME:MASTER%様、今日はどんなプレイがお望みでしょうか」
+		ENDIF
+	ENDIF
+	RETURN 1
+;妊娠
+ELSEIF TALENT:妊娠 == 1
+	;乱数分岐:4
+	IF RAND:4 == 0
+		PRINTFORMW 「%CALLNAME:MASTER%が欲しかったのは赤ちゃんなのですかこの状況なのですか」
+	;乱数分岐:3
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「よく妊婦に手を出そうと考えれますね」
+	;乱数分岐:2
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「私だけでは飽き足らずお腹の赤ちゃんにも手を出すつもりなのですか」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「どうしてこんな事をしたのです…私は望んでいないのに……」
+	ENDIF
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3
+	;乱数分岐:2
+	IF RAND:2 == 0
+		PRINTFORML 「さぁどうぞ…私は逃げも隠れもしません」
+		PRINTFORMW %CALLNAME:TARGET%は諦めたような顔をしながら%CALLNAME:MASTER%を見ている
+	;その他の場合
+	ELSE
+		PRINTFORML 「………」
+		PRINTFORML %CALLNAME:MASTER%が来ると%CALLNAME:TARGET%はそそくさと服を脱ぎ始めた
+		PRINTFORMW 「どうしたのです？始めるのでしょう」
+	ENDIF
+	RETURN 1
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	;乱数分岐:2
+	IF RAND:2 == 0
+		PRINTFORMW 「このままでは不味いですね早く脱出の手段を見つけなければ」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「また来たのですね…いい加減諦めてくれればいいのに」
+	ENDIF
+	RETURN 1
+;屈服刻印Lv1
+ELSEIF MARK:屈服刻印 == 1
+	;乱数分岐:2
+	IF RAND:2 == 0
+		PRINTFORMW 「もう良いでしょうさっさと出してください」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「はぁ…どうすればここから出られるのでしょう…」
+	ENDIF
+	RETURN 1
+;その他の場合
+ELSE
+	;乱数分岐:2
+	IF RAND:2 == 0
+		PRINTFORMW 「どうして…こんな事に……こんな事になってしまったのでしょう」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「まだ間に合います。やめましょうこんなことは」
+	ENDIF
+ENDIF
+
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_51_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+DRAWLINE
+TRYCALL K51_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K51_MESSAGE_END
+;恋慕
+IF TALENT:恋慕 == 1
+	;体力500未満
+	IF BASE:0 < 500
+		PRINTFORMW 「はぁ…はぁ…はぁ…すみません%CALLNAME:MASTER%様…もうこれ以上は体力の限界です」
+	;その他の場合
+	ELSE
+		PRINTFORML 「え？%CALLNAME:MASTER%様もう終わりなのですか？」
+		PRINTFORMW 「…分かりました。では次のお相手もよろしくお願いします」
+	ENDIF
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3
+	PRINTFORML 「そう、終わるのね…お疲れ様でした」
+	PRINTFORMW そう言って%CALLNAME:TARGET%は服を着ていた
+	RETURN 1
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	PRINTFORMW 「この状況いつまで続くの…」
+	RETURN 1
+;屈服刻印Lv1
+ELSEIF MARK:屈服刻印 == 1
+	PRINTFORML 「…………」
+	PRINTFORMW 調教の終えた%CALLNAME:TARGET%は放心している
+	RETURN 1
+;その他の場合
+ELSE
+	PRINTFORMW 「終わりですか。では出て行ってください」
+ENDIF
+RETURN 0
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_51_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K51_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K51_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K51_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+
+;-------------------------------------------------
+;処女喪失 CFLAG:7009
+;-------------------------------------------------
+IF TFLAG:0 > 0 && CFLAG:7009 == 0
+;恋慕かつ主人のセックスによる処女喪失
+	IF TALENT:恋慕 && TFLAG:2 && (CFLAG:7009 <= 2)
+		;Ｖ経験 1以上
+		IF EXP:Ｖ経験 >= 1
+			PRINTFORML 「ふふふ…また%CALLNAME:MASTER%様に貰っちゃいました」
+			PRINTFORMW 「次はどのような形で貰ってくれるのでしょうか」
+		;その他の場合
+		ELSE
+			PRINTFORML 「やっと貰ってくれた…嬉しいです」
+			PRINTFORML 「これで私は完全に%CALLNAME:MASTER%様のものです」
+			PRINTFORMW 秘部から溢れ出る純潔を見つめつつ%CALLNAME:TARGET%は満足気に微笑んでいた
+		ENDIF
+		CFLAG:7009 = 3
+	;その他の場合
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;Ｖ経験 1以上
+			IF EXP:Ｖ経験 >= 1
+				PRINTFORML 「いつつ……もう、こんな事の為に処女膜を再生させたのですか？」
+				PRINTFORMW 「…まぁいいでしょう、次は貰っていただきますよ%CALLNAME:MASTER%様」
+			;その他の場合
+			ELSE
+				PRINTFORML 「酷い！どうして…待っていたのに……」
+				PRINTFORMW 「初めては%CALLNAME:MASTER%様のでって決めていたのに……ううぅ…」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「う…うぅ…ひぐぅっ…奪われた……私の初めてがこんなのだなんて…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_51_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K51_MESSAGE_OVERLV2_10
+	PRINTFORML （もうこんなに溢れている…）
+	CFLAG:5330 = 1
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K51_MESSAGE_OVERLV2_13
+	PRINTFORML 「んっ、はぁ…はぁ……」
+	PRINTFORML %CALLNAME:TARGET%が胸を押さえて興奮を抑えようとしている
+	CFLAG:5333 = 1
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K51_MESSAGE_OVERLV2_15
+	PRINTFORML 「どうして…どうしてこんな事を平気でできるのですか」
+	CFLAG:5335 = 1
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;-------------------------------------------------
+@K51_MESSAGE_OVERLV2_17
+	PRINTFORML 「もう…やめて……これ以上は……っ」
+	PRINTFORML %CALLNAME:TARGET%は涙目で全身が震えている
+	CFLAG:5337 = 1
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 7010～を使用
+;@KOJO_51_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:7011
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_0
+;四重絶頂
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	PRINTFORML 「もう、もうらめてぇぇ、イっひゃうぅぅ、ひゃんかしゅごいのがきひゃいますぅぅ!!」
+	PRINTFORML 体の至る所を責められた%CALLNAME:TARGET%が切望する……がっ！
+	PRINTFORML 「にゃぁぁぁ!!もうらめてぇぇ!!ゆるひてぇぇぇ!!！ひゃぁん、ひぬ…ひんじゃうぅぅぅ!!!」
+	PRINTFORML %CALLNAME:MASTER%はやめるどころかさらに激しく責める
+	PRINTFORML 「イクぅぅぅ、いくいくイクッ!!………イっちゃいますぅぅぅぅぅ―――――っっっっ!!!!」
+	PRINTFORML %CALLNAME:TARGET%の体が大きく反り返り、その四肢は指先まで痙攣する
+	PRINTFORML 「あっ――ああっ―――やぁぁぁぁ!!!あぁぁぁぁぁ―――っっ!!!!!」
+	PRINTFORML 膣内や腸内は収縮し、秘部からは大量の潮を吹き出す
+	PRINTFORML 「あっ……はぁ、はぁ、んぐっ……はぁ……」
+	PRINTFORMW やっと絶頂は収まったが暫くは動けそうになかった
+;C+A+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	PRINTFORML 「んぁぁぁぁ!!は、激し！らめぇぇ！おっぱいもお豆と一緒にそこを責めないでぇぇぇ!!」
+	PRINTFORMW 「持たないですぅ、持たないれすぅぅぅ！イクッ、イクイクッ…んぁぁぁぁぁ――――っっっ!!!」
+;C+V+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	PRINTFORML 「んぁぁぁぁ!!は、激し！らめぇぇ！おっぱいもお豆と一緒にそこを責めないでぇぇぇ!!」
+	PRINTFORMW 「持たないですぅ、持たないれすぅぅぅ！イクッ、イクイクッ…んぁぁぁぁぁ――――っっっ!!!」
+;C+V+A絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	PRINTFORML 「イクッ！イクイクイクッーー!!おしりとあそこ、両方は卑怯ですぅぅぅ!!」
+	PRINTFORMW 「あっ、あっ、もう…だめ、―――イクゥゥゥゥゥゥゥゥッ!!!」
+;C+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	PRINTFORML 「弱いの！そこ責めらがらおっぱいも責められるのが!!!」
+	PRINTFORMW 「んぁっ、はぃぃ、んんっ…ああぁぁぁ――――!!!」
+;C+A絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	PRINTFORMW 「むりぃぃぃぃぃ、もう……我慢できないぃぃぃ………はぁぁぁぁぁぁん!!」
+;C+V絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 <= 0
+	PRINTFORMW 「らめぇぇれすぅぅぅ、イっちゃう、そこイっちゃうのぉぉぉぉ!!」
+;C絶頂
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7011 <= 2)
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORML 「あぁぁぁぁっ！くるぅぅ！すごいのきちゃうぅぅ!!」
+			PRINTFORMW 体を震わせながら秘部から大量の潮を吹き出した
+		;その他の場合
+		ELSE
+			PRINTFORMW 「だめぇ～、だめですよ～ぅ、もうこれ以上は…あっ、ああ――っ!!」
+		ENDIF
+		CFLAG:7011 = 3
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「いじっ！いじらな……イっちゃうぅぅぅ!!」
+		;その他の場合
+		ELSE
+			PRINTFORML 「!!　――っ!――――っっっ!!」
+			PRINTFORMW %CALLNAME:TARGET%は口を押えながら声が漏れないように耐えている
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:7012
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_1
+;四重絶頂
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;V+A+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	PRINTFORML 「イクッ！イクイクイクッーー!!おしりとあそこ、両方は卑怯ですぅぅぅ!!」
+	PRINTFORMW 「あっ、あっ、もう…だめ、―――イクゥゥゥゥゥゥゥゥッ!!!」
+;C+V+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+V+A絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;PRINTFORML 
+;V+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	PRINTFORML 「弱いの！そこ責めらがらおっぱいも責められるのが!!!」
+	PRINTFORMW 「んぁっ、はぃぃ、んんっ…ああぁぁぁ――――!!!」
+;V+A絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	PRINTFORML 「イクッ！イクイクイクッーー!!おしりとあそこ、両方は卑怯ですぅぅぅ!!」
+	PRINTFORMW 「あっ、あっ、もう…だめ、―――イクゥゥゥゥゥゥゥゥッ!!!」
+;C+V絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 <= 0
+	;PRINTFORMW 
+;V絶頂
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7012 <= 2)
+		;V中出し絶頂
+		IF TFLAG:11 > 0
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「イっちゃうぅぅ！種付けされてイっちゃいますぅぅぅ!!
+				PRINTFORML %CALLNAME:TARGET%の体を強く抱きしめ肉棒を奥まで押し込み残りの精液を吐き出した
+				PRINTFORMW 「ひぎぃ……あっ！あっ！あぁぁー!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「イクッ…イクッ！%CALLNAME:MASTER%さまといっしょにイっちゃいますぅぅ――っっっ!!」
+				PRINTFORML 射精に感応し%CALLNAME:TARGET%の膣内が肉棒を離さない様に激しく絞めた
+				PRINTFORMW 「あぁー！おおきいですぅ、%CALLNAME:MASTER%さまのおおきいですぅぅー!!」
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「やぁぁ、きちゃう、何かすごいのがきちゃうぅぅ…んぁぁぁぁ―――っっっ!!」
+				PRINTFORMW 強烈な絶頂と共に%CALLNAME:TARGET%の体が大きく弓の様に反り返った
+			;その他の場合
+			ELSE
+				PRINTFORMW 「膣内がっ！あっ、いいっ、やぁぁぁぁ!!」
+			ENDIF
+		ENDIF
+		CFLAG:7012 = 3
+	;その他の場合
+	ELSE
+		;V中出し絶頂
+		IF TFLAG:11 > 0
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「だめぇ、精液が……そんなっ！イっちゃうぅぅーー!!!」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んあぁぁ！だめなのに……駄目なのに膣内に出されながらイっちゃう」
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「あっ、ああっ、イクッ、イクーーーーッ!!」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「弱いから、弱いからーー!!だめぇぇ!!――っ、ふわぁぁぁぁぁぁ!!!」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:7013
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_2
+;四重絶頂
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;V+A+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+A+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+V+A絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;PRINTFORML 
+;A+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	PRINTFORML 「弱いの！そこ責めらがらおっぱいも責められるのが!!!」
+	PRINTFORMW 「んぁっ、はぃぃ、んんっ…ああぁぁぁ――――!!!」
+;V+A絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;PRINTFORML 
+;C+A絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;PRINTFORMW 
+;A絶頂
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7013 <= 2)
+		;A中出し絶頂
+		IF TFLAG:12 > 0
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「くる、くるくるくるぅぅ、イクのが精液と一緒にくるぅぅぅ」
+				PRINTFORMW 「あん、きた！イクッ、イキますぅ、イックぅぅ―――っっ!!!」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぁぁ、精液気持ちいい!!お尻の中気持ちいいですぅぅ!!!」
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「お尻でイクッ！おひりでイキまふっ!!わらひ、変態になっちゃいましたぁぁぁぁ!!!」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぁぁぁ！らめぇ！おひりでイっちゃうのらめぇぇぇぇぇ!!!」
+			ENDIF
+		ENDIF
+		CFLAG:7013 = 3
+	;その他の場合
+	ELSE
+		;A中出し絶頂
+		IF TFLAG:12 > 0
+			PRINTFORML 「――ぁぁ!?んぁぁ…!!」
+			PRINTFORML 射精と同時に%CALLNAME:TARGET%は絶頂した
+			PRINTFORMW 「やぁぁ、お尻で…%CALLNAME:MASTER%と一緒にイクなんて…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「イキ…たくっ、お尻なんかでイキ…たくっ、んんんーーーっ!!」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:7014
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_3
+;四重絶頂
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;V+A+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+A+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+V+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;A+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;V+B絶頂
+ELSEIF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;C+B絶頂
+ELSEIF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;PRINTFORML 
+;B絶頂
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7014 <= 2)
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「そんなぁっ、お、おっぱいで…おっぱいでイキますぅ、ああぁぁぁん!!」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あふん！だめぇ、ちくびきもちいいですぅぅ、やぁぁ!!」
+		ENDIF
+		CFLAG:7015 = 3
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「おっぱいがぁ！おっぱいがぁ、……んぁぁーー!!」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「イキます！イキますぅぅ!!や、…やぁぁぁぁ!!!」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:7020
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_10
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7020 <= 3)
+		;妊娠である
+		IF TALENT:妊娠 == 1
+			PRINTFORML 「ああ、勿体ないです、生まれてくる赤ちゃんの代わりに飲んでください」
+		;その他の場合
+		ELSE
+			;噴乳経験 1以上
+			IF EXP:噴乳経験 >= 1
+				PRINTFORML 「出てしまします！ミルクがいっぱい出てしまいます!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「あれ、…ええ!？妊娠していないのにど、どうして母乳が出てくるのですか!?」
+			ENDIF
+		ENDIF
+		CFLAG:7020 = 4
+	;従順Lv4
+	ELSEIF ABL:従順 >= 4 && (CFLAG:7020 <= 2)
+		;妊娠である
+		IF TALENT:妊娠 == 1
+			PRINTFORML 「うぅ、出さないと張って痛いだけですし最悪です」
+		;その他の場合
+		ELSE
+			;噴乳経験 1以上
+			IF EXP:噴乳経験 >= 1
+				PRINTFORML 「とまりません！母乳がとまりません」
+			;その他の場合
+			ELSE
+				PRINTFORML 「あれ、…ええ!？妊娠していないのにど、どうして母乳が出てくるのですか!?」
+			ENDIF
+		ENDIF
+		CFLAG:7020 = 3
+	;その他の場合
+	ELSE
+		;妊娠である
+		IF TALENT:妊娠 == 1
+			PRINTFORML 「母乳が出ているという事はやっぱり…」
+		;その他の場合
+		ELSE
+			;噴乳経験 1以上
+			IF EXP:噴乳経験 >= 1
+				PRINTFORML 「ああ、母乳が出てきてしまいました」
+			;その他の場合
+			ELSE
+				PRINTFORML 「あれ、…ええ!？妊娠していないのにど、どうして母乳が出てくるのですか!?」
+			ENDIF
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:7021
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:7021 == 0
+	;PRINTFORMW 
+	;CFLAG:5305 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:7022
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+@K51_MESSAGE_ORGASM_12
+SIF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+;初めて
+IF CFLAG:7022 == 0
+	;PRINTFORMW 
+	;CFLAG:5306 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルセックスで射精 CFLAG:7024
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_12
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7024 <= 3)
+		;効果[排卵誘発剤]
+		IF TEQUIP:16 == 1
+			PRINTFORML 「%CALLNAME:MASTER%様…お尻じゃ妊娠しませんよ」
+		;その他の場合
+		ELSE
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORML 「ああぁ、そんなに注がないで……んぁぁぁ」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ふわぁ、こんなにいっぱい……出て……」
+			;その他の場合
+			ELSE
+				PRINTFORML 「ふふ、そんなに注がれたらお尻で妊娠しそうですね」
+			ENDIF
+		ENDIF
+		CFLAG:7024 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3 && (CFLAG:9010 <= 2)
+		;乱数分岐:3
+		IF RAND:3 == 0
+			PRINTFORML 「お、お尻だったら何度でも射精しても…いいですよ」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「いや、そんなに注がないで」
+		;その他の場合
+		ELSE
+			PRINTFORML 「お尻に熱いのが注がれています」
+		ENDIF
+		CFLAG:7024 = 3
+	;その他の場合
+	ELSE
+		;乱数分岐:3
+		IF RAND:3 == 0
+			PRINTFORML 「お尻の中が……いやぁ」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「うぅ…で、出てる……お尻が変になりそう」
+		;その他の場合
+		ELSE
+			PRINTFORML 「出てる…お尻に出されてるのが分かります」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;セックスで射精 CFLAG:7025
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_11
+	;恋慕
+	IF TALENT:恋慕 == 1 && (CFLAG:7025 <= 4)
+		;妊娠である
+		IF TALENT:妊娠 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORML 「こんなにいっぱい…精液好きで生まれたてきたらどうしましょう」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「もう妊娠しているのにこんなに出してしまうなんて駄目ですよ」
+				PRINTFORML 口では怒ってはいるが顔はご満悦であった
+			;その他の場合
+			ELSE
+				PRINTFORML 「あん、出てます！赤ちゃんにミルクはまだ早いですよぉ」
+			ENDIF
+		;効果[排卵誘発剤]
+		ELSEIF TEQUIP:16 == 1
+			;乱数分岐:5
+			IF RAND:5 == 0
+				PRINTFORML 「んぁぁ、このまま続けてください！受精させてください!!」
+			;乱数分岐:4
+			ELSEIF RAND:4 == 0
+				PRINTFORML 「ああんっ、精子が……種付け気持ちいいです！」
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「注がれています…%CALLNAME:MASTER%様の精液が私を孕ませようと泳いでいます」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「もっとしてください!!完全に赤ちゃんが出来るくらい出してください！」
+			;その他の場合
+			ELSE
+				PRINTFORML 「出して！私を孕ませてください！」
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORML 「……あっ、あぁぁっ」
+				PRINTFORML %CALLNAME:TARGET%は恍惚な表情を浮かべながら射精を受け入れている
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「もう、こんなに出して…%CALLNAME:MASTER%様～、妊娠したら責任取ってくださいね」
+			;その他の場合
+			ELSE
+				PRINTFORML 「精液温かいです…もっとください」
+			ENDIF
+		ENDIF
+		CFLAG:7025 = 5
+	;効果[排卵誘発剤]
+	ELSEIF TEQUIP:16 == 1 && (CFLAG:9011 <= 3)
+		;乱数分岐:3
+		IF RAND:3 == 0
+			PRINTFORML 「いや、だめ、だめだめだめ!!精子出てる……受精しちゃいます!!」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「やめて！赤ちゃん出来ちゃう!!誰か！誰か助けてください!!!」
+			PRINTFORML 排卵誘発剤を飲まされた挙句、子宮に精液を送り込まれ%CALLNAME:TARGET%はパニックを起こしている
+		;その他の場合
+		ELSE
+			PRINTFORML 「いやぁぁぁ、出さないで！出さないで!!ああ…くぅ」
+			PRINTFORML 「出てる…あぁ…あぁぁぁぁ……妊娠しちゃうぅぅ」
+		ENDIF
+		CFLAG:7025 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3 && (CFLAG:9011 <= 2)
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORML 「んっ、……あぁ、あぁぁぁ…まだ出ている…」
+		;その他の場合
+		ELSE
+			PRINTFORML 「いやです！妊娠…赤ちゃんが出来ちゃいます!!」
+		ENDIF
+		CFLAG:7025 = 3
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORML 「んん!?あっ、はぁぁ、熱い…熱いです」
+		;その他の場合
+		ELSE
+			PRINTFORML 「!?　出してるの？やめて、抜いてください!!」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;口で射精 CFLAG:7026
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_15
+	;精液中毒Lv5
+	IF ABL:精液中毒 >= 5 && (CFLAG:7026 <= 4)
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORML 「んぐぅ、すっごく濃いです、相当溜まっていたのですね」
+		;その他の場合
+		ELSE
+			PRINTFORML 「コクッ…コクッ…もっと出せませんか？もっと飲みたいです」
+		ENDIF
+		CFLAG:7026 = 5
+	;精液中毒Lv3
+	ELSEIF ABL:精液中毒 >= 3 && (CFLAG:7026 <= 3)
+		PRINTFORML 「んんっ…やみつきになりそうですねこの味」
+		CFLAG:7026 = 4
+	;奉仕精神Lv3
+	ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:7026 <= 2)
+		PRINTFORML 「んっ…ふぅ、いっぱい出ましたね」
+		CFLAG:7026 = 3
+	;その他の場合
+	ELSE
+		PRINTFORML 「んん!?うげぇ～、苦いですね…」
+	ENDIF
+
+;-------------------------------------------------
+;手で射精 CFLAG:7027
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_19
+	;奉仕精神Lv5
+	IF ABL:奉仕精神 >= 5 && (CFLAG:7027)
+		PRINTFORML 「それっ、ふふ、限界まで出しましょうか？」
+		CFLAG:7027 = 4
+	;奉仕精神Lv3
+	ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:7027 <= 2)
+		PRINTFORML 「こう勢いが良いとだんだん楽しくなってきました」
+		CFLAG:7027 = 3
+	;その他の場合
+	ELSE
+		PRINTFORML 「わぁ、勢いよく出たのでビックリしました」
+	ENDIF
+
+;-------------------------------------------------
+;キスで射精 CFLAG:7029
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_26
+	PRINTFORML 「下が何か温かい…え？あの…そんなにキスがよかったのですか？」
+	
+;-------------------------------------------------
+;素股で射精 CFLAG:7030
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_20
+	;奉仕精神Lv3
+	IF ABL:奉仕精神 >= 3 && (CFLAG:7030 <= 2)
+		PRINTFORML 「こんなに沢山…もし膣内に出されていたら……」
+		CFLAG:7030 = 3
+	;その他の場合
+	ELSE
+		PRINTFORML 「お腹が温かい…いっぱい出たのね」
+	ENDIF
+
+;-------------------------------------------------
+;髪の毛で射精 CFLAG:7031
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_13
+	;乱数分岐:2
+	IF RAND:2 == 0 && (CFLAG:7031 <= 2)
+		PRINTFORML 「これ取るのに苦労するのですよ」
+		CFLAG:7031 = 3
+	;その他の場合
+	ELSE
+		PRINTFORML 「きゃぁ、髪にかかりましたよ!!」
+	ENDIF
+
+;-------------------------------------------------
+;主人が助手を犯すで射精 CFLAG:7032
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足で射精 CFLAG:7034
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_24
+;サドっ気Lv3
+	IF ABL:サドっ気 >= 3 && (CFLAG:7034 <= 2)
+		PRINTFORML 「クスクス、足なんかで出してしまうなんて……なんてだらしないモノなのでしょう」
+		CFLAG:7034 = 3
+	;その他の場合
+	ELSE
+		PRINTFORML 「きゃあ!?足がネバネバしています」
+	ENDIF
+
+;-------------------------------------------------
+;腋で射精 CFLAG:7035
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_18
+	PRINTFORML 「きゃあ！すっごい勢いで飛び出ましたね」
+
+;-------------------------------------------------
+;竿で射精 CFLAG:7037
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸で調教者が射精(舐めない) CFLAG:7040
+;-------------------------------------------------
+@K51_MESSAGE_EJAC_PLAYER_16
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_51_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K51_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:5310 == 0
+	PRINTFORML 「痛いです…もう苦しめないでください」
+	CFLAG:5310 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:5311 == 0
+	PRINTFORML 「んあぁ、こんなに気持ちがいいものだなんて」
+	CFLAG:5311 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:5312 == 0
+	PRINTFORML 「もう逃げられないのですね…」
+	CFLAG:5312 = 1
+ENDIF
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+IF TFLAG:43 == 3 && CFLAG:5313 == 0
+	PRINTFORML 「いやぁ、やめて…来ないで…」
+	CFLAG:5313 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:5314 == 0
+	PRINTFORML 「こんな酷い事して…絶対に許せません」
+	CFLAG:5314 = 1
+ENDIF
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+IF TFLAG:46 == 3 && CFLAG:5316 == 0
+	PRINTFORML 「もう恥ずかしくて死にそうです」
+	CFLAG:5316 = 1
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_51_MESSAGE_LOOK_VIDEO
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_51_MESSAGE_IMPRESSION
+;PRINTFORML 　　　「」
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_51_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW この日を境に何かが、何かが変わった。そう、自分が変わったのだ。
+PRINTFORMW 彼女が変えた。彼女が変えてくれた。彼女は自分を受け入れ愛してくれた。
+PRINTFORMW 他人には決して理解はできない愛だがここにある。確かにここにある。
+PRINTFORMW 今までの自分にはなかったものがある。今までなかった生活がここにある。
+PRINTFORMW 彼女の顔を見つめていると彼女は気づき、微笑み、寄り添ってくる。
+PRINTFORMW 彼女の頬をさすり抱きしめ接吻をする。お互い衣服を脱ぎベットに倒れ愛し合う。
+PRINTFORMW いつまでも、いつまでも……
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW 
+PRINTFORMW そして決意する彼女と…妻と共に最後の時まで……
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_51_MESSAGE_SINGLE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_51_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――奴隷エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+;PRINTFORMW 
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_51_MESSAGE_SLAVE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_51_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K51, ARG, ARG:1
+;DRAWLINE
+;PRINTFORMW 　%CSVCALLNAME(51,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTFORMW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.51 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.51の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_51
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.51の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_51
+PRINTL [51] プロローグNo.51 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.51 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_51
+PRINTW 　　　　　　　　―― Prologue No.51 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.51に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.51に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_51
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.51に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_51
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.51 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.51の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_51
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.51 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_51
+
+;………………………………………………
+;キャラ追加イベントを盛り込む場合
+;………………………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;………………………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.51 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

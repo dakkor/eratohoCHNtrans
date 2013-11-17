@@ -1,0 +1,4400 @@
+;-------------------------------------------------
+;YM用おしゃぶりルーミア口上
+;-------------------------------------------------
+;----------------------------------------------------------------------------------
+;【この口上の改変等について】
+;----------------------------------------------------------------------------------
+;この口上の修正・加筆・改変は自由です。
+;加筆等をしてアップする場合は「別人修正版」「別人加筆版」などの名前をつけ、元の口上と区別できるようにしてください。
+;また、別バリアント用にこの口上をコンバートしてうpしたり、口上まとめへ導入したりするのもOKです。
+;いずれの場合もこの口上のreadmeを同梱してください。その際は「元作者のreadme」などにファイル名を変えてもかまいません。
+;
+;上記のことを行う際に、スレで私の許可を取る必要はありません。
+;その他、私（作者）に質問があればウフフ板のeratohoスレにお願いします。でも居なかったらごめん。
+;
+;作者のトリップ:◆Eviqcp2haU
+;----------------------------------------------------------------------------------
+
+
+;--------------------------------------------------
+;口上ファイルの存在判定（003をキャラ番号に置換）
+;--------------------------------------------------
+;口上の存在判定（YM版）
+@TRY_3
+RETURN 1
+
+;==================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;==================================================
+@KOJO_3_EXTRA_INITIALIZATION
+DRAWLINE
+PRINTW 【注意】
+PRINTW このルーミア口上で単体エンドを迎えると、ゲームオーバーとなる可能性があります
+PRINTW エンゲージリングを渡す場合は、その前にセーブすることを推奨します
+PRINTFORML 
+PRINTW また、この口上内のイベントによりルーミアの好感度の加算が行われることがあります
+PRINTW ゲームバランスを変化させたくない場合は加算を行わないようにも出来ます
+PRINTL どうしますか？
+PRINTL [0] 加算を行う
+PRINTL [1] 加算を行わない
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	CFLAG:5200 = 1
+ELSEIF RESULT == 1
+	CFLAG:5200 = 0
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+;==================================================
+;調教開始口上部
+;==================================================
+@KOJO_3_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;-------------------------------------------------
+;初調教時 CFLAG:5001
+;-------------------------------------------------
+
+IF CFLAG:5001 == 0
+	DRAWLINE
+	PRINTFORMW 「散歩の途中だったのに～」
+	PRINTFORMW ルーミアは不機嫌そうに頬を膨らませる
+	PRINTFORMW 夜中にふよふよ散歩していたところを、奴隷業者に捕まえられたらしい
+	PRINTFORMW 「ドレイ？　それって何するの？」
+	PRINTFORMW これから何をされるのかはよく分かっていないようだ
+	PRINTFORMW %CALLNAME:MASTER%は問いに答えずルーミアの服を脱がせる
+	PRINTFORMW 闇の中に白い裸身が浮かび上がる…
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG:5001
+;-------------------------------------------------
+;恋慕
+ELSEIF CFLAG:5001 < 5 && TALENT:150 == 1
+	DRAWLINE
+	PRINTFORMW 部屋に入ると、ルーミアはベッドにちょこんと座っていた。
+	PRINTFORMW %CALLNAME:MASTER%がその横に腰掛けると、ゆっくりと体重を預けてくる。
+	PRINTFORMW 「最近、変な感じ」
+	PRINTFORMW 「初めはここから出してくれないかなーって思ってたんだけど」
+	PRINTFORMW 「今はそうでもないんだ」
+	PRINTFORMW そう呟いて、か細い腕を絡めてくる。
+	PRINTFORMW 目を合わせると、潤んだ瞳が%CALLNAME:MASTER%を射抜いた。
+	PRINTFORMW 頬には血の色が通い、触れれば火傷しそうな位に熱い。
+	PRINTFORMW 「今までぽっかり穴が開いていたのに」
+	PRINTFORMW 「お化けが棲みついてしまったの」
+	PRINTFORMW 「ここに」
+	PRINTFORMW 触れた胸の僅かなふくらみから、鼓動が伝わってくる。
+	PRINTFORMW 「…私からの、一生にひとつのお願いです」
+	PRINTFORMW どこかのご令嬢の様な言葉遣い。
+	PRINTFORMW ほおずきの様に赤い唇。
+	PRINTFORMW 恋に燃える少女はもう子供ではない、と柄にも無いことを思った。
+	PRINTFORMW 「キスして、ください」
+	PRINTFORML 
+	PRINTFORML [0] 願いを聞く
+	PRINTFORML [1] 拒む
+	$INPUT_LOOP2
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW %CALLNAME:MASTER%が頷くと、ルーミアは目を閉じた。
+		PRINTFORMW %CALLNAME:MASTER%の唇が少女の唇に近付く。
+		PRINTFORMW そうして二人は、初めて普通のやり方で触れ合った…。
+		PRINTL 
+		;最初に好感度の加算を行ってよいと答えた
+		IF CFLAG:5200 == 1
+			PRINTFORMW 【ルーミアの%CALLNAME:MASTER%に対する好感度＋50】
+			CFLAG:2 += 50
+		ENDIF
+	ELSEIF RESULT == 1
+		PRINTFORMW %CALLNAME:MASTER%は拒絶の言葉を口にした。
+		PRINTFORMW 「あ……ごめんなさい」
+		PRINTFORMW ルーミアはしばらく俯いていたが、やがて顔を上げると朗らかに笑った。
+		PRINTFORMW 「あはは、ヘンな感じになっちゃったね。それじゃ、いつもみたいにしよっか」
+	ELSE
+		GOTO INPUT_LOOP2
+	ENDIF
+	CFLAG:5001 = 5
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:2 == 3
+	DRAWLINE
+	PRINTFORMW 「今日もするの…？」
+	PRINTFORMW ルーミアは黙々と胸元のリボンを解く
+	PRINTFORMW この異常な状況を受け入れ始めているようだ…
+	CFLAG:5001 = 4
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 「あっ…」
+	PRINTFORMW ルーミアは落ち着きなくこちらを見る
+	PRINTFORMW 前回の調教を体が覚えているのだろうか…
+	CFLAG:5001 = 3
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 「うーん、しばらくは出れないかなあ…」
+	PRINTFORMW 楽観できる状況ではないと薄々気付き始めているようだ…
+	CFLAG:5001 = 2
+	RETURN 1
+
+;以上の条件を満たしていないときは、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K3_KOJO2
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降、3をキャラ番号に変更する） CFLAGなし 
+;-------------------------------------------------
+@K3_KOJO2
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	;恋慕
+	IF TALENT:150 == 1
+		IF CFLAG:5361 == 0
+			PRINTFORMW 「つーん」
+			PRINTFORMW ルーミアは頬を膨らませて不機嫌をアピールしている…
+			CFLAG:5361 = 1
+		ELSE
+			PRINTFORMW 「つんつーん」
+			PRINTFORMW ルーミアは頬を膨らませて不機嫌をアピールしている…
+			CFLAG:5361 = 0
+		ENDIF
+	;恋慕じゃない
+	ELSE
+		PRINTFORMW 「力が出せたら、食べてやるのに」
+		PRINTFORMW ルーミアは威嚇の視線を向けている…
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:150 == 1
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:4 == 0
+		PRINTFORMW 「あっ」
+		PRINTFORMW %CALLNAME:MASTER%の顔を見るとルーミアはぱっと表情を綻ばせた
+		PRINTFORMW そして正面から抱きつくと、誰にも聞こえないような声で呟いた
+		PRINTFORMW 「待ってた」
+		PRINTFORMW そうして%CALLNAME:MASTER%の衣服をぎゅっと掴んだ…
+	ELSEIF RAND:3 == 0
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、ルーミアの姿は消え失せていた…
+		PRINTFORMW 「ばあっ♪」
+		PRINTFORMW そう思ったところに、死角の闇の中からルーミアが飛びついてきた
+		PRINTFORMW 「びっくりした？　えへへ」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 部屋に入るなり、ルーミアは%CALLNAME:MASTER%の服を脱がしにかかった…
+		PRINTFORMW 「ねえ、待ちきれないよう……早くちょうだい…」
+		PRINTFORMW 切なそうに太腿を擦り合わせ、猫撫で声で行為をねだる…
+	ELSE
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、ルーミアは恥ずかしそうにシーツで顔を隠していた
+		PRINTFORMW どうやら%CALLNAME:MASTER%を待ちきれずに自分で慰めていたようだ…
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:2 == 3
+	DRAWLINE
+	PRINTFORMW 「これで…いい？」
+	PRINTFORMW ルーミアは服を脱ぎ捨て、白い肌を薄明かりの下に晒している
+	PRINTFORMW 羞恥のためか微かに裸身を震わせている…
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 「自分で、脱ぐ……」
+	PRINTFORMW そう言ってルーミアはブラウスのボタンを外し始めた…
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 「今日もエッチなこと、する？」
+	PRINTFORMW そう尋ねるルーミアの頬は微かに赤い…
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:2 == 0
+	IF RAND:2 == 0
+		DRAWLINE
+		PRINTFORMW 「外に出たいなー」
+	ELSE
+		DRAWLINE
+		PRINTFORMW 「そーらを自由に飛びたいなー」
+	ENDIF
+	RETURN 1
+
+ENDIF
+RETURN 0
+
+;==================================================
+;調教終了時の口上
+;==================================================
+@KOJO_3_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+DRAWLINE
+
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;好感度3500以上
+IF CFLAG:2 >= 3500 && CFLAG:5100 == 0
+	PRINTFORMW 「んっ」
+	PRINTFORMW ルーミアは唇を重ねてきた
+	PRINTFORMW 「なんだろ、何だか今すごく幸せなの」
+	PRINTFORMW 
+	PRINTFORMW 【二人は充分な愛情で満たされている】
+	CFLAG:5100 = 1
+	RETURN 1
+
+;処女喪失直後（一回のみ）
+ELSEIF CFLAG:5279 == 1 && CFLAG:5011 == 0
+	;恋慕+挿入で喪失した
+	IF TALENT:150 && CFLAG:9500 == 1
+		PRINTFORMW 「えへへ」
+		PRINTFORMW 行為を終えると、ルーミアは%CALLNAME:MASTER%に寄り添ってきた
+		PRINTFORMW 「あげちゃった、はじめて」
+		PRINTFORMW そう囁いて、そっと唇を合わせてきた…
+	;それ以外
+	ELSE
+		PRINTFORMW 「はー、まだひりひりする…」
+		PRINTFORMW ルーミアは破瓜の血に汚れた性器を拭っている
+		PRINTFORMW その調子は普段より弱々しかった…
+	ENDIF
+	CFLAG:5011 = 1
+	RETURN 1
+
+;恋慕＋体力500未満
+ELSEIF TALENT:150 == 1 && BASE:0 < 500
+	IF RAND:2 == 0
+		PRINTFORMW 「てへ、はりきりすぎちゃった……」
+		PRINTFORMW ルーミアは事後の虚脱感に身を任せ、まどろんでいる
+		PRINTFORMW 「またしようね……%CALLNAME:MASTER%」
+	ELSE
+		PRINTFORMW 「すごかったー…」
+		PRINTFORMW ルーミアはまだ行為の余韻に浸っている
+		PRINTFORMW 髪の毛を指先で弄ると、くすくすと笑った
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:150 == 1
+	IF RAND:8 == 0
+		PRINTFORMW 気怠い空気に浸っていると、指先に甘い痺れを感じた
+		PRINTFORMW 「ん……くちゅ、かぷ……」
+		PRINTFORMW 夢うつつの意識でルーミアはそれを歯で弄んでいる
+		PRINTFORMW そのまま気の済むようにさせてやった…
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「心臓、とくとくしてる」
+		PRINTFORMW ルーミアは横にいる%CALLNAME:MASTER%の胸に耳を当てている…
+		PRINTFORMW 「こうしてるとね、何だか落ち着くの。赤ちゃんになったみたい」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「すう……」
+		PRINTFORMW ルーミアは%CALLNAME:MASTER%の手を握りながら寝息を立てている…
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「今、私と%CALLNAME:MASTER%がこんな風になってるなんて、嘘みたい」
+		PRINTFORMW ルーミアは天井を見ながらぽつりとそう呟いた…
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「はぁ……こうしてると、落ち着く……」
+		PRINTFORMW ルーミアは%CALLNAME:MASTER%の身体に足を絡ませて抱きついている…
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「……」
+		PRINTFORMW じーっと、ベッドの中でルーミアは上目遣いに%CALLNAME:MASTER%の顔を見ている
+		PRINTFORMW 「…んーん？　なんでもないよ、ふふっ」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「いっぱい、しちゃったね」
+		PRINTFORMW 狭いベッドで身体を寄せ合い、ルーミアは悪戯っぽく笑う
+		PRINTFORMW 「共犯、だ」
+		PRINTFORMW 小さな体を抱きしめると、果実の香りがした…
+	ELSE
+		PRINTFORMW 「まだ、し足りないよ……」
+		PRINTFORMW 終わっても収まらない火照りにルーミアは身をよじらせている
+		PRINTFORMW %CALLNAME:MASTER%はその手を振り払って部屋を後にした…
+	ENDIF
+	RETURN 1
+	
+;反発刻印Lv3
+ELSEIF MARK:9 == 3
+	PRINTFORMW 「なんでこんなことするの…？」
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:150 == 0
+	PRINTFORMW 「……」
+	PRINTFORMW ルーミアはベッドに横たわり、ぼんやりと中空を見つめている…
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	PRINTFORMW 「あ、もう終わり…？」
+	RETURN 1
+
+;屈服刻印Lv1未満
+ELSEIF MARK:2 <= 1
+	PRINTFORMW 「何かとっても疲れた…」
+	RETURN 1
+
+ENDIF
+RETURN 0
+
+
+
+;==================================================
+;@KOJO_MESSAGE_COM関係
+;コマンド口上判定処理
+;コマンド実行時に出力されます
+;==================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_3_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_3_TRAIN_MESSAGE_S_GENERAL
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷があり、口枷をつけるコマンドでない場合も戻る
+SIF (TEQUIP:42 && (SELECTCOM != 226 && SELECTCOM != 229 && SELECTCOM != 506 && SELECTCOM != 509 && SELECTCOM != 583))
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG:9000～9999を使用（コマンド番号＋9000）
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG:9000
+;-------------------------------------------------
+IF SELECTCOM == 0
+	;初めて
+	IF CFLAG:9000 == 0
+		;恋慕
+		IF TALENT:150 == 1 && MARK:2 == 3 && ASSIPLAY == 0
+			PRINTFORMW 「%CALLNAME:PLAYER%の手って優しい。…知ってた？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「んっ…」
+			PRINTFORMW ルーミアは口元に手を当てて声を殺している
+		;それ以外
+		ELSE
+			PRINTFORMW 「え、さわるの？」
+		ENDIF
+		CFLAG:9000 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+C感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:0 >= 3
+			PRINTFORMW 「あ…なんか、あたまがふわふわするぅ……」
+			CFLAG:9000 = 6
+		;恋慕+屈服刻印Lv3
+		ELSEIF TALENT:150 == 1 && MARK:2 == 3
+			PRINTFORMW 「んっ……もっと、擦って……！」
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「あ…はっ……んうっ……」
+			CFLAG:9000 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「ううー…ちょっと変になりそう……」
+			CFLAG:9000 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、くすぐったいよ…」
+			CFLAG:9000 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ペッティング CFLAG:9000
+;-------------------------------------------------
+IF SELECTCOM == 606
+	;初めて
+	IF CFLAG:9000 == 0
+		;恋慕
+		IF TALENT:150 == 1 && MARK:2 == 3 && ASSIPLAY == 0
+			PRINTFORMW 「%CALLNAME:PLAYER%の手って優しい。…知ってた？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「んっ…」
+			PRINTFORMW ルーミアは口元に手を当てて声を殺している
+		;それ以外
+		ELSE
+			PRINTFORMW 「え、さわるの？」
+		ENDIF
+		CFLAG:9000 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+C感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:0 >= 3
+			PRINTFORMW 「あ…なんか、あたまがふわふわするぅ……」
+			CFLAG:9000 = 6
+		;恋慕+屈服刻印Lv3
+		ELSEIF TALENT:150 == 1 && MARK:2 == 3
+			PRINTFORMW 「んっ……もっと、擦って……！」
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「あ…はっ……んうっ……」
+			CFLAG:9000 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「ううー…ちょっと変になりそう……」
+			CFLAG:9000 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、くすぐったいよ…」
+			CFLAG:9000 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG:9001
+;岩清水 CFLAG:9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9001 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「あっ、そんなの、ダメっ…あん…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「はあ……恥ずかしいよぅ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え、そこ、おしっこ出るとこっ」
+		ENDIF
+		CFLAG:9001 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+C感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:0 >= 3
+			PRINTFORMW 「んはぁ……いいよ……っ」
+			PRINTFORMW ルーミアは涙声で刺激に身を震わせている
+			CFLAG:9001 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「もっと、ぺろぺろして…」
+			CFLAG:9001 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「なんか、これ、すっごくやらしい……くふぅ……」
+			CFLAG:9001 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅー…汚いよ…？」
+			CFLAG:9001 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611
+	;恋慕+露出癖Lv3以上+C感覚Lv3以上
+	IF TALENT:150 == 1 && ABL:14 >= 3 && ABL:0 >= 3
+		CFLAG:9611 = 6
+		PRINTFORMW 「ほら、奥まで見えるでしょ…？　おつゆ、舐めて…」
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 「やだっ、吸われて……腰、がくがくってなっちゃうぅ」
+		PRINTFORMW ルーミアは甲高い嬌声を上げ続けた…
+		CFLAG:9611 = 5
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:0 >= 3 && ABL:14 >= 3
+		PRINTFORMW 「あ…あああ……なに、これ……」
+		PRINTFORMW ルーミアは溢れ出る自らの愛液に戸惑っている…
+		CFLAG:9611 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「やだ、おまたが、勝手に動いちゃう……！」
+		CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっ、やだっ、こんなの…」
+		CFLAG:9611 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG:9002
+;-------------------------------------------------
+;アナルバイブ・アナルローター・アナルビーズ
+IF SELECTCOM == 2 && (TEQUIP:25 == 1 || TEQUIP:25 == 3 || TEQUIP:25 == 5)
+	;初めて
+	IF CFLAG:5101 == 0
+		;尻穴狂い＋恋慕
+		IF TALENT:173 == 1 && TALENT:150 == 1
+			PRINTFORMW 「んああっ、暴れてる、お尻で暴れてるっ……！」
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「はーっ……これじゃ足りないよぅ……直接、して……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやあっ、お尻で震えてる……こわい…！」
+		ENDIF
+		CFLAG:5101 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;尻穴狂い＋恋慕
+		IF TALENT:173 == 1 && TALENT:150 == 1
+			PRINTFORMW 「出し入れされるの、気持ちいい……」
+			PRINTFORMW ルーミアは粘膜を刺激され呻いている…
+			CFLAG:5101 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「なんか、うんちするときみたいっ……ふあぁ……」
+			CFLAG:5101 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 「んっ……なんか、なんか……！」
+			PRINTFORMW ルーミアはアナルで快感を得ているようだ…
+			CFLAG:5101 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあっ…きつい……ううぅ……」
+			CFLAG:5101 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ELSEIF SELECTCOM == 2
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「ひゃっ！？　な、何したの今……」
+		CFLAG:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+A感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:2 >= 3
+			PRINTFORMW 「あっ、お尻いい……すごい、すごいぃぃ……」
+			CFLAG:9002 = 6
+		;恋慕+潤滑Lv2以上
+		ELSEIF TALENT:150 == 1 && LOCAL >= PALAMLV:2
+			PRINTFORMW 「ああ……%CALLNAME:PLAYER%にお尻、いじられちゃってる……」
+			CFLAG:9002 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:150 == 1 && LOCAL < PALAMLV:2
+			PRINTFORMW 「んッ……も、もっと濡らして……？」
+			CFLAG:9002 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 「ん…なんか……前と違う……」
+			CFLAG:9002 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛っ…指、入れないで…」
+			CFLAG:9002 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG:9003
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:9003 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「おっぱい、触りたいの？　いいよ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん…手、やらしい…」
+		ENDIF
+		CFLAG:9003 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1 && ASSIPLAY == 0
+			PRINTFORMW 「あ…%CALLNAME:PLAYER%の手、あったかい…」
+			PRINTFORMW ルーミアは幸福感で満たされている…
+			CFLAG:9003 = 5
+		;B感覚Lv4以上
+		ELSEIF ABL:3 >= 4
+			PRINTFORMW 「あん…むね…むね、いいよう…！」
+			PRINTFORMW 快感を声が昂ぶるのを抑えられないようだ…
+			CFLAG:9003 = 4
+		;B感覚Lv2以上
+		ELSEIF ABL:3 >= 2
+			PRINTFORMW 「んっ…いまの、よかった…」
+			PRINTFORMW 微弱な刺激に体をぴくっと跳ねる…
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うー…」
+			PRINTFORMW まだ快感よりくすぐったさが勝っているようだ
+			CFLAG:9003 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG:9004
+;Gスポット刺激 CFLAG:9600
+;-------------------------------------------------
+;指挿入れ
+IF SELECTCOM == 4
+	;初めて
+	IF CFLAG:9004 == 0
+		;処女
+		IF TALENT:処女 == 1
+			;恋慕+従順Lv5
+			IF TALENT:150 == 1 && ABL:10 >= 5
+				PRINTFORMW 「ど、どうぞ……んっ！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「んつっ…！　そ、そこって触っていいところなの？」
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1 && ASSIPLAY == 0
+				PRINTFORMW 「あ……%CALLNAME:PLAYER%の指、感じる…」
+			;V感覚Lv3以上
+			ELSEIF ABL:1 >= 3
+				PRINTFORMW 「あっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「さ、触るんだ…」
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		ENDIF
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「あ、んっ……じらさないで……っ」
+			CFLAG:9004 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「あっ、ゆっくり、出し入れしてっ」
+			CFLAG:9004 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「そこに入れると、なんか息が苦しくなるよ……んんっ……」
+			CFLAG:9004 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;Gスポット刺激
+IF SELECTCOM == 600
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほら……今、女の子の大事なとこを触ってるんだよ…」
+		CFLAG:9600 = 4
+	;V感覚Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 「あっ、さっきのとこ、いいよ…」
+		CFLAG:9600 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふやぁっ！？　今、びくびくってなっちゃった…」
+		CFLAG:9600 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG:9005
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:9005 == 0
+		PRINTFORMW 「え、舐めるの…？」
+		PRINTFORMW ルーミアの男性器に口をつけ、余っている皮を口で剥いてあげた…
+		PRINTFORMW 「え……！？？　ふやぁあっ！？　なんか、なんかっ……」
+		PRINTFORMW ルーミアはいきなり与えられた強い刺激に呆然としている…
+		CFLAG:9005 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「どうして、そこまでしてくれるのぉ…」
+			PRINTFORMW 「あ、あ、あっ……また、熱いの、のぼってきちゃう……！！」
+			CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「そんなにされたら、もう出ちゃうよっ…」
+			CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「なにこれ、なにこれぇ、おちんちんとけちゃううぅ」
+			PRINTFORMW ルーミアはいやいやと首を振りつつもカラダは快楽に委ねている…
+			CFLAG:9005 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする CFLAG:9006
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:9006 == 0
+		;恋慕
+		IF TALENT:150 == 1 && ASSIPLAY == 0
+			PRINTFORMW 「嬉しい……大人のキス……」
+			PRINTFORMW 二人は唇を寄せ合い、濡れた舌で交接した…
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……なんか、ぞくぞくしちゃう……」
+		ENDIF
+		CFLAG:9006 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:3 == 0	
+				PRINTFORMW 「んっ……大好き、ちゅっ……」
+				PRINTFORMW 小鳥の雛の様に互いの唇をついばんだ…
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んっ」
+				PRINTFORMW 瞳を閉じ、呼吸も忘れてただ唇を重ね合わせた…
+			ELSE
+				PRINTFORMW 「ちゅ…ん、あっ……」
+				PRINTFORMW 透き通る金髪をくしけずると、恥ずかしそうに頬を染めた…
+			ENDIF
+			CFLAG:9006 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2
+			PRINTFORMW 「あっ……ん……ちゅっ…」
+			PRINTFORMW 門歯を愛撫してから舌を侵入させると、ルーミアは進んでそれを受け入れた…
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅー…やめてー…」
+			PRINTFORMW 手加減せずに薄桃色の唇を吸うと、ルーミアの目端に涙が滲む…
+			CFLAG:9006 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG:9007
+;シャワーオナニー CFLAG:8801
+;-------------------------------------------------
+;通常自慰（シャワー無し）
+IF SELECTCOM == 7 && TEQUIP:20 == 0 && TEQUIP:25 == 0 && TEQUIP:54 == 0 && TEQUIP:50 == 0
+	;初めて
+	IF CFLAG:9007 == 0
+		PRINTFORMW 「え、自分でするって…？　ここをこすればいいの？」
+		PRINTFORMW 「何か、ぷっくりしてるね……あ、んっ…？」
+		PRINTFORMW 陰核を指で擦ると、ルーミアは不思議な感覚を覚えたのか表情を微かに歪ませる…
+		CFLAG:9007 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「おなにー好きなの……ごめんね、嫌いにならないでね……」
+			PRINTFORMW 「あっ、あっ、止まんないよう、きもちいいよう……」
+			CFLAG:9007 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「あっ……自分でするの、好きっ……好きなのっ……」
+			CFLAG:9007 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「どうして、指、止まらないよ……？」
+			CFLAG:9007 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、ムズムズするよっ」
+			CFLAG:9007 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;二穴バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5102 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「んはあっ…あそこもお尻も……いいのっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、こんな、二つも入れなくてもいいじゃない…」
+		ENDIF
+			CFLAG:5102 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｖ感覚Lv3以上＋Ａ感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:1 >= 3 && ABL:2 >= 3
+			PRINTFORMW 「私、自分でするの、あんっ、好きになっちゃったようっ…！」
+			PRINTFORMW 「あっ、くる、くる、くる…っ！」
+			CFLAG:5102 = 6
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「ひどい格好、させるのが好きなのねー…」
+			PRINTFORMW 揶揄の中にも仄かな欲望の色が隠れていた…
+			CFLAG:5102 = 5
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 「あ、これイイっ、癖になるっ……」
+			CFLAG:5102 = 4
+		;V感覚Lv3以上＋A感覚Lv3以上
+		ELSEIF ABL:1 >= 3 && ABL:2 >= 3
+			PRINTFORMW 「なんか、あそこぬるぬるしてる…あっ…」
+			CFLAG:5102 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うー…つらい…」
+			PRINTFORMW まだ体力の消耗の方が大きいようだ……
+			CFLAG:5102 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:5103 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「はあっ、あ、%CALLNAME:MASTER%はしてくれないの…？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やぁ、無理だよう…入れてるだけで、せいいっぱい……」
+		ENDIF
+			CFLAG:5103 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｖ感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:1 >= 3
+			PRINTFORMW 「あー……駄目になっちゃう……頭、これしか考えられなくなっちゃう……」
+			PRINTFORMW ルーミアはベロをだらしなく垂らして、バイブの振動に夢中になっている…
+			CFLAG:5103 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「やっぱり……これだけじゃ……寂しい……」
+			CFLAG:5103 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 「えっ、なんか、あそこひくひくしてる、くぅんっ」
+			CFLAG:5103 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあー…お腹いっぱい…」
+			PRINTFORMW 発育途中の身体にはバイブが大きすぎるようだ…
+			CFLAG:5103 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5104 == 0
+		;尻穴狂い＋恋慕
+		IF TALENT:173 == 1 && TALENT:150 == 1
+			PRINTFORMW 「えっ、うそ、これっ！？　こんなの、こんなの……ふああっ！」 
+		;恋慕
+		ELSEIF TALENT:150 == 1 
+			PRINTFORMW 「ああっ、広がっちゃうっ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻に入ってるので…遊ぶの…？」
+			PRINTFORMW 「うん、やってみるけど…」
+		ENDIF
+			CFLAG:5104 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;尻穴狂い＋恋慕
+		IF TALENT:173 == 1 && TALENT:150 == 1
+			PRINTFORMW 「うっ…うっ…うっ…んうっ……！！！　あ、あはあっ♪♪♪」
+			PRINTFORMW アナルが気持ち良すぎて、他の事はもはや考えられないようだ…
+			CFLAG:5104 = 6
+		;恋慕＋Ａ感覚Lv3以上
+		ELSEIF TALENT:150 == 1 && ABL:2 >= 3
+			PRINTFORMW 「うまく…できたら……ごぼうび、ちょうだい？」
+			PRINTFORMW 「あ、くぁあっ！！」
+			CFLAG:5104 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「な、なんか……恥ずかしい…のにっ」
+			CFLAG:5104 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 「お尻も、いいかも……」
+			CFLAG:5104 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ…うっ…」
+			CFLAG:5104 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;公開オナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:50
+	;初めて
+	IF CFLAG:5105 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「他の人に見られるの…？　…うーん、ちょっと複雑」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え……これの前でやるの？　いいけど…？」
+		ENDIF
+			CFLAG:5105 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:150 == 1 && ABL:14 >= 3
+			PRINTFORMW 「ねえ…私のあそこ、綺麗…？」
+			PRINTFORMW ルーミアは陰唇を広げてビデオカメラに見せつけている…
+			CFLAG:5105 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「ああっ……好きっ……好きっ……！」
+			PRINTFORMW 録画しているというのに、ルーミアは%CALLNAME:MASTER%の方ばかり見ている…
+			CFLAG:5105 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 「あっ…んっ」
+			PRINTFORMW ビデオカメラの前でルーミアは自慰に耽っている…
+			CFLAG:5105 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、もっと見せ付けるように？　そんなにアソコ見て面白いのかなぁ……」
+			CFLAG:5105 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;シャワーオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:54
+	;初めて
+	IF CFLAG:8801 == 0
+		PRINTFORMW 「んんっ…お湯が当たって…！」
+		CFLAG:8800 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「んああっ、これっ、これも好きなのっ♪」
+			CFLAG:8800 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「待ってて、今あそこ綺麗するから」
+			PRINTFORMW 「あぅ…ぬるぬるが、いつまでたってもとれないよぉ…」
+			CFLAG:8800 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「シャワー、ここに当てるの気持ちいいっ……」
+			CFLAG:8800 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだ、びちょびちょ……」
+			CFLAG:8800 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG:9009
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:9009 == 0
+		;恋慕
+		IF TALENT:150 == 1 && ASSIPLAY == 0
+			PRINTFORMW 「そ、そんなに見られると、……てれる」
+			PRINTFORMW ルーミアの様子を観察していると、赤面して顔を伏せた
+		;それ以外
+		ELSE
+			PRINTFORMW 「？　何もしなくていーの？」
+		ENDIF
+		CFLAG:9009 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 && PALAM:13 >= PALAMLV:3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 「お願い、触って……めちゃくちゃにして…」
+				PRINTFORMW ルーミアは我慢できずに股間に手を伸ばしている…
+			ELSE
+				PRINTFORMW 「見てるだけなんて、だーめ…」
+				PRINTFORMW 手を出さずにいると、ぎゅっと抱きついてきた…
+			ENDIF
+			CFLAG:9009 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:4 == 0
+				PRINTFORMW 「そ、そんなに見られると、……てれる」
+				PRINTFORMW ルーミアは赤くなった顔を伏せ、ぼそりと呟いた…
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「十進法だってさ、失礼しちゃう」
+				PRINTFORMW ルーミアは両手を伸ばし、よく分からないポイントに腹を立てている…
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「見てるだけなんて、だーめ…」
+				PRINTFORMW 手を出さずにいると、ぎゅっと抱きついてきた…
+			ELSE
+				PRINTFORMW 「……♪」
+				PRINTFORMW ルーミアは%CALLNAME:MASTER%の顔を幸せそうに見つめている…
+			ENDIF
+			CFLAG:9009 = 3
+		;それ以外。何か装着しているときと何も装着していないときで分岐
+		ELSE
+			LOCAL = 0
+			REPEAT 100
+				IF TEQUIP:COUNT > 0
+					PRINTFORMW 「何もしないなら、これ取ってよぉ……」
+					LOCAL = 1
+					BREAK
+				ENDIF
+			REND
+			IF LOCAL == 0
+				PRINTFORMW 「ちょっと休憩ー」
+				PRINTFORMW ルーミアは寝転んでリラックスしている…
+			ENDIF
+			CFLAG:9009 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG:9010
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:9010 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「ふあああっ……びりびりきちゃうっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「？　それ何、おもちゃ？」
+			PRINTFORMW きょとんとしているルーミアの突起に震えるそれを押し当てた…
+		ENDIF
+		CFLAG:9010 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「これだけじゃ、物足りないよ……」
+			PRINTFORMW ルーミアは%CALLNAME:PLAYER%の背に腕を回してくる…
+			CFLAG:9010 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ…あたまも、ビリビリする……」
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ…すごい…震えて……」
+			CFLAG:9010 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG:9011
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:9011 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「今度はそれを使うの？　うん、また気持ちよくしてね…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やぁ、お豆がぐりぐりって……！　ふあああっ！！」
+			PRINTFORMW 激しいヘッドの動きがもたらす快感に背筋をぴんと張り詰めている…
+		ENDIF
+		CFLAG:9011 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ、いいの、お豆がぶるるって震えて、いっちゃうのっ…！」
+			PRINTFORMW 涎を垂らして快楽の波に身を任せている…
+			CFLAG:9011 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「こんなの、したことない…んあっ」
+			PRINTFORMW 途切れなく与えられる性感に身を任せている…
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「だめぇ、これ、あぶない、あぶないよう…」
+			PRINTFORMW そう言いながら、ルーミアは無意識の内にクリトリスを押し付けている…
+			CFLAG:9011 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG:9012　CFLAG:8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20
+	;初めて
+	IF CFLAG:9012 == 0
+		;処女
+		IF TALENT:処女 == 1
+			;恋慕＋従順Lv5
+			IF TALENT:150 == 1 && ABL:10 >= 5
+				PRINTFORMW 「え？　それ、入れるの……？」
+				PRINTFORMW 「…うん、怖いけど、%CALLNAME:MASTER%のためなら頑張る」
+			;それ以外
+			ELSE
+				PRINTFORMW 「え？　それ何？　なんであそこに近づけてるの……？」
+				PRINTFORMW 「やだっ…怖い…こわいっ…やめてっ……！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「うん、いいよ。わたしのあそこ、それでぐちゃぐちゃにして…」
+				PRINTFORMW ルーミアは自分から秘裂を広げ、バイブを受け入れる…
+			;それ以外
+			ELSE
+				PRINTFORMW 「あっ…そんなの、入らな…ふああっ…！」
+				PRINTFORMW 幼い性器に思い切りバイブを突き入れた…
+			ENDIF
+		ENDIF
+		CFLAG:9012 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あっ、くぅ……うちがわで、うねうねしてる……！」
+			CFLAG:9012 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あ…あれっ…？　なんか、なんか、気持ちいい……！」
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛つっ……お腹の中、叩かれてる……」
+			CFLAG:9012 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「んっ…ああ、出てくぅんっ」
+		PRINTFORMW バイブが抜く時、ルーミアは甘えた猫のような鳴き声をあげた…
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ……ずるずるって……抜けてる……」
+		PRINTFORMW 異物が抜かれて楽になり、ルーミアは深く息を吐いた…
+		CFLAG:8811 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG:9013　CFLAG:8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25
+	;初めて
+	IF CFLAG:9013 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「えへ…いいよ、ほら、ここにどうぞ……」
+			PRINTFORMW 「ん、く、くうっ…！」
+			PRINTFORMW 肛門内に機械を入れるとびくりと小さな身体が跳ねた
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんか音してるんだけど……えっ、やだ、入らないって！」
+			PRINTFORMW 「ん、くうううぅぅぅ……！」
+			PRINTFORMW ルーミアは未知の感覚に緊張している…
+		ENDIF
+		CFLAG:9013 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:2 >= 3
+			PRINTFORMW 「かっ、くっ、くふぅん♪　いいっ、お尻で暴れるのいいっ、もっと強くしてっ、かき回してっ♪」
+			CFLAG:9013 = 5
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「うん…いいよ、入れて……くぅんっ！」
+			CFLAG:9013 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 「あっ、やだっ、んっ、んっ、いいっ…」
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ、私あなたのおもちゃじゃないのに…」
+			CFLAG:9013 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	IF ABL:Ａ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「あ…もう出しちゃうの…？」
+			PRINTFORMW ルーミアは名残惜しそうに声を漏らす…
+		ELSE
+			PRINTFORMW 「あ…あはあああぁ…っ♪」
+			PRINTFORMW 直腸からバイブを引き抜くと、ルーミアは陶然と息を吐いた…
+		ENDIF
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふうぅっ……やっと、終わり…？」
+		CFLAG:8812 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG:9014　CFLAG:8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30
+	;初めて
+	IF CFLAG:9014 == 0
+		;恋慕
+			PRINTFORMW 「これ何？　風船？　えっ、お豆につけるの？」
+		CFLAG:9014 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「これつけると、お豆がこりこり勃っちゃうの……」
+			PRINTFORMW 
+			CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……！」
+			PRINTFORMW ルーミアは口を押さえて刺激に耐えている…
+			CFLAG:9014 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG:9015　CFLAG:8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35
+	;初めて
+	IF CFLAG:9015 == 0
+		PRINTFORMW 「胸につけるの……？」
+		CFLAG:9015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「おっぱいが、吸われて、おちんちんみたいになっちゃうよぉっ」
+			CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだぁ、胸の先っぽがぴんぴんってなっちゃうよ……」
+			CFLAG:9015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG:9016　CFLAG:8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30
+	;初めて
+	IF CFLAG:9016 == 0
+		PRINTFORMW 「ひあっ、おちんちんに、やわらかいのがっ、あっ、あっ」
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「あ゛ー♪　あ゛ー♪」
+				PRINTFORMW ルーミアは我を忘れてペニスを擦っている……
+			ELSE
+				PRINTFORMW 「やらぁ、おちんちんばかになっちゃううぅ」
+			ENDIF
+			CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あぁあぁ……出したい、出したいよう」
+			CFLAG:9016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	PRINTFORMW 「あっ……抜かないでぇ……」
+	CFLAG:8815 = 1
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG:9020
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:9020 == 0
+		;処女
+		IF TALENT:処女 == 1
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 少女の白い両脚を開き、のしかかる
+				PRINTFORMW 「えへ……私は……準備いいよ……？」
+				PRINTFORMW ルーミアは両手を差し出し、%CALLNAME:PLAYER%の侵入を迎え入れた…
+				PRINTFORMW 「んぐっ……あ……はいる……入ってる……！」
+			;それ以外
+			ELSE
+				PRINTFORMW ルーミアの上体に覆い被さると、不安げにこちらを見つめてきた
+				PRINTFORMW 「ねえ、なに、するの…？　これって、もしかして……」
+				PRINTFORMW %CALLNAME:PLAYER%は最後まで聞かずに一気に膣内に挿入した…
+				PRINTFORMW 「………ッッ！？？　ぎっ、いた、痛いいいいっ！！！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 少女の白い両脚を開き、のしかかる
+				PRINTFORMW 「えへ……私は……準備いいよ……？」
+				PRINTFORMW ルーミアは両手を差し出し、%CALLNAME:PLAYER%の侵入を迎え入れた…
+				PRINTFORMW 「んぐっ……あ……はいる……入ってる……！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「ひっ、やめてっ……」
+				PRINTFORMW 硬く閉じた陰部をこじ開けると、ルーミアはか細い悲鳴を漏らした…
+			ENDIF
+		ENDIF
+		CFLAG:9020 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:4 == 0
+				PRINTFORMW ルーミアと激しくキスをしながら交わった…
+				PRINTFORMW 「ん、ちゅっ、好きっ」
+				PRINTFORMW 「好きっ、好きっ、大好きっ……んあっ…！」
+				PRINTFORMW ルーミアの目の端から零れた涙を舌で掬いとった…
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 互いに背中に腕を回し、密着して結合した…
+				PRINTFORMW 「あっ、響くっ、ずんずんって……%CALLNAME:PLAYER%が動いてるぅ…」
+				PRINTFORMW 「あんっ、あっ、あっ、んくっ、やあっ、ふぁあっ……！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふあ、くっ、んっ、キス、ちょうだいっ、うんっ、ふむうっ」
+				PRINTFORMW 「ちゅ…くちゅ、ん、はむ……んっ、んっんっんっんっ」
+				PRINTFORMW 「んっ、んっ、んっ、んっんっんっんっ、～～～～～～～～っっ！！！」
+			ELSE
+				PRINTFORMW ルーミアの腰を浮かせ、上から力任せに割り入れた…
+				PRINTFORMW 「んはぁっ！　あっ、あっ、あっ、乱暴にされるの好き、きもち、い、いっ！」
+				PRINTFORMW 「ずぽずぽってしてっ、もっと、してっ、あっあっ、やぁんっ♪」
+			ENDIF
+			CFLAG:9020 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「なんか、ヘンな感じ、ヘンな、あっ、ああっ」
+				PRINTFORMW 接合部から愛液が溢れ、シーツを汚していく…
+			ELSE
+				PRINTFORMW 「あっ、んあ、くぅっ、私、感じて……」
+			ENDIF
+			CFLAG:9020 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「……」
+			PRINTFORMW ルーミアは抵抗する気力も失い、犯されるがままになっている…
+			CFLAG:9020 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっ……ううっ……こんなの……やだよぅ……」
+			PRINTFORMW 嫌がる声に耳を貸さず、%CALLNAME:PLAYER%はがむしゃらに腰を振り続けた…
+			CFLAG:9020 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG:9021
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:9021 == 0
+		;処女
+		IF TALENT:処女 == 1
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 「う……あんまり、あそこ見ないで……」
+				PRINTFORMW 四つん這いになった少女が羞恥に悶える
+				PRINTFORMW 男を知らないその身体に、%CALLNAME:PLAYER%の滾る欲望を突き入れた…
+			;それ以外
+			ELSE
+				PRINTFORMW 「え……それ、何？　何か当たってるけど……」
+				PRINTFORMW 状況を把握していないルーミアに、%CALLNAME:PLAYER%は後ろから挿入した…
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 「う……この格好、ちょっと怖いね」
+				PRINTFORMW ルーミアは%CALLNAME:PLAYER%の姿が見えないことに不安そうな声を漏らす
+			;それ以外
+			ELSE
+				PRINTFORMW 「づっ、んっ、ああああああっ！！！」
+				PRINTFORMW 力任せに後ろから挿入した…
+			ENDIF
+		ENDIF
+		CFLAG:9021 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:3 == 0
+				PRINTFORMW パンパンと小気味よい音を立てて腰を振った…
+				PRINTFORMW 「あふっ、やっ、私たちの、おとっ、いっぱい、ひびいてるっ…いやっ……」
+				PRINTFORMW 「あっ、ふあっ、や、だめ、だめ、いくっ………！！！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あっあっあっあっあんっ、んあっあっあっあっあぁああっ」
+				PRINTFORMW ペニスを出し入れするのに合わせて少女の嬌声がスタッカートを刻む
+				PRINTFORMW 「あっあっあっあっあっあっ、あっ、くるっ、またきちゃう……！」
+			ELSE
+				PRINTFORMW 「ああっ…犯されてるっ、私こんな暗い所で……乱暴に犯されてる……っ！！」
+				PRINTFORMW じゅぷ、じゅぷ、じゅぷと淫猥な水音に脳味噌が削られそうな錯覚を覚える
+				PRINTFORMW 「にゃあああん♪　私っ、もう、こわれちゃった、おまんこばかになっちゃったようっ…！」
+			ENDIF 
+			CFLAG:9021 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あっ、あっ、後ろからされるの、いいっ……」
+			PRINTFORMW ペニスを入れられるのにも慣れてきて、性感を得られるようにまでなっている…
+			CFLAG:9021 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ううっ、んふっ、んあっ……」
+			PRINTFORMW 諦めがついたのか、ピストン運動に合わせて腰を動かしている…
+			CFLAG:9021 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあっ、んはっ、かはっ、うう、もうやだ、もうやだよう」
+			PRINTFORMW ルーミアは泣いて懇願するが、無視して抽送を続けた…
+			CFLAG:9021 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG:9022
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:9022 == 0
+		;恋慕
+		IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+			PRINTFORMW 「うん……このまま、腰下ろすね…」
+			PRINTFORMW 正面から抱き合い、互いの鼓動を感じながら挿入した…
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、やだ、これって抱えられてるっ……？」
+			PRINTFORMW %CALLNAME:PLAYER%はルーミアのきついヴァギナを貫いた…
+		ENDIF
+		CFLAG:9022 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:3 == 0
+				PRINTFORMW 「んぐっ、ふあ、ふああ、駄目、この体位っ、声、もれちゃうっ」
+				PRINTFORMW 互いの顔の産毛まで見える距離で、一心不乱に腰をぶつけ合った…
+				PRINTFORMW 「あっ、だめ、こんなに感じたら、ばかになっちゃう、のにっ、腰止まんないっ…！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ん…私から、入れるね……ん、く、んはああ……！」
+				PRINTFORMW ゆっくりと体重をかけ、腰を落としていくにつれ、喘ぎ声のトーンが上がる
+				PRINTFORMW 「あんっ…♪　ねえ、見える？　つながってるよ、私たち……」
+			ELSE
+				PRINTFORMW 「あっ、あん、あんっ♪　すごい、深いぃいいぃ……」
+				PRINTFORMW はあ、と大きく息をつき、ルーミアは自分から快楽を得ようと上下運動を始める…
+				PRINTFORMW 「んはっ、はあっ！　あああっ、あん、あんっ、ふあ、ふあぁ～～～っ！！！」
+			ENDIF
+			CFLAG:9022 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んあっ！　なんか、ぼーっとする……」
+			PRINTFORMW 確実に慣れてきているようだ…
+			CFLAG:9022 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ん……うっ……」
+			PRINTFORMW 首に手を回させ、深くまで挿入した体勢で抽送を繰り返した…
+			CFLAG:9022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、ぶ、んんーっ」
+			PRINTFORMW 突き上げながらキスをすると、ルーミアの目から一筋の涙が零れた…
+			CFLAG:9022 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG:9023
+;乱れ牡丹 CFLAG:9612
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23
+	;初めて
+	IF CFLAG:9023 == 0
+		;恋慕
+		IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+			PRINTFORMW 「あ、座ればいいの？　こう？」
+			PRINTFORMW 「あっ……すごい、奥まで入ってる……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、やだ、離してっ」
+			PRINTFORMW 抵抗するルーミアの背中を羽交い絞めにして挿入した…
+		ENDIF
+		CFLAG:9023 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:3 == 0
+				PRINTFORMW 「なんか、椅子に座ってるみたいだね」
+				PRINTFORMW 「私の好きなおちんちんのついた椅子……いやっ、急に激しくちゃだめっ……！」
+				PRINTFORMW %CALLNAME:PLAYER%を椅子扱いした罰として、激しく腰を突き上げてやった…
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んっ、んふうっ、んんっ、どう？　私のあそこ、きつくない？」
+				PRINTFORMW ルーミアの幼い性器はきつくペニスを締めつけている
+				PRINTFORMW それが男を喜ばせることは知らないようだ…
+			ELSE
+				PRINTFORMW 「あ、うなじ、舐められてる……」
+				PRINTFORMW 金色の髪が蝶々のように舞い、淫靡さをかきたてた…
+				PRINTFORMW 「うん、好きにしていいよ……私はあなたのものだから……」
+			ENDIF
+			CFLAG:9023 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んんんっ、座ってるだけなのに、おちんちんすごいよぉっ」
+			PRINTFORMW ルーミアは滑らかな背中に汗を浮かべ、快楽に身を任せている…
+			CFLAG:9023 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「うっ、うあっ、あううっ」
+			PRINTFORMW 小刻みに振動を伝えると、その周期に合わせて喘ぎ声が返ってきた…
+			CFLAG:9023 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、やだ、こわいっ、こわいぃっ……」
+			PRINTFORMW 姿の見えない相手に突かれる恐怖と快楽が混ざり合い、ルーミアは涙を流している…
+			CFLAG:9023 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612
+	;初めて
+	IF CFLAG:9612 == 0
+		PRINTFORMW 「鏡にあそこが映ってる……」
+		PRINTFORMW 「え、もしかして……こ、このままっ……？」
+		PRINTFORMW ルーミアに鏡に映った自分の痴態を見せつけながら貫いた…
+		CFLAG:9612 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+			PRINTFORMW 「すごい……こんなのされたら……脚、ガクガクになっちゃうよっ…」
+			PRINTFORMW 互いの性器を密着させ、断続的に腰を律動させた…
+			PRINTFORMW 「あっ、やんっ、これ、燃えるっ……♪」
+			ELSE
+			PRINTFORMW 鏡の前に座り、その上にルーミアを座らせて合体した……
+			PRINTFORMW 「あっ……ほら、今%CALLNAME:PLAYER%のが入ってるよ……んぅううっ……」
+			PRINTFORMW 「おちんちんも、おまんこも、一緒になって溶けちゃうよ……」
+			ENDIF
+			CFLAG:9612 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「これなら、あなたの顔が見えるね……んんっ……」
+			CFLAG:9612 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あっ……なんかくる……おへその奥に、あついのくるっ……！」
+			CFLAG:9612 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ああ……つながってる……。いつもこんな風に犯されてるんだ…」
+			CFLAG:9612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、まともに見れないよう……」
+			PRINTFORMW ルーミアは恥ずかしさに顔を染め、それを手の平で覆った…
+			CFLAG:9612 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG:9024
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:9024 == 0
+		;処女
+		IF TALENT:処女 == 1
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 「お願い……私の初めて、もらってください……」
+				PRINTFORMW ルーミアは割れ目に%CALLNAME:PLAYER%の亀頭をあてがうと、恐る恐る腰を埋めていった…
+			;それ以外
+			ELSE
+				PRINTFORMW 「じ、自分から腰を下ろせって……できないよ……」
+				PRINTFORMW 逡巡するルーミアの腰を両手で掴み、汚れを知らない膣内に無理矢理突き入れた…
+				PRINTFORMW 「えっ！？　あ、うそっ……！？」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+				PRINTFORMW 「自分で入れるの？　うん、やってみるね」
+				PRINTFORMW ルーミアは割れ目に%CALLNAME:PLAYER%の亀頭をあてがうと、ずぷずぷと腰を埋めていった… 
+			;それ以外
+			ELSE
+				PRINTFORMW 「ううっ……今度は、こんな格好……？」
+				PRINTFORMW 半べそをかきながら、%CALLNAME:PLAYER%に覆い被さり未熟な性器にペニスを受け入れる…
+			ENDIF
+		ENDIF
+		CFLAG:9024 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 && ASSIPLAY == 0
+			IF RAND:3 == 0
+				PRINTFORMW 「ほら……中で、おちんちんにキスしてる……」
+				PRINTFORMW 繊細な腰使いでお互いの性感を引き出そうと動いている…
+				PRINTFORMW 「あっ、ふああっ、おなか、おなか突いてぇ…いっぱいこすってぇ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「うふふ……中でたくさん、イカせてあげるね……」
+				PRINTFORMW ぺろりと舌なめずりをして、膣でペニスを締めつけながら動いた…
+				PRINTFORMW 「ふぅ、ふぅ……すごい、びくびくしてるね……んんっ」
+			ELSE
+				PRINTFORMW 「こうすると、%CALLNAME:PLAYER%の顔がよく見えて、嬉しいんだよ」
+				PRINTFORMW %CALLNAME:PLAYER%の腹の上にまたがり、じゅぷじゅぷと激しく上下に出し入れしながら淫蕩に笑った…
+				PRINTFORMW 「んっ、んっ、んっ、んっ、んっ……んうぅ……！」
+			ENDIF 
+			CFLAG:9024 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あ……うそ……中でびくびく熱くなって……！」
+			PRINTFORMW ルーミアは自分から性感を得られるように動いている…
+			CFLAG:9024 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「えっと……動くね……」
+			PRINTFORMW ルーミアは結合した状態でぎこちなく円運動を始めた…
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ…ひぐっ……」
+			PRINTFORMW ルーミアは息を殺して%CALLNAME:PLAYER%の突き上げに耐えている…
+			CFLAG:9024 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG:9025
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:9025 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ……あああ……」
+			PRINTFORMW 乱暴にルーミアのペニスを握るが、痛いほど勃起しているのは明らかだった
+			PRINTFORMW %CALLNAME:PLAYER%は舌なめずりすると自分の中にそれをねじいれた…
+			PRINTFORMW 「あああっ……やだっ、無理矢理されてるのに、腰、止まんないっ……」
+			PRINTFORMW ルーミアは初体験の快感に顔を赤くして呻いている…
+		;それ以外
+		ELSE
+			PRINTFORMW %CALLNAME:PLAYER%はルーミアのペニスの根元を押さえると、無理矢理腰を落とした
+			PRINTFORMW 「うっあああっ！！　おちんちん、きついいぃっ！！」
+			PRINTFORMW 強く締め付ける感覚に、ルーミアは声を上げた…
+		ENDIF
+		CFLAG:9025 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「はあっ、はあっ、%CALLNAME:PLAYER%の中に入ってる、わたしのおちんちん、搾り取られちゃう…！」
+			CFLAG:9025 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「だめ、なかっ、ぬるぬるして、吸い付いてきてっ、おちんちんこわれちゃうっ…！」
+			CFLAG:9025 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG:9026
+;-------------------------------------------------
+;IF SELECTCOM == 26
+;	;初めて
+;	IF CFLAG:9026 == 0
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;		CFLAG:9026 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;			CFLAG:9026 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:9026 = 2
+;		ENDIF
+;		RETURN 0
+;	ENDIF
+;ENDIF
+
+;------------------------------------------------
+;正常位アナル CFLAG:9030
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:9030 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「あ……そっちなの……？」
+			PRINTFORMW 仰向けに寝かせたルーミアの後ろの穴に、深々と挿入した…
+			PRINTFORMW 「あ、ん……ぬぷぷって……音まで、聞こえそう……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 乱暴にルーミアの痩躯を引き倒し、肛門が見えるように腰を押さえた
+			PRINTFORMW 「え、ちょっと、痛い、離してっ」
+			PRINTFORMW 抗議の声をBGMにその狭い穴にペニスを挿入した…
+			PRINTFORMW 「う゛……うああっ！？？　やめて、裂ける、裂けるからぁ！！」
+		ENDIF
+		CFLAG:9030 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW ルーミアをでんぐり返しのような体勢にして、上を向いたアナルに挿入した…
+				PRINTFORMW 「あ……っはぁ♪　お尻、犯されてぇ……感じるぅ……」
+				PRINTFORMW 「んあっ、ふあっ、くっ、うっ、ううンンんっっ♪♪」
+			ELSE
+				PRINTFORMW いやらしくヒクつき、肉棒を待ち受ける肛門を深く貫いた…
+				PRINTFORMW 「うあっ……ああっ……ぬるぬる……出たり入ったり……してっ」
+				PRINTFORMW 「私の穴、どこでも使って……あなたの好きにして……く、う、ん、くううぅぅんっっ♪」
+			ENDIF
+			CFLAG:9030 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「ん……苦しいけど、%CALLNAME:PLAYER%のなら平気だよ…」
+			PRINTFORMW 「ん……んっ、うっ、くっ……はっ……」
+			CFLAG:9030 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「う……ううっ……ん……はぁ……」
+			PRINTFORMW ルーミアは顔を背けているが、腸内はしっかりと濡れ始めている…
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやあ…中で、動かさないでぇ…」
+			PRINTFORMW ルーミアは力無く懇願するが、その声は届かなかった…
+			CFLAG:9030 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG:9031
+;-------------------------------------------------
+IF SELECTCOM == 31
+	;初めて
+	IF CFLAG:9031 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW ルーミアのわき腹を鷲掴みにし、熱く滾ったモノを突き入れる…
+			PRINTFORMW 「あ……これが……お尻……。なんとか、入ったね……」
+			PRINTFORMW 犯されているという意識のせいか、ルーミアの口調が従順なものに変わる…
+			PRINTFORMW 「あなたの大っきなおちんちんで、私の穴を掻き回して……ん、ふああぁっ」
+		;それ以外
+		ELSE
+			PRINTFORMW ルーミアの臀部をこちらに向けさせ、両手で動けないように固定して挿入した…
+			PRINTFORMW 「な、なにしてるの……見えないよ……えっ、あっ、ぎぃいいっ！！」
+			PRINTFORMW 「やめてぇ！　そこ違うよぉ、入れる穴じゃないよぅ！！」
+		ENDIF
+		CFLAG:9031 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 「んはっ……いやぁん……私たち、イヌネコみたいに交尾してるぅ……」
+				PRINTFORMW 「やっ、やぁん、にゃあんっ、にゃああぁんっ♪」
+			ELSE
+				PRINTFORMW 「はあっ……ひだが、めくれてるのに…気持ちいいっ、いい…」
+				PRINTFORMW 「んふー、んうー、うんっ、んっ、あっ、あうっ、いっちゃうの…お尻でぇ……？」
+			ENDIF
+			CFLAG:9031 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「いいよ……ちゃんと、離さないでね…」
+			PRINTFORMW 「うぎッ……んく……大丈夫……大丈夫だから……んはっ……」
+			CFLAG:9031 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「うあっ……ぬるぬるっ……」
+			PRINTFORMW ルーミアの腸内は以前よりも滑るようになっている…
+			CFLAG:9031 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて……抜いてぇ……今なら怒らないから……」
+			PRINTFORMW バックから犯される恐怖に、ルーミアの声は震えている…
+			CFLAG:9031 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG:9032
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:9032 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW ルーミアを正面から抱っこし、ゆっくりと肛門にペニスを埋めていく…
+			PRINTFORMW 「ん……あああっ…入ってる、%CALLNAME:PLAYER%のが入ってるよぉっ」
+		;それ以外
+		ELSE
+			PRINTFORMW ルーミアに抱きつかせ、反った一物をピンクの肛門に埋めた…
+			PRINTFORMW 「んっ……くぅっ…！」
+			PRINTFORMW 「これ、なんて言うの……こんなやり方あるの……？」
+		ENDIF
+		CFLAG:9032 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋潤滑2以上＋A感覚Lv3
+		IF TALENT:恋慕 == 1 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 「ちゅ、くちゅ、ぷはぁ……この体勢、すっごいどきどきするよ…」
+				PRINTFORMW 「うンっ、いいっ、熱いのいいっ、あっ、ふっ、あっ、あああっ！！」
+			ELSE
+				PRINTFORMW 「んー……んむう……がぶっ……」
+				PRINTFORMW 快楽のためか半ば無意識のようにルーミアは%CALLNAME:PLAYER%の肩に噛み付く…
+				PRINTFORMW 「んー、むー、むううっ、んっ、ひもひい、ふぐっ、ふむぐぅうっ♪」
+			ENDIF
+			CFLAG:9032 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+				PRINTFORMW 「えへへ、もう離さない。ねぇ、このまま動いて……」
+				PRINTFORMW 「んうっ……！　んーっ、んむっ、はぁっ」			
+			CFLAG:9032 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「やだっ……これ……いいっ……」
+			PRINTFORMW もはやルーミアは肛門でも快楽を感じるほど開発されている…
+			CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いや…こんなの、いやあ……」
+			PRINTFORMW ルーミアは肛門を犯されるという異常な状況にただ啜り泣いている…
+			CFLAG:9032 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG:9033
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:9033 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 白魚のように滑らかな背中を抱え、一息に肛門へ挿入する…
+			PRINTFORMW 「んっ…♪　これ、背すじぞくぞくするっ……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW ルーミアを背後から羽交い絞めにし、そのまま腰を下ろして入れさせた…
+			PRINTFORMW 「う、うあああっ、なに、何か入ってるよぉ、おしりにぃっ」
+		ENDIF
+		CFLAG:9033 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕＋A感覚Lv3
+		IF TALENT:恋慕 == 1 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 背中を指でなぞり、文字を書いて遊んだ…
+				PRINTFORMW 「んーっ……いま、何て書いたの……？」
+				PRINTFORMW 「んっ、教えてくれてもいいのにっ、んっ、くぅんっ」
+			ELSE
+				PRINTFORMW 「やっぱり、これ……深くまで刺さるっ……♪」
+			ENDIF
+			CFLAG:9033 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「うんっ、ふうっ、くうっ、はんっ…」
+			PRINTFORMW 「%CALLNAME:PLAYER%の姿が見えなくて、ちょっと怖いよ…」
+			CFLAG:9033 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あはっ……深い……深いいっ……♪」
+			PRINTFORMW ルーミアは嬌声を抑えられなくなっている…
+			CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻が、めくれちゃう……」
+			CFLAG:9033 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG:9034
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:9034 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「お尻がいいんだ？　じゃあちょっとずらして……えいっ」
+			PRINTFORMW 「あっ、ふかっ、深くまで下ろすからっ……あうっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「自分で入れるの？　怖いよ…」
+			PRINTFORMW 「あ、ぐ、ぐうううっ」
+		ENDIF
+		CFLAG:9034 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑2以上＋A感覚Lv5
+		IF TALENT:150 == 1 && LOCAL >= PALAMLV:2 && ABL:2 >= 5 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 「こうしてると、私がおちんちん犯してるみたい…ふふっ」
+				PRINTFORMW 「んう、ふあ、ふああっ、鉄みたいにガチガチ……♪」
+			ELSE
+				PRINTFORMW 「はー、はー、どう？　気持ちいい？　えいっ…うンんっ…」
+				PRINTFORMW ルーミアがペニスをいじめるように下腹部を前後させると、互いの呼吸も荒くなった…
+				PRINTFORMW 「ほらほら、お尻の中、ぬるぬるでしょ♪」
+			ENDIF
+			CFLAG:9034 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「えへへ……だらしない顔してる……私のお尻、きつきつで気持ちいいでしょ？」
+			PRINTFORMW 「ふふっ♪　じゃあ、もっと動いてあげる……んん……」
+			CFLAG:9034 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んんっ……やだっ、お尻、熱い……！」
+			CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ……こんなことしたくないのに……」
+			CFLAG:9034 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル CFLAG:9038
+;RRにあったアナルセックス口上をリサイクル。
+;-------------------------------------------------
+IF SELECTCOM == 38
+	;初めて
+	IF CFLAG:9038 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「……エッチ」
+			PRINTFORMW 「いいよ、……ほら、お尻に、ちょうだい？」
+			PRINTFORMW 悪戯に光るその目には、確かに期待の色が浮かんでいた…
+		;それ以外
+		ELSE
+			PRINTFORMW 肛門に陰茎の先端を合わせると、ルーミアは慌ててこちらを見た。
+			PRINTFORMW 「え、うそ、そこっ、お尻の穴だよっ？」
+			PRINTFORMW 驚愕に見開かれた瞳を見ながら、ずぷ…と直腸内に挿入した…
+		ENDIF
+		CFLAG:9038 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑2以上＋A感覚Lv5
+		IF TALENT:150 == 1 && LOCAL >= PALAMLV:2 && ABL:2 >= 5 && ASSIPLAY == 0
+			IF RAND:2 == 0
+				PRINTFORMW 「あはぁっ……♪　お尻に%CALLNAME:PLAYER%が、入ってる……♪」
+				PRINTFORMW 「ふうぅ、ふうぅ、んっ、くあっ……ね、気持ちいい？　私のお尻おまんこ、きもちい？」
+				PRINTFORMW 「えへぇ……よかったぁ……たっぷり出してね……♪」
+			ELSE
+				PRINTFORMW 淫らにヒクつくアナルに剛直を挿入した…
+				PRINTFORMW 「んふううぅううううっ♪　これ、すごい……！」
+				PRINTFORMW 「こんなの、こんなの、こんなの、こんなのぉ……私、お尻でいっちゃうううぅ…！！」
+			ENDIF
+			CFLAG:9038 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 && ASSIPLAY == 0
+			PRINTFORMW 「あふっ……私、こんなところまで犯されて……」
+			PRINTFORMW 「もう全部、%CALLNAME:PLAYER%のものだね……」
+			CFLAG:9038 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あっ……はっ……なんか、うんちしてるみたい……」
+			PRINTFORMW ペニスを出し入れする動きに、ルーミアは排泄感を錯覚えているようだ…
+			CFLAG:9038 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あうーっ、ぐーっ、く、苦しっ、抜いてぇ…」
+			PRINTFORMW ルーミアは顔を歪めて叫ぶが、%CALLNAME:PLAYER%は構わず腰を振り続ける…
+			CFLAG:9038 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG:9040
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:9040 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「じゃあ、するね…」
+			PRINTFORMW 「こうやって手首を時々返すようにすると…どう？　きもちい？　えへへ、一生懸命練習したんだ」
+			PRINTFORMW 「遠慮せず全部出しちゃっていいよ…精液、びゅーびゅーって……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くんくん…うわ、変な臭い」
+			PRINTFORMW 「これを握って…擦ればいいの？」
+			PRINTFORMW 「んっ……ふっ……」
+			PRINTFORMW ぎこちない手つきで、竿をしごいている…
+		ENDIF
+		CFLAG:9040 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			IF RAND:5 == 0
+				PRINTFORMW 「こうやって、手のひらに唾を落として……れろぉ～っ…ね？　こうすると何倍もぬるぬるするでしょ？」
+				PRINTFORMW 「じゅぷ、じゅぷ、じゅぽ、じゅぽ……ほら、イっちゃえ……♪」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「あ、まだやわらかい……えい、ぷにぷに……」
+				PRINTFORMW 「わわっ、むくむくって……手の中で大きくなってる……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW ルーミアは股間の前に跪き、ゆっくりとペニスを擦っている……
+				PRINTFORMW 「んっ、ふっ……%CALLNAME:PLAYER%のおちんちん、すごく……熱い……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「はぁ、はぁっ……どう、もっと手、速くしたほうがいい？」
+				PRINTFORMW 「ぬるぬる、こすこす……んっんっんっ…ベロで受けとめるから、いつでも出していいよっ」
+			ELSE
+				PRINTFORMW 「しゅっしゅっ……ほら、タマタマも一緒にさわさわしてあげる……んっ…」
+				PRINTFORMW 「あっ、ぴくぴくって……これ好きなんだ……♪」
+			ENDIF
+			CFLAG:9040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「んっ、んっ、楽しくなってきたかも…♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あ、やり方わかってきたかも…」
+			ELSE 
+				PRINTFORMW 「しゅっ、しゅっ、しゅ……あ、先っぽからネバネバ出てきた…♪」
+			ENDIF
+			CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 小さな手で丹念に陰茎を擦り上げる…
+				PRINTFORMW 「えっと、気持ちいい？」
+			ELSE
+				PRINTFORMW 「わあ……すっごくカチカチだ……」
+			ENDIF
+			CFLAG:9040 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG:9041
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:9041 == 0
+		PRINTFORMW 「これを咥えるの？　ぺろぺろすればいいのかな」
+		PRINTFORMW 「くわえてみるね……んっ、あむっ…………えほっ、ごほっ！」
+		PRINTFORMW 「ぺっぺっ、むー…おっきすぎて入りきらない…」
+		CFLAG:9041 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			IF RAND:13 == 0
+				PRINTFORMW 「んしょ、んしょっと……わぁ、出てきた」
+				PRINTFORMW ルーミアは%CALLNAME:PLAYER%の前に膝立ちになり、下着から硬く勃起した一物を取り出した
+				PRINTFORMW 「いただきま～す……はむっ、ちゅ…むぐ、んむぅ、ねもねもねもねも～……」
+				PRINTFORMW 「おひんひん、美味しい…♪　ふぐっ、んぐぅ……ちゅぽん……」
+			ELSEIF RAND:12 == 0
+				PRINTFORMW 「はぁ…」
+				PRINTFORMW ぽろんとまろびでたペニスを前に、ルーミアの瞳が潤む
+				PRINTFORMW 「やっぱり……おっきい……♪　でも、可愛いんだ～～♪」
+				PRINTFORMW 「あ～むん……んふ……れろれろしてあげふね……どう？　ひもひい？」
+				PRINTFORMW 「ぺろ、ぺちゃ、れるれるれるれる……んふ～、ふっごくエッチなにほい…♪」
+			ELSEIF RAND:11 == 0
+				PRINTFORMW 「ねぇ、せーえき飲ませて……もうがまんできないの……」
+				PRINTFORMW 「はぷ、んくっ、ちゅぶ、ちゅくちゅく、じゅるるっ…！」
+				PRINTFORMW 「いっぱい出ひていいよ……んはっ、んふ、じゅるるるん……ちろちろ……♪」
+			ELSEIF RAND:10 == 0
+				PRINTFORMW 「またおちんちんしゃぶってほしいの？　ふふふ、でもだぁめ。かわりに、タマタマ咥えてあげる……はむっ」
+				PRINTFORMW 「はむ、んちゅ、ぺろ、んも～……ほら、こうやってもう片方の玉を弄ると、ぴくぴく震えるの」
+				PRINTFORMW 「出したくなったら言ってね……ごっくんしてあげるから……ん、じゅぷ、ちゅうっ♪」
+			ELSEIF RAND:9 == 0
+				PRINTFORMW 「うわっ、下着の中で蒸れてすごい臭い…くらくらする」
+				PRINTFORMW 「ふふっ、でも、嫌じゃないよ。それにこれ嗅ぐと、すっごく唾が出てきちゃうの」
+				PRINTFORMW 「じゃあ、咥えるね。はぷっ……んぐ、じゅぶ……じゅっ、じゅる、じゅるる～っ」
+			ELSEIF RAND:8 == 0
+				PRINTFORMW 「うわあ…おちんちん、すっごいガチガチ……。いっつもこんなのしまってるの？」
+				PRINTFORMW 「ふふっ、ふやけるまで舐めてあげるね……くちゅ、ちゅぷちゅぷ、るろれるぅ」
+				PRINTFORMW 「じゅーる、じゅーる、ちゅく、んゆ、ちゅう～～～～っっっ……ちゅぽん♪」
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「噛んでみてもいい？　大丈夫、はえかけの歯だから……」
+				PRINTFORMW 「かりっ……かぽかぽ、はむん、んふっ、んんう……はあ、何時間でも楽しめそう」
+				PRINTFORMW 「ほっぺの内側で吸うの、どう？　はむっ、ふっ、じゅうううーーっ、ぬる、むにむに……ふぃもふぃいい？」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「失礼します……んっ、熱い……」
+				PRINTFORMW ルーミアは恭しくペニスに手を添え、フルートを奏でるように指と舌で愛撫した…
+				PRINTFORMW 「んっ……しゅる…ぴちゃ、くちゅ……ねぇ、うまく、出来てる……？」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW ルーミアはペニスにしゃぶりつき、小さな喉を鳴らす…
+				PRINTFORMW 「はむ、じゅるるるっ…！　んっ、んくっ、んっ、んっ」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「ふむっ、ちう、ふはぁ……おちんちん、つばでべとべとだよ…？」
+				PRINTFORMW 「もっと汚しちゃう…ん、んぷっ、ぢゅ、つるっ、じゅちゅず……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW ルーミアは時折息をつきながら熱心に口淫する。空いた手で自らの秘所をまさぐっているようだ…。
+				PRINTFORMW 「んぽ……ぢゅぅ、れるれる……んっ、くふっ、くぅんっ」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ん、ちゅ……えへへ、お口にね、つばを一杯溜めて、ここの先っぽを咥えるの、どう…？」
+				PRINTFORMW 「ん、じゅるじゅるっ……じゅっくじゅっく、ちゅろ……んふう……」
+			ELSE
+				PRINTFORMW 「お口に入れたまま、動いてみるね…」
+				PRINTFORMW ルーミアは陰茎を口いっぱいに頬張り、そのまま首を前後に移動させる…
+				PRINTFORMW 「こぷっ、じゅぽ、あ、んふ、んろっ、じゅるろろっ、かぽかぽ…」
+			ENDIF
+			CFLAG:9041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW ルーミアは上目遣いで%CALLNAME:PLAYER%の表情を観察しながら奉仕している…
+				PRINTFORMW 「ん～、ぱくん。ふふっ、されてる顔、すっごい気持ちよさそうだよ？」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「先っぽ、舌でしてあげるね……ちゅぷ、れるる…」
+				PRINTFORMW 「…れろ、る、じゅぶ、んじゅ、ちゅ、ちろちろ、ぷはぁ」
+				PRINTFORMW 「うふふ。おちんちん、ぴくぴくしてるよ？」
+			ELSE
+				PRINTFORMW 「裏のすじになってるところ、気持ちいいんでしょ？　知ってるんだぁ……ふふっ♪」
+				PRINTFORMW 「つつー……れろぉ～……ほら、びくんびくんって、しなってる」
+				PRINTFORMW 「まだまだやめてあげないんだから……ちゅるちゅる、こくん、じゅるっ、ずずずっ」
+			ENDIF
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			IF RAND:3 == 0
+				PRINTFORMW ルーミアは小ぶりな舌を突き出して、ちろちろと舐め始めた…
+				PRINTFORMW 「ぺろ、ぺろ、ちゅる、こくん……んー、なんだか癖になる味だね」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 元々好奇心が強いのか、フェラチオに対して抵抗は無いようだ…
+				PRINTFORMW 「くちゅ……ちゅるん、ん～～、もがもごむがもが」
+			ELSE
+				PRINTFORMW 「ちゅる…ぺろぺろ……んふ……かぷっ」
+				PRINTFORMW 「あ、痛かったの？　ごめんね」
+				PRINTFORMW ルーミアはよしよしと亀頭を撫でている…
+			ENDIF
+			CFLAG:9041 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG:9042
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:9042 == 0
+		PRINTFORMW 「胸でこするの？　できるかなぁ、私おっぱいちっちゃいし…」
+		PRINTFORMW 「だがそれがいい？　じゃあ、がんばってみるね……えい、こすこす」
+		CFLAG:9042 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			IF RAND:2 == 0
+			PRINTFORMW 「亀さんも咥えてあげるね……じゅ、ちゅるっ」
+			PRINTFORMW 「あんっ、胸の上で、熱いのがぬるぬる滑ってる……これ、やっぱり気持ちいい……」
+			ELSE
+			PRINTFORMW 「……あ、もう出そうなの？　ぴくぴくしてるよ？」
+			PRINTFORMW 「んじゃ、ペース上げるね……んしょ、えい、やあ、とおっ」
+			ENDIF
+			CFLAG:9042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「なんか、おちんちんって硬くて、擦るの気持ちいいかも……」
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「洗濯板ってこんな気分なのかなぁ……ふにゅふにゅ」
+			CFLAG:9042 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG:9043
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:9043 == 0
+		PRINTFORMW 「変なの。こすって気持ちいーの？」
+		CFLAG:9043 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;クリキャップ装着時
+		IF TEQUIP:14 == 1
+			PRINTFORMW 「待って、今敏感になってるのにそんなことしたらっ……ふあぁっ！」
+			CFLAG:8043 = 4
+		;恋慕有り
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ねー、手…合わせて……つながって……」
+			PRINTFORMW 「あっ、んっ、ぬるぬるいいよぅ、ぬるぬるいいよぅ」
+			CFLAG:9043 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、あそこがぬるぬるすべるよ…」
+			CFLAG:9043 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG:9044
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:9044 == 0
+		;恋慕
+		IF (TALENT:恋慕 || TALENT:淫乱 || TALENT:服従) && ASSIPLAY == 0
+			PRINTFORMW 「うん……%CALLNAME:PLAYER%の汚い所、舐めさせて……」
+			PRINTFORMW 「ちゅ、くちゅ、ん……ぷはあ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻を舐めるの…？　そ、それはさすがに…」
+			PRINTFORMW 「うぅ…わかりました……ん、ぶ……うえぇ…臭い……」
+			PRINTFORMW 屈辱に頬を濡らしながら奉仕に従事する…
+		ENDIF
+		CFLAG:9044 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+従順Lv5以上
+		IF TALENT:恋慕 && ABL:従順 >= 5
+			PRINTFORMW 「ベロで奥までほじってあげる…♪　れろぉっ、ちゅく、じゅる、ちゅばっ、れ～ろれ～ろ…」
+			PRINTFORMW 腸内が少女の舌によって綺麗に掃除される…
+			CFLAG:9044 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ん～……ねろっ、ぺろ、くちゅ……」
+			PRINTFORMW ルーミアは嬉しそうに奉仕している…
+			CFLAG:9044 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「ん……ちゅっ、ん～……」
+			PRINTFORMW 汚い穴を少女の舌が蹂躙する…
+			CFLAG:9044 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「う…ぶ……おえぇ……」
+			CFLAG:9044 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローション CFLAG:9060
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:9060 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「うん……たくさん濡らしてね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あう、冷たい」
+		ENDIF
+		CFLAG:9060 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「手の動きが、エッチだ」
+			PRINTFORMW ルーミアの隅々までローションを塗りたくった
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また、ぬるぬるするの？」
+			CFLAG:9060 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG:9061
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:9061 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「うん……口移しで…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あれ…？　なんか、ぼーっとしてきた…」
+		ENDIF
+		CFLAG:9061 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んん……今からこんなに感じてて、保つかな……？」
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ…」
+			PRINTFORMW 薬の効果が現れ始めたようだ
+			PRINTFORMW ルーミアは濡れた秘所を恥ずかしそうに隠している…
+			CFLAG:9061 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG:9062
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;恋慕+おもらし癖
+	IF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 「あ……また、飲むの……？　んっ、ふうっ」
+		CFLAG:9062 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「私のおもらし見たいの？　…うん、それで嬉しいなら、いいよ……」
+		CFLAG:9062 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「う……んむぅっ……あ、ああっ……」
+		CFLAG:9062 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んー？　なんか、モジモジしてきた…」
+		CFLAG:9062 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン(新妻プレイ) CFLAG:9090 解除 CFLAG:8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:9090 == 0
+		PRINTFORMW 「裸にエプロン…？　いつもの服じゃ駄目なの？」
+		CFLAG:9090 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「はい、私の旦那様……♪」
+			ELSE
+				PRINTFORMW 「あっ……似合う？　えへへ…」
+				PRINTFORMW ルーミアは嬉しそうに胸に手を当てている
+			ENDIF
+			CFLAG:9090 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んー。『お帰りなさい、旦那様』　……こんな感じ？」
+			CFLAG:9090 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「……ちょっともったいないなあ」
+		CFLAG:8823 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「もう終わりなの？」
+		CFLAG:8823 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG:9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:9100 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「記念にする？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「？　びでおかめら？」
+			PRINTFORMW 「へー、これで絵を残せるんだ…」
+		ENDIF
+		CFLAG:9100 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ、また撮るんだ……私の体、綺麗かな？」
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「裸なんか撮って面白いの？」
+			CFLAG:9100 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG:9103 解除 CFLAG:8822
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:9103 == 0
+		PRINTFORMW 「えっ……鏡の前で？　なんか落ち着かないよ…」
+		CFLAG:9103 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 「これ、誰かに見られてるみたいで、興奮しちゃうよ……」
+			CFLAG:9103 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「う、うん……恥ずかしいけど、あなたがしたいなら」
+			CFLAG:9103 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「あれ……私、いやらしい顔してる……？」
+			CFLAG:9103 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んー、やっぱり落ち着かない……」
+			CFLAG:9103 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG:9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:9104 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「一緒にお出かけしようね♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「外に出られるの？」
+			PRINTFORMW 「えっ、首輪つけなきゃだめ？　だって、犬みたいだよ……」
+		ENDIF
+		CFLAG:9104 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 「ふふっ…今日はどこ行くの？」
+			CFLAG:9104 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「はぁ…はぁ…」
+			PRINTFORMW （なんでコーフンしてるんだろ、私…）
+			PRINTFORMW （見られちゃうかもしれないのに…）
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「犬じゃないんだけどなー…」
+			CFLAG:9104 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ただいま、私たちの家」
+		CFLAG:8821 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:9111
+;強制放尿 CFLAG:9620
+;-------------------------------------------------
+;放尿
+IF SELECTCOM == 111
+	;恋慕+おもらし癖+野外プレイ
+	IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+		PRINTFORMW 「うー……足上げるの……？　うあ、犬みたいな格好……」
+		PRINTFORMW 「あ、ああっ……しちゃってる、私恥ずかしい格好で、お外でしちゃってるぅ……ふええ……」
+		CFLAG:9111 = 5
+	;恋慕+おもらし癖
+	ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 「おしっこ見たいの？　…ばか。エッチ」
+		PRINTFORMW 「う、んっ……あ、あああ……ほら、出てるよ……」
+		CFLAG:9111 = 4
+	;露出癖Lv5
+	ELSEIF ABL:露出癖 >= 5
+		PRINTFORMW 「あ、はい……見て、私のあそこから出るところ……」
+		PRINTFORMW 「あ、あああっ……じょろじょろってぇ……♪」
+		CFLAG:9111 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「は、はい……んんっ……」
+		PRINTFORMW 「あぁ……見られてる……。私、人に見られながらおしっこしちゃってる……」
+		CFLAG:9111 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「えー…おしっこしろって、いくらなんでもそれは…」
+		PRINTFORMW 「うう……わかりました……ん、んんっ……」
+		CFLAG:9111 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+;;強制放尿
+;IF SELECTCOM == 620
+;	;恋慕+おもらし癖+野外プレイ
+;	IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+;		PRINTFORMW 
+;		CFLAG:9620 = 5
+;	;恋慕+おもらし癖
+;	ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+;		PRINTFORMW 
+;		CFLAG:9620 = 4
+;	;露出癖Lv5
+;	ELSEIF ABL:露出癖 >= 5
+;		PRINTFORMW 
+;		CFLAG:9620 = 3
+;	;屈服刻印Lv3
+;	ELSEIF MARK:屈服刻印 == 3
+;		PRINTFORMW 
+;		CFLAG:9620 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:9620 = 1
+;	ENDIF
+;	RETURN 0
+;ENDIF
+
+;-------------------------------------------------
+;アナル電極 開始時CFLAG:9171 終了時CFLAG:8851
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 171 && TEQUIP:25
+	;初めて
+	IF CFLAG:9171 == 0
+		PRINTFORMW 「こ…今度は、何なの……？」
+		PRINTFORMW ルーミアは本能的で道具の苛烈さを察したようだ…
+		PRINTFORMW 「ちょ、ちょっと……うあっ！　や、び、ビリビリってえええ！！！」
+		CFLAG:9171 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ、ふあっ、あ、あ、あ゛～～～っ♪♪」
+			PRINTFORMW ルーミアは叫び声を上げて快楽を享受している…
+			CFLAG:9171 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「あああっ、壊れちゃうぅぅっ！！」
+			PRINTFORMW ルーミアは自分の握り拳を噛み、悶えている…
+			CFLAG:9171 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ、あっ、あああっ！！」
+			PRINTFORMW ルーミアは強烈な快楽に涎を垂らしている…
+			CFLAG:9171 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……かっ…！　…はっ……！」
+			PRINTFORMW ルーミアは電流の刺激に白目を剥いている…
+			CFLAG:9171 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ああ……やっぱり私……壊れちゃってる……♪」
+		CFLAG:8851 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 「ああんっ……ざ、残念なんかじゃないってば……」
+		CFLAG:8851 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うあああっ！！」
+		CFLAG:8851 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;浣腸 CFLAG:9174
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 174 && TEQUIP:25
+	;初めて
+	IF CFLAG:9174 == 0
+		PRINTFORMW 「えっ…？　お尻に何するの…？」
+		PRINTFORMW 「あっ……なんか…なんか……冷たいのが、入ってくる……」
+		CFLAG:9174 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あ……」
+			PRINTFORMW 浣腸器を取り出すと、ルーミアは熱のこもった眼差しで見上げてくる
+			PRINTFORMW %CALLNAME:PLAYER%はあえて下品にしゃがんだポーズをとらせて浣腸した…
+			CFLAG:9174 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「んっ……」
+			PRINTFORMW ルーミアは何も言わずに浣腸液の注入を受け入れた…
+			CFLAG:9174 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またあれするの…？　苦しいから他のがいいな」
+			CFLAG:9174 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;排泄（浣腸プレイ） CFLAG:8851
+;-------------------------------------------------
+IF SELECTCOM == 174 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8854 == 0
+		PRINTFORMW 「えっ…？　もしかして……だめ、こんなところでっ……！！」
+		PRINTFORMW 「あ、あはあああああっ…！！！！」
+		PRINTFORMW 勢いよくルーミアの肛門から排泄物が噴出した…
+		PRINTFORMW 「う…うそ…見られちゃった……」
+		PRINTFORMW ルーミアは排便を他人に見られたショックで呆然としている…
+		CFLAG:8854 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ……見て……私の食べたものが、全部出ちゃってるよ……！」
+			CFLAG:8854 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ……やだ、気持ちいい……うんちするの見られて気持ちいい……！」
+			CFLAG:8854 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「う…っああああああっっ…！！」
+			PRINTFORMW ルーミアは肛門から下品な音を立てて排泄した…
+			CFLAG:8854 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め CFLAG:9180
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:9180 == 0
+		PRINTFORMW 「うそ…」
+		PRINTFORMW ルーミアは信じられない、と言った様子で顔を赤らめている…
+		CFLAG:9180 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+A感覚Lv3以上
+		IF TALENT:150 == 1 && ABL:2 >= 3
+			PRINTFORMW 「こ、こんなことまで、気持ちよくなるなんてっ…♪」
+			CFLAG:9180 = 6
+		;恋慕+屈服刻印Lv3
+		ELSEIF TALENT:150 == 1 && MARK:2 == 3
+			PRINTFORMW 「ああ……舌、エッチだよ……」
+			CFLAG:9180 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ううっ……」
+			PRINTFORMW ルーミアは諦めて愛撫を受け入れている…
+			CFLAG:9180 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「舐めて、興奮してるの…？」
+			CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ、なんかやぁ…」
+			CFLAG:9180 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG:9191　CFLAG:8861
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35
+	;初めて
+	IF CFLAG:9191 == 0
+		PRINTFORMW 「いや、おっぱい、しぼっちゃだめぇっ……！」
+		CFLAG:9191 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あは、私、立派なお母さんになれるかな？」
+			PRINTFORMW ルーミアは%CALLNAME:MASTER%の方を見ながら微笑んでいる…
+			CFLAG:9191 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うー…私、変なカラダになっちゃった……」
+			CFLAG:9191 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0
+	PRINTFORMW 「搾ったミルクはどうするの？」
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG:9220
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:9220 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「え……叩くって……あっ、くぅんっ！」
+			PRINTFORMW 痛みに顔を歪ませながらも、抵抗せず%CALLNAME:PLAYER%の仕打ちを受け入れている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「いたっ！！　なっ、なんでぶつの……？」
+			PRINTFORMW %CALLNAME:PLAYER%はルーミアの柔肌を痕が残るまで平手打ちした…
+		ENDIF
+		CFLAG:9220 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「んうっ…！　た、叩かれるのいい……いいっ……！　ああんっ！！」
+			PRINTFORMW 白い肌に%CALLNAME:PLAYER%の手の平の痕をしっかりと刻みこんだ…
+			CFLAG:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「あぐっ……あ…あれ……？　何で、私……」
+			PRINTFORMW ぶたれながらも陰部が濡れ始めていることに戸惑う…
+			CFLAG:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっ……ぃぎっ……」
+			PRINTFORMW ルーミアは歯を食いしばり、殴打が終わるのをじっと待っている…
+			CFLAG:9220 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG:9221
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:9221 == 0
+		;マゾッ気3
+		IF ABL:マゾっ気 >= 3
+			PRINTFORMW 「あ……」
+			PRINTFORMW 鞭を見せつけると、ルーミアは怯えと期待の混ざった視線でそれを見る…
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛っ！　痛いっってば！　やめてっ！」
+			PRINTFORMW 背中に鞭を振り下ろすたびに大きな瞳が見開かれた…
+		ENDIF
+		CFLAG:9221 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「もっと、もっとぶって、私に%CALLNAME:PLAYER%の痕を刻み込んでっ」
+			CFLAG:9221 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ、あれっ、痛いのに、わたしっ……！」
+			CFLAG:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぐっ、ううっ、やめて……やめて……」
+			CFLAG:9221 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG:9222
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:9222 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「そ、そんなことまでするんだ……」
+			PRINTFORMW 「……。うん、いいよ。あなたの望むことなら、何でもしてあげるから」
+			PRINTFORMW 誤って事故にならないよう、細心の注意を払って針を刺した…
+			PRINTFORMW 「あ……ぐっ……かふぅ……ほら、我慢したよ……偉い？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ……それ、どうするの？　まさか……」
+			PRINTFORMW 「！！　っあっ、ぎぃっ、痛い痛いいたいイタイイタイイタイイタイイイィ！！！」
+			PRINTFORMW 針を抜くと、ルーミアは堰を切ったように泣き出した…
+			PRINTFORMW 「うっ……ふええぇええええん……うあああぁあん……」
+		ENDIF
+		CFLAG:9222 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あっ……うそ……私、針で刺されて…濡れて……？」
+			ELSE
+				PRINTFORMW 「あっ、あっ、刺して、つぷぷって……つらぬいて…」
+			ENDIF
+			CFLAG:9222 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「うあっ……今、ぴりってきた……」
+			PRINTFORMW ルーミアの体は痛みさえも快感に変換しつつあるようだ…
+			CFLAG:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて、ごめんなさい、謝るから…やめて、いたいの、いたいのぉ……」
+			PRINTFORMW ルーミアはしゃくり上げることをやめない…
+			CFLAG:9222 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG:9224　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:9224 == 0
+		PRINTFORMW 「縛るの……？　うっ……結び目、痛い……」
+		CFLAG:9224 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「うん……私の縛られた姿見て、興奮するの……？」
+			PRINTFORMW 白い肌には前回の縄目の痕がくっきりと残っている…
+			CFLAG:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ、はあっ……」
+			PRINTFORMW 吐息には甘いものが混じり始めている…
+			CFLAG:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううー…動けないから嫌……」
+			CFLAG:9224 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG:9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41
+	;初めて
+	IF CFLAG:9225 == 0
+		PRINTFORMW 「目隠しして、何するの？」
+		CFLAG:9225 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3 && ASSIPLAY == 0
+			PRINTFORMW 「ねえ%CALLNAME:MASTER%……そこにいるよね？」
+			PRINTFORMW ルーミアは、%CALLNAME:PLAYER%に体を委ねている…
+			CFLAG:9225 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 視界を闇に包むと、ルーミアの呼吸が荒くなった…
+			CFLAG:9225 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んー、ちょっと怖いかも」
+			CFLAG:9225 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「やっぱり、こっちの方がいい」
+		PRINTFORMW 「闇の中だと、あなたが見えないから」
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 視界が戻ると、安堵したように息を吐いた…
+		CFLAG:8871 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ CFLAG:9226　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 226 && TEQUIP:42
+	;初めて
+	IF CFLAG:9226 == 0
+		PRINTFORMW 「む？　うっ、むぐーっ！」
+		CFLAG:9226 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 装着しようとすると、自分から顎を突き出して協力した…
+			CFLAG:9226 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「んむ……ん……」
+			PRINTFORMW ルーミアは口に枷を嵌められてうっとりとしている…
+			CFLAG:9226 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「むぐ。むーむー」
+			CFLAG:9226 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 226 && TEQUIP:42 == 0
+	PRINTFORMW 「ぷはぁっ」
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG:9230
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW 欲望のままにペニスを突き入れると、ルーミアは涙を溜めながらも奉仕に従事した…
+			PRINTFORMW 「うぐっっ、おぶっ、ん……あむっ、じゅぶぶっ……精液、ちょうだい……」
+		ELSE
+			PRINTFORMW ペニスを含ませると、ルーミアは苦しそうに鼻で息をしながら舐め始めた…
+			PRINTFORMW 「あぐっ、ちゅ、くちゅ、んふ……れろれろれろれろ……んぐぅっ、ぐぶっ、んぶぶっ…！」
+		ENDIF
+		CFLAG:9230 = 4
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 無理矢理ルーミアの小さな口をこじあけ、汚いモノを含ませた…
+		PRINTFORMW 「う、うぐぐっ、げほ……んくっ、じゅちゅ、ちゅるっ…」
+		CFLAG:9230 = 3
+	;それ以外
+	ELSE
+			PRINTFORMW 乱暴に口腔を犯すと、ルーミアは嘔吐感に涙を滲ませた…
+			PRINTFORMW 「おごっ！　うげっ、げえっ…！　げほげほ、うー、もうやだ……」
+		CFLAG:9230 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フィスト系コマンド CFLAG:9231
+;-------------------------------------------------
+IF SELECTCOM == 231 || SELECTCOM == 232 || SELECTCOM == 233
+	;初めて
+	IF CFLAG:9231 == 0
+		PRINTFORMW 「だめ、そんなの、無理っ……！　あっ、いっ、いぎいぃいいいいぃいいい！！！」
+		CFLAG:9231 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「はあ……かき回されてる……奥の感じるとこまで……全部……」
+			CFLAG:9231 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「うっ、慣れて、きた、かもっ……ふあっ……！」
+			CFLAG:9231 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「広がっちゃうから止めてっ……あぐ、うああああっ！！！」
+			CFLAG:9231 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG:9350 解除 CFLAG:8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:9350 == 0
+		PRINTFORMW 「お風呂入るの？」
+		PRINTFORMW ルーミアは普通に入浴するものと思い込んでいるようだ…
+		CFLAG:9350 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「お風呂で全部、綺麗にしてあげるね」
+			CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またお風呂？　いいけど」
+			CFLAG:9350 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG:9351
+;-------------------------------------------------
+IF SELECTCOM == 351 && TEQUIP:54
+	;初めて
+	IF CFLAG:9351 == 0
+		PRINTFORMW 「えっ…そこ、当てなくていいって…！」
+		PRINTFORMW 戸惑うルーミアの性器にシャワーのお湯を当てて刺激した…
+		CFLAG:9351 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「綺麗にしてね…」
+			CFLAG:9351 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ…くすぐったい…」
+			CFLAG:9351 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG:9352
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:9352 == 0
+		PRINTFORMW 「あわあわ～～。カラダですりすりすればいいの？」
+		PRINTFORMW 「んじゃ、動くね……んっ、ぬるぬる……」
+		CFLAG:9352 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5 && ASSIPLAY == 0
+			PRINTFORMW 「ふふっ……意外と責められると弱いんだよね、知ってるんだから」
+			CFLAG:9352 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「あ、んっ……ぬるぬるって……」
+			CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ほらっ……どう？」
+			CFLAG:9352 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG:9500　CFLAG:8901
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:9500 == 0
+		PRINTFORMW 「なにこれっ……」
+		CFLAG:9500 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+触手経験20以上（消費基本値が三分の一になる）
+		IF TALENT:恋慕 && EXP:触手経験 >= 20
+			PRINTFORMW 「よく見ると、かわいいかも…なんて」
+			CFLAG:9500 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あんまり酷いことしないでー…」
+			CFLAG:9500 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;恋慕+触手経験20以上（消費基本値が三分の一になる）
+	IF TALENT:恋慕 && EXP:触手経験 >= 20
+		PRINTFORMW 「あんまりやると、癖になっちゃうかも」
+		CFLAG:8901 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……」
+		PRINTFORMW ルーミアはぐったりと床に横たわり、肩で息をしている…
+		CFLAG:8901 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;シックスナイン CFLAG:9602
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;恋慕+奉仕精神Lv3以上+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「どっちが先に気持ちよくさせられるか、勝負しよ？」
+			PRINTFORMW 「ふむっ…ううっ……ちゅる、くちゅ、くちゅくちゅ……んは、じゅぷ、じゅぷ、じゅろろろっ……！！」
+		ELSE
+			PRINTFORMW 「はむっ、ぺろぺろ、れろぉ～……ん、あ、イイ、そこ舐めてっ……！」
+			PRINTFORMW 「あむ、うむ、ふふ、じゅぷじゅぷじゅぷじゅぷ、じゅっじゅちゅじゅるっ…！」
+		ENDIF
+		CFLAG:9602 = 5
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「あっ……そんなに舐められると、すぐにいっちゃう……」
+		PRINTFORMW 「んっ……じゅぷっ、じゅる、ずーっ、ぷはっ、うん、ふむんっ」
+		CFLAG:9602 = 4
+	;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「じゅぷ、じゅちゅ、れろれろ…」
+		CFLAG:9602 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「うーっ……ちゅっ、んちゅっ、んはっ」
+		PRINTFORMW ルーミアは%CALLNAME:PLAYER%の性器に口づけるが、%CALLNAME:PLAYER%の責めにあってたびたび中断した…
+		CFLAG:9602 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+
+;-------------------------------------------------
+;３P CFLAG:9610
+;-------------------------------------------------
+IF SELECTCOM == 610
+	;初めて
+	IF CFLAG:9610 == 0
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「うん……私のあそことお尻、両方食べて……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ……あっ……二つなんて無理っ……！」
+		ENDIF
+		CFLAG:9610 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「中でおちんちんが、ずりずりしちゃう……」
+			CFLAG:9610 = 5
+		;V感覚Lv3以上＋A感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あうんっ…すごい……どっちも責められるってすごいぃ……」
+			CFLAG:9610 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んあっ、あっ、ふああああっ…！！！」
+			CFLAG:9610 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあ……なか、きついっ……」
+			CFLAG:9610 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ダブルフェラ CFLAG9303
+;-------------------------------------------------
+IF SELECTCOM == 303
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORML 『ちゅぱ、ちゅぱ、じゅぷ…じゅっ、じゅちゅ、じゅずーーっっちゅううっ……！』
+		PRINTFORMW 「ん……ぷは……あはっ、カチカチ……♪　あむっ、じゅっぷ、じゅぷぷぷっ…！」
+		CFLAG:9303 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:13 >= 3
+		PRINTFORML 『ちゅぷ、ちゅぱ、ちゅるるっ、ちゅーっ』
+		PRINTFORMW 「れろれろれる…ちろちろ……」
+		CFLAG:9303 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ん…二人でやるって、難しい…んちゅ…」
+		CFLAG:9303 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｗフェラ CFLAG9304
+;-------------------------------------------------
+IF SELECTCOM == 304
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%のと%CALLNAME:ASSI%の、一緒に愛してあげるね…」
+			PRINTFORMW ルーミアは差し出された二本のペニスをいやらしくしゃぶった…
+			PRINTFORMW 「じゅるっ…ちゅぶ、くちゅ、あむ……しこしこ……じゅるっ、じゅじゅず、ちゅううっ」
+			PRINTFORMW 「ぷはあ……今度はこっち……ぺろぺろ、くちゅ、はむ、ん～～～、もごもご……じゅろろろろっ…」
+			PRINTFORMW 「ほら……仲良く出して？　じゅる、しゃぶっ、じゅるじゅるっ！！　ちゅる、れろえる、じゅばじゅぼっ…！！」
+			CFLAG:9304 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「わあ……むわって、凄い熱気……んっ、はむっ、んちゅ、ぐちゅぐちゅ…」
+			PRINTFORMW 「じゅるる、ぷは、こすこす……どう？　いつでもいっていいからね？　くちゅ……じゅぷぷぷ……」
+			CFLAG:9304 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「うー…うえ、ごほっ……いっぺんにするなんて、無茶だよぉ……じゅるっ」
+			CFLAG:9304 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;首筋耳裏責め CFLAG9328
+;-------------------------------------------------
+IF SELECTCOM == 328
+	IF CFLAG:9328 == 0
+		PRINTFORMW 「え、何を……やっ！？」
+		PRINTFORMW 「やだぁ、ぞくぞくしちゃうぅ……！」
+		CFLAG:9328 = 1
+	ELSE
+		IF TALENT:150
+			IF RAND:2 == 0
+				PRINTFORMW 「やだぁ、感じちゃうよぉ、ばかばかぁ」
+				PRINTFORMW ルーミアの顔の火照りが%CALLNAME:PLAYER%にまで伝わってくる…
+			ELSE
+				PRINTFORMW 「ひゃううぅっ……」
+				PRINTFORMW ルーミアは目を固く閉じて快感に耐えている…
+			ENDIF
+			CFLAG:9328 = 3
+		ELSE
+			PRINTFORMW 「そ、それすると、ふわって力抜けちゃうからやめて……んんっ！」
+			CFLAG:9328 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指チュパ CFLAG9327
+;-------------------------------------------------
+IF SELECTCOM == 327
+	IF CFLAG:9327 == 0
+		PRINTFORMW 「えっ？　あっ……んむ……」
+		PRINTFORMW 口の中に指を差し入れると、ルーミアは何も聞かずに舌で愛撫を始めた…
+		CFLAG:9327 = 1
+	ELSE
+		IF TALENT:150
+			IF RAND:2 == 0
+				PRINTFORMW 「ん……ちゅぷ……」
+				PRINTFORMW ルーミアの舌が指に絡みついてこそばゆい気持ちになる…
+			ELSE
+				PRINTFORMW 「あむ、んぅ……んふふ♪」
+				PRINTFORMW ルーミアは何がおかしいのか、%CALLNAME:PLAYER%の指を舐めながら笑っている…
+			ENDIF
+			CFLAG:9327 = 3
+		ELSE
+			PRINTFORMW 「んー、おいひい」
+			PRINTFORMW ルーミアは不穏な台詞を口にした
+			CFLAG:9327 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;秘貝開帳 CFLAG9110
+;-------------------------------------------------
+IF SELECTCOM == 110
+	IF CFLAG:9110 == 0
+		PRINTFORMW 「自分で広げるって……恥ずかしいよ、もー……」
+		PRINTFORMW ルーミアは顔を真っ赤にしておずおずと自らのすじを指で割り開く…
+		CFLAG:9110 = 1
+	ELSE
+		IF TALENT:150
+			IF RAND:2 == 0
+				PRINTFORMW 「ほら、来て……？」
+			ELSE
+				PRINTFORMW 「あは、私のアソコ、召し上がれ……♪」
+			ENDIF
+			CFLAG:9110 = 3
+		ELSE
+			PRINTFORMW 「またやるのー？　恥ずかしいって言ってるのにー……」
+			CFLAG:9110 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルおねだり CFLAG9045
+;-------------------------------------------------
+IF SELECTCOM == 45
+	IF ABL:2 >= 3
+		IF EXP:1 >= 100
+			PRINTFORMW 「お願い……お尻の穴、ずぽずぽしてほしいの……」
+			CFLAG:9045 = 2
+		ELSE
+			PRINTFORMW 「わ、私のおしりのあなを……気持ち良くしてください……」
+			CFLAG:9045 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+
+
+;==================================================
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;==================================================
+@KOJO_3_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;-------------------------------------------------
+;処女喪失 CFLAG:8009
+;-------------------------------------------------
+IF TFLAG:0 > 0 && CFLAG:8009 == 0
+	;恋慕かつ主人のセックスによる処女喪失
+	IF TALENT:恋慕 && TFLAG:2
+		PRINTFORMW 「う、あ、あああーー……っ！！　……すごい、ぎちぎち……！」
+		PRINTFORMW ルーミアは身体に処女貫通の痛みを刻み込んでいる…
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		PRINTFORMW 「あ……血が出た……」
+		PRINTFORMW ルーミアは股から伝う赤いものをぼうっと見ている……
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 || TALENT:淫乱 || TALENT:服従
+			PRINTFORMW 「ん、ぅうっ！　……今のが、しょじょそーしつって言うやつ？」
+			PRINTFORMW 「どうせなら、%CALLNAME:MASTER%ので奪ってほしかったな」
+			PRINTFORMW ルーミアは残念そうに呟いた…
+		;恋慕・淫乱・服従ではないが反発刻印もつかない程度
+		ELSEIF (UP:20 + UP:21) < 500
+			PRINTFORMW 「ん、ぅうっ！　……今のが、しょじょそーしつって言うやつ？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「いや、いやああああぁっ！！！！」
+			PRINTFORMW 強引に膜を破って突き入れると、ルーミアは激痛にのたうちまわった…
+			PRINTFORMW 「痛いよ…やめてぇ……！　ぐすっ……ひっく……」
+			PRINTFORMW 鮮血を流しながら、赤子のように顔を歪めて泣き出した……
+		ENDIF
+	ENDIF
+	CFLAG:8009 = 1
+ENDIF
+
+
+
+
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K3_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K3_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K3_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+
+;==================================================
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;==================================================
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K3_MESSAGE_OVERLV2_10
+;ローションを使った場合
+IF SELECTCOM == 60
+	PRINTFORMW 「んっ、ぬるぬるしてくすぐったいよ…」
+	PRINTFORMW ルーミアの潤滑は高まっている…
+;それ以外
+ELSE
+	PRINTFORMW 「あ……あそこ、ぬるぬるしてる……」
+	PRINTFORMW ルーミアは潤滑は高まっている…
+ENDIF
+CFLAG:5330 = 1
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K3_MESSAGE_OVERLV2_13
+PRINTFORMW 「何か、体が変な感じ……」
+PRINTFORMW ルーミアの欲情は高まっている…
+CFLAG:5333 = 1
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K3_MESSAGE_OVERLV2_15
+PRINTFORMW 「う…」
+PRINTFORMW ルーミアは羞恥に頬を赤らめている…
+CFLAG:5335 = 1
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K3_MESSAGE_OVERLV2_17
+PRINTFORMW 「こんなの、やだよ……」
+PRINTFORMW ルーミアの恐怖は高まっている…
+CFLAG:5337 = 1
+
+;==================================================
+;絶頂時の口上 CFLAG 5300～を使用
+;==================================================
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_0
+;初めて
+IF CFLAG:5300 == 0
+	PRINTFORMW 「えっ、あっ、何かくる、くるっ……！」
+	CFLAG:5300 = 1
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_1
+;初めて
+IF CFLAG:5301 == 0
+	PRINTFORMW 「奥にコツコツ当たって……だ、だめぇっ！！」
+	PRINTFORMW 「んああああっ……！！」
+	CFLAG:5301 = 1
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_2
+;初めて
+IF CFLAG:5302 == 0
+	PRINTFORMW 「え、やだっ、おしり、気持ち……いいのっ……！」
+	CFLAG:5302 = 1
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_3
+;初めて
+IF CFLAG:5303 == 0
+	PRINTFORMW 「ふあ、ふああっ……！　おっぱいが、張って……なにこれっ……！」
+	CFLAG:5303 = 1
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:8016
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_10
+;初めて
+IF CFLAG:8016 == 0
+	PRINTFORMW 「えっ！？　お、おっぱいから何か出ちゃう！！」
+	CFLAG:8016 = 1
+	RETURN 0
+;二回目以降
+ELSE
+	IF RAND:2 == 0
+		PRINTFORMW 「あっ……おっぱい……出す、出しちゃうっ…！」
+		CFLAG:8016 = 3
+	ELSE
+		PRINTFORMW 「んっ…ふああっ……ミルク出ちゃう……」
+	ENDIF
+	CFLAG:8016 = 2
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:8015
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:8015 == 0
+	PRINTFORMW 「ふあぁっ、すごいの、すごいの来ちゃう……！」
+	PRINTFORMW 精液が精管を勢いよく上ってくる感覚に堪え切れず、ルーミアは射精した
+	PRINTFORMW 白濁した欲望が幼い裸身をデコレーションしていく…
+	CFLAG:8015 = 1
+	RETURN 0
+;二回目以降
+ELSE
+	IF RAND:4 == 0
+		PRINTFORMW ルーミアのペニスは激しく震え、溜めた欲望を吐き出した…
+		PRINTFORMW 「ふああっ、おちんちん馬鹿になっちゃうぅっ……！」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW ルーミアのペニスは欲望を解き放った…
+		PRINTFORMW 「ふあああああっっ……せなかぞくぞくってええぇ……！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW ルーミアのペニスが何度目かの射精をした…
+		PRINTFORMW 「あっ、びゅくびゅくびゅーーって出てる、出ちゃってるよぉ…」
+	ELSE
+		PRINTFORMW 「あっ、だっ、またきちゃう、あれきちゃうっ」
+		PRINTFORMW ルーミアのペニスから大量の精液が迸った…
+		PRINTFORMW 「あっ、ああっ、あはあああああっ」
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;精飲絶頂 CFLAG:5202
+;-------------------------------------------------
+@K3_MESSAGE_ORGASM_13
+;初めて
+IF CFLAG:5202 == 0
+	PRINTFORMW 「んっ……んくっ……んくっ……」
+	PRINTFORMW ルーミアは喉を鳴らして美味しそうに精液を飲み込む
+	PRINTFORMW %CALLNAME:PLAYER%の子種が食道の奥に流れ込む感覚をじっくりと味わっているようだ
+	PRINTFORMW 「んっ、んんっ？」
+	PRINTFORMW 突然、ルーミアの声音が変わる
+	PRINTFORMW 「んっ、んっ、んんっ、んむうぅっ……！？」
+	PRINTFORMW 嚥下するたびに声が上擦っていき、やがて一際甲高い嬌声を漏らしたかと思うとぶるっと体を震わせた
+	PRINTFORMW 「うあっ、あ、あっ……あ……♪　……はー、はー……♪」
+	PRINTFORMW ルーミアは時間をかけて呼吸を整え、放心した様子でペニスから口を離す
+	PRINTFORMW 「あれ……今、私……どうして……？」
+	PRINTFORMW どうやらルーミアは精液を口にしただけで絶頂してしまったらしい
+	PRINTFORMW %CALLNAME:PLAYER%は少し意地悪な気持ちになった
+	PRINTFORMW 「あっ、やっ、何するのっ？」
+	PRINTFORMW ルーミアを四つん這いの姿勢にさせ、その尻に顔を近づける
+	PRINTFORMW 柔らかな媚肉に触れ、指で陰唇を左右に広げた
+	PRINTFORMW 「み、見ないでっ……」
+	PRINTFORMW 秘裂の奥から、真新しい愛液がゆっくりとしみ出し、太腿を伝う
+	PRINTFORMW どうしてこんなに濡れてるのか、と%CALLNAME:PLAYER%は問い詰めた
+	PRINTFORMW 「そ、それは……うぅー……」
+	PRINTFORMW ルーミアの顔面がリンゴのように赤くなる
+	PRINTFORMW 流石に精飲だけでイってしまったのは恥ずかしいらしい
+	PRINTFORMW 「い、いっちゃったから……」
+	PRINTFORMW どうして？
+	PRINTFORMW 「お、お口に出されて……」
+	PRINTFORMW どんなふうに？
+	PRINTFORMW 「せ、せーえき、喉の奥にびゅるびゅる出されて……飲んだら頭がぽーってなって……そ、それで、いっちゃったの……」
+	PRINTFORMW それで、どうだった？
+	PRINTFORMW 「……あの、すっごく、気持ちよかった……」
+	PRINTFORMW ルーミアは精飲絶頂の経験を口にして興奮したのか、秘裂からはますます愛液が分泌されている
+	PRINTFORMW もうルーミアは%CALLNAME:PLAYER%の精液の味を忘れられないだろう……
+	PRINTL 
+	CFLAG:5202 = 1
+ENDIF
+
+;-------------------------------------------------
+;アナルセックスで射精
+;-------------------------------------------------
+@K3_MESSAGE_EJAC_PLAYER_12
+;恋慕
+IF TALENT:恋慕
+	IF RAND:3 == 0
+		PRINTFORMW 「あ、お尻、熱いっ……！！　んくうううううぅっ…！！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ああ、%CALLNAME:PLAYER%のが流れ込んできてる……」
+	ELSE
+		PRINTFORMW 「はぁー、はぁー……そう、こうやって、私の穴全部汚して……♪」
+	ENDIF
+	CFLAG:8011 = 4
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3
+	PRINTFORMW 「う、ううううううっ……」
+	PRINTFORMW ルーミアは歯を食いしばって腸内に精液を招き入れる…
+	CFLAG:8011 = 3
+;それ以外
+ELSE
+	PRINTFORMW 「あ…え……？　何か、お尻に出てる……！？」
+	CFLAG:8011 = 2
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精
+;-------------------------------------------------
+@K3_MESSAGE_EJAC_PLAYER_11
+;恋慕
+IF TALENT:恋慕
+	IF RAND:3 == 0
+		PRINTFORMW 「んあああっ……お腹の中に来てる……%CALLNAME:PLAYER%の精液……っ♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「うん……注いで……一杯注いで、気持ちよくなって……」
+	ELSE
+		PRINTFORMW 「ふああっ…♪　赤ちゃん、できちゃうかな……えへへ……♪」
+	ENDIF
+	CFLAG:8010 = 4
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3
+	PRINTFORMW 「んう……これが、せーえき……？」
+	CFLAG:8010 = 3
+;それ以外
+ELSE
+	PRINTFORMW 「やぁ……中でなんか泳いでる……」
+	CFLAG:8010 = 2
+ENDIF
+
+;-------------------------------------------------
+;口で射精
+;-------------------------------------------------
+@K3_MESSAGE_EJAC_PLAYER_15
+;奉仕精神Lv5
+IF ABL:奉仕精神 >= 5
+	IF RAND:6 == 0
+		PRINTFORMW 「んむううっ！！　んぐ、んぐ、んぐ……こくこく……。えへへ、飲んだよ……」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「お掃除お掃除～♪　ちゅる、ぴちゃ、れろ、あむん、んんふ……んふ……あ、またふくらんできた……♪」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「ん…こくん、こくん……。えへへ……ねぇ、まだまだお口にしゃせーしてもいいんだよ…♪　くすくす…」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「ちゅーっ、ちゅーっ、ちゅーっ…あ、んふふ、まだ亀さんに残ってる…。ちゅうちゅうって、吸ってあげるね……ぱくん……」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「んぐぐぅー！　んぶっ、げほ、げほっ！　ごめんなさい……こぼしちゃった……」
+	ELSE
+		PRINTFORMW 「んーっ！　んーっ！　んう…じゅぷ、じゅちゅ、ごっくん……あは、精液おいしい…♪」
+	ENDIF
+	CFLAG:8013 = 3
+;奉仕精神Lv3以上
+ELSEIF ABL:奉仕精神 >= 3
+	IF RAND:3 == 0
+		PRINTFORMW 「んふう……ん……ごくごく……うあ、喉の奥に絡んで、いがいが…」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「えほっ……えほっ…口の中ですっごい暴れた…」
+	ELSE
+		PRINTFORMW どくっ…びゅるるるっ、びゅびゅーっ……
+		PRINTFORMW 「あわわっ……髪の毛がべとべと……」
+	ENDIF
+	CFLAG:8013 = 2
+;それ以外
+ELSE
+	IF RAND:2 == 0
+		PRINTFORMW 「ん゛ーっ！　げほ、げほごほっ！」
+	ELSE
+		PRINTFORMW 「ぷあっ……うう～、にがい～」
+	ENDIF
+	CFLAG:8013 = 1
+ENDIF
+
+;-------------------------------------------------
+;手で射精
+;-------------------------------------------------
+@K3_MESSAGE_EJAC_PLAYER_19
+;奉仕精神Lv5
+IF ABL:奉仕精神 >= 5
+	IF RAND:4 == 0
+		PRINTFORMW ルーミアは射精の瞬間亀頭に口をつけ、白濁のシャワーを顔面に被った…
+		PRINTFORMW 「ふふっ、いっぱい出したね…。お掃除してあげる……ん、ぴちゃ…」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 射精は手の中に留まらず、ルーミアの顔面や幼い肢体も汚していった…
+		PRINTFORMW 「あ…いっぱい顔にかかって……んむ、もったいない……ぺろ…」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「あはっ、どくどく出てる…♪　んふふ、でもまだこするのやめてあげない…♪」
+	ELSE
+		PRINTFORMW 「ぷあっ……すごい量………溺れちゃうよ……」
+	ENDIF
+	CFLAG:8012 = 3
+;奉仕精神Lv3
+ELSEIF ABL:奉仕精神 >= 3
+	IF RAND:2 == 0
+		PRINTFORMW びゅびゅ、と手の中で一物が何度も汚濁を放った…
+		PRINTFORMW 「あっ……%CALLNAME:PLAYER%ってばいますっごく気持ちよさそうな顔してた……」
+	ELSE
+		PRINTFORMW 熱い迸りをルーミアの手に射精した…
+		PRINTFORMW 「ふあっ……手にかかって……べとべと…」
+	ENDIF
+	CFLAG:8012 = 2
+;それ以外
+ELSE
+	PRINTFORMW ペニスは最後に一度大きく震え、精を解き放った…
+	PRINTFORMW 「わっ……し、白いのがびゅーびゅーって……？」
+	CFLAG:8012 = 1
+ENDIF
+
+;-------------------------------------------------
+;胸で調教者が射精(舐めない)
+;-------------------------------------------------
+@K3_MESSAGE_EJAC_PLAYER_16
+;奉仕精神Lv5
+IF ABL:奉仕精神 >= 5
+	PRINTFORMW 「あ……精液……熱い……もっとかけてぇ……♪」
+	PRINTFORMW 熱い白濁が胸と顔に飛び散り、顎から残滓が垂れている…
+	CFLAG:8014 = 3
+;奉仕精神Lv3以上
+ELSEIF ABL:奉仕精神 >= 3
+	PRINTFORMW 「あは、元気良すぎ……♪」
+	CFLAG:8014 = 2
+;それ以外
+ELSE
+	PRINTFORMW びゅるるっ、とペニスから勢いよく精を放った…
+	PRINTFORMW 「きゃっ！　もー、あちこち真っ白だよ」
+	CFLAG:8014 = 1
+ENDIF
+
+
+
+;=========================================================
+;@KOJO_MESSAGE_MARKCNG関係
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;=========================================================
+@KOJO_3_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG:8096
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8096 == 0
+	PRINTFORMW 「うぐっ……いたたた…………」
+	CFLAG:8096 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG:8097
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8097 == 0
+		PRINTFORMW 「こんなに気持ちいいこと、初めて……」
+	CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG:8098
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8098 == 0
+		PRINTFORMW 「もう、どうにでもして……」
+		PRINTFORMW ルーミアは屈服してしまい、抗う気力をなくしたようだ…
+	CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG:8099
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8099 == 0
+		PRINTFORMW ルーミアはぎゅっと唇を噛み、鋭く%CALLNAME:MASTER%を睨んできた…
+	CFLAG:8099 = 1
+ENDIF
+
+
+
+
+;==================================================
+;@SELF_KOJO関係
+;イベント口上判定処理
+;SELF_KOJO実行時に出力されます
+;==================================================
+@KOJO_3_MESSAGE_SUB_EVENT_BEFORE
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RESULT = 1
+;調教中かつ口枷つきも戻る
+SIF TFLAG:999 && TEQUIP:42
+	RESULT = 1
+;調教中かつ失神中・失神回復時も戻る
+SIF TFLAG:999 && (TFLAG:899 >= 1 || TFLAG:898 == 1 && TFLAG:200 != 12)
+	RESULT = 1
+
+
+;-------------------------------------------------
+;朝フェラ CFLAG:8240
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:6 == 0
+			PRINTFORMW 「んっ……んー？　おひゃよう……はむっ」
+			PRINTFORMW ルーミアは勃起したペニスを美味しそうに啜っている…
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「ぺちゃぺちゃ…んむう……あ、おふぁよ♪」
+			PRINTFORMW ルーミアは少女とは思えない妖艶な笑みを浮かべた…
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「ふふっ…♪　朝の新鮮なおちんちん、いただきま～すっ……はむっ……」
+			PRINTFORMW 「んー、じゅるる、んー、じゅるる…んぐっ、んむむっ……ごくごく……」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ん…くちゅくちゅ……あ、起きた？」
+			PRINTFORMW 「せっかくだからこのまま飲んじゃうね……はぷっ、んぐっ、んむむぅ、ぷあっ…」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「おふぁよ……んむ、くちゅ、れろれろ…」
+			PRINTFORMW 「ちんちんふやけさせてあげるね…ちゅうう……んーっ……んく、んく…」
+		ELSE
+			PRINTFORMW 「んふふ…こんなに硬くしちゃって、やらしい夢でも見てたの？」
+			PRINTFORMW 「それじゃ、抜いてあげるね♪　あむ…じゅる、しゃぶしゃぶ……ちゅるるっ…ちろちろ……」
+		ENDIF
+		CFLAG:8240 = 3
+	;奉仕精神Lv5以上
+	ELSEIF ABL:奉仕精神 >= 5
+		PRINTFORMW 「ぺちゃぺちゃ…んむう……あ、おふぁよ♪」
+		PRINTFORMW ルーミアは少女とは思えない妖艶な笑みを浮かべた…
+		CFLAG:8240 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ……んー？　おひゃよう……はむっ」
+		PRINTFORMW ルーミアは勃起したペニスを美味しそうに啜っている…
+		CFLAG:8240 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG:8250
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;V感覚Lv4以上
+	IF ABL:Ｖ感覚 >= 4
+		PRINTFORMW 「まだ休んじゃダメだよ？　からっぽになるまで搾りとってあげる…」
+		CFLAG:8250 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やーだぁー、もっとせーえき飲むーっ」
+		CFLAG:8250 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰 CFLAG:8251
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「もっと触ってほしいよう……%CALLNAME:MASTER%……」
+		CFLAG:8251 = 3
+	;自慰中毒Lv3以上
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 「あっ、ふあぁっ、指、掻き出すの、止まんないっ…」
+		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ん……ここ、くにくにするの気持ちいい…」
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG:8258
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;V感覚Lv5以上
+	IF ABL:Ｖ感覚 >= 5
+		PRINTFORMW 「私、もうエッチに夢中になっちゃった……」
+		CFLAG:8258 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ねえ、あそこが、じんじんするの……。一人じゃ、寝れないよ……」
+		CFLAG:8258 = 1
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;触手生贄
+;従順LV3未満、反発刻印Lv3の奴隷は連れ込めない。
+;妊娠、子育て、現在の体力が1000以下の場合も不可。
+;生贄の処理で文字変数A,T,Y,Zを使っているので使用しないように。
+;地の文的には入る前から触手培養部屋だと分かっているようです。
+;……売却紳士の界隈では、るーみあこそ最もトラウマを植えつけるキャラとされております。
+;そんなわけで、売却紳士たる俺も、機会があればあやかりたいとか思っていたわけです。
+;↑
+;加筆ありがとうございます。感謝
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE257
+IF 1
+	;恋慕かつ触手中毒Lv3以上
+	IF TALENT:150 == 1 && ABL:35 == 3
+		PRINTFORMW 「ずっとここにいろ……？ もっ、もう、会えないってこと…？」
+		PRINTFORMW %CALLNAME:MASTER%は頷き、扉を閉めた。
+		PRINTFORMW ……鍵をかける直前、小さな声が聞こえてきた。涙を含んだ声が、だ。
+		PRINTFORMW 「……そーなのかー……」
+		PRINTFORMW その言葉が、ルーミアの最後の言語になった。
+		PRINTFORMW 悲鳴と嬌声のみが響くその場を、%CALLNAME:MASTER%は後にした……
+	;恋慕かつ触手経験あり
+	ELSEIF TALENT:150 == 1 && EXP:53 >= 1
+		PRINTFORMW 「ずっとここにいろ……？ もっ、もう、会えないってこと…？」
+		PRINTFORMW %CALLNAME:MASTER%は頷き、扉を閉めた。
+		PRINTFORMW ……鍵をかける直前、小さな声が聞こえてきた。涙を含んだ声が、だ。
+		PRINTFORMW 「……そーなのかー……」
+		PRINTFORMW その言葉が、ルーミアの最後の言語になった。
+		PRINTFORMW 悲鳴のみが響くその場を、%CALLNAME:MASTER%は後にした……
+	;恋慕かつ触手経験なし
+	ELSEIF TALENT:150 == 1 && EXP:53 >= 0
+		PRINTFORMW 「ずっとここにいろ……？ もっ、もう、会えないってこと…？」
+		PRINTFORMW %CALLNAME:MASTER%は頷き、扉を閉めた。
+		PRINTFORMW ……鍵をかける直前、小さな声が聞こえてきた。涙を含んだ声が、だ。
+		PRINTFORMW 「……そーなのかー……」
+		PRINTFORMW その言葉が、ルーミアの最後の言語になった。
+		PRINTFORMW 悲鳴のみが響くその場を、%CALLNAME:MASTER%は後にした……
+	;それ以外
+	ELSE
+		PRINTFORMW 「なに？ ここ……こ、こわいよ……」
+		PRINTFORMW 「ひぁっ！？ なにこれぇっ！」
+		PRINTFORMW 「くらいっ！ くらいよ、暗い暗い怖い怖い暗い怖いっ！」
+		PRINTFORMW 「うぁっ、うぁああああああ――……！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;売却
+;-------------------------------------------------
+@KOJO_3_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;恋慕+反発刻印Lv3未満
+	IF TALENT:150 && MARK:9 < 3
+		PRINTFORMW 売却すると告げると、ルーミアは雷に打たれたかのように立ち竦んだ
+		PRINTFORMW 「それって、もう会えないってこと…？」
+		PRINTFORMW ルーミアは何度も尋ねるが、%CALLNAME:MASTER%の意思が固いことを理解すると押し黙った
+		PRINTFORMW そして、無理に笑顔を作って呟いた…
+		PRINTFORMW 「そっ……、……そーなのかー……」
+		PRINTFORMW 奴隷業者がやって来て、ルーミアを外へ連れて行く
+		PRINTFORMW その時、一瞬だけひどく悲しそうに振り返った気がした…
+	;反発刻印Lv3
+	ELSEIF MARK:9 == 3
+		PRINTFORMW ルーミアは部屋を出る前に、こちらを振り向いて舌を出した
+		PRINTFORMW 「べーっ、だ！」
+	;淫乱
+	ELSEIF TALENT:170
+		PRINTFORMW ルーミアは業者に連れられて出ていく間も荒く呼吸している
+		PRINTFORMW よく見ると、スカートに手を差し入れて秘所を弄っているのが分かった…
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっとここから出られるのかー。んじゃ、ばいばい」
+		PRINTFORMW あっさりと別れを告げ、ルーミアは部屋を出て行った…
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;@単体エンディング関係(3、03をキャラ番号に置換する)
+;-------------------------------------------------
+;表記例、1、22
+@KOJO_3_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTL 
+PRINTFORML エンディングで%CALLNAME:MASTER%の心理を描写しますか？
+PRINTFORML （%CALLNAME:MASTER%へのキャラ付けが苦手な人にはお勧めできません）
+PRINTFORML [0] はい
+PRINTFORML [1] いいえ
+$INPUT_LOOP0
+INPUT
+IF RESULT == 0
+	CFLAG:5203 = 1
+ELSEIF RESULT == 1
+	CFLAG:5203 = 0
+ELSE
+	GOTO INPUT_LOOP0
+ENDIF
+PRINTL 
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW %CALLNAME:MASTER%はルーミアの部屋の前で立ち止まった。
+PRINTFORMW 懐から小さな包みを取り出し、中身を見る。
+PRINTFORMW 人里の道具店で購入した指輪。
+PRINTFORMW 自分には指輪の良し悪しなど分からないので、女の店員と相談しながら選んだ。
+PRINTFORMW その品が入っていることを確認して懐に戻す。
+;心理描写オン
+IF CFLAG:5203 == 1
+	PRINTFORMW ……ルーミアはこれを受け取ってくれるだろうか。
+	PRINTFORMW 胸中の不安を押し殺す。
+ENDIF
+PRINTFORMW そして%CALLNAME:MASTER%は重い扉を押し開けた…。
+PRINTFORMW 
+PRINTFORMW ルーミアは明かりもつけずに座り込んでいた。
+PRINTFORMW %CALLNAME:MASTER%は声をかけるが、返事がない。
+PRINTFORMW 訝しんでいると、突然強い力で床に引き倒された。
+PRINTFORMW 馬乗りになったルーミアに体を押さえつけられる。
+PRINTFORMW 「遅いよ」
+PRINTFORMW 頭上から声がする。
+PRINTFORMW 「ねぇ、今日、どこに行ってたの？」
+PRINTFORMW 問いかける。
+PRINTFORMW 震える声で、苦しそうに息継ぎをしながら。
+PRINTFORMW 「目が覚めたら、こっそり出かけるあなたが見えたの」
+PRINTFORMW 「そわそわしてて、隠し事をしてるみたいだった」
+PRINTFORMW 「……だから、悪いと思ったんだけど、でも、不安になって……」
+PRINTFORMW ルーミアの語った経緯はこうだ。
+PRINTFORMW ……ルーミアは%CALLNAME:MASTER%を追いかけて人里に行った。
+PRINTFORMW そして、見知らぬ女性と指輪を選ぶ%CALLNAME:MASTER%を見た。
+PRINTFORMW ルーミアは人里のことをほとんど知らない。
+PRINTFORMW ましてや、店に行って物を買ったことなど全くない。
+PRINTFORMW だから、%CALLNAME:MASTER%が女の店員と指輪を選んでいるのを見て、酷い誤解をしてしまった。
+PRINTFORMW 「……それで、頭が真っ白になって、そこから逃げ出したの」
+PRINTFORMW %CALLNAME:MASTER%は誤解だと言おうとしたが、……口元を手で押さえられてしまう。
+PRINTFORMW 「あのね、私…」
+PRINTFORMW ルーミアは身をかがめ、顔を近づける。
+PRINTFORMW 「あなたは本当だと思ってないかもしれないけど…」
+PRINTFORMW 「…好きなの」
+PRINTFORMW 「大好き」
+PRINTFORMW 「他の人にとられたら、どうなっちゃうか分かんないくらい」
+PRINTFORMW 「だから、」
+PRINTFORMW 「食べていい？」
+PRINTW  
+PRINTFORMW ルーミアは%CALLNAME:MASTER%の首筋に牙を立てた。
+PRINTFORMW 激痛に顔が歪む。
+PRINTFORMW 妖怪の顎なら骨をも噛み砕くことができる。このままでは、本当に食われてしまう。
+PRINTFORMW %CALLNAME:MASTER%は薄くなる意識で、何をするか考えた……。
+
+;好感度3500以上で分岐
+IF CFLAG:2 >= 3500
+	DRAWLINE
+	PRINTL [0] 受け入れる
+	PRINTL [1] 突き放す
+	PRINTL [2] 想いを伝える
+	$INPUT_LOOP1
+	INPUT
+	SIF RESULT != 0 && RESULT != 1 && RESULT != 2
+		GOTO INPUT_LOOP1		
+	IF RESULT == 0
+		GOTO RUMIA_END_A
+	ELSEIF RESULT == 1
+		GOTO RUMIA_END_B
+	ELSEIF RESULT == 2
+		GOTO RUMIA_END_C
+	ENDIF
+ELSE
+	DRAWLINE
+	PRINTL [0] 受け入れる
+	PRINTL [1] 突き放す
+	$INPUT_LOOP2
+	INPUT
+	SIF RESULT != 0 && RESULT != 1
+		GOTO INPUT_LOOP2
+	IF RESULT == 0
+		GOTO RUMIA_END_A
+	ELSEIF RESULT == 1
+		GOTO RUMIA_END_B
+	ENDIF
+ENDIF
+
+
+;受け入れる
+$RUMIA_END_A
+
+DRAWLINE
+;心理描写オン
+IF CFLAG:5203 == 1
+	PRINTFORMW …それもいい、と思った。
+	PRINTFORMW 今まで、散々酷い事をしてきた。
+	PRINTFORMW その報いがこれなら、こんな鬼畜の末路にはふさわしい。
+	PRINTFORMW ぶちりと肉の裂ける音がする。
+	PRINTFORMW あ、今のは致命的だな、と他人事の様に思った。
+	PRINTFORMW そうだ。
+	PRINTFORMW そういえば玄関の扉は開け放ったままだ。
+	PRINTFORMW 今なら屋敷の外に出られるだろう。
+	PRINTFORMW よかったな、お前は自由だ。
+	PRINTFORMW 今度は悪い奴に捕まるんじゃないぞ。
+	PRINTFORMW ああでも。
+	PRINTFORMW お前が指輪をするところ、見たかったな。
+	PRINTFORMW ちょっと惜■い。
+	PRINTFORMW け■、ま■いいか。
+	PRINTFORMW お前が喰■■くれるなら、悪■■い。
+	PRINTFORMW …血を流しすぎて思考もままならない。
+	PRINTFORMW なのに、何故だか笑みが浮かんでいた。
+	PRINTFORMW …ああ、
+	PRINTW 
+	PRINTFORMW ■ー■■、好■
+	PRINTW  
+	PRINTW  
+	PRINTW   
+	PRINTFORMW ★★★%CALLNAME:MASTER%は消えました★★★
+	PRINTW  
+	PRINTW  
+	PRINTW   
+;心理描写オフ
+ELSE
+	PRINTW   
+	PRINTFORMW %CALLNAME:MASTER%は、抵抗を止めて喰われることを受け入れた。
+	PRINTFORMW ぶちりと肉の裂ける音が響き、床に血溜まりが広がっていった…。
+	PRINTW  
+	PRINTFORMW ★★★%CALLNAME:MASTER%は消えました★★★
+	PRINTW  
+ENDIF
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW それから、里に奇妙な噂が流れた。
+PRINTFORMW 村外れの荒れ果てた屋敷に、妖魔の少女が住んでいる。
+PRINTFORMW それは変わり者で、決して人を食べることはなく、何かに興味を示すこともない。
+PRINTFORMW ただ何かを守るように、そこに居続けているのだという…。
+PRINTW  
+PRINTW  
+PRINTW  
+PRINTFORMW このエンドはここまでです。
+PRINTFORMW 別のエンドを見たい方は、ルーミアの好感度を一定以上に上げてみてください。
+PRINTW  
+PRINTFORMW 　　　　　　　　―― Ending No.1003A (ルーミアエンドA)
+PRINTW  
+PRINTFORMW ------------------------------------GAMEOVER-----------------------------------
+PRINTW  
+QUIT
+
+
+;突き放す
+$RUMIA_END_B
+
+DRAWLINE
+PRINTW  
+PRINTFORMW 渾身の力を振り絞って、ルーミアを突き飛ばした。
+PRINTFORMW 「あっ……」
+PRINTFORMW ルーミアの瞳に理性が戻る。
+PRINTFORMW そして%CALLNAME:MASTER%の首に刻まれた歯形を見ると、悲痛に顔を歪ませた。
+PRINTFORMW 「ご、ごめんなさい……私……」
+PRINTFORMW ルーミアは背を向けて部屋を飛び出す。
+PRINTFORMW 玄関の扉は開けたままなので、たやすく外に出られるはずだ。
+PRINTFORMW 後を追おうとするが、……腰が抜けて立つことが出来ない。
+PRINTFORMW 出血のためか、恐怖のためか。
+PRINTFORMW ぐるぐると思考が巡るが、足が震えてどうしても奮い立たせることができない。
+PRINTFORMW ……結局、そのままルーミアが屋敷に戻ってくることは無かった。
+PRINTW  
+PRINTFORMW 　　　　　　　　―― Ending No.1003B (ルーミアエンドB)
+PRINTW  
+PRINTFORMW ------------------------------------GAMEOVER-----------------------------------
+PRINTW  
+QUIT
+
+
+
+;想いを伝える
+$RUMIA_END_C
+
+DRAWLINE
+PRINTW  
+PRINTFORMW 「ふぐっ……うぐっ……」
+PRINTFORMW ……噛んでいるのはルーミアの方なのに、苦しそうに震えている。
+PRINTFORMW 流れ出る血のほかに、生温い液体がかかるのを感じる。
+PRINTFORMW %CALLNAME:MASTER%は力を振り絞り、懐から指輪を取り出すと、そっとルーミアの指に通した。
+PRINTFORMW 「…………え？」
+PRINTFORMW 首筋を噛む力が弱まる。
+PRINTFORMW ルーミアはきょとんと薬指に嵌められたそれを見つめた。
+PRINTFORMW 「なんで……？」
+PRINTFORMW まだ成り行きを理解できていないらしい。
+PRINTFORMW ……混乱しないように、ゆっくりと順序立てて誤解を解いていった。
+PRINTW 
+PRINTFORMW 「それじゃあ、私……」
+PRINTFORMW 話をするうちに、その表情がくしゃくしゃに歪む。
+PRINTFORMW 視線の先には痛々しく血を流す首筋がある。
+PRINTFORMW %CALLNAME:MASTER%はルーミアの頭を抱え寄せ、愛の言葉を囁いた。
+PRINTFORMW 納得するまで何度でも繰り返した。
+PRINTFORMW そうしているうちにルーミアの体から緊張が抜けていった。
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 気持ちを落ち着けると、ルーミアは身を離して%CALLNAME:MASTER%に向き直った。
+PRINTFORMW その表情は真剣そのもの。
+PRINTFORMW 「…ごめんなさい、一生にひとつって言ったけど。もう一度だけ、するね。お願い事」
+PRINTFORMW 目をそらさない。
+PRINTFORMW 「ずっと、一緒にいてください」
+PRINTFORMW 「ずっと私を愛してください」
+PRINTFORMW 「私も、あなたの傍にいます」
+PRINTFORMW 「ずっと、います……」
+PRINTFORMW %CALLNAME:MASTER%はその言葉を受け止め、深く頷いた…。
+PRINTW  
+PRINTW  
+PRINTW  
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW それから、里に奇妙な噂が流れた。
+PRINTFORMW …村外れにある屋敷に、妖魔の少女と人間が住んでいる。
+PRINTFORMW 兄妹ほども年が離れているが、手にはお揃いの指輪を嵌めている。
+PRINTFORMW 時折里に出かけたり、夜道を散歩する姿が目撃されている。
+PRINTFORMW そうしてずっと二人で暮らしているのだという…。
+PRINTW 
+PRINTFORMW 　　　　　　　　―― Ending No.1003C (ルーミアエンドC)
+PRINTW 
+
+RETURN 0
+
+

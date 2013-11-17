@@ -1,0 +1,100 @@
+;==============================================================
+;アリス口上
+;名前を教えるイベント
+;==============================================================
+@K14_NAMEINPUT
+PRINTL 名前を入力してください
+PRINTL 　
+$INPUT_LOOP_3
+INPUTS
+STRLENS RESULTS
+IF RESULT > 14
+	IF CFLAG:7000 == 1
+		PRINTFORML 「長すぎるわ、愛称で教えてよ」
+		GOTO INPUT_LOOP_3
+	ELSE
+		PRINTFORML 「もう少し短くできない？」
+		GOTO INPUT_LOOP_3
+	ENDIF
+ELSEIF RESULTS == ""
+	GOTO INPUT_LOOP_3
+ELSE
+	IF RESULTS == "アリス"
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「偶然ね、私と同じ名前なんて」
+		ELSE
+			PRINTFORMW 「いやいや、それは私の名前よ？」
+		ENDIF
+	ELSEIF RESULTS == "ロリス"
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「…何その名前、なんか腹立つわね」
+		ELSE
+			PRINTFORMW 「…ふうん、変わった名前ね」
+		ENDIF
+	ELSEIF RESULTS == "神綺"
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「あら、お母さんと同じ名前なのね」
+		ELSE
+			PRINTFORMW 「あら、懐かしい名前ね…」
+		ENDIF
+	ENDIF
+ENDIF
+PRINTFORML 「%RESULTS%って言うのね？」
+PRINTL [0] はい
+PRINTL [1] いいえ
+$INPUT_LOOP_4
+INPUT
+IF RESULT == 0
+	MASTERNAME = %RESULTS%
+	PRINTFORMW %CALLNAME:MASTER%は、自分の名前%MASTERNAME%を教えた
+ELSEIF RESULT == 1
+	PRINTFORMW 「じゃあなんて名前なの？」
+	GOTO INPUT_LOOP_3
+ELSE
+	GOTO INPUT_LOOP_4
+ENDIF
+RETURN 0
+
+;=========================================
+;汎用喘ぎ声ジェネレータ
+;=========================================
+@K14_GASP
+IF CFLAG:7000 == 1
+	IF RAND:7 == 0 && TALENT:淫乱 == 1
+		PRINTFORMW 「良いよ、もっと…、もっとぉ…！ふぁあっ――！！」
+	ELSEIF RAND:6 == 0 && TALENT:恋慕 == 1
+		PRINTFORMW 「ひゃあっ、%MASTERNAME%、%MASTERNAME%ッッ！」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「んんっ、もっと…、ああっ♪」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「やッ…、はぁ、ん……」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「ふぁあ…、んんっ…！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ん、んんっ…！はぁ、あぁっ！」
+	ELSEIF RAND:1 == 0
+		PRINTFORMW 「や、やめっ、―――ッッ！！」
+	ELSE
+		PRINTFORMW 「んんっ、はあっ、ああっ…！」
+	ENDIF
+ELSE
+	IF RAND:7 == 0 && TALENT:恋慕 == 1
+		PRINTFORMW 「はぁっ…、あんっ、%MASTERNAME%…！」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「や、んん…、ふぁあ、あんっ！」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「ん、ダメ…、あ、やぁんっ！」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「んんっ、あ、ああっ、―――ッ！」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「はぁっ、はぁ…、んんっ…」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「や、あうっ…、ふぁっ…！」
+	ELSEIF RAND:1 == 0
+		PRINTFORMW 「ダメッ…、んあぁっ…！」
+	ELSE
+		PRINTFORMW 「やだ、あっ…、んんっ！！」
+	ENDIF
+ENDIF
+RETURN 0
+

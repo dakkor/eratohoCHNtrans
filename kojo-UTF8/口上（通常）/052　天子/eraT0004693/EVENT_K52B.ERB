@@ -1,0 +1,606 @@
+;-------------------------------------------------
+;オート口上ジェネレーター（仮）
+;-------------------------------------------------
+
+;無快楽
+@K52_PREASURE_NONE
+	IF RAND:4 == 0
+		PRINTFORMW 「ん……」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「う……ん……」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ん……あっ……」
+	ELSE
+		PRINTFORMW 「あっ……ん……」
+	ENDIF
+RETURN 0
+
+;弱快楽
+@K52_PREASURE_LOW
+	IF RAND:8 == 0
+		PRINTFORMW 「あ……ん……んぅ…」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「はぁ…ん……ふぅっ……」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「ふぅ……んっ……ひゃ……」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「んっ……きゃ…ひぃ…んぁ…」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「はぁん……ひうっ……んっ…」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「あぅ……んぅ……ん……」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「んぅ……んっ……あん…」
+	ELSE
+		PRINTFORMW 「きゃ…んっ……はぁん……」
+	ENDIF
+RETURN 0
+
+;中快楽
+@K52_PREASURE_MID
+	IF RAND:8 == 0
+		PRINTFORMW 「んあぁぁ……ひぅっ……あん……」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「あひぃ……ひゃん…きゃうぅ……」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「やっ…これぇ…いぃっ……はぁん……」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「ふぅ……んぁあ……いぃ…んぅ……」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「あはぁ……んぅ……んぁあ…」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「んっ…はぁ…いぃ…はうぅ…」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「これぇ……うんぅ……はう……」
+	ELSE
+		PRINTFORMW 「んっんっんっ……んぅーっ…っはぁ」
+	ENDIF
+RETURN 0
+
+;強快楽
+@K52_PREASURE_HIGH
+	IF RAND:8 == 0
+		PRINTFORMW 「お゛っごぉ！……あへ…あへ…」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「うごぉっ！？へあぁぁ……あぅ……」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「ひあぁぁぁ…あへ……あ゛う～……」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「あ゛う～……あへ……うあ゛……」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「え゛あ゛……う゛あ゛～…あへぇ……」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「おぼっ！？あ゛あ゛あぁぁぁ……ん゛あ゛っ！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ん゛あ゛～……お゛っほぉぉ！！！」
+	ELSE
+		PRINTFORMW 「ごっ！お゛っ！イ゛っ！ぐぅっ！」
+	ENDIF
+RETURN 0
+
+;悲鳴（強）
+@K52_SCREAM_HARD
+	;ドＭでなかったら
+	IF TALENT:178 == 0
+		IF RAND:8 == 0
+			PRINTFORMW 「げう゛っ…うぁあ゛あぁぁぁ…」
+		ELSEIF RAND:7 == 0
+			PRINTFORMW 「ひぎッ！うアぁっ！」
+		ELSEIF RAND:6 == 0
+			PRINTFORMW 「ヤっ！ぎィっ！？」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「がひゅ…をボっ！？」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「やべ…死んじゃ…げべっ！？」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「じ…死むぅ…げふっ！？」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ぎぃっ！？…がひゅ…」
+		ELSE
+			PRINTFORMW 「――ぁっ！？う゛ぇっ！？」
+		ENDIF
+	;ドＭなら
+	ELSE
+		IF RAND:8 == 0
+			PRINTFORMW 「んぎゃあぁぁぁっ♪イぐぅっ♪」
+		ELSEIF RAND:7 == 0
+			PRINTFORMW 「ひぎゃあッ♪トんじゃうぅ♪」
+		ELSEIF RAND:6 == 0
+			PRINTFORMW 「ぎゃっ♪ぐぎィっ♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「がひゅぅ♪…うボっ♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「えべ…トんじゃ…ぐべっ♪」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「じ…死むぅ…イぐっ♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「お゛ぎぃっ♪…がひゅ♪」
+		ELSE
+			PRINTFORMW 「――ぁ゛っ♪く゛ぇ゛っ♪」
+		ENDIF
+ENDIF
+RETURN 0
+
+
+;恋慕陥落時の喘ぎ声
+@K52_PANT_VOICE_RENBO
+	IF TEQUIP:11 > 0 || MARK:薬物刻印 > 0
+		IF RAND:6 == 0
+			PRINTFORMW 「あ゛へぇ♪お゛ほぉっ♪ひゅごいぃぃぃ♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「あっひぃ♪キたぁ♪おちんちんしゅきぃぃぃ♪お゛あ゛ぁ…♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「ひゅごっ♪お゛はぁ゛っ♪こわれひゃうぅ♪」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ひゃぁあ゛♪おひんひん！おひんひんだいしゅきぃ♪にゃぁ～♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「あ゛ぅ～…おひんひんごりごりしてりゅぅ…♪しゅきぃ…♪」
+		ELSE
+			PRINTFORMW 「え゛あ゛ぁ～♪バカになっひゃうぅ♪もっろこわしへぇっ♪」
+		ENDIF
+	ELSEIF SELECTCOM == 20
+		IF RAND:8 == 0
+			PRINTFORMW 「んぁっ♪もっ……とぉ♪ぎゅっとしてェ……んぅ♪」
+		ELSEIF RAND:7 == 0
+			PRINTFORMW 「あっ♪……んっ♪……あはぁっ♪……ひぅっ♪」
+		ELSEIF RAND:6 == 0
+			PRINTFORMW 「んっ♪……ひゃっ♪……もっ♪……とぉ♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「おっ♪…まんこぉ♪…んっいィ♪……にょおっ♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「んっんっんっ♪……んぅーっ♪…っはぁ♪」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ひうっ♪……ひゃぁ♪……そこぉ♪……らめぇ♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「そ……こぉ♪……んっ♪……でちゃ……うぅ♪」
+		ELSE
+			PRINTFORMW 「んっ……ほぁっ！？……あぅあぅあぅ……んぅ♪」
+		ENDIF
+	ELSEIF SELECTCOM == 21
+		IF RAND:8 == 0
+			PRINTFORMW 「おっ♪…ひゃん♪…んっうぅ♪……にゃあっ♪」
+		ELSEIF RAND:7 == 0
+			PRINTFORMW 「ひぅっ！？バックからごりゅぅってへぇ♪んほぉっ♪」
+		ELSEIF RAND:6 == 0
+			PRINTFORMW 「おほぉっ♪……犬みたいにおまんこ突かれてェ……イィよぉ♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「んにゃぁっ♪もっと奥ゥ♪子宮口までグリグリしてェ♪…ぁふっ♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「あひぃ♪今ごりゅってェ♪イィとこあたっりゅぅ♪」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「お゛ほぉ♪ながいのがじゅぽじゅぽいってェ♪頭オカシクなりゅぅ♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「んはぁ♪もっと奥まで抉ってェ♪おまんこブっ壊してェ♪ガバガバにしてェ♪」
+		ELSE
+			PRINTFORMW 「んっひィィ――♪お゛っほぉ♪コレしゅきィ♪」
+		ENDIF
+	ENDIF
+PRINTFORML 
+RETURN 0
+
+;有快楽の喘ぎ声
+@K52_PANT_VOICE_NORMAL
+	IF TEQUIP:11 > 0 || MARK:薬物刻印 > 0
+		IF RAND:6 == 0
+			PRINTFORMW 「あ゛へぇ♪お゛ほぉっ♪ひゅごいぃぃぃ♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「あっひぃ♪キたぁ♪おちんちんしゅきぃぃぃ♪お゛あ゛ぁ…♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「ひゅごっ♪お゛はぁ゛っ♪こわれひゃうぅ♪」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ひゃぁあ゛♪おひんひん！おひんひんだいしゅきぃ♪にゃぁ～♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「あ゛ぅ～…おひんひんごりごりしてりゅぅ…♪しゅきぃ…♪」
+		ELSE
+			PRINTFORMW 「え゛あ゛ぁ～♪バカになっひゃうぅ♪もっろこわしへぇっ♪」
+		ENDIF
+	ELSEIF SELECTCOM == 20
+		IF RAND:8 == 0
+			PRINTFORMW 「あっ……これっ……キモチイイ……かもぉっ」
+		ELSEIF RAND:7 == 0 
+			PRINTFORMW 「ひゃ……んぅっ……や…め…んはぁっ」
+		ELSEIF RAND:6 == 0 
+			PRINTFORMW 「こ…れぇ…クセになっちゃうかもぉ…んっ」
+		ELSEIF RAND:5 == 0 
+			PRINTFORMW 「んっ……ひっ…ひゃあぁぁぁぁ…あぅ…」
+		ELSEIF RAND:4 == 0 
+			PRINTFORMW 「やっ……はんっ……んぁっ……っふぅ…」
+		ELSEIF RAND:3 == 0 
+			PRINTFORMW 「きゃ……んっ……あっ……んぅ……」
+		ELSEIF RAND:2 == 0 
+			PRINTFORMW 「うっ……にゃっ……コレ……やぁっ……」
+		ELSE
+			PRINTFORMW 「ほぁっ……なんかっ……キそうっ……あっ…」
+		ENDIF
+	ELSEIF SELECTCOM == 21
+		IF RAND:8 == 0
+			PRINTFORMW 「ばっ……くぅ……んふぅ……イィのぉ……」
+		ELSEIF RAND:7 == 0
+			PRINTFORMW 「こんなぁ……バックからされてイィなんてぇ……」
+		ELSEIF RAND:6 == 0
+			PRINTFORMW 「んあぁっ……ズボズボされるとスゴいィ……ぅん…」
+		ELSEIF RAND:5 == 0
+			PRINTFORMW 「っっ――！！っんあぁ……トんじゃ……んぅ…」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「ふあぁ……はいっ……たぁ……あはぁ……んっ……」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「こん…なぁ…犬みたい犯されてぇ…すきぃ……」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「にゃあぁ……怖いけどぉ…気持ちいいよぉ……」
+		ELSE
+			PRINTFORMW 「んひぃ！これぇ…んぅ…犯されちゃってるぅ……」
+		ENDIF
+	ENDIF
+RETURN 0
+
+;無快楽時の喘ぎ声
+@K52_PANT_VOICE_PAIN
+	IF RAND:8 == 0
+		PRINTFORMW 「いぎっ！……あぐっ！……うあぁぁぁぁっ！」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「ぐっ！……こんなのでぇっ！感じたりなんかっ……ぐうっ…」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「やだ！もうヤダっ！出してぇっ！ここから出してぇっ！」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「え゛あ゛っ！……いだいよぉ……お゛ぐっ……やぁ……」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「や゛ぁっ！……もぅ……やべ……でぇっ……」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「あぐっ！……こんなのヤダぁっ！……ぐぅっ！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ひっ！……や…やめ……ぎゃっ！！」
+	ELSE
+		PRINTFORMW 「こんなの……もうやめ……ぎうっ！…かはっ！」
+	ENDIF
+RETURN 0
+
+;精液欲しいコ専用
+@K52_SPERM_WANT
+;おくすり中毒（追記予定スペース）
+IF TEQUIP:11 > 0 || MARK:薬物刻印 > 0
+ELSE
+	IF RAND:8 == 0
+		PRINTFORMW 「射精る？うん♪いっぱいナカに射精してェっ♪」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「あんっ♪射精してェ♪子宮まで真っ白になるまでいっぱいにしてェ♪」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「奥にいっぱいちょうだぁい♪あふぅ♪」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「子宮口開いてるゥ♪いまぁ！今すぐ射精してェ♪熱いの欲しいのォ♪」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「おまんこぉ♪%CALLNAME:PLAYER%のせーえきでイッパイにしてぇ♪」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「いっぱい射精してぇ♪おまんこきゅっていってるのぉ♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「中出しィっ！ナマ中だいしゅきぃ♪お願いぃ♪ぶちまけてェ♪」
+	ELSE
+		PRINTFORMW 「おちんぱ汁ゥ♪おまんこにいっぱいブチまけてェ♪」
+	ENDIF
+ENDIF
+RETURN 0
+
+
+;二回目以降V挿入時セリフ
+@K52_INSERT_V
+;恋慕or盲信or親愛or相愛or服従or淫乱を持っているか
+IF TALENT:150 == 1 || TALENT:151 == 1 || TALENT:152 == 1 ||TALENT:153 == 1 || TALENT:160 == 1 || TALENT:170 == 1
+	;ゴム有りか
+	IF TEQUIP:31 == 1
+		;妊娠中or懐卵している場合
+		IF TALENT:140 || TALENT:145 == 1
+			IF RAND:4 == 0
+				PRINTFORMW 「やぁ♪これ以上孕まないんだからナマでシてよォ♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「このコもせーえき欲しがってるよォ♪ナマでェ…♪ダメ？」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ナマでズボズボほじってよォ♪……うぅ……イジワルぅ♪」
+			ELSE
+				PRINTFORMW 「ゴムやぁ♪ナマでびゅーってしてほしいのに…ダメ？」
+			ENDIF
+			IF SELECTCOM == 20
+				PRINTFORMW ゴム付きで正常位セックスをしようとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 21
+				PRINTFORMW ゴム付きでバックから犯そうとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を後ろから激しく突き上げた。
+			ELSEIF SELECTCOM == 22
+				PRINTFORMW 対面座位でゴム付き挿入しようとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 23
+				PRINTFORMW ゴムを付けたまま背面座位でするように命じると、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%は激しく%CALLNAME:TARGET%を後ろから抱き寄せ突いた。
+			ELSEIF SELECTCOM == 24
+				PRINTFORMW ゴムを付けたまま騎乗位をするように命じると、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%は激しく%CALLNAME:TARGET%を下から突き上げた。
+			ELSEIF SELECTCOM == 27
+				PRINTFORMW 立ったまま前から抱き寄せて挿入しようとすると%CALLNAME:TARGET%はゴムに多少拒否感を示した
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 28
+				PRINTFORMW 後ろから立ったまま挿入しようとしたところ、ゴムが付いている事に%CALLNAME:TARGET%は拒否感を示した
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を後ろから激しく突き上げた。
+			ENDIF
+			PRINTFORML 
+		;妊娠などしていない場合
+		ELSE
+			IF RAND:4 == 0
+				PRINTFORMW 「やぁ♪……ゴムなんか付けないでナマでブチ込んでよォ♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「ナマでズボズボほじってよォ♪……うぅ……イジワルぅ」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んふふ～♪ゴムなんか付けないでナマで頂戴よォ♪」
+			ELSE
+				PRINTFORMW 「ゴムやぁ♪ナマでびゅ～ってされるのが好きなのにィ♪」
+			ENDIF
+			IF SELECTCOM == 20
+				PRINTFORMW ゴム付きで正常位セックスをしようとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 21
+				PRINTFORMW ゴム付きでバックから犯そうとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を後ろから激しく突き上げた。
+			ELSEIF SELECTCOM == 22
+				PRINTFORMW 対面座位でゴム付き挿入しようとした所、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 23
+				PRINTFORMW ゴムを付けたまま背面座位でするように命じると、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%は激しく%CALLNAME:TARGET%を後ろから抱き寄せ突いた。
+			ELSEIF SELECTCOM == 24
+				PRINTFORMW ゴムを付けたまま騎乗位をするように命じると、%CALLNAME:TARGET%は不満げにふくれてしまった
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%は激しく%CALLNAME:TARGET%を下から突き上げた。
+			ELSEIF SELECTCOM == 27
+				PRINTFORMW 立ったまま前から抱き寄せて挿入しようとすると%CALLNAME:TARGET%はゴムに多少拒否感を示した
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を抱き寄せ挿入を開始した。
+			ELSEIF SELECTCOM == 28
+				PRINTFORMW 後ろから立ったまま挿入しようとしたところ、ゴムが付いている事に%CALLNAME:TARGET%は拒否感を示した
+				PRINTFORMW その様子があまりに可愛らしかったため、%CALLNAME:PLAYER%はより強く%CALLNAME:TARGET%を後ろから激しく突き上げた。
+			ENDIF
+			PRINTFORML 
+		ENDIF
+	;ゴム無し
+	ELSE
+		;妊娠中or懐卵している場合
+		IF TALENT:140 || TALENT:145 == 1
+			IF RAND:8 == 0
+				PRINTFORMW 「うん。お腹のコにもいっぱいせーえきあげないとね♪」
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「えへへ……いっぱいナカに出してね♪このコもきっと喜ぶわ♪」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「%CALLNAME:MASTER%のおちんちん……このコも欲しがるかしら？」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW 「うん♪いっぱいナカにせーし頂戴♪このコにも分けてあげるの♪」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「えへへ……ナマ挿入大好きぃ♪子宮の奥までイッパイにして欲しいな♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「うふふ……オチンチンかたぁくなってるぅ……ね♪早くぅ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「奥までブチ込んでェ♪赤ちゃんも真っ白にしてあげよォね♪」
+			ELSE
+				PRINTFORMW 「あっ♪ナマで挿れる？いいよ♪赤ちゃんも孕んじゃうくらい出してネ♪」
+			ENDIF
+			IF TEQUIP:41 > 0
+				PRINTFORMW ペニスを挿入しようとすると、%CALLNAME:TARGET%は期待に声を震わせた
+				PRINTFORMW 何をもってか目隠しをされていてもゴムが付いているかどうかわかってしまうようだ
+				PRINTFORMW 涎を垂らして期待している%CALLNAME:TARGET%に応えようと%CALLNAME:PLAYER%はそのまま膣に突き入れた
+				PRINTFORML 
+			ELSE
+				PRINTFORMW 挿入しようとすると、%CALLNAME:TARGET%は期待に瞳を潤ませて懇願する
+				PRINTFORMW それと同時に%CALLNAME:TARGET%のヴァギナは期待するようにヒクヒクと蠢いている
+				PRINTFORMW 欲望に染まるその目に急かされるように%CALLNAME:PLAYER%は%CALLNAME:TARGET%の中へと突き入れた
+				PRINTFORML 
+			ENDIF
+		;妊娠などしていない場合
+		ELSE
+			IF RAND:8 == 0
+				PRINTFORMW 「ナマで？うん♪イイよ♪オマンコにいっぱいせーえき頂戴♪」
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「うん♪ナマでスするのね♪トんじゃっても嫌いねならないでネ♪」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「えへへー♪おちんちんだいすきィ♪いっぱい出してネ♪」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW 「いっぱい出してネ♪デキちゃっても%CALLNAME:MASTER%のなら…ん♪」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「デキちゃっても知らないわよ♪ぁン…だぁいすきぃ♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「うん♪…いっぱいちゅーもして…いっぱい中に出してね…んちゅ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「おちんちん挿れる？うん♪ちゅーもいっぱいしてね♪」
+			ELSE
+				PRINTFORMW 「えへへ…赤ちゃんできちゃうかな？いっぱい出していいよ♪」
+			ENDIF
+			IF TEQUIP:41 > 0
+				PRINTFORMW 挿入しようとすると、%CALLNAME:TARGET%は期待に声を震わせた
+				PRINTFORMW 何をもってか目隠しをされていてもゴムが付いているかどうかわかってしまうようだ
+				PRINTFORMW 涎を垂らして期待している%CALLNAME:TARGET%に応えようと%CALLNAME:PLAYER%はそのまま膣に突き入れた
+				PRINTFORML 
+			ELSE
+				PRINTFORMW 挿入しようとすると、%CALLNAME:TARGET%は期待に瞳を潤ませて懇願する
+				PRINTFORMW それと同時に%CALLNAME:TARGET%のヴァギナは期待するようにヒクヒクと蠢いている
+				PRINTFORMW 欲望に染まるその目に急かされるように%CALLNAME:PLAYER%は%CALLNAME:TARGET%の中へと突き入れた
+				PRINTFORML 
+			ENDIF
+		ENDIF
+	ENDIF
+;陥落していない場合
+ELSE
+	;ゴム有りか
+	IF TEQUIP:31 == 1
+		;妊娠中or懐卵している場合
+		IF TALENT:140 || TALENT:145 == 1
+			IF RAND:8 == 0
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「……好きにしなさいよ……」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「……せめて気持よくしなさいよね……」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW 「……もう嫌……って言っても聞かないわよね……」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「……今更なのに付ける必要あるの？」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「……どうにでもしなさいよ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「こんな事になる前に付けなさいよね……」
+			ELSE
+				PRINTFORMW 「……今更……ふん……」
+			ENDIF
+			PRINTFORMW %CALLNAME:TARGET%は暗い表情で%CALLNAME:PLAYER%を拒もうとするが抵抗は弱々しい。
+			PRINTFORMW もう諦めてしまったのか、体が言う事を聞かないのかはわからない。
+			PRINTFORMW だが、そんな状況でも体は正直なもの。ここからどうなっていくのか
+			PRINTFORMW %CALLNAME:PLAYER%は暗い期待を胸に%CALLNAME:TARGET%のヴァギナへと挿入を開始した
+			PRINTFORML 
+		;妊娠などしていない場合
+		ELSE
+			IF RAND:4 == 0
+				PRINTFORMW 「……今更ゴム？まだ%CALLNAME:PLAYER%にもまだ良心が残ってるって見ていいワケ？」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「付けてくれるの？……はぁ……まだマシだと思えるのが嫌よね…」
+			ELSEIF RAND:2 == 0 && MARK:屈服刻印 >= 2
+				PRINTFORMW 「……犯すんだったらせめて気持よくしなさいよね……」
+			ELSE
+				PRINTFORMW 「ふん……どっちにしろ犯すんでしょ？好きにしなさいよ」
+			ENDIF
+			IF TEQUIP:41 > 0
+				PRINTFORMW ペニスを挿入しようとすると、%CALLNAME:TARGET%は不安に声を震わせた
+				PRINTFORMW 何をもってか目隠しをされていてもゴムが付いているかどうかわかってしまうようだ
+			ELSE
+				PRINTFORMW あきれ果てたような目で%CALLNAME:TARGET%は%CALLNAME:TARGET%のペニスを見ている
+				PRINTFORMW その目にはありありと諦観の色が浮かんでいる
+			ENDIF
+			PRINTFORMW %CALLNAME:TARGET%は構うことなく%CALLNAME:TARGET%の秘裂へペニスを埋めていった。
+			PRINTFORML 
+		ENDIF
+	;ゴム無し
+	ELSE
+		;妊娠中or懐卵している場合
+		IF TALENT:140 || TALENT:145 == 1
+			IF RAND:8 == 0
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「……好きにしなさいよ……」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「……せめて気持よくしなさいよね……」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW 「……もう嫌……って言っても聞かないわよね……」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「……今更ね……好きに出しなさいよ……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「……どうにでもしなさいよ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「……『いっぱい出して』とか言って欲しいワケ？嫌よ……」
+			ELSE
+				PRINTFORMW 「……今更……ふん……」
+			ENDIF
+			PRINTFORMW %CALLNAME:TARGET%は暗い表情で%CALLNAME:PLAYER%を拒もうとするが抵抗は弱々しい。
+			PRINTFORMW もう諦めてしまったのか、体が言う事を聞かないのかはわからない。
+			PRINTFORMW だが、そんな状況でも体は正直なもの。ここからどうなっていくのか
+			PRINTFORMW %CALLNAME:PLAYER%は暗い期待を胸に%CALLNAME:TARGET%のヴァギナへと挿入を開始した
+			PRINTFORML 
+		;妊娠などしていない場合
+		ELSE
+			;屈服刻印2以上
+			IF MARK:屈服刻印 >= 2
+				IF RAND:8 == 0
+					PRINTFORMW 「せめてゴムくらい付けなさいよ。まだ孕みたくなんかないんだから」
+				ELSEIF RAND:7 == 0
+					PRINTFORMW 「いい加減にしなさいよぉ……うぅ……ナマでなんかしたくないのにぃ…」
+				ELSEIF RAND:6 == 0
+					PRINTFORMW 「うぅ……お願いだから付けてよぉ……そしたら素直に気持よくなれるのにぃ…」
+				ELSEIF RAND:5 == 0 && TEQUIP:17 > 0
+					PRINTFORMW 「うぅ……ナマでしてもいいけどこれっきりにしてよね……」
+				ELSEIF RAND:4 == 0 && TEQUIP:17 > 0
+					PRINTFORMW 「おくすり飲んでるから大丈夫…なのかしら？あんまり好きじゃないけど」
+				ELSEIF RAND:3 == 0 && TEQUIP:16 > 0
+					PRINTFORMW 「や！やだっ！こんなんじゃ妊娠しちゃうからっ！やめて……ね？」
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「うぅ……孕ませる気満々ね……デキちゃったらどうしてくれるのよ……」
+				ELSE
+					PRINTFORMW 「やめ…せめてゴム付けてっ！」
+				ENDIF
+					PRINTFORMW ゴム無しですることにまだ抵抗があるのか%CALLNAME:TARGET%は拒絶の意思を示す
+					PRINTFORMW だがそんなことはお構いなしに%CALLNAME:PLAYER%は%CALLNAME:TARGET%を押し倒し、その秘裂に突き入れた
+					PRINTFORML 
+			ELSE
+				IF RAND:8 == 0
+					PRINTFORMW 「嫌ぁっ！ナマはだめぇっ！もう嫌なのぉっ！……ぐす…」
+				ELSEIF RAND:7 == 0
+					PRINTFORMW 「やだぁ…やだよぉ…ひっく……犯さないでぇ…」
+				ELSEIF RAND:6 == 0
+					PRINTFORMW 「ひっ……やめてぇ…ナマはやぁ……」
+				ELSEIF RAND:5 == 0 && TEQUIP:17 > 0
+					PRINTFORMW 「ぐす……おくすり飲んでるから大丈夫…？それでもやぁ……」
+				ELSEIF RAND:4 == 0 && TEQUIP:16 > 0
+					PRINTFORMW 「やっ…絶対やぁっ！犯さないでぇっ…ひぐっ…ぐすっ…」
+				ELSEIF RAND:3 == 0 && TEQUIP:11 > 0
+					PRINTFORMW 「あへ…ぐす…泣きたいのに…ひぐ…体…熱いのぉ…」
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「やめ…なさいよ…ぐす…お願いだからぁ…ずび…」
+				ELSE
+					PRINTFORMW 「ぐす…泣いてなんかいないわよ……%CALLNAME:PLAYER%が嫌いなだけよ！」
+				ENDIF
+				PRINTFORMW %CALLNAME:TARGET%は泣きながら弱々しく抵抗する。
+				PRINTFORMW しかし%CALLNAME:PLAYER%はそんな事はお構いなしに%CALLNAME:TARGET%をベッドの上へ押し倒し挿入を開始した
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 0
+
+
+;二回目以降尿道挿入の自動生成用
+@K52_INSERT_U
+;恋慕持ちか淫乱、服従持ち。もっと難しいけど尿道狂でも
+IF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 == 1 || TALENT:175 == 1
+	IF RAND:8 == 0
+		PRINTFORMW 「あ゛ぎぃ♪……クリの裏がキュンってなってるのぉ♪んぃい♪」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「うっぐぅ……太いのォ…気持ちいいのォ…もっと抉ってェ♪」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「んほおぉぉ……♪裂けるゥ♪裂けちゃってもイィからもっとォ♪」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「ふあぁぁ♪……おひっころあらぁ…いひぃ♪」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「あ゛ひぃ♪…んほぉ♪おしっこの穴から裏返っちゃいそ…んはぁ♪」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「おひっこぉ♪おひっこのあらぁ……変らろぉ♪…あふぇぇ…♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「あはぁ♪こんなに拡がっちゃったぁ♪ん…すごいよぉ♪」
+	ELSE
+		PRINTFORMW 「ひぅっ！？漏れちゃうぅ♪…漏れちゃうよォ♪あはぁ♪」
+	ENDIF
+ELSE
+	IF RAND:8 == 0
+		PRINTFORMW 「んくっ……はは……はいっちゃったぁ…んぅ…」
+	ELSEIF RAND:7 == 0
+		PRINTFORMW 「おあぁぁ……はぁ…はぁ…んっ…痛いけど…キモチイイ…」
+	ELSEIF RAND:6 == 0
+		PRINTFORMW 「んうぅっ……奥ぅ…んはぁ……凄いのぉ…」
+	ELSEIF RAND:5 == 0
+		PRINTFORMW 「んひぃ！クリが奥までゴリってぇ…トんじゃうぅ…」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「おほぉ……くるしぃけどぉ…何でイィのぉ！？」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「んふぅ……おしっこの穴…癖になっちゃうかもぉ…おっ」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「裂けっ…んひぃっ！なんでこれスゴイぃぃ！！！」
+	ELSE
+		PRINTFORMW 「太いィ…おしっこの穴じゅぽじゅぽされると……こわれ…んいぃっ！？」
+	ENDIF
+ENDIF
+PRINTFORMW 尿道の奥深くまでペニスを挿入してやると、%CALLNAME:TARGET%は至福の表情を浮かべた
+PRINTFORMW 結合部からはカウパー液と尿の混じり合ったものが泡立って流れ出ている
+RETURN 0
+
+
+;排便時効果音。うんこちゃんウフフ♪
+@K52_DEFACTION_SOUND
+	
+	IF RAND:5 == 0
+		PRINTFORMW ぶぴっ、ぶびびっ、ぶりぶぷっ、びゅりりり、ぶばぁっ
+	ELSEIF RAND:4 == 0
+		PRINTFORMW ぶりりっ、ぶびぃっ、びゅばぶりっ、びっ、ぶりぶばっ
+	ELSEIF RAND:3 == 0
+		PRINTFORMW びぶっ、ぶりりぶびゅっ、びぢぃっ、ぶりゅぶりっ、みぢぃっ
+	ELSEIF RAND:2 == 0
+		PRINTFORMW ぶぶびっ、ぶりぶりぃっ、ぶびびび……ぶりゅぅっ、ぶびぃっ
+	ELSE
+		PRINTFORMW ぶっびぃ、ぶりりりっ、ぶりぶりぶびぃっ、ぶびゅ、ぶりりゅっ
+	ENDIF
+RETURN 0
+

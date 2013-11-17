@@ -1,0 +1,6933 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;20をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは調教開始時・終了時・調教中イベント・エンディング口上用関数などが置いてあります。
+;このファイル内で他の関数を呼び出す処理のある関数は、削除せず残すことを推奨します。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;ゆゆ様についてはreadmeの通り
+;もっと詳しい説明・裏設定や愉快な助手たちは「どうでもいいメモ」で検索かけてください(丸投げ
+;どうでもいいメモ　というのはこっちのERBにしかなくてK20_Cの方にはありません
+;
+;基本的に、中の人さんのパートに繋がるように書いてあります
+;
+;実は離別を非常に嫌がっているという設定
+;==============================================================
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_20
+RETURN 1
+
+;========================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;========================================================
+@KOJO_20_EXTRA_INITIALIZATION
+IF CFLAG:5201 == 0
+	;妖夢か紫が恋慕だと色々質問に答えてくれる形式になります
+	IF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:150 == 1
+		PRINTFORMW 『調教をする前に幽々子の事について教えてくれ、ですか？』
+		PRINTFORMW 『わかりました。ご主人様のお役に立てるならいくらでも答えます。』
+	ELSEIF ASSI > 0 && NO:ASSI == 22 && TALENT:ASSI:150 == 1
+		PRINTFORMW 『幽々子の事について知りたいの？』
+		PRINTFORMW 『ふーん、良い心がけじゃない。いいわ。で、どんなことが知りたいの？』
+	ENDIF
+	
+	$INPUT_LOOP_0
+	CFLAG:5201 = 1
+	IF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:150 == 1
+		PRINTL 幽々子様は清純かつ美しい乙女ですか？
+		PRINTL [0] 『お話を伺っている限りはその通りだと思います』
+		PRINTL [1] 『お話を伺っている限りはそうではないと思います』
+	ELSEIF ASSI > 0 && NO:ASSI == 22 && TALENT:ASSI:150 == 1
+		PRINTL 幽々子様は清純かつ美しい乙女ですか？
+		PRINTL [0] 『幽々子は意外とウブたっだりするのよね……』
+		PRINTL [1] 『あら、そんなことはなかったりするわよ？』
+	ELSE
+		PRINTL 幽々子様は清純かつ美しい乙女である！
+		PRINTL [0] はい
+		PRINTL [1] いいえ
+	ENDIF
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―清純派モードに素質、能力を変更します―
+		TALENT:0 = 1
+		TALENT:27 = 1
+		ABL:1 = 0
+		ABL:22 = 1
+		EXP:0 = 0
+		EXP:2 = 0
+	ELSEIF RESULT == 1
+		PRINTFORMW ―通常モードで調教を開始します―
+		;PRINTFORMW 妖忌「貴様ぁぁぁぁ！！」
+		TALENT:0 = 0
+		TALENT:27 = 0
+		ABL:22 = 3
+		EXP:0 = 50
+		EXP:2 = 5
+		;やり直してかついいえを選んだ時用
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+	
+	IF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:150 == 1
+		PRINTL 幽々子のカリスマはどんな感じですか？
+		PRINTL [0] 『のんびりとした性格のように思われていますが、かなり凄いカリスマをお持ちだと思います。』
+		PRINTL [1] 『うーん……確かに持ってはいると思いますが……』
+	ELSEIF ASSI > 0 && NO:ASSI == 22 && TALENT:ASSI:150 == 1
+		PRINTL 幽々子のカリスマはどんな感じですか？
+		PRINTL [0] 『のんびりとしてる様に思われてるけど、ああ見えても凄いのよ？』
+		PRINTL [1] 『どうかしらね……』
+	ELSE
+		PRINTL ゆゆ様のカリスマはどうしますか？
+		PRINTL [0] マシマシで
+		PRINTL [1] 抜きで
+	ENDIF
+	$INPUT_LOOP_2
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW あふれ出るカリスマモードへ
+		CFLAG:8000 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW カリスマブレイクモードへ
+		CFLAG:8000 = 2
+	ELSE
+		GOTO INPUT_LOOP_2
+	ENDIF
+	
+	IF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:150 == 1
+		PRINTL リリカ・メルラン・ルナサとの関係は？
+		PRINTL [0] 『お酒の席で、会話しているのをよく見ます』
+		PRINTL [1] 『演奏家としてしか見ていないような気がしますね』
+	ELSEIF ASSI > 0 && NO:ASSI == 22 && TALENT:ASSI:150 == 1
+		PRINTL リリカ・メルラン・ルナサとの関係は？
+		PRINTL [0] 『お酒の席で色々と話したりしてるみたいね』
+		PRINTL [1] 『演奏家としてしか見ていないと思うわ』
+	ELSE
+		PRINTL プリズムリバー三姉妹との間柄は……
+		PRINTL [0] 宴会に呼んで、ついでにあんなことやこんなことを……
+		PRINTL [1] 宴会に呼ぶ。演奏させる。以上。
+	ENDIF
+	$INPUT_LOOP_3
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 三姉妹との相性をちょっとだけ上げます
+		RELATION:16 = 110
+		RELATION:17 = 110
+		RELATION:18 = 110
+			SIF ABL:22 == 1
+				ABL:22 += 1
+		CFLAG:5201 += 2
+	ELSEIF RESULT == 1
+		PRINTFORMW 通常モードで進みます。
+	ELSE
+		GOTO INPUT_LOOP_3
+	ENDIF
+	
+	IF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:150 == 1
+		PRINTL 藍との関係は？
+		PRINTL [0] 『２人でいる時もそれなりにありますし、それなりの仲だと私は思います』
+		PRINTL [1] 『時々２人でいますけど、特別仲が良いかと言われるとおそらく違うと思います』
+	ELSEIF ASSI > 0 && NO:ASSI == 22 && TALENT:ASSI:150 == 1
+		PRINTL 藍との関係は？
+		PRINTL [0] 『藍からは色々幽々子の事を聞いてるわ』
+		PRINTL [1] 『藍からは特に何も聞いてないわ』
+	ELSE
+		PRINTL 藍との間柄は……
+		PRINTL [0] 紫と仲良いし、ひょっとしたら藍とも……
+		PRINTL [1] 特筆するほどの間柄ではない。
+	ENDIF
+	$INPUT_LOOP_4
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 藍との相性をちょっとだけ上げます
+		RELATION:21 = 110
+			SIF ABL:22 == 1
+				ABL:22 += 1
+		CFLAG:5201 += 3
+	ELSEIF RESULT == 1
+		PRINTFORMW 通常モードで開始します。
+	ELSE
+		GOTO INPUT_LOOP_4
+	ENDIF
+
+	PRINTFORMW  以下の設定で調教を開始しますか？
+	PRINTL 
+	PRINTL ・処女モード
+		IF TALENT:0 == 1
+			PRINTL 　あり
+		ELSE
+			PRINTL 　なし
+		ENDIF
+	PRINTL 
+	PRINTL ・カリスマの有無
+		IF CFLAG:8000 == 1
+			PRINTL 　カリスマ有り
+		ELSE
+			PRINTL 　カリスマ無し
+		ENDIF
+	PRINTL 
+	PRINTL ・リリカ、メルラン、ルナサとの相性
+		IF CFLAG:5201 == 3 || CFLAG:5201 == 6
+			PRINTL 　上げる
+		ELSE
+			PRINTL 　上げない
+		ENDIF
+	PRINTL 
+	PRINTL ・藍との相性
+		IF CFLAG:5201 == 4 || CFLAG:5201 == 6
+			PRINTL 　上げる
+		ELSE
+			PRINTL 　上げない
+		ENDIF
+	PRINTL 
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP_6
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 
+	ELSEIF RESULT == 1
+		GOTO INPUT_LOOP_0
+	ELSE
+		GOTO INPUT_LOOP_6
+	ENDIF
+
+
+	PRINTL 
+	PRINTL ところで、ミスティアに力を与えますか？
+	PRINTL [0] 与える
+	PRINTL [1] 与えない
+	$INPUT_LOOP_5
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW みすちー総攻めモードへ
+		CFLAG:7001 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW いつもの関係で始めます
+		CFLAG:7001 = 2
+	ELSE
+		GOTO INPUT_LOOP_5
+	ENDIF
+ENDIF
+CFLAG:7899 = 1
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_20_SLAVE_MESSAGE_TRAIN_START
+;2週目以降、調教開始時にエクストラモードの設定を行っていなければ設定イベントをCALL
+IF CFLAG:7899 == 0
+	CALL KOJO_20_EXTRA_INITIALIZATION
+ENDIF
+
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+
+DRAWLINE
+
+;テストプレイ時やりやすいように濡れにくいを消して回復早くする
+;TALENT:43 == 0
+;TALENT:137 == 1
+;TALENT:150 == 1
+
+;テストプレイ用にあなたにデバッグをつける
+;TALENT:MASTER:998 == 1
+
+;調教開始口上分岐
+IF CFLAG:5202 == 0
+	TRYCALL K20_MESSAGE_START_1
+ELSE
+	TRYCALL K20_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時
+;-------------------------------------------------
+@K20_MESSAGE_START_1
+IF CFLAG:5202 == 0
+	;DRAWLINE
+	PRINTFORMW 「妖夢～」
+	PRINTFORMW 簡素なベッドの上で目覚めた幽々子は呟く
+	PRINTFORMW 「紫～」
+	PRINTFORMW 狭い室内での呟きは虚しく消えていく
+	PRINTFORMW 「えーっとこれは……ああ、白雪姫ね」
+	IF ASSI > 0
+		SIF NO:ASSI == 1 || NO:ASSI == 2 || NO:ASSI == 12 || NO:ASSI == 13 || NO:ASSI == 16 || NO:ASSI == 17 || NO:ASSI == 18 || NO:ASSI == 19 || NO:ASSI == 21 || NO:ASSI == 22 || NO:ASSI == 24 || NO:ASSI == 25 || NO:ASSI == 58
+		PRINTFORMW ドアが軋み、最初に%CALLNAME:ASSI%が部屋に入る
+		;話に乗ってくれる……リリカ、メルラン、紫、魔理沙
+		;話に乗ってくれない…ルナサ、妖夢、藍、霊夢
+		;上記以外の(会ったことのない)キャラの場合、話が途切れる。
+		;いくつか助手との掛け合いを流用(妖夢のは参考にしました)
+		;霊夢助手
+		IF NO:ASSI == 1
+			PRINTFORMW 「霊夢がやってくるなんて意外ね～何役が似合いそうかしら？」
+			PRINTFORMW 『くだらない事言ってないでさっさと服脱ぎなさい。時間がないのよ』
+			PRINTFORMW 「霊夢ったらそんな気があるの？紫とかの影響かしら」
+			PRINTFORMW 『……にしてもこの身体も魅力的よね。何だかオーラもあるし、高くなりそうね』
+			PRINTFORMW 「最近の巫女は考えてることが分からないわ」
+			PRINTFORMW 『決まってるじゃない。あんたの身体を開発するのよ。』
+			PRINTFORMW 「あなたはそんなお仕事よりもっと他のお仕事があると思うわ」
+			PRINTFORMW 『いくらなんでも幻想郷をほったらかしにはしないわよ。彼もそこらへんはぬかりないわ』
+			PRINTFORMW 「彼……」
+			PRINTFORMW 部屋に入ると、ちょうど幽々子と目があった。
+			PRINTFORMW わずかに、怒りを含んだような目をしていた
+			CFLAG:7401 = 1
+		;魔理沙助手
+		ELSEIF NO:ASSI == 2
+			PRINTFORMW 「誰かと思ったら魔理沙じゃない。泥棒役なんていなかったはずよ」
+			PRINTFORMW 『おいおい、私は盗みに来たわけじゃないんだぜ？』
+			PRINTFORMW 「それなら何かしら？」
+			PRINTFORMW 『売る為に来たんだ』
+			PRINTFORMW 「あらあら……盗んだものを売るなんてバチが当たっても知らないわよ～」
+			PRINTFORMW 『私もそこまで悪党じゃないぜ』
+			PRINTFORMW 『売るのは幽々子……お前さ』
+			PRINTFORMW 「……私は非売品よ」
+			PRINTFORMW 『非売品だからこそ、マニアには高く売れるんだ』
+			PRINTFORMW 『それにお前は高くなりそうな素質があるからな、私も楽しみだぜ』
+			PRINTFORMW 『そう思うだろ？ご主人様も』
+			PRINTFORMW 「ご主人様？」
+			PRINTFORMW 部屋に入ると、幽々子の顔色が変わった
+			PRINTFORMW 「……本当だったのね」
+			PRINTFORMW 『私はそんなに嘘ばっかりついてるイメージなのか？』
+			PRINTFORMW 『おっと、ご主人様が待ってるからとっとと始めるぜ』
+			CFLAG:7461 = 1
+		;レティ助手
+		ELSEIF NO:ASSI == 12
+			PRINTFORMW 「……あら、初めて見る顔ね」
+			PRINTFORMW 「名前は何て言うのかしら？私は西行寺幽々子よ」
+			PRINTFORMW 『……レティ・ホワイトロック』
+			PRINTFORMW 「で、あなたは何をしに来たの？ここは暗いから早く外に出たいわ～」
+			PRINTFORMW 『……手伝いに来たの。……あなたを、モノにするために』
+			PRINTFORMW 『……そうですよね。ご主人様』
+			PRINTFORMW 幽々子は一瞬だけ驚きの表情を見せた
+			PRINTFORMW 「あらあら、黒幕のお出ましね」
+			PRINTFORMW 『……黒幕、確かにそうかもしれない』
+			CFLAG:7441 = 1
+		;橙助手
+		ELSEIF NO:ASSI == 13
+			PRINTFORMW 『幽々子様！』
+			PRINTFORMW 「あら、橙が来るなんて珍しいわね」
+			PRINTFORMW 「今日は藍はいないの？1人？」
+			PRINTFORMW 『藍様はいないけど、新しいご主人様ならいるよ！』
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 「……この人が新しいご主人様なのかしら？」
+			PRINTFORMW 『ご主人様、今日は幽々子様をちょうきょうするの？』
+			PRINTFORMW 「あらあら、これって犯罪じゃないのかしら？」
+			PRINTFORMW 『今日はご主人様が幽々子様を気持ちよくさせてくれるんだって！』
+			PRINTFORMW 『ご主人様、私もお役に立てるように頑張るね！』
+			PRINTFORMW 相手が相手なだけあってか、幽々子はこれといった抵抗もできず服を脱がされていった……
+			CFLAG:7351 = 1
+		;リリカ助手
+		ELSEIF NO:ASSI == 16
+			PRINTFORMW 『あ、幽々子様！』
+			PRINTFORMW 「リリカ、良いところにいたわ。腰紐を取ってくれないかしら？苦しくて仕方ないのよ。」
+			PRINTFORMW 『だめー。幽々子様が暴れないようにするためのものだもん。』
+			PRINTFORMW 「……あら？小人役じゃなかったの？」
+			PRINTFORMW 『うーん。小人役でもいいけどさ、もっとオトナっぽい役なんだー』
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 『あ、ご主人様ー♪』
+			PRINTFORMW 「えっと……これはどういうことかしら？リリカ？」
+			PRINTFORMW 『さっき言った通り、幽々子様を調律して良い感じにする役。どう？オトナっぽいでしょ？』
+			PRINTFORMW 『ご主人様に教えてもらったとっておきの演奏テクニック見せてあげる！絶対気持ちよくさせる自信有るから見ててね！幽々子様！』
+			PRINTFORMW きょとんとしている幽々子を気にすることもなく、リリカは意気揚々と幽々子の服を脱がしていった。
+			CFLAG:7101 = 1
+		;メルラン助手
+		ELSEIF NO:ASSI == 17
+			PRINTFORMW 『幽々子様！お久しぶり～！』
+			PRINTFORMW 「おはよう、メルラン。素敵な棺桶ね。ガラスじゃないのが残念だけど。」
+			PRINTFORMW 『もうすぐ素敵な王子様が迎えに来るわ～』
+			PRINTFORMW 「……あら、どんな王子様かしら。楽しみね。」
+			PRINTFORMW %CALLNAME:MASTER%が颯爽と現れる
+			PRINTFORMW 『じゃーん！王子様の登場よ～』
+			PRINTFORMW 「えっと……これってどういうことかしら？」
+			PRINTFORMW 薄々と異様な雰囲気を感じ始めているのだろうか、幽々子に若干の焦りが見えていた。
+			PRINTFORMW 『後は幽々子様が王子様と結ばれればハッピーエンドよ』
+			PRINTFORMW 「メルラン……冗談もほどほどにしないと穏和な私も怒るわよ？」
+			PRINTFORMW 『さっ、幽々子様も服を脱いで！一緒にこの物語をハッピーエンドしましょ♪』
+			PRINTFORMW 「メルランっ何するのよ！？やめなさい！」
+			PRINTFORMW 幽々子の抵抗虚しく、みるみるうちに着物は引き剥がされていった……
+			CFLAG:7151 = 1
+		;ルナサ助手
+		ELSEIF NO:ASSI == 18
+			PRINTFORMW 『幽々子様……お目覚めですか？』
+			PRINTFORMW 「ええ。でもちょっと喉が苦しかったわ。」
+			PRINTFORMW 『お元気そうで何よりです。』
+			PRINTFORMW 「ここはどこかしら？みんなは？」
+			PRINTFORMW 『幽々子様は買われたんです。ご主人様に。』
+			PRINTFORMW 「買われた？」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 『はい。幽々子様は買われたんです。』
+			PRINTFORMW 『そして、これから調教されて奴隷になるんです。ご主人様の。』
+			PRINTFORMW 「ちょっと何言ってるか分からないわ。」
+			PRINTFORMW 『後に嫌でも知ることになりますから大丈夫です。始めましょう。』
+			CFLAG:7201 = 1
+		;妖夢助手
+		ELSEIF NO:ASSI == 19
+			PRINTFORMW 『幽々子様、おはようございます。』
+			PRINTFORMW 「おはよう。妖夢。ところで、ここはどこかしら？小人達は？」
+			PRINTFORMW 『ここは……』
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 『幽々子様を調教する場です。』
+			PRINTFORMW 幽々子の顔が一瞬にして青ざめた。
+			PRINTFORMW 「嘘……よね。妖夢。言ってはいけない冗談もあるのよ。」
+			PRINTFORMW 『嘘ではありません。本当のことです。』
+			PRINTFORMW 『今の私なら幽々子より上手くやれる自信はあります。見ていてください。幽々子様。』
+			PRINTFORMW 妖夢は色欲の混じった不気味な笑みを浮かべていた……
+			CFLAG:8001 += 1
+			CFLAG:7251 = 1
+		;藍助手
+		ELSEIF NO:ASSI == 21
+			PRINTFORMW 「藍じゃない。なんのつもりかしら？」
+			PRINTFORMW 「あ、紫がなにか企んでるのね？でも私はなかなか用心深いわよ？」
+			PRINTFORMW 『……』
+			PRINTFORMW 「藍？どうしたの？」
+			PRINTFORMW 藍は何も言わず幽々子の服を脱がしにかかる。
+			PRINTFORMW 「藍！何するの！？」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 『あ、ご主人様……申し訳ありません。すぐに調教の準備をしますので……』
+			PRINTFORMW 「なっ、何言ってるのよ！やっ！離して！！」
+			PRINTFORMW 『幽々子様のお体、こんなにも白くてお美しい……』
+			PRINTFORMW 幽々子は必死に抵抗するも、藍の前になすすべもなく着物を脱がされていく。
+			PRINTFORMW そして服が全て脱がされた時、ようやく幽々子は今自分のおかれている状況を理解したようだ……
+			CFLAG:8001 += 1
+			CFLAG:7301 = 1
+		;紫助手
+		ELSEIF NO:ASSI == 22
+			PRINTFORMW 『毒りんごはいかがかしら？』
+			PRINTFORMW 「ええ。お一ついただこうかしら。」
+			PRINTFORMW 『そのりんごの毒は食べた者の理性を狂わしていく毒。』
+			PRINTFORMW 『食べた者を深いところまで落としていくわ。』
+			PRINTFORMW 「……どういうことかしら？」
+			PRINTFORMW 『幽々子は今から私達の毒に侵されていくのよ。』
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+			PRINTFORMW 『ふふっ……幽々子を連れてくるなんて、あなたも見る目があるのね。』
+			PRINTFORMW 「紫……？」
+			PRINTFORMW 『さあ、服を脱ぎなさい。私達が存分に可愛がってあげるわ……』
+			CFLAG:8001 += 1
+			CFLAG:7051 = 1
+		;リグル助手
+		;鬼畜な事言ってもきちんとさん付けはします
+		ELSEIF NO:ASSI == 24
+			PRINTFORMW 「あなたは……お久しぶりね。こんなところで会うなんて」
+			PRINTFORMW 『……あははっ』
+			PRINTFORMW 『まさか幽々子さんを泣かすことができる日が来るなんて』
+			PRINTFORMW 「！？」
+			PRINTFORMW 『幽々子さんが壊れるときってどんな風に壊れるのかな？』
+			PRINTFORMW 「あなた、何言ってるの？よっぽど酷いことされちゃったの？」
+			PRINTFORMW 『ご主人様、早く始めませんか？幽々子さんが絶望のどん底にいる姿、早く見たいなあ』
+			PRINTFORMW 『想像するだけでもなんだかゾクゾクしてきましたよ』
+			PRINTFORMW 不敵な笑みを浮かべるリグルの顔を、幽々子は呆然と見ていた
+			CFLAG:7411 = 1
+		;ミスティア助手
+		ELSEIF NO:ASSI == 25
+			IF CFLAG:7001 == 1
+				PRINTFORMW 意外な相手だったからか、幽々子は一瞬だけきょとんとした。
+				PRINTFORML 「あら、あの時の……
+				PRINTFORMW 『あの時にコテンパンにされて小骨が多いなんて言われた上に、あんたにいつも追いかけられて……』
+				PRINTFORMW 『今までの恨みを晴らすときが来たようね……』
+				PRINTFORMW 「何言って……」
+				PRINTFORMW 
+				IF CFLAG:8000 == 1
+					PRINTFORMW 「いやっ！な、何するのよ！？」
+				ELSE
+					PRINTFORMW 「きゃあああっ！何！？何するのよ！？」
+				ENDIF
+					PRINTFORMW しばしの沈黙の後、部屋からは幽々子の悲鳴が聞こえてきた。
+					PRINTFORMW 急ぎ部屋に入ると、そこには無残にも着物を引き剥がされている幽々子の姿があった。
+					PRINTFORMW 『今までの恨みを晴らすときが来たようね……どうやっていじめようかな♪』
+					PRINTFORMW ミスティアはその小さな体に似つかないくらい恐ろしい笑みが浮かべながら言った。
+					PRINTFORMW その意外すぎる変貌っぷりに、幽々子はただ呆然としていた……
+			ELSE
+				PRINTFORMW 『！！』
+				PRINTFORMW 「あら、あの時の夜雀じゃない？あなたは何の役かしら？」
+				PRINTFORMW 『ご、ご主人様……新しく買ったドレイって……』
+				PRINTFORMW 「奴隷？ご主人様？そんな役聞いたこと無いわね」
+				PRINTFORMW 『ってことは、私が幽々子を……』
+				PRINTFORMW 『ご主人様……どうしてもやらないとだめなの……？こんなの嫌だよぉ……』
+				PRINTFORMW 「あらあら、これじゃあ私が悪役みたいじゃない」
+				PRINTFORMW 余裕そうな表情を崩さない幽々子
+				PRINTFORMW どうしたらいいのかわからず途方に暮れるミスティア
+				PRINTFORMW この先が不安になってくる光景だった
+			ENDIF
+			CFLAG:7002 = 1
+		;ヤマメ助手
+		ELSEIF NO:ASSI == 58
+			PRINTFORMW 「どなたかしら？」
+			PRINTFORMW 『ああ、私？私は黒谷ヤマメって言うんだ。土蜘蛛の、ね。』
+			PRINTFORMW 「土蜘蛛酒おいしいわね～あれって
+			IF CFLAG:8000 == 1
+				PRINTFORMW ヤマメからはき出された糸はみるみるうちに幽々子の体を絡め取っていく。
+				PRINTFORMW 「きゃあっ！な、何……？」
+				PRINTFORMW 『抵抗しても無駄さ。もう逃れられやしないよ。』
+				PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+				PRINTFORMW 『お、来た来た。この生娘が調教対象でいいんだね？』
+				PRINTFORMW 「調教……」
+				PRINTFORMW 『そう、調教さ。』
+				PRINTFORMW 『にしても、こんなにも美しい蝶は初めてだよ。どんな味がするんだろうね？』
+				PRINTFORMW ヤマメはゆっくりと、値踏みするように幽々子に歩み寄っていく。
+				PRINTFORMW 「美しい蝶だなんて、褒めるのが上手ね。」
+				PRINTFORMW 『ふーん、流石にまだ冷静だね。』
+				PRINTFORMW 『その余裕がいつまで続くかな。』
+			ELSE
+				PRINTFORMW ヤマメからはき出された糸はみるみるうちに幽々子の体を絡め取っていく。
+				PRINTFORMW 「きゃあっ！何これ！？いやっ、離してっ！」
+				PRINTFORMW 『抵抗しても無駄さ。もう逃れられやしないよ。』
+				PRINTFORMW %CALLNAME:MASTER%が部屋に入る
+				PRINTFORMW 『お、来た来た。この生娘が調教対象でいいんだね？』
+				PRINTFORMW 「調教……」
+				PRINTFORMW 『そう、調教さ。』
+				PRINTFORMW 自分に置かれている状況を把握したのか、幽々子の顔はさらに青みを増した。
+				PRINTFORMW 『にしても、こんなにも美しい蝶は初めてだよ。どんな味がするんだろうね？』
+				PRINTFORMW ヤマメはゆっくりと、値踏みするように幽々子に歩み寄っていく。
+				PRINTFORMW 「や、やめて……来ないで……」
+					IF TALENT:ASSI:150 == 1
+						PRINTFORMW 『こんなにも怯えて……可愛いねえ。』
+						PRINTFORML 
+						PRINTFORMW 『私達が存分に可愛がってあげるよ』
+					ELSE
+						PRINTFORMW 『大の大人がそんなに怯えなくてもいいじゃないのさ。』
+						PRINTFORMW 『大丈夫、ひどいことはしないつもりだからさ。』
+						PRINTFORMW その言葉も幽々子の耳には届いていないようだった。
+					ENDIF
+			ENDIF
+			CFLAG:7421 = 1
+		ELSE
+			PRINTFORMW ドアが軋み、%CALLNAME:MASTER%と%CALLNAME:ASSI%が部屋に入ってきた
+			PRINTFORMW 「あら、あなた達が悪い魔女ね」
+			PRINTFORMW 突然の幽々子の言葉に困惑しながらも、%CALLNAME:MASTER%は調教を開始するために幽々子へ歩み寄る
+			PRINTFORMW 「毒りんごが欲しいわ、５つぐらい」
+			PRINTFORMW 言葉の意味はわからないが、一目で敵と見抜かれていることは確かなのだろう
+			PRINTFORMW 油断はできないだろうと%CALLNAME:MASTER%は考えながら調教を始めることにした……
+		ENDIF
+	ELSE
+		PRINTFORMW ドアが軋み、%CALLNAME:MASTER%が部屋に入ってきた
+		PRINTFORMW 「あら、あなたが悪い魔女ね」
+		PRINTFORMW 突然の幽々子の言葉に困惑しながらも、%CALLNAME:MASTER%は調教を開始するために幽々子へ歩み寄る
+		PRINTFORMW 「毒りんごが欲しいわ、５つぐらい」
+		PRINTFORMW 言葉の意味はわからないが、一目で敵と見抜かれていることは確かなのだろう
+		PRINTFORMW 油断はできないだろうと%CALLNAME:MASTER%は考えながら調教を始めることにした……
+	ENDIF
+	CFLAG:5202 = 1
+	RETURN 1
+ENDIF
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K20_MESSAGE_START_2
+
+;-------------------------------------------------
+;いろいろ
+SIF ASSI > 0 && NO:ASSI == 19 && TALENT:ASSI:0 == 1
+	CFLAG:7202 = 1
+;-------------------------------------------------
+
+;屈服刻印Lv1
+IF CFLAG:5203 < 2 && MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+	PRINTFORMW 「あら、ごきげんよう。ご苦労なことで」
+	PRINTFORMW 部屋に入ると、幽々子は手で口元を覆い、微笑みかけながら言ってきた……
+	CFLAG:5203 = 3
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5203 < 4 && MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+	PRINTFORMW こちらを見向きもしない、興味を失ったのか余裕が無くなって来たのかは解りかねる
+	PRINTFORMW ひとまず、抵抗をされながらも、服を無理矢理脱がしていった……
+	CFLAG:5203 = 4
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5203 < 6 && MARK:2 == 3 && TALENT:150 == 0
+	DRAWLINE
+	PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+	PRINTFORMW いつものように服に手をかけると、そっとその手を幽々子に取られる
+	PRINTFORMW 「……待ってて」
+	PRINTFORMW そういうと、幽々子は自ら着物を脱ぎ、きちんと折りたたんだ
+	CFLAG:5203 = 6
+	RETURN 1
+
+;恋慕
+ELSEIF CFLAG:5203 < 8 && TALENT:150 == 1
+	DRAWLINE
+	PRINTFORMW 部屋に入ると、幽々子はベッドの上で横になっていた
+	PRINTFORMW 調教を始めるために起こそうとするが、ふと幽々子の口元に目が行く
+	PRINTFORMW 僅かに開かれた桜色の唇は艶やかに光っている
+	PRINTFORMW 幽々子が穏やかな寝息を立てるたびに唇は誘うように微動していた
+	PRINTFORMW それを見た%CALLNAME:MASTER%は思わず幽々子へと歩み寄り、その唇に自らのそれを重ねる
+	PRINTFORMW 重ねるだけでは飽き足らず、唇を挟んで舌を入れていく
+	PRINTFORMW 幽々子の唇もそれに答えて%CALLNAME:MASTER%のそれを吸い、舌と舌を絡めあっていく
+	PRINTFORMW 互いの唇を貪り終えると、ベッドの上で荒い息をしながら二人は見詰め合う
+	IF TALENT:MASTER:120 == 1
+		PRINTFORMW 「私の……王子様……」
+		;王子様はネタ呼称の割りに普通に言いそうだから、困る
+		PRINTFORML ―幽々子からの呼び名を変更します―
+		PRINTFORML [0] - さん付けで呼んでもらう
+		PRINTFORML [1] - あなた
+		PRINTFORML [2] - ご主人様
+		PRINTFORML [3] - 旦那様
+		PRINTFORML [4] - 王子様
+		PRINTFORML [5] - お兄ちゃん
+		PRINTFORML [6] - 変えないでもらう
+		$INPUT_LOOP_8
+		INPUT
+		IF RESULT == 0
+			SAVESTR = %CALLNAME:MASTER%さん
+		ELSEIF RESULT == 1
+			SAVESTR = あなた
+		ELSEIF RESULT == 2
+			SAVESTR = ご主人様
+		ELSEIF RESULT == 3
+			SAVESTR = 旦那様
+		ELSEIF RESULT == 4
+			SAVESTR = 王子様
+		ELSEIF RESULT == 5
+			SAVESTR = お兄ちゃん
+		ELSEIF RESULT == 6
+			SAVESTR = %CALLNAME:MASTER%
+		ELSE
+			GOTO INPUT_LOOP_8
+		ENDIF
+	ELSEIF TALENT:MASTER:120 == 0
+		PRINTFORMW 「私の……ご主人様……」
+		;いいのが思いつかなかった……申し訳ない
+		;フラン口上を参考にさせてもらいました。ありがとうございます。
+		PRINTFORML ―幽々子からの呼び名を変更します―
+		PRINTFORML [0] - さん付けで呼んでもらう
+		PRINTFORML [1] - あなた
+		PRINTFORML [2] - ご主人様
+		PRINTFORML [3] - お姉様
+		PRINTFORML [4] - お嬢様
+		PRINTFORML [5] - お姉ちゃん
+		PRINTFORML [6] - 変えないでもらう
+		$INPUT_LOOP_9
+		INPUT
+		IF RESULT == 0
+			SAVESTR = %CALLNAME:MASTER%さん
+		ELSEIF RESULT == 1
+			SAVESTR = あなた
+		ELSEIF RESULT == 2
+			SAVESTR = ご主人様
+		ELSEIF RESULT == 3
+			SAVESTR = お姉様
+		ELSEIF RESULT == 4
+			SAVESTR = お嬢様
+		ELSEIF RESULT == 5
+			SAVESTR = お姉ちゃん
+		ELSEIF RESULT == 6
+			SAVESTR = %CALLNAME:MASTER%
+		ELSE
+			GOTO INPUT_LOOP_9
+		ENDIF
+	ENDIF
+	CFLAG:5203 = 8
+	RETURN 1
+	
+
+;エンゲージリング購入可能+好感度4000以上(追加EDルート)
+;魅力＋魅惑とかマジチート
+ELSEIF ITEMSALES:99 == 1 && CFLAG:2 >= 4000 && CFLAG:5203 < 10
+			PRINTFORMW 「実はね、私、あなたが他の人に手を出さないか心配で仕方がないの」
+			PRINTFORMW 妙にそわそわしていた幽々子が突然口を開いた。
+			PRINTFORMW 「私だけを見ていてくれる？」
+			PRINTFORMW 何故か、心配そうにあなたを見つめる幽々子が何故かいつもより遙かに愛おしく感じた。
+			PRINTFORMW あなたは黙ってうなずく。
+			PRINTFORMW 「……本当に？」
+			PRINTFORMW もう一度うなずくと幽々子からは安堵からか、たおやかな笑みがこぼれた。
+			PRINTFORMW 幽々子の笑顔に久しく湧いたことのない感情が湧いた。
+			PRINTFORMW 何故、今になってこの感情が湧いてきたのかはわからない。
+			PRINTFORMW 同時に、町先で見かけたエンゲージリングのことが脳裏に浮かんだ。
+			PRINTFORMW 大切そうに飾られている、高級感あふれる指輪。
+			PRINTFORMW あれを渡したら、幽々子は……
+			PRINTFORMW 「……。%SAVESTR%……。」
+			PRINTFORMW 幽々子の声で我に返った。
+			PRINTFORMW 「大丈夫かしら？最近、%SAVESTR%いつも上の空よ？」
+			PRINTFORMW ……いや、今は幽々子を調教するのが優先だ。私情をはさまないようにしなければならない。
+			PRINTFORMW 心の中にある何かを振り払い、調教を開始することにした。
+			CFLAG:5203 = 50
+	RETURN 1
+	
+
+;-------------------------------------------------
+;助手との掛け合い(Y1を助手のキャラ番号に置換、20をキャラ番号に変更する) CFLAG202
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を203、204と増やす
+
+;ノリで絡みを書いてみたキャラもいますが消すのも勿体ないので残してあります
+;現在13人　20人いきたい　妖＋永＋天＝34でいけるはず
+
+;ゆゆみょんがいいな ゆかゆゆもいいな ゆゆみすちーもいいけどね～
+;-------------------------------------------------
+ELSEIF ASSI > 0
+	;霊夢助手
+	IF NO:ASSI == 1
+		DRAWLINE
+		;初めて
+		IF CFLAG:7401 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+			;少しだけ6面っぽくしてみた
+				PRINTFORMW 『ふーん……今日の相手は幽々子なんだ』
+				PRINTFORMW 「あらあら、霊夢じゃない。お手伝いかしら？」
+				PRINTFORMW 「でもごめんなさいね。今日は私の番なの」
+				PRINTFORMW 『私はまた今度してもらえるから別にいいんだけど』
+				PRINTFORMW 『それにしても見事にできあがってるわね』
+				PRINTFORMW 「もう満開よ」
+				PRINTFORMW 『凄くヘンな意味に聞こえるわね』
+				PRINTFORMW 「霊夢がここにいるってことは、あなたもなのね。見ているだけというのも大変じゃない？」
+				PRINTFORMW 『私は助手でも一応は彼のそばにいられるわ。それだけでもいいの。』
+				PRINTFORMW 『……さて、彼も来たしおしゃべりはそこまでにして始めようかしら』
+				PRINTFORMW 「すぐに始めればよかったのに」
+				PRINTFORMW 『こういう息抜きも必要よ』
+			;それ以外
+			ELSE
+				PRINTFORMW 『ふーん……今日の相手は幽々子なんだ』
+				;紫に会った
+				IF CFLAG:7051 > 0
+					PRINTFORMW 「あら……霊夢じゃない。こんなところで遊んでいていいのかしら？」
+					PRINTFORMW 『確かに、幽々子なら高くなりそうね。この身体も魅力的だし』
+					PRINTFORMW 「霊夢……何考えてるの？変な冗談を言ってないでやることがあるんじゃないのかしら」
+					PRINTFORMW 『……ああ、そうよね。以前に紫にも会ったんでしょ？』
+					PRINTFORMW 『幻想郷がやばかったら私もこんなことしてないわよ。さ、服を脱ぎなさい。時間がもったいないじゃない。』
+					PRINTFORMW 「あらあら……霊夢も手なずけるだなんて……よくわかってるのね」
+				ELSE
+					PRINTFORMW 「あら、霊夢じゃない。出張かしら？」
+					PRINTFORMW 『確かに、幽々子なら高くなりそうね。この身体も魅力的だし』
+					PRINTFORMW 「霊夢……何考えてるの？最近の巫女はミステリアスね」
+					PRINTFORMW 『決まってるじゃない。あんたを調教して売りさばくか何かするのよ』
+					PRINTFORMW 「……霊夢は博霊の巫女でしょ？変な冗談を言ってないでやることがあるんじゃないのかしら」
+					PRINTFORMW 『いくらなんでも幻想郷をほったらかしにはしないわよ。さ、服を脱ぎなさい。時間がもったいないじゃない』
+					PRINTFORMW 「あらあら……霊夢を手なずけるだなんて……よくわかってるのね」
+				ENDIF
+			ENDIF
+			CFLAG:7401 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					PRINTFORMW 「今度花見とかしたいわね～」
+					PRINTFORMW 『花が単なる口実になりそうな予感しかしないんだけど』
+				ELSE
+					PRINTFORMW 「霊夢ったら甘えちゃって……何だか新鮮ね」
+					PRINTFORMW 『私だって……甘えたくなるときのひとつやふたつくらいあるわよ』
+					PRINTFORMW 「まさか霊夢からそんな言葉が聞けるなんてね～」
+				ENDIF
+				CFLAG:7401 = 3
+			ELSE 
+				IF CFLAG:7051 > 0
+					PRINTFORMW 「霊夢……本当にこんなことしていていいのかしら？」
+					PRINTFORMW 『前も大丈夫って言ったじゃない。心配しすぎ』
+				ELSE
+					PRINTFORMW 「霊夢、あなた正気なの？」
+					PRINTFORMW 『私から見たら幽々子の方が正気じゃないんだけど』
+				ENDIF
+				CFLAG:7401 = 2
+			ENDIF
+		ENDIF
+
+	;魔理沙助手
+	ELSEIF NO:ASSI == 2
+		DRAWLINE
+		;初めて
+		IF CFLAG:7461 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			;6面っぽくしてみた②
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『新しい相手だと聞いて楽しみにしていたけど幽々子だなんてな』
+				PRINTFORMW 「あら、魔理沙じゃない。あなたもあの人に忠誠を誓ったのね」
+				PRINTFORMW 『へへっ、あいつとなら一生を終えてもいいと思ったのさ』
+				PRINTFORMW 「死ぬ時もあの人と一緒……ロマンチストね～」
+				PRINTFORMW 『でも、今回はおあずけだ。悲しいけど、あいつの命令なら仕方ないな』
+				PRINTFORMW 「わたしも、どうしてもあの人と共にいたいの。サポートお願いね」
+				PRINTFORMW 『ただじゃ、あまり気が乗らないな』
+				PRINTFORMW 「あらあら、手伝いをしてポイントを稼ぐ絶好の機会じゃない。よろしくね～」
+				PRINTFORMW 『わかったわかった』
+			;それ以外
+			ELSE
+				PRINTFORMW 「あらあら、魔理沙じゃない。こんなところにまで泥棒かしら？」
+				PRINTFORMW 『私は盗みに来たわけじゃないんだぜ？』
+				PRINTFORMW 「それなら何かしら？」
+				PRINTFORMW 『売る為に来たんだ』
+				PRINTFORMW 「……あらあら、確かに魔理沙はこういう仕事向いてそうね」
+				PRINTFORMW 『へへっ、私も薄々感づいてたぜ』
+				PRINTFORMW 『でもあいつにはかなわないな。お前に目をつけるセンスには脱帽だぜ』
+				PRINTFORMW 「今、盗人に目をつけられる人の気持ちを理解できたわ」
+				PRINTFORMW 『いろんな物盗られないように注意した方がいいぜ』
+				PRINTFORMW 『あいつは私以上の凄腕だからな！』
+			ENDIF
+			CFLAG:7461 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			;6面っぽくしてみたの続き
+			IF TALENT:150 == 1
+				PRINTFORMW 「みんなで花見とかやってみたいわね～」
+				PRINTFORMW 『あんな死臭でいっぱいのところにあいつが行って大丈夫なのか？』
+				PRINTFORMW 「あら、あの人が死臭で倒れちゃうような人とは思えないわ」
+				PRINTFORMW 『ああ、そうだな』
+				PRINTFORMW 『幻想郷の春を代表する場所、いつか行けたらいいな』
+				PRINTFORMW 「ええ、そうね。余裕があったら温度も上げて快適にしておくわ」
+				CFLAG:7461 = 3
+			ELSE 
+				PRINTFORMW 「生き生きしてるわね」
+				PRINTFORMW 『ああ、毎日が楽しくてしょうがないぜ』
+				PRINTFORMW 「悪に染まってるわね」
+				PRINTFORMW 『あいつとなら悪に染まるのも面白そうだしな』
+				CFLAG:7461 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;レティ助手
+	;幽々子にルナサ成分を混ぜたのがレティ　寡黙なお姉さん
+	ELSEIF NO:ASSI == 12
+		DRAWLINE
+		;初めて
+		IF CFLAG:7441 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『……幽々子さん……ですね？』
+				PRINTFORMW 「ええ、そうよ」
+				PRINTFORMW 「あなたは？」
+				PRINTFORMW 『……私は、レティ・ホワイトロック』
+				PRINTFORMW 「レティって言うの？よろしくね」
+			;それ以外
+			;くろまくって言わせたかっただけですはい
+			ELSE
+				PRINTFORMW 『くろまく～』
+				IF MARK:2 == 3
+					PRINTFORMW 『……反応がないのも寂しいわ』
+					PRINTFORMW 「あなたのような優しそうな妖怪が黒幕なんてあり得ないわ」
+					PRINTFORMW 「それに本当だとしても、私にはもう何も出来ない……」
+					PRINTFORMW 『……』
+				ELSEIF MARK:2 == 2
+					PRINTFORMW 「あなたが黒幕なのね？では早速……」
+					PRINTFORMW 『……本気にされたら困るわ』
+					PRINTFORMW 「ふふっ、本気にしてないわ」
+					PRINTFORMW 「あなたは優しそうな雰囲気がする。だから黒幕ではないわ」
+					PRINTFORMW 『……でも、今の殺気……』
+				ELSE
+					PRINTFORMW 「あらあら、こんなにも大人しそうな妖怪が黒幕だなんて、世も末ね～」
+					PRINTFORMW 「でも案外、外見に似合わず真っ黒だったりするのよね～」
+					PRINTFORMW 『……真っ黒……ちょっと酷いわ……』
+					PRINTFORMW 「ふふっ、本当かはじっくり見極めてあげるわ」
+					PRINTFORMW 『……まだ余裕そうね……』
+				ENDIF
+			ENDIF
+			CFLAG:7441 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「何か私達って似ている気がしない？」
+				PRINTFORMW 『そう……？』
+				PRINTFORMW 「上手く説明できないけど、何となくそんな気がするわ」
+				CFLAG:7441 = 3
+			ELSE 
+				PRINTFORMW 『……始めましょう』
+				PRINTFORMW 「あなたは他人を壊そうとする勇気を持っているのかしら？」
+				PRINTFORMW 『私は見てるだけ』
+				PRINTFORMW 『……何もしないわ』
+				CFLAG:7441 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+
+	;橙助手
+	ELSEIF NO:ASSI == 13
+		DRAWLINE
+		;初めて
+		IF CFLAG:7351 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『幽々子様ー！』
+				PRINTFORMW 「あら、橙じゃない。こんなところで会うなんてね」
+				PRINTFORMW 「藍はどうしたの？」
+				PRINTFORMW 『藍様はいないけど、新しいご主人様ならいるよ！』
+				PRINTFORMW 「あらあら、すっかり飼い慣らされちゃって……よっぽどご主人様が好きなのね」
+				PRINTFORMW 「でも今回は私の番なのよね。我慢できる？」
+				PRINTFORMW 『大丈夫だよ！私我慢できるよ！』
+				PRINTFORMW 「いい子ね～ご主人様のお手伝い頑張ってね」
+				PRINTFORMW 『うん！頑張る！』
+			;それ以外
+			ELSE
+				PRINTFORMW 『幽々子様！』
+				;藍に会ったことがある
+				IF CFLAG:7301 >= 1
+					;さらに妖夢と紫にも会った
+					IF CFLAG:8001 == 3
+						PRINTFORMW 「橙……あなたもなのね……」
+						PRINTFORMW 『？』
+						PRINTFORMW 「なんでもないわ……」
+						PRINTFORMW 『幽々子様……顔色悪いよ……？』
+						PRINTFORMW 「心配してくれてありがとうね。大丈夫よ」
+						PRINTFORMW (まさかこんな事になってるなんてね……)
+					ELSE
+						PRINTFORMW 「あら……橙じゃない。珍しいわね」
+						PRINTFORMW 「藍はどうしたの？」
+						PRINTFORMW 『今は藍様はいないけど、新しいご主人様ならいるよ！』
+						PRINTFORMW 「新しいご主人様……」
+						PRINTFORMW 「藍も橙も堕としておくなんて、あなたも用意周到なのね」
+					ENDIF
+				ELSE
+					PRINTFORMW 「あら、橙じゃない。珍しいわね」
+					PRINTFORMW 「藍は一緒じゃないの？」
+					PRINTFORMW 『藍様はいないけど、新しいご主人様ならいるよ！』
+					PRINTFORMW 「この人がその新しいご主人様なの？」
+					PRINTFORMW 『今日はご主人様が幽々子様を気持ちよくさせてくれるんだって！』
+					PRINTFORMW 『ご主人様、私もお役に立てるように頑張るね！』
+					PRINTFORMW 「あらあら……藍が見たらどうなるかしら」
+				ENDIF
+			ENDIF
+			CFLAG:7351 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『幽々子様の身体柔らかくて暖かーい』
+				PRINTFORMW 「あらあら、甘えんぼさんね～」
+				CFLAG:7351 = 3
+			ELSE 
+				IF CFLAG:8001 == 3
+					PRINTFORMW (橙も……妖夢も……藍も……そして紫も……どうしたら……)
+					PRINTFORMW 『幽々子様……』
+					PRINTFORMW 「ううん、私は平気よ」
+					PRINTFORMW 『本当に……？』
+					PRINTFORMW 「ええ、本当に平気よ」
+				ELSEIF CFLAG:7301 > 0
+					PRINTFORMW 『幽々子様、ご主人様！今日も頑張るね！』
+					PRINTFORMW 「ええ、頑張ってね」
+					PRINTFORMW 「……しょうがないわね。私でなんとかするしかないわね」
+				ELSE
+					PRINTFORMW 『幽々子様、ご主人様！今日も頑張るね！』
+					PRINTFORMW 「洗脳させて……背徳感とかはないのかしら？」
+					PRINTFORMW 『はいとくかん？』
+					PRINTFORMW 「知らなくていいのよ」
+				ENDIF
+				CFLAG:7351 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;リリカ助手
+	ELSEIF NO:ASSI == 16
+		DRAWLINE
+		;初めて
+		IF CFLAG:7101 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『幽々子様！お久しぶりー！』
+				PRINTFORMW 「リリカ……ここにいるって事は、色んなことされたのね。大丈夫だった？」
+				PRINTFORMW 『ちょっとー！子供扱いしないでよ！』
+				PRINTFORMW 『ご主人様のおかげで経験ほーふになれたんだから、もう子供じゃないわ！』
+				PRINTFORMW リリカの突飛な発言に幽々子はきょとんとしている。
+				PRINTFORMW 『あ、信じてないでしょ。』
+				PRINTFORMW 『オトナになった私の実力、見せてあげる！百聞は一見にしかず……ってね。』
+			;それ以外
+			ELSE
+				PRINTFORMW 『幽々子様！お久しぶりー！』
+				PRINTFORMW 「リリカ……まさか、あなたも……」
+				PRINTFORMW 『うん！ご主人様にいろいろ教えてもらったんだー♪』
+				PRINTFORMW リリカはあなたの腕に抱きつきながら幽々子に言った。
+				PRINTFORMW 「最低よ……こんな子供にまで手を出して……」
+				PRINTFORMW 『子供とか言わないでよっ！ご主人様のおかげで、経験ほーふになれたんだから！』
+				PRINTFORMW 『オトナになった私の実力、今こそ試す時ね！』
+			ENDIF
+			CFLAG:7101 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					PRINTFORMW 「以前、面白い音を聞いたわ」
+					PRINTFORMW 『何、何？』
+					PRINTFORMW 「私のプライドが崩れ落ちる音よ」
+					PRINTFORMW 『お、重い……』
+				ELSE
+					PRINTFORML 『ご主人様ー私としようよー』
+					PRINTFORMW 「%CALLNAME:MASTER%、私としましょう？」
+					PRINTFORMW 両手に花といえる、今この状態を振り解くのは惜しいが調教を開始することにした……
+				ENDIF
+				CFLAG:7101 = 3
+			ELSE
+				PRINTFORMW 『こっちに来た方が幽々子様のためにもなるとおもうんだけどなー』
+				IF MARK:2 == 3
+					PRINTFORMW 「私のため……」
+					PRINTFORMW 『うんうん。さあ、早くみんなで気持ちよくなっちゃおー！』
+				ELSE
+					PRINTFORMW 「私のため？あなたにはわからない思うわ。」
+					PRINTFORMW 『ふーん』
+					PRINTFORMW 『でもわかってくれないなら、わからせないとね！』
+					PRINTFORMW リリカはそう言って、意気揚々と幽々子の服を脱がしていった……
+				ENDIF
+				CFLAG:7101 = 2
+			ENDIF
+		ENDIF
+	;メルラン助手
+	ELSEIF NO:ASSI == 17
+		DRAWLINE
+		;初めて
+		IF CFLAG:7151 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 「この音は……」
+				PRINTFORMW 『やっほ～幽々子様！いかがお過ごし～？』
+				PRINTFORMW 「メルラン……久しぶりね。あなたも……なの？」
+				PRINTFORMW 『うん。ご主人様のおかげで、私は今幸せの絶頂よ♪』
+				PRINTFORMW メルランは左側から腕に抱きつく。
+				PRINTFORMW 『今日は幽々子様にもハッピーを分けに来たわー』
+				PRINTFORMW 「あら、私なら十分間に合ってますわよ。」
+				PRINTFORMW 幽々子は右側から腕に抱きつく。
+				PRINTFORMW 『なら、二人でご主人様をハッピーにさせてあげよっ！』
+				PRINTFORMW 「うふふ……それもそうね。」
+			;それ以外
+			ELSE
+				PRINTFORMW 「この音は……」
+				PRINTFORMW 『やっほ～幽々子様！いかがお過ごし～？』
+				PRINTFORMW 知ってる顔に会ったためか、幽々子は安堵の表情を見せた。
+				PRINTFORMW 「メルラン、いいタイミングね。早くここから……」
+				PRINTFORMW 『残念ながらその約束には乗れないわ～』
+				PRINTFORMW 「……え？」
+				PRINTFORMW 「……ああ、そういうことなのね。」
+				PRINTFORMW 『強がっちゃダメよ。私と一緒に快感におぼれてハッピーになろう♪』
+				PRINTFORMW 「遠慮するわ。いいものは少しずつが一番よ？」
+				PRINTFORMW 『大丈夫、飽きたり無くなったりしないから好きなだけ快感をプレゼントしてあげる！』
+			ENDIF
+			CFLAG:7151 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					PRINTFORMW 「んー……何だか気分が沈んじゃうわ」
+					PRINTFORMW 「こういう時はメルランを揉み揉みすればポジティブになれるかしら？」
+					PRINTFORMW 『ひゃぁあっ！幽々子様ぁっ！やっ、ん～～っ！』
+					CFLAG:7151 = 4
+				ELSE
+					PRINTFORMW 『みんなで一緒にハッピーになろう♪』
+					PRINTFORMW 「……そうね。一緒に……ね。」
+					PRINTFORMW 二人は笑顔を見せながらあなたに覆い被さってきた……
+				CFLAG:7151 = 3
+				ENDIF
+			ELSE 
+				PRINTFORMW 『さっさと堕ちて一緒にハッピーになろうよ～』
+				IF MARK:2 == 3
+					PRINTFORMW 「そう、ね……今は……」
+					PRINTFORMW 『ね？さあ、一緒に気持ちよくなろう！』
+				ELSE
+					PRINTFORMW 「私は堕ちないわ。あなたと違うのよ。」
+					PRINTFORMW 『やっぱり一筋縄ではいかないようね～』
+					PRINTFORMW 『とっとと堕としてハッピーにさせてあげよ、%CALLNAME:MASTER%♪』
+				ENDIF
+				CFLAG:7151 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;ルナサ助手
+	ELSEIF NO:ASSI == 18
+		DRAWLINE
+		;初めて
+		IF CFLAG:7201 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『幽々子様……お久しぶりです。』
+				PRINTFORMW 「ルナサ……こんな所で会うなんてね……。あなたもなのね。」
+				PRINTFORMW 『はい。もう、私は何もかも捨てました。私は……ご主人様の、楽器。』
+				PRINTFORMW 「私もよ。もう戻れなくなったけど、それでいいの。」
+				PRINTFORMW 「大丈夫よ。一緒に堕ちていきましょ……？そうすれば、怖くないわ。」
+				PRINTFORMW 『……はい。』
+			;それ以外
+			ELSE
+				PRINTFORMW 『幽々子様……お久しぶりです。』
+				PRINTFORMW 「ルナサ、助けに……そうでもなさそうね。」
+				PRINTFORMW 『冷静……ですね。』
+				PRINTFORMW 「長女のあなたが、そんなことしてていいと思ってるの？妹たちが見たら幻滅するわよ？」
+				PRINTFORMW 『大丈夫です。私は……もう何もかも捨てました。』
+				PRINTFORMW 『幽々子様も……早く全てを捨てて楽になりましょう……』
+			ENDIF
+			CFLAG:7201 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					IF CFLAG:7201 == 4
+						PRINTFORMW 「それも立派な個性よ。だから気にしなくても大丈夫よ」
+						PRINTFORMW 『それは分かっているつもりです……でも、メルランを見ていると……どうしても……』
+						PRINTFORMW 「他人は他人、自分は自分よ。気にしないのが一番ね」
+					ELSE
+						PRINTFORMW 「何かしら？私のことが気になるの？」
+						PRINTFORMW 『い、いえ……決して幽々子様の胸が羨ましい訳では……』
+						PRINTFORMW 「あらあら、分かりやすいわね～」
+					CFLAG:7201 = 4
+					ENDIF
+				ELSE
+				PRINTFORMW 『幽々子様……』
+				PRINTFORMW 「どうしたの？実はまだ、未練があったりするの？」
+				PRINTFORMW 『……』
+				PRINTFORMW ルナサはそっと幽々子の胸に顔を埋める。幽々子は黙ってルナサを抱きしめた。
+				PRINTFORMW 「大丈夫よ。私がついているから。一緒に……ね？」
+				PRINTFORMW ルナサは微かにうなずいた。
+				CFLAG:7201 = 3
+				;妹たちに頼られてばっかで誰かに頼りたいルナ姉の図
+				ENDIF
+			ELSE 
+				IF RAND:2 == 0
+					PRINTFORMW 『冷静になって考えてみて。無理に抵抗して苦しみ続けるよりも、堕ちて全てに身を委ねる方が楽……そう思わない？』
+					IF MARK:2 == 3
+						PRINTFORMW 「そう……かもしれないわね……」
+						PRINTFORMW (もう……限界なのかも……)
+						PRINTFORMW 『そう。大丈夫。共に落ちれば怖くない……きっとそうです。』
+					ELSE
+						PRINTFORMW 「残念だけど、私はそう思わないわ。」
+						PRINTFORMW 『我慢しすぎてストレスをためることは良くないですよ』
+						PRINTFORMW 『後にわかるはずです。強情だった自分がいかに愚かだったかということを、きっと……』
+					ENDIF
+				ELSE
+					PRINTFORMW 『幽々子様、素直になるべき時は素直になった方が……』
+					PRINTFORMW 「説教かしら？」
+					PRINTFORMW 『い、いえ……説教をするつもりはありません』
+					PRINTFORMW 『ですが、忠告はしに来ました。いえ、むしろ懇願かもしれません』
+				ENDIF
+					CFLAG:7201 = 2
+			ENDIF
+		ENDIF
+
+	;妖夢助手
+	ELSEIF NO:ASSI == 19
+		DRAWLINE
+		;初めて
+		IF CFLAG:7251 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『あ……幽々子様』
+				PRINTFORMW 「あら妖夢、何をしているのかしら？」
+				PRINTFORMW 『ゆ、幽々子様。私……』
+				PRINTFORMW 「どうかしたのかしら？」
+				PRINTFORMW 首を傾げる幽々子を見て、思わず妖夢は顔を伏せる
+				PRINTFORMW 「大丈夫よ、あなたはよく頑張ったわ。これからは私も傍に居られるわ……」
+				PRINTFORMW 『幽々子様……う、うぐ……』
+				PRINTFORMW 堰を切ったように泣きじゃくる妖夢を幽々子は優しく宥めていた
+				PRINTFORMW 「妖夢……ごめんね……」
+				PRINTFORMW 妖夢が落ち着いた頃を見計らって、調教を始めることにした……
+				CFLAG:7251 = 2
+			;それ以外
+			ELSE
+				IF CFLAG:8001 == 2
+					PRINTFORMW 「妖夢、あなたも……」
+					PRINTFORMW 「……何も言わなくていいわ。」
+					PRINTFORMW 『……申し訳ございません、幽々子様』
+					PRINTFORMW 「……何も言わないで」
+					PRINTFORMW 『大丈夫です。私は幽々子より上手くやれる自信があります。全て、忘れさせてあげます』
+					PRINTFORMW 妖夢は色欲の混じった不気味な笑みを浮かべていた……
+				ELSE
+					PRINTFORMW 「あら妖夢、あなたは無事なの？」
+					PRINTFORMW 「あ、答えなくてもいいわ。期待はしていないもの」
+					PRINTFORMW 『……申し訳ございません、幽々子様』
+					PRINTFORMW 「あなたは自分のしようとしていることが理解できているの？」
+					PRINTFORMW 『大丈夫です、幽々子様よりは上手くやれます。今日から私は性についての指南役です』
+					PRINTFORMW 妖夢は色欲の混じった不気味な笑みを浮かべていた……
+				ENDIF
+			ENDIF
+				CFLAG:8001 += 1
+				CFLAG:7251 = 1
+				RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『幽々子様の胸の中、暖かい……』
+				PRINTFORMW 「あら、お気に召したようで嬉しいわ」
+				PRINTFORMW 『好きです、好きです……もっと……』
+				PRINTFORMW 「ええ、もっともっとエッチなこと、しましょ？」
+				CFLAG:7251 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 『素敵ですよ、幽々子様……日に日に艶やかで美しくなられています』
+				IF MARK:2 == 3
+					PRINTFORMW 「妖夢、私……もう許して……」
+					PRINTFORMW 『……もっともっと、ご主人様と二人で素敵なことを教えて差し上げますよ』
+					PRINTFORMW 妖夢は怯える幽々子の服をそっと脱がした……
+				ELSEIF CFLAG:8001 == 3
+					PRINTFORMW 「……妖夢、正気に戻って……」
+					PRINTFORMW 『幽々子様も狂ってしまえば……問題はないはずです』
+					PRINTFORMW 妖夢は抵抗されることなく、幽々子の服を脱がしていった……
+				ELSE
+					PRINTFORMW 「……妖夢、正気に戻りなさい。いい加減にしないと許さないわよ」
+					PRINTFORMW 『いいんです。ずっとこうしたいと心の底では思っていたんですから……』
+					PRINTFORMW 妖夢は幽々子の服に手をかけ、乱暴に脱がしていった……
+				ENDIF
+				CFLAG:7251 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;藍助手
+	ELSEIF NO:ASSI == 21
+		DRAWLINE
+		;初めて
+		IF CFLAG:7301 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『幽々子様……』
+				PRINTFORMW 「あら、藍じゃない。もうすっかり出来上がっちゃってるわね。」
+				PRINTFORMW 『ご主人様にすり込まれたんです。もう、私は……』
+				PRINTFORMW 「じゃあ、私に試してみてくれないかしら？」
+				PRINTFORMW 「実はね……私も、もう我慢できないのよ。」
+				PRINTFORMW 『……わかりました。』
+				CFLAG:7301 = 1
+			;それ以外
+			ELSE
+				IF CFLAG:8001 == 2
+					PRINTFORMW 「藍……いいところにいたわ。私に話が……」
+					PRINTFORMW 「……。藍……」
+					PRINTFORMW 『……はい、幽々子様のお察ししている通りです』
+					PRINTFORMW 「……そう」
+					PRINTFORMW 『大丈夫です。こちらには妖夢も紫様もいらっしゃいます。ですから……』
+					PRINTFORMW 「言わなくてもいいわよ。残念ながら、あなたの計算通りには行かないわ。」
+					PRINTFORMW 『いえ、幽々子様はもはや四面楚歌……あとはご主人様に魅了されるだけです。』
+					;四面楚歌チャーミング
+					PRINTFORMW 『幽々子様も、共に快楽へと溺れていきましょう……。きっと素晴らしいですよ』
+				ELSE
+					PRINTFORMW 「藍じゃない。あなたも大丈夫そうね。私に話があるの……」
+					PRINTFORMW 『……申し訳ございません。幽々子様。』
+					PRINTFORMW 「……そう。藍もそうなのね。」
+					PRINTFORMW 「ところで紫はどうしたの？」
+					PRINTFORMW 『もう、何もかもいいんです。ずっと快楽に溺れていたいんです。』
+						;藍が恋慕
+						IF TALENT:ASSI:150 == 1
+							PRINTFORMW 『幽々子様も一緒に溺れていきましょう……。きっと素晴らしいですよ。』
+							PRINTFORMW 藍の笑みは妖狐という言葉にふさわしいものだった。
+						ELSE
+							PRINTFORMW 『私はもう、元の世界には戻れないのですから……』
+						ENDIF
+				ENDIF
+			ENDIF
+				CFLAG:8001 += 1
+				CFLAG:7301 = 1
+				RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子様……よろしくお願いします。』
+					PRINTFORMW 「あらあら畏まっちゃって。遠慮なんてしなくて良いのよ？」
+					PRINTFORMW 『本当にいいんですか……？そう仰るのなら……』
+				ELSE
+					PRINTFORMW 「藍って、普段は紫とどんな遊びをしているのかしら？」
+					PRINTFORMW 『そ、それは……すみません……』
+					PRINTFORMW 「とても口では言えないこと？気になるわ～」
+				ENDIF
+				CFLAG:7301 = 3
+			ELSE
+				PRINTFORMW 「ねえ、藍ならまだやり直せると思うのよ。考え直して。」
+				PRINTFORMW 『幽々子様……残念ですが私はもう駄目なんです』
+				;藍が恋慕
+				IF TALENT:ASSI:150 == 1
+					PRINTFORMW 『もう、私はご主人様無しでは生きていけません』
+					PRINTFORMW 「そう……」
+						IF CFLAG:8001 >= 2
+							IF CFLAG:8000 == 1
+								PRINTFORMW (もう駄目なのかしら……私達……)
+							ELSE
+								PRINTFORMW (もうダメなのかな……私達……)
+							ENDIF
+						ELSE
+							PRINTFORMW (藍……あなたがこうなってしまうなんて……)
+						ENDIF
+				ELSE
+					PRINTFORMW 『もう……快楽を忘れることができないんです……』
+					PRINTFORMW 藍は目に涙を溜ながら言った。
+					PRINTFORMW 「藍……」
+					PRINTFORMW 幽々子はただ立っていることしかできなかった。
+				ENDIF
+				CFLAG:7301 = 2
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;紫助手
+	;一部が戦国無双の濃姫っぽい
+	;非恋慕の時、CFLAG:7051 = 3は霊夢と会ったとき、CFLAG:7051 = 1はそうでないとき
+	ELSEIF NO:ASSI == 22
+		DRAWLINE
+		;初めて
+		IF CFLAG:7051 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『あら、幽々子……お久しぶり』
+				PRINTFORMW 「……何よ紫」
+				PRINTFORMW 紫は扇子で口元を覆って微笑む
+				PRINTFORMW 『あら、久しぶりなのに刺々しいじゃない』
+				PRINTFORMW 「そんなことないわ」
+				PRINTFORMW 『そうねぇ、二人で共有するのはどうかしら』
+				PRINTFORMW 「……へぇ～、いいわね」
+				PRINTFORMW 二人は怪しい笑みを浮かべると、%CALLNAME:MASTER%へと視線を向けていた
+				CFLAG:7051 = 4
+			;それ以外
+			ELSE
+				IF CFLAG:8001 == 2
+					;霊夢にも会った
+					IF CFLAG:7401 >= 1
+						PRINTFORMW 「紫……何かの冗談かしら？」
+						PRINTFORMW 『残念ね。もうみんな墜ちちゃったの。』
+						PRINTFORMW 「霊夢もいたけど、まさか……」
+						PRINTFORMW 『あら、幻想郷が心配？幻想郷なら大丈夫よ。霊夢も言ってたじゃない』
+						PRINTFORMW 『だから安心して堕とされなさい。親友のよしみとして、せめて楽に堕としてあげるわ』
+						PRINTFORMW 「紫……気は確かなの……？」
+						CFLAG:7051 = 3
+					ELSE
+						PRINTFORMW 「紫……何かの冗談かしら？」
+						PRINTFORMW 『残念ね。もうみんな墜ちちゃったの。』
+						PRINTFORMW 「紫も嘘をつくのが上手になったわね」
+						PRINTFORMW 『幽々子は冷静を保つのが上手になったわね』
+						PRINTFORMW 『でもね、私には簡単にわかるわ。幽々子の考えてること』
+						PRINTFORMW 『逃避したい気持ちは分かるわ。でも、残念だけど真実なのよ』
+						PRINTFORMW 「ううん。真実なんかじゃない。それも、これも……全て紫の冗談よね？」
+						PRINTFORMW 「……ねえ、紫……うなずいて……そうだと言って……」
+						PRINTFORMW 『ごめんね、幽々子。親友のよしみとして、せめて楽に堕としてあげるわ』
+						CFLAG:7051 = 1
+					ENDIF
+				ELSE
+					PRINTFORMW 「……紫？あら、これは何の冗談？」
+					;紫が恋慕
+					IF TALENT:ASSI:150 == 1
+						PRINTFORMW 『ごめんね、幽々子。私、彼の言うことには逆らえないのよ』
+						PRINTFORMW 紫は%CALLNAME:MASTER%に擦りより、舌を絡めるのを見せ付けていた
+					ELSE
+						PRINTFORMW 『……安心して、痛くはしないから……すぐに気持ちよくなれる』
+						PRINTFORMW 紫は薄っすらと笑みを浮かべて、幽々子に歩み寄ってくる
+					ENDIF
+					PRINTFORMW 「ゆ、紫……気は確か？……い、嫌……やめて……」
+					PRINTFORMW 『……ごめんね』
+					CFLAG:7051 = 1
+				ENDIF
+			ENDIF
+				CFLAG:8001 += 1
+				RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子……今日はどうして欲しい？何でも言って……』
+					PRINTFORMW 「ん……何でもいいよ、何されても凄くいいから……」
+					PRINTFORMW 紫は慈しむような表情で幽々子と口付けを交わした……
+				ELSE
+					PRINTFORMW 『ふふっ……私達どうなっちゃうのかしらね……』
+					PRINTFORMW 「分からないわ……でも、%SAVESTR%ならどこへでもついて行くわ……」
+					PRINTFORMW 『ええ、私もよ……たとえその先が地獄でもね……』
+				ENDIF
+				CFLAG:7051 = 5
+			ELSE
+				;霊夢と会った
+				IF CFLAG:7401 > 0
+					IF CFLAG:7051 >= 3
+						PRINTFORMW 『私も霊夢もこれだから誰にも彼を止められないんじゃないかしら』
+						PRINTFORMW 「のんきね……紫ったら」
+						PRINTFORMW 『幽々子が心配しすぎなだけよ』
+						CFLAG:7051 = 4
+					;紫と初めて会ったときは霊夢と会っていなかったが、その後霊夢と会った
+					ELSE
+						PRINTFORMW 「そういえば、霊夢とも会ったわ」
+						PRINTFORMW 『あら、霊夢はいつも通りだった？』
+						PRINTFORMW 「のんきに遊んでていいのかしら？」
+						PRINTFORMW 『大丈夫よ。いくらなんでも私は幻想郷を捨てるような悪女じゃないわ』
+						PRINTFORMW 『それに、霊夢本人も大丈夫って言ってたじゃない。私と霊夢が言うんだから安心して頂戴？』
+						PRINTFORMW 「本当にそうかしら……」
+						CFLAG:7051 = 3
+					ENDIF
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 「紫……なんで、こんなことをするの……？」
+						PRINTFORMW 『確かに常軌を逸してるとしか言い様が無いわ』
+						PRINTFORMW 『……でもね、知ってしまえば考えを改めるわ。これはとても素敵なことなの』
+						IF MARK:2 == 3
+							PRINTFORMW 「……とても、そうは思えない」
+							PRINTFORMW 『もうすぐわかるわ……もうすぐ……』
+						ELSEIF CFLAG:8001 >= 3
+							PRINTFORMW 「紫には素敵なことかもしれない……。でも、私にはそう思えない……」
+							PRINTFORMW 『素直じゃないのね。幽々子らしいわ』
+						ELSE
+							PRINTFORMW 「どんなに素敵なものでも……人に押し付けてるようじゃ、まやかしの域を出ないわね」
+						ENDIF
+					ELSE
+						PRINTFORMW 『いいんじゃない？あの人に負けちゃっても』
+						PRINTFORMW 「急に何かしら？」
+						PRINTFORMW 『負ける事って、悪い事じゃない。むしろ良いこと。そう思わない？』
+						PRINTFORMW 「ええ、私もその意見には同意するわ」
+						;PRINTFORMW 『なら、さっさと主人に屈したらいいのに』
+					ENDIF
+					CFLAG:7051 = 2
+				ENDIF
+			ENDIF
+				RETURN 1
+		ENDIF
+
+	;リグル助手
+	;ミスティアとの違いは一方的にフルボッコにされる度合い
+	ELSEIF NO:ASSI == 24
+		DRAWLINE
+		;初めて
+		IF CFLAG:7411 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			;恋慕でもリグルは止まらない
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『お久しぶりですね幽々子さん』
+				PRINTFORMW 「あら、お久しぶりね。まさかこんなところで会うなんてね」
+				PRINTFORMW 『まさか幽々子さんを泣かすことができる日が来るなんて思ってもいませんでしたよ』
+				PRINTFORMW 「……！？」
+				PRINTFORMW 『あははっ、その表情とか凄くいいですよ。』
+				PRINTFORMW 『甘い生活もいいとは思いますけど、それでは平和ボケしてしまいますからね』
+				PRINTFORMW 「何言ってるの……？よっぽど酷いことされたの？」
+				PRINTFORMW 『まずは服が邪魔ですね。もうめんどくさいので力ずくで脱がせちゃいますね』
+				PRINTFORMW 「えっ、な、何するの？！やめて、触らないで！」
+				PRINTFORMW 『抵抗する気ですか？無駄な足掻きですよ。それっ』
+				PRINTFORMW 「いっ、いやあああああっ！！！」
+			;それ以外
+			;リグル総攻めっていいよね
+			ELSE
+				PRINTFORMW 「あなたは……お久しぶりね。こんなところで……」
+				PRINTFORMW 『……あははっ』
+				PRINTFORMW 『まさか幽々子さんの余裕そうな笑顔を泣き顔にできる日が来るなんてね』
+				PRINTFORMW 「……！？」
+				PRINTFORMW 『ははっ、その表情とか凄くいいですよ。』
+				PRINTFORMW 「何言ってるの……？よっぽど酷いことされたのね」
+				PRINTFORMW 『まずは服が邪魔ですね。もうめんどくさいので力ずくで脱がせちゃいますね』
+				PRINTFORMW 「触らないでくださる？」
+				PRINTFORMW 『まだ一応余裕を持ってるところが幽々子さんらしいですね』
+				PRINTFORMW 『だからこそ気になりますよ。幽々子さんってどんな感じで泣きわめくのかな？って』
+				PRINTFORMW 「……リグル、演技上手ね。でも、そろそろ謝る時じゃない？」
+				PRINTFORMW 『怒るなら怒ってもいいですよ。ただ、何をしたって幽々子さんは私の前に跪くことになりますけどね』
+				PRINTFORMW 「あらあら……忠告は素直に守りましょうって習わなかったのかしら？しょうがないわね」
+				PRINTFORMW 
+				PRINTFORMW 『残念でしたね。勝てると思ってたんでしょうけど、ここでは全てが私の味方なんですよ』
+				PRINTFORMW 「か、はっ……う……そ……わた……し…………」
+				PRINTFORMW 『どうして私が虫風情にあっさり倒されるのって思ってるでしょ？』
+				PRINTFORMW 『現実を見たらどうですか？幽々子さんはその　虫風情　に負けちゃってるんですからね』
+				PRINTFORMW 『さあ、ご主人様も待ってるから早く服を脱がさないと』
+				PRINTFORMW 「やだ……いやっ、いやああぁ……」
+				PRINTFORMW 『へえ……幽々子さんもそんな表情をするときだってあるんですね。ますます壊したくなっちゃいました』
+				PRINTFORMW 『ご主人様、始めよ？幽々子さんが絶望のどん底にいる姿、早く見たいなあ』
+			ENDIF
+			CFLAG:7411 = 1
+			RETURN 1
+		;二回目以降
+		;ノリノリで書ける俺って
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF RAND:3 == 0
+					PRINTFORMW 『残念でしたね。今回は私もいますよ』
+					PRINTFORMW 『その怯えた顔とか素敵ですよ幽々子さん』
+					PRINTFORMW 「い、いやぁっ……%SAVESTR%……助けて……」
+					PRINTFORMW 『あははっ幽々子さんの怯えた顔ってそんな顔なんですね。傑作ですよ』
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「あ……ぁ……ぅっ……」
+					PRINTFORMW 『今なら勝てると思ったのですか？浅はかな考えですね』
+					PRINTFORMW 軽蔑の眼差しでリグルは幽々子の頭を踏みにじった
+					PRINTFORMW 髪がこすれ合う摩擦音が、静かな部屋にはよく聞こえる
+					PRINTFORMW 「や……め…………」
+					PRINTFORMW 『あははははっ！！いいですよ、幽々子さんが哀れで哀れで仕方ないのでやめてあげます』
+					PRINTFORMW 『あれ？お礼はないんですか？習わなかったのですか？そんなはずないですよね』
+					PRINTFORMW 「ありがとう……ござい……ま……す…………」
+					PRINTFORMW 既に幽々子は大粒の涙を流し、精神もすり減っていた
+					PRINTFORMW 頑丈とは聞くが、大丈夫なのだろうか……
+				ELSE
+					PRINTFORMW 「来てくれたのね……%SAVESTR%…………！」
+					PRINTFORMW 『嫌だなあ幽々子さん、そんなに怯えることないじゃないですか』
+					PRINTFORMW 『せっかくの美しい風貌が台無しですよ。まあ、その顔も十分素敵ですけどね』
+					PRINTFORMW 「あ、あなた……何しに来たの……？」
+					PRINTFORMW 『何しにって、それはご主人様が決めることですよ。せいぜい楽しんでくださいね』
+				ENDIF
+				CFLAG:7411 = 3
+			ELSE
+				IF RAND:3 == 0
+					PRINTFORMW 部屋に入ると、すでに服が脱ぎ捨てられボロボロになっている幽々子がいた
+					PRINTFORMW 『どうです？今のあなたはこんな子供にも負けるんですよ？悔しくてたまらないでしょ？』
+					PRINTFORMW 『幽々子さんのプライドをズッタズタにするの、楽しすぎますよ。どうしてくれるんですか？』
+					PRINTFORMW 「う……ぁ…………なん……で…………」
+					PRINTFORMW 『何で私が負けるの、ですか？まだそんなこと言ってるんですか』
+					PRINTFORMW 『そんなこと言うから、壊したくなるんですよ』
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 『弱き者は強き者に従う。これが自然の摂理じゃないですか？』
+					PRINTFORMW 「は……い…………その、通り……です…………」
+					PRINTFORMW 『とりあえず三回回ってワンって吠えてください。ここでは私のほうが強いんですから』
+					PRINTFORMW 「……ワン」
+					PRINTFORMW 『吠えろとは言いましたが泣けって命令はしてませんよ？頭の悪い駄犬ですね』
+				ELSE
+					PRINTFORMW 『その悔しそうな表情とか、屈辱に満ちた表情とか……』
+					PRINTFORMW 『もう最高ですよ。もっと私に見せてくれませんか？』
+					PRINTFORMW 「……」
+					PRINTFORMW 『あはは、睨まないで下さいよ。そんなことしても自分の惨めさが際だつだけですよ？』
+					PRINTFORMW 幽々子はボロボロになりながらも、リグルに必死に抵抗し続けていた……
+				ENDIF
+				CFLAG:7411 = 2
+			ENDIF
+		ENDIF
+
+	;ミスティア助手
+	;子供いい様にされる大人っていいよね？ね？(プライド的な意味で)
+	ELSEIF NO:ASSI == 25
+		DRAWLINE
+		;初めて
+		IF CFLAG:7002 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				IF CFLAG:7001 == 1
+					PRINTFORML 「あら、あなたは……
+					PRINTFORMW 『あの時にコテンパンにされ、小骨が多いなんて言われ、あんたにいつも追いかけられ……』
+					PRINTFORMW 『今までの恨みを晴らすときが来たようね……』
+					PRINTFORMW 「あ、あなた～この子怖いわぁ。助けて～」
+					PRINTFORMW 今までと様子の違うミスティアに少し怯みながらも、幽々子はわざとらしい言動をとりながらあなたに抱きついてきた。
+					PRINTFORMW 『今のうちにせいぜい甘えておくといいわ……』
+					PRINTFORMW その光景を見て、ミスティアは目をぎらぎらとさせながら言いはなった。
+					PRINTFORMW 幽々子はまだ知る由もなかった。ミスティアは　本気　で幽々子に復讐をしようとしていることを……
+				ELSE
+					PRINTFORMW 「あら、久しぶりね～」
+					PRINTFORMW 『幽々子！？まさか今日の相手って……！？』
+					PRINTFORMW 「いきなり呼び捨てだなんて失礼ねー」
+					PRINTFORMW 「今日は私の素敵な王子様とデートなのよ。それを邪魔すると本当に食べちゃうわよ？」
+					PRINTFORMW 『うう……ご主人様……本当にやらないとだめなの……？』
+				ENDIF
+			;それ以外
+			ELSE
+				IF CFLAG:7001 == 1
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「あなたはあの時の……ちょうどよかったわ、私と手を組まないかしら？」
+					ELSE
+						PRINTFORMW 「あなたはあの時の……お願い……私と一緒にここから……」
+					ENDIF
+					PRINTFORMW 『何言ってるの？私があんたなんかを助けると思ってるの？』
+					PRINTFORMW そう言うとミスティアは幽々子の服を乱暴に脱がしにかかった。
+					PRINTFORMW 「きゃあああっ！何！？何するのよ！？」
+					PRINTFORMW 『今までの恨みを晴らすときが来たようね……どうやっていじめようかな♪』
+					PRINTFORMW ミスティアは小さな体に似つかないような恐ろしい笑みが浮かべながら言った。
+						IF TALENT:MASTER:81 == 1
+							PRINTFORMW これは面白いことになったな。と内心ほくそ笑みながら、ミスティアと共に幽々子を調教することにした。
+						ELSE
+							PRINTFORMW ミスティアの変貌に驚きながらも、ひとまず調教を開始することにした。
+						ENDIF
+					CFLAG:7003 += 1
+				ELSE
+					PRINTFORMW 『ひっ！幽々子！？』
+					PRINTFORMW 「いきなり何よ。失礼しちゃうわ。」
+					PRINTFORMW 『ご主人様……今日の相手って……』
+					PRINTFORMW 「あら、今日はあなたがしてくれるの？楽しみね」
+					PRINTFORMW 『うう……ご主人様……本当にやらないとだめなの……？』
+				ENDIF
+			ENDIF
+			CFLAG:7002 = 1
+			RETURN 1
+		;二回目以降
+		ELSE
+			;恋慕
+			;返り討ちにした方
+			IF TALENT:150 == 1 && CFLAG:7001 == 3
+				PRINTFORMW 「%CALLNAME:MASTER%……んっ……」
+				PRINTFORMW 幽々子はミスティアに見せつけるようにしてあなたと唇を重ねている。
+				PRINTFORMW 『ご主人様……私も……』
+				PRINTFORMW 「何言ってるの……今は私の番よ？あなたは黙って見てなさい。」
+				PRINTFORMW 『……』
+				PRINTFORMW 幽々子に軽くあしらわれると、ミスティアは黙り込んでしまった
+				CFLAG:7002 = 4
+			;恋慕
+			ELSEIF TALENT:150 == 1 && CFLAG:7001 == 1
+				IF CFLAG:7001 == 1
+					PRINTFORMW 『あんたなんかにご主人様は渡さないから！』
+					PRINTFORMW ミスティアは幽々子に見せつけるようにしてあなたと唇を重ねている。
+					PRINTFORMW 「あなたのような子供より、私の方がいいに決まってるわよね？」
+					PRINTFORMW 幽々子は負けじと豊麗で柔らかな肌をあなたに押しつけてくる。
+					PRINTFORMW ……このまま時を過ごしてもよかったのだが、とりあえず二人から離れて調教を開始することにした。
+				ELSE
+					PRINTFORMW 「あなたに%CALLNAME:MASTER%は渡せないわ」
+					PRINTFORMW 『で、でも……私もご主人様と……』
+					PRINTFORMW 「駄目よ、あなたは我慢する番でしょ？約束破ると食べちゃうわよ～？」
+					PRINTFORMW 『そんなぁ……』
+				ENDIF
+				CFLAG:5207 = 3
+			ELSE 
+				IF CFLAG:7001 == 1
+					IF CFLAG:8000 == 1
+						PRINTFORMW 『無様ねえ……こんな情けない姿になっちゃって……』
+						PRINTFORMW 幽々子を組み敷きながら、ミスティアは見下すようにして言い放った。
+					ELSE
+						PRINTFORMW 『無様ねえ……こんな子供に怯えきっちゃって……』
+						PRINTFORMW 部屋の隅で怯えて縮こまっている幽々子に向かって、ミスティアは見下すようにして言い放った。
+					ENDIF
+					PRINTFORMW 『何？その眼は？何したって私は許さないからねー』
+					PRINTFORMW ミスティアが幽々子の服を引き剥がす音と共に、幽々子の悲痛な叫びが部屋中に響き渡っていった……
+					CFLAG:7003 += 1
+				ELSE
+					PRINTFORMW 『今日も幽々子が相手なの……もうやだよぉ……』
+					;屈服刻印Lv2以下
+					IF MARK:屈服刻印 <= 2
+						PRINTFORMW 「もう、そこまで言わなくたっていいじゃない。私も傷ついちゃうわ」
+					;屈服刻印Lv3
+					ELSEIF MARK:屈服刻印 == 3
+						PRINTFORMW 「そんなこと言わなくてもいいじゃない……」
+					ENDIF
+				CFLAG:7002 = 2
+				ENDIF
+			ENDIF
+		ENDIF
+		
+	;ヤマメ助手
+	ELSEIF NO:ASSI == 58
+		DRAWLINE
+		;初めて
+		IF CFLAG:7421 == 0
+			;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+			;単なる妄想会話
+			;ZUN会話ムズイ……ってかこれじゃあ跡形もないな
+			IF TALENT:150 == 1 && CFLAG:5203 >= 5
+				PRINTFORMW 『これはまたずいぶん美しい蝶じゃないの』
+				PRINTFORMW 「あら、第一声が褒め言葉だなんて気が利くじゃない」
+				PRINTFORMW 『その様子だとあんたは囚われの蝶って感じになるわけね』
+				PRINTFORMW 「私は蝶というよりお姫様の方がいいかな」
+				PRINTFORMW 『じゃあ私は2人の愛を邪魔する悪役ってわけなのね』
+				PRINTFORMW 「最近は悪役も悲惨な目に遭うことも少ないらしいわね」
+				PRINTFORMW 『まあ、私の結末はご主人に決めてもらうことにするよ』
+				CFLAG:7421 = 9
+			;それ以外
+			ELSE
+				PRINTFORMW 『これはまたずいぶん美しい蝶じゃないの。』
+				PRINTFORMW 「……どなたかしら？」
+				PRINTFORMW 『ああ、私？私は黒谷ヤマメって言うんだ。』
+				PRINTFORMW 「それで、あなたはなにをしに来たの？」
+				PRINTFORMW 『そりゃあ、あんたを食べるために来たのさ。』
+				PRINTFORMW ヤマメから放たれた糸が、幽々子に絡みついていった
+				PRINTFORMW 「……！？何……？やめて、離して！」
+				PRINTFORMW 『一度引っかかったらもう逃げられないも同然だからさ』
+				PRINTFORMW 『おとなしくしてるのが賢明だと思うけどね』
+				PRINTFORMW 巣に引っかかった獲物を吟味するかのような目で幽々子を見つめるヤマメ。
+				PRINTFORMW その視線の先には、普段の余裕そうな表情から一変して顔を青くしている幽々子がいた……
+				CFLAG:7421 = 1
+				RETURN 1
+			ENDIF
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF CFLAG:7421 < 6
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「……もう今までと同じことをしても無駄よ？」
+						PRINTFORMW 裏がありそうな笑顔をみせながら、幽々子は言った
+						PRINTFORMW 『大丈夫よ。もうあんなことする気はたぶんもうないからさ。』
+						PRINTFORMW 『……って、信じてないようだね。ま、とにかく始めようか』
+					ELSE
+						PRINTFORMW 「ひっ、こっち来ないで！」
+						PRINTFORMW 『あらら、もしかして嫌われちゃった？』
+						PRINTFORMW 『大丈夫よ。もうあんなことする気はたぶんもうないからさ。』
+						PRINTFORMW 『……って、聞いてないようだね。ま、とにかく始めようか』
+					ENDIF
+					PRINTFORMW ヤマメはやけにさっぱりとした口調で言った
+					CFLAG:7421 += 1
+					;酷い目に遭わせた場合、ヤマメを避けるようになりますがその後何回も合わせると警戒心が無くなります
+				ELSEIF CFLAG:7421 < 8
+					PRINTFORMW 「……あなたは悪い妖怪でもなさそうね」
+					PRINTFORMW 『私は素直になった人には何もしないよ。絶対にね』
+					PRINTFORMW 『……。悪い妖怪……あながち間違って無いかな』
+					CFLAG:7421 += 1
+				ELSEIF CFLAG:7421 < 11
+					;酷い目に遭ってない場合はここからスタートします
+					PRINTFORMW 『はあ、私もどうやったらこんな大きな胸を手に入れられるのかなあ』
+					PRINTFORMW 「好き嫌いしないでいろんな物を食べればいいと思うわ」
+					PRINTFORMW 『まあ、もう遅いんだけどさ……』
+					CFLAG:7421 += 1
+				;さらに合わせると逆転します
+				ELSE
+					PRINTFORMW 『んっ……お尻ばっかり揉まないでおくれよ……』
+					PRINTFORMW 「あら、いいじゃない。お尻も立派な魅力の一つよ？」
+					PRINTFORMW 『でも……気になるものは気に……んんっ……』
+				ENDIF
+			ELSEIF CFLAG:7421 == 3
+				IF TALENT:ASSI:121 == 1
+					IF RAND:4 == 0 && ABL:2 >= 1
+						PRINTFORMW 『ここの調子は……』
+						IF ABL:2 >= 3
+							PRINTFORMW 「やぁっ！こんなの駄目っ！早く抜いてぇっ！！」
+							PRINTFORMW 『良い感じになってるじゃないの。』
+							PALAM:10 += 250
+							PALAM:13 += 50
+						ELSE
+							PRINTFORMW 「ぐうっ……！や、め……裂け……る……」
+							PRINTFORMW 『うーん、まだ早かったみたいだね……』
+						ENDIF
+						PALAM:2 += (20 * (ABL:2 * ABL:2 * ABL:2 + 1))
+						PALAM:10 += 150
+						PALAM:13 += 50
+						EXP:1 += 1
+					ELSEIF RAND:3 == 0 && TALENT:0 == 0
+						PRINTFORMW 「い、いやぁ！！そんなもの挿入れちゃ駄目ぇ！！」
+						PRINTFORMW 『もう守るべきものもないわけだし、別にいいじゃないのさ。』
+						PRINTFORMW 「そんな問題じゃな……い゛っ！挿入って……いやああああ！」
+						PALAM:1 += (20 * (ABL:1 * ABL:1 * ABL:1 + 1))
+						PALAM:10 += 400
+						PALAM:13 += 100
+						EXP:0 += 1
+					ELSEIF RAND:2 == 0
+						IF ABL:3 >= 5
+							PRINTFORMW 『この胸が妬ましいよ。どこぞの姫さんじゃないけどさ。』
+							PRINTFORMW 『ほら、もっと胸を使って！』
+							PRINTFORMW ヤマメは半ばヤケクソになって幽々子に指導していた……
+							PALAM:3 += (200 * ABL:3)
+							PALAM:10 += 300
+							PALAM:12 += 400
+							PALAM:13 += 100
+							
+						ELSE
+							PRINTFORMW 『こんなに大きな胸を持って……』
+							PRINTFORMW 『私もあんたを喰らったらこれくらい大きくなれるかねぇ……』
+							PRINTFORMW 「やっ、そんな胸ばっかりっ！」
+							PRINTFORMW ヤマメは邪悪なオーラをまといながら幽々子の胸を揉みしだいていた……
+							PALAM:3 += (10 * (ABL:3 * ABL:3 * ABL:3 + 1))
+							PALAM:10 += 400
+							PALAM:13 += 100
+						ENDIF
+					ELSE
+						PRINTFORMW 「やっ、やだっ……やめてぇっ……」
+						PRINTFORMW 『素直じゃないねえ……タダで気持ちいい思いさせてるんだから、もっと素直になったら？』
+						PRINTFORMW 「そんなの絶対嫌っ！私は……っ……」
+						PALAM:0 += (10 * (ABL:0 * ABL:0 * ABL:0 + 1))
+						PALAM:10 += 400
+						PALAM:13 += 100
+					ENDIF
+				ELSE
+					IF RAND:4 == 0 && ABL:2 >= 1
+						PRINTFORMW 『ここの調子は……と。』
+						IF ABL:2 >= 3
+							PRINTFORMW 「んううっ……違っ……こんなの……違ううぅ……」
+							PRINTFORMW 『残念ながらそんなこと言っても説得力無いよ』
+							PALAM:10 += 250
+							PALAM:13 += 50
+						ELSE
+							PRINTFORMW 「い゛やああ！そんなっ、痛いい！」
+							PRINTFORMW 『うーん、もうちょっと慣れが必要なようだね』
+						ENDIF
+						PALAM:2 += (10 * (ABL:2 * ABL:2 * ABL:2 + 1))
+						PALAM:10 += 150
+						PALAM:13 += 50
+						EXP:1 += 1
+					ELSEIF RAND:3 == 0 && TALENT:0 == 0
+						PRINTFORMW 「い、いやぁ！指なんか挿入れないで！」
+						PRINTFORMW 『もう守るべきものもないわけだし、別にいいじゃないのさ。』
+						PRINTFORMW 「そんな問題じゃな……いっ！挿入って……いやああああ！」
+						PALAM:1 += (10 * (ABL:1 * ABL:1 * ABL:1 + 1))
+						PALAM:10 += 400
+						PALAM:13 += 100
+						EXP:0 += 1
+					ELSEIF RAND:2 == 0
+						PRINTFORMW 『こんなに大きな胸を持って……』
+						PRINTFORMW 『私もあんたを喰らったらこれくらい大きくなれるかねぇ……』
+						PRINTFORMW 「やっ、そんな胸ばっかりっ！」
+						PRINTFORMW ヤマメは邪悪なオーラをまといながら幽々子の胸を揉みしだいていた……
+						PALAM:3 += (10 * (ABL:3 * ABL:3 * ABL:3 + 1))
+						PALAM:10 += 400
+						PALAM:13 += 100
+					ELSE
+						PRINTFORMW 「やっ、やだっ……やめてぇっ……」
+						PRINTFORMW 『素直じゃないねえ……タダで気持ちいい思いさせてるんだから、もっと素直になったら？』
+						PRINTFORMW 「そんなの絶対嫌っ！私は……っ……」
+						PALAM:0 += (10 * (ABL:0 * ABL:0 * ABL:0 + 1))
+						PALAM:10 += 400
+						PALAM:13 += 100
+					ENDIF
+				ENDIF
+			ELSEIF CFLAG:7421 == 2
+				PRINTFORMW 「またあなたなの……」
+				PRINTFORMW 『あらら、もしかして私のこと嫌い？』
+				PRINTFORMW 今までのことも相俟ってか、幽々子はヤマメを避けるようになっていた……
+				;かといって相性は下がりません
+			ELSEIF CFLAG:7421 <= 1
+				PRINTFORMW 『……ねえ、ちょっとお願いがあるんだけど。』
+				PRINTFORMW 『私にも少しで良いから味見させてよ』
+				PRINTFORMW 『これだけいい獲物を前にずっとお預けされるのも辛いんだよねえ……』
+				PRINTL [0] 許可する
+				PRINTL [1] 許可しない
+				$INPUT_LOOP_11
+				INPUT
+				IF RESULT == 0
+					PRINTFORMW 『……本当にいいんだね？』
+					PRINTFORMW 『次からが楽しみだよ。どんなことをしようかねえ……』
+					PRINTFORMW 不敵な笑みを浮かべ、ヤマメは言った
+					CFLAG:7421 = 3
+				ELSEIF RESULT == 1
+					PRINTFORMW 『駄目……？』
+					PRINTFORMW 『まあ、とやかく言う気はないよ。初めよっか。』
+					CFLAG:7421 = 8
+				ELSE
+					GOTO INPUT_LOOP_11
+				ENDIF
+			ENDIF
+				RETURN 1
+		ENDIF
+	;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+	ELSE
+		TRYCALL K20_MESSAGE_START_3
+	ENDIF
+	
+	
+	
+ELSE
+	TRYCALL K20_MESSAGE_START_3
+ENDIF
+
+;どうでもいいメモ集
+;顔色が悪い時
+;霊夢『幽々子、あんた顔色悪いけど大丈夫？』
+;橙『幽々子様……顔色悪いよ……？』
+;リリカ『幽々子様、顔色悪いけど大丈夫？』
+;メルラン『幽々子様、顔色悪いよー？大丈夫？』
+;ルナサ『幽々子様……顔色が悪いように見えますが、大丈夫でしょうか……？』
+;妖夢『幽々子様、顔色が悪いようですが……大丈夫ですか？』
+;藍『幽々子様、体調が優れないようですが……大丈夫でしょうか？』
+;紫『幽々子、顔色悪いわね。大丈夫かしら？』
+
+;ゆゆ様はプライド高い持ちですが同じプライド高い持ちの中ではプライドが低い方なので
+;吹っ切れやすさも高い方です
+
+;ゆゆ様に……
+;１(超振り回される)　ルナサ、妖夢、藍、ミスティア
+;２　　　　　　　　　霊夢、リリカ、メルラン
+;３(振り回されない)　紫
+;０(振り回さない　)　上記以外のキャラ
+;
+;ゆゆ様や聖のようなお姉さんは「あらあら、」を多用し
+;紫や永琳のようなお姉さんは「あら、」を多用します
+;回数が違うだけで意外と変わる
+;-------------------------------------------------
+;調教開始時（2回目以降、20をキャラ番号に変更する） CFLAGなし 
+;-------------------------------------------------
+@K20_MESSAGE_START_3
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW 「むむ……」
+	PRINTFORMW 幽々子は訝しげな目線を送っている
+	PRINTFORMW 恐らく、砂糖に摩り替えられた毒が効いていないことを疑問に思っているのだろう
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:2 == 0
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+		PRINTFORMW 余裕の表れか、やはり二言、三言、意味の解らないことを言ってた……
+	ELSE
+		PRINTFORMW 「あらあら……そんなに私が好きなのかしら？」
+		PRINTFORMW 「安穏たる死後を過ごしたいなら、今すぐにでもやめるべきよ～」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+		PRINTFORMW 余裕の表れか、やはり二言、三言、意味の解らないことを言ってた……
+	ELSE
+		PRINTFORMW 「安穏たる死後を過ごしたいなら、今すぐにでもやめるべきよ」
+		PRINTFORMW 「忠告はしたわ。どうなってもしらないわよ～？」
+		PRINTFORMW まだ余裕があるのか、相変わらず意味の解らないことを言ってきた……
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2 && TALENT:150 == 0
+	DRAWLINE
+	IF RAND:3 == 0
+		PRINTFORMW 幽々子は部屋の隅で目を閉じて正座していた
+		PRINTFORMW いくら呼んでも反応しない辺り、無視を決め込んでいるようだった
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 幽々子は途方に暮れた顔を従者や友人に見せたことはあるのだろうか。
+		PRINTFORMW ほんの数秒だけ表れるその表情を見ると、手応えを感じると同時にそのようなことを考える。
+	ELSE
+		PRINTFORMW 「あら……いつの間にそこにいたの？気付かなかったわ」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:2 == 3 && TALENT:150 == 0
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW 部屋に入ると、座っていた幽々子に自ら服を脱ぐように命じた
+		PRINTFORMW 幽々子はしばらく拒否していたが、やがて艶やかな肢体を自ら晒していった……
+	ELSE
+		PRINTFORMW 「もう……せっかちさんね」
+		PRINTFORMW 「服くらい自分で脱ぐわ」
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:150 == 1
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:3 == 0
+		PRINTFORMW 「あ……やっと来てくれたのね……私だけの%SAVESTR%」
+		PRINTFORMW 幽々子は頬を赤く染め、着物をはだけて、あられもない姿を晒していた
+	ELSEIF RAND:2 == 1
+		PRINTFORMW 部屋に入ると幽々子は徐に腰の帯の先を%CALLNAME:MASTER%に手渡した
+		PRINTFORMW 幽々子が期待の入り混じった視線を送るので、仕方なく帯を引っ張る
+		PRINTFORMW 「あ～れ～」
+		PRINTFORMW よいではないか、よいではないか
+	ELSE
+		PRINTFORMW 部屋に入ると幽々子はベッドの上で仰向けになって、寝息を立てていた
+		PRINTFORMW 顔を近づけても起きる様子は無いが、頬が上気していくのが見て取れた
+		PRINTFORMW ……寝たふりをして、誘っているらしい
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_20_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+DRAWLINE
+TRYCALL K20_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K20_MESSAGE_END
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+	PRINTFORMW だが普段の大人しさに似つかわない激昂の宿った眼差しをこちらに向けていた……
+	RETURN 1
+
+;非恋慕+体力400以下
+ELSEIF TALENT:150 == 0 && BASE:0 < 400
+	DRAWLINE
+	IF CFLAG:8000 == 1
+		PRINTFORMW ふらふらとしながらも服を着ると、幽々子は倒れ込むようにして床に臥していった
+	ELSE
+		PRINTFORMW 「う……うぅ……」
+		PRINTFORMW 幽々子は自ら服を着る余裕すらないほど消耗しきっていた。
+	ENDIF
+	PRINTFORMW 情けを施すことなく部屋から出て行こうとすると後ろから微かに鋭い視線を感じたような気がした。
+	RETURN 1
+	
+;屈服刻印Lv3以下で3回以上中田氏された
+ELSEIF TALENT:150 == 0 && MARK:2 < 3 && CFLAG:8002 >= 3
+	DRAWLINE
+	PRINTFORMW 幽々子は虚ろな目でぐったりと床に倒れ込んでいる
+	PRINTFORMW 散々陵辱され、中に出されたショックから何もできなくなっているようだ……
+	CFLAG:8002 = 0
+	RETURN 1
+	
+;屈服刻印Lv1未満
+ELSEIF MARK:2 <= 1 && TALENT:150 == 0
+	DRAWLINE
+		IF CFLAG:8001 == 3
+		;もうすでに余裕などあんまりない！
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					IF RAND:2 == 0
+						PRINTFORMW 「霊夢がいなくなって大丈夫なのかしら」
+						PRINTFORMW 『味方がいない自分の心配をした方がいいと思うけど』
+					ELSE
+						PRINTFORMW 『もう誰もいないのに、しぶといわね』
+						PRINTFORMW 「例え私一人でも、みんなを助けてみせるわ」
+						PRINTFORMW 『そんな熱血主人公みたいなこと言っても助からないって』
+						PRINTFORMW 「本来は霊夢が言うべきセリフなはずなのにね」
+						;PRINTFORMW 『そんなセリフ……私が似合うわけ無いから』
+					ENDIF
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					PRINTFORMW 『もういいんじゃないか？つまんない意地張っても仕方ないしな』
+					PRINTFORMW 「それは経験談かしら？」
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 『……幽々子さんは独りで寂しくないの？』
+					PRINTFORMW 「一人でも問題はないわ」
+					PRINTFORMW 「一人で佇むとか風流じゃないかしら？」
+					PRINTFORMW 『……私は、独りは好きじゃないわ』
+					;会話なのでレティは「独り」のニュアンスで話してますが幽々子は「一人」して話しています
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様、もうちょっと一緒にいていい？』
+						PRINTFORMW 「ええ……いいわよ」
+						PRINTFORMW (大丈夫よ、私一人でもなんとかなるわ)
+					ELSE
+						PRINTFORMW 「橙は今どんな……」
+						PRINTFORMW 「ううん、やっぱり何でもないわ」
+						PRINTFORMW 『？』
+					ENDIF
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					PRINTFORMW 『ソロって色々大変だと思うけどねー』
+					PRINTFORMW 「ソロの方が楽ってこともあるのよ」
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					PRINTFORMW 『みんなと一緒の方が楽しいよ～？』
+					PRINTFORMW 「私は一人でも十分楽しめるわ」
+				;ルナサ助手
+				;全体を通して妖夢と似たような行動をします
+				ELSEIF NO:ASSI == 18
+					PRINTFORMW 『幽々子様、私にできることがあれば何でも
+					PRINTFORMW 「そうね、一人にさせてもらえないかしら」
+					PRINTFORMW 『……わかりました』
+				;妖夢助手
+				ELSEIF NO:ASSI == 19
+					PRINTFORML 『幽々子様、何か私に』
+					PRINTFORMW 「出てって」
+					PRINTFORMW 『……わかりました』
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様も快感を知ってしまったら戻れなくなりますよ』
+						PRINTFORMW 藍は去り際にそう言い残していった。
+						PRINTFORMW 幽々子にはその言葉は届いていないようだった。
+					ELSE
+						PRINTFORMW 『幽々子様もすぐにご主人様のことが忘れられなくなりますよ』
+						PRINTFORMW 藍は去り際にそう言い残していった。
+						PRINTFORMW 幽々子にはその言葉は届いていないようだった。
+					ENDIF
+				;紫助手
+				ELSEIF NO:ASSI == 22
+					IF RAND:2== 0
+						PRINTFORMW 『逆にね、失う物はないって考えればいいのよ。』
+						PRINTFORMW 「まだ沢山あるわ」
+						PRINTFORMW 『楽観的に行った方が楽しいはずよ』
+					ELSE
+						PRINTFORMW 「紫、そろそろ夢から覚める時間じゃないかしら？」
+						PRINTFORMW 『逆よ。幽々子が夢を見る時間よ』
+					ENDIF
+				;リグル助手
+				ELSEIF NO:ASSI == 24
+					PRINTFORMW 『この惨状の中でまだ一応余裕はあるんですね』
+					PRINTFORMW 『まあ、このくらいの方が倒しがいがあるんですけど』
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:7001 == 2 || CFLAG:7001 == 3
+						PRINTFORMW 「……何かしら？」
+						PRINTFORMW 『ごっ、ごめんなさい……何でもないです……』
+					ELSE
+						PRINTFORMW 『強がっても無駄だよー誰も助けに来ないんだからね』
+						PRINTFORMW すすり泣く幽々子に追い打ちをかけるが如く、ミスティアは言った。
+					ENDIF
+				;ヤマメ助手
+				;お互い特に干渉しない、気遣う心はある
+				ELSEIF NO:ASSI == 58
+					IF RAND:2 == 0
+						PRINTFORMW 『孤独のつらさ……私にもよく分かるよ』
+						PRINTFORMW 「ベクトルが違うから比べようが無いわ」
+						PRINTFORMW 『さすが、精神が強いねえ』
+					ELSE
+						PRINTFORMW 『蜘蛛の巣にかかった獲物は、最初はもがく』
+						PRINTFORMW 『けど、もがけばもがくほどどんどんと糸が絡まり、最後は動けなくなるのさ』
+						PRINTFORMW 「へえ、勉強になったわ」
+						PRINTFORMW 『ああ……また糸が絡まったね』
+					ENDIF
+				ELSE
+					PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+					PRINTFORMW 瞑想でもしているのだろうか、何も物音を立てずに目を閉じている
+				ENDIF
+			ELSE
+				PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+				PRINTFORMW 瞑想でもしているのだろうか、何も物音を立てず目を閉じている
+			ENDIF
+		ELSE
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					PRINTFORMW 「霊夢がいなくなって外は大丈夫なのかしら」
+					PRINTFORMW 『自分の心配したら？』
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					PRINTFORMW 「みんなあなたのことを心配してるんじゃない？」
+					PRINTFORMW 『私は幽々子が心配だぜ』
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 『……静かね』
+					PRINTFORMW 「ええ、そうね」
+					PRINTFORMW 『……寂しくなったり、しない？』
+					PRINTFORMW 「私には心地よい静けさよ」
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					PRINTFORMW 『幽々子様、もうちょっと一緒にいていい？』
+					PRINTFORMW 「ええ、いいわよ」
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					PRINTFORMW 『幽々子様ー！また来るね！』
+					PRINTFORMW 「ええ。何時でもいらっしゃい。」
+					PRINTFORMW 幽々子は余裕たっぷりの笑みを浮かべていた。
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					PRINTFORMW 『どう？私の気持ちは伝わった？』
+					PRINTFORMW 「ええ。もう沢山よ。」
+				;ルナサ助手
+				ELSEIF NO:ASSI == 18
+					PRINTFORMW 『ここでは抵抗するだけ無駄です。』
+					PRINTFORMW 『全てを委ねた方が幽々子様のためですよ。』
+					PRINTFORMW 正座している幽々子に向かって、ルナサはそれだけ言って部屋から出て行った。
+				;妖夢助手
+				ELSEIF NO:ASSI == 19
+					PRINTFORMW 「妖夢……ここまで頼りないとは思ってなかったわ……」
+					PRINTFORMW 妖夢は何も言わずに部屋から去っていった。
+					PRINTFORMW 調教後二人が目を合わせる事はなかった……
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					PRINTFORMW 『失礼します』
+					PRINTFORMW 「あら、藍は話が分かるわね」
+					PRINTFORML 
+					PRINTFORMW 『今はひとまず、独りにさせる時間を長くしましょう。』
+				;紫助手
+				ELSEIF NO:ASSI == 22
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子も無理しないで辛くなったら言いなさい』
+						PRINTFORMW 『いつでも相談に乗ってあげるわ』
+						PRINTFORMW 「ええ、ありがとう。でもその必要はないと思うわ」
+					ELSE
+						IF CFLAG:8000 == 1
+							PRINTFORMW 『それじゃあね、幽々子』
+							PRINTFORMW 「またね、紫」
+							PRINTFORMW 幽々子はにこやかに紫を見送った
+						ELSE
+							PRINTFORMW 「紫……なんで……こんなことするの……？」
+							PRINTFORMW 紫がその問いに応じることはなかった。
+						ENDIF
+					ENDIF
+				;リグル助手
+				;S度はミスティア以上
+				ELSEIF NO:ASSI == 24
+					PRINTFORMW 『まだ余裕そうですね』
+					PRINTFORMW 『その方が堕とし甲斐があるんですけどね』
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:8001 == 2
+						PRINTFORMW 『な、なんか怖いよ……』
+						PRINTFORMW 「そうかしら？私はいつも通りの私よ？」
+						PRINTFORMW 部屋から出るまで、ミスティアは終始落ち着かない様子だった。
+					ELSE
+						PRINTFORMW 服を着た後、幽々子は部屋の隅ですすり泣いていた。
+						PRINTFORMW 『あーすっきりした♪また来るから。』
+						PRINTFORMW ミスティアはそう吐き捨てて部屋から出て行った。
+					ENDIF
+				;ヤマメ助手
+				ELSEIF NO:ASSI == 58
+					PRINTFORMW 『とにかく、捕まった以上もう逃げられないよ。諦めた方が身のためだよ。』
+					PRINTFORMW 「……私は諦めないわ。」
+					PRINTFORMW 『固いねえ……まあ、初めはそんな感じかな』
+				ELSE
+					PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+					PRINTFORMW 「……ちらっ☆」
+					PRINTFORMW どうやらこちらの隙を窺っているらしい……
+				ENDIF
+			ELSE
+				PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+				PRINTFORMW 「……ちらっ☆」
+				PRINTFORMW どうやらこちらの隙を窺っているらしい……
+			ENDIF
+		ENDIF
+	CFLAG:8002 = 0
+	RETURN 1
+
+;屈服刻印Lv2
+;心に迷いが出てくる頃合い。
+ELSEIF MARK:2 == 2 && TALENT:150 == 0
+	DRAWLINE
+		IF CFLAG:8001 == 3
+		;実質屈服3
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					PRINTFORMW 『意外としぶといわね』
+					PRINTFORMW 「霊夢……」
+					PRINTFORMW 『そんな目で見られても私は助ける気なんてないけど』
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					PRINTFORMW 『いい加減観念した方がいいと思うぜ』
+					PRINTFORMW 『だってさ、みんなあいつの手に落ちちまったんだろ？』
+					PRINTFORMW 「だからこそ、私は……」
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 『……みんなと一緒にいると賑やかで楽しいから、私は独りは好きではないかな』
+					PRINTFORMW 「分かるわ、その気持ち」
+					PRINTFORMW 「でも、今はそんなこと言ってられないの」
+					;ここから、幽々子は「独り」と解釈します
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					PRINTFORMW 「橙……今幸せかしら？」
+					PRINTFORMW 『うん！』
+					PRINTFORMW 「そう……ならいいわ」
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					PRINTFORMW 『うーん、何か違和感があるんだよねー』
+					PRINTFORMW 『幽々子様と話していても何か足りないというか……』
+					PRINTFORMW 『あー分からなくてもどかしいっ！！』
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					PRINTFORMW 『食べないでいるのも寝ないでいるのも苦痛でしょ？』
+					PRINTFORMW 『性欲も同じ。だから我慢って毒だよ～』
+					PRINTFORMW 幽々子はメルランの言葉に反応しなかった
+				;ルナサ助手
+				ELSEIF NO:ASSI == 18
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様……今すぐ……ですが……』
+						PRINTFORMW 調教後も、ルナサは幽々子の説得に勤しんでいた
+					ELSE
+						PRINTFORMW 「何かしら？」
+						PRINTFORMW 『いえ、特に何も有りません。だだ、幽々子様と一緒にいたいだけです』
+						PRINTFORMW 「そう……ルナサも寂しいのね」
+						PRINTFORMW 『いえ、幽々子様が寂しそうだったので……』
+					ENDIF
+				;妖夢助手
+				;このルートでは幽々子の側に残ります
+				ELSEIF NO:ASSI == 19
+					PRINTFORMW 『幽々子様、私はしばらくここに残りますので何かあったら遠慮無くお申し付け下さい』
+					PRINTFORMW 妖夢は、無言の幽々子の側に立ち続けていた
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					PRINTFORMW 『幽々子様はまだまだ余裕そうに振る舞っていますが、もう既に余裕は消えていると思います』
+					PRINTFORMW 『何となくですが……そんな気がします』
+					PRINTFORMW 一人になった幽々子を遠目に見て、藍は呟いた
+				;紫助手
+				;難易度的にお前が言うなだけど気にしちゃだめ
+				ELSEIF NO:ASSI == 22
+					IF RAND:2 == 0
+						PRINTFORMW 『駄目ね、幽々子ったら自分から苦しんじゃって。』
+						PRINTFORMW 『適度に諦めることも大切なのにね』
+						PRINTFORMW 黙って正座をしている幽々子を遠目に見て、紫は言った
+					ELSE
+						PRINTFORMW 『ごめんね幽々子。私は助けてあげられないの』
+						PRINTFORMW 『でもアドバイスならできるわ。どうかしら？』
+						PRINTFORMW 「……遠慮しておくわ」
+						PRINTFORMW (聞いてしまったら……心が揺らいでしまいそうだから……)
+					ENDIF
+				;リグル助手
+				ELSEIF NO:ASSI == 24
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「もう……いい加減にして……私に構わないで……！」
+						PRINTFORMW 『あははは！いいですよその表情！悔しさがにじみ出ていて最高ですよ！』
+					ELSE
+						PRINTFORMW 「もう……イヤ…………たすけ……て……よう……む……ゆかり……」
+						PRINTFORMW 『あははは！まさか幽々子さんが助けを求めるなんて、虐めぬいた甲斐がありましたよ！』
+					ENDIF
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:8001 == 2
+						PRINTFORMW そそくさと部屋を出るミスティア
+						PRINTFORMW 静かになった部屋で、幽々子はただ一人部屋の隅で正座をしていた
+					ELSE
+						PRINTFORMW 『終わっちゃうのー？もう少しで壊れそうなのに……』
+						PRINTFORMW 呆然としている幽々子に追い打ちをかけるように、ミスティアは言った
+					ENDIF
+				;ヤマメ助手
+				ELSEIF NO:ASSI == 58
+					PRINTFORMW 『大丈夫さ、しばらくしてると孤独にも慣れるよ』
+					PRINTFORMW 「お気遣いありがと。意外と優しいのね」
+				ELSE
+					PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+					PRINTFORMW うつむいているため表情はわからないが、手一杯な様子は伝わってきた
+				ENDIF
+			ELSE
+				PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+				PRINTFORMW うつむいているため表情はわからないが、手一杯な様子は伝わってきた
+			ENDIF
+		ELSE
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					PRINTFORMW 『意外としぶといわね』
+					PRINTFORMW 「……残念ね。私はちょっとやそっとでは墜ちないわ」
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					IF RAND:2 == 0
+						PRINTFORMW 『いい加減プライドを捨てたらどうだ？』
+						PRINTFORMW 『高いプライドなんて邪魔でしかないと思うぞ』
+						PRINTFORMW 「必ずしもデメリットだけではないと思うわ」
+					ELSE
+						PRINTFORMW 『素直になったらどうだ？』
+						PRINTFORMW 「私は素直よ」
+						PRINTFORMW 『表情と言動が一致してないぜ』
+					ENDIF
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 『……何だか、この部屋寒い感じがする』
+					PRINTFORMW 「霊が近くにいるからかしら？」
+					PRINTFORMW 『……違う、雰囲気が寒い感じがするの』
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					PRINTFORMW 『幽々子様、もうちょっと一緒にいていい？』
+					PRINTFORMW 「ええ……大丈夫よ」
+					PRINTFORMW (橙……幸せそうね……)
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様もみんなで楽しもうよー』
+						PRINTFORMW 「一人でいる時間も大切よ」
+					ELSE
+						PRINTFORMW 『幽々子様！またねー！』
+						PRINTFORMW 「……ええ。またいらっしゃい。」
+					ENDIF
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					IF RAND:2 == 0
+						PRINTFORMW 『我慢は身体に毒よ？』
+						PRINTFORMW 「……大きなお世話よ」
+						PRINTFORMW 『こんなにも気持ちいいのに……もったいないわ。』
+					ELSE
+						PRINTFORMW 「なんで……私……」
+						PRINTFORMW 『だって、幽々子様は凄く魅力的な身体をしてるでしょ？』
+						PRINTFORMW 『でもこれって幸運なことだと思うわ！だって』
+						PRINTFORMW 「メルラン……その考え方は無理があるわ」
+					ENDIF
+				;ルナサ助手
+				ELSEIF NO:ASSI == 18
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様……今の、明らかに無理している笑顔でしたね』
+						PRINTFORMW 『本当に大丈夫なんでしょうか……』
+						PRINTFORMW ルナサはポツリと呟いた
+					ELSE
+						PRINTFORMW 何か考えがあるのだろうか、ルナサは部屋に最後まで残っていた。
+						PRINTFORMW 部屋から出た後こっそりと中を覗くとルナサは何かを話しているようだった。
+					ENDIF
+				;妖夢助手
+				;このルートでは残ろうとせず帰ります
+				ELSEIF NO:ASSI == 19
+					PRINTFORML 『失礼します。』
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「……」
+						PRINTFORMW 幽々子はやはり妖夢とは目を合わせようとしなかった。
+					ELSE
+						PRINTFORMW 妖夢が部屋から出て行く時、幽々子は何か言いたげな様子を見せていた。
+					ENDIF
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					IF RAND:2 == 0
+						PRINTFORMW 『どうですか？幽々子様。気持ちよかったですか？』
+						PRINTFORMW 幽々子は何も答えない。
+						PRINTFORMW 『失礼します。』
+						PRINTFORML 
+						PRINTFORML 『もう少しですよ。ご主人様。』
+						PRINTFORMW 部屋から出た後、藍はそっとささやいた。
+					ELSE
+						PRINTFORMW 『幽々子様……やはり一筋縄では行きませんね』
+						PRINTFORMW 『ですが……何か違和感があるように思えます……』
+						PRINTFORMW 『何かを隠しているような印象を受けました』
+					ENDIF
+				;紫助手
+				ELSEIF NO:ASSI == 22
+					IF CFLAG:8000 == 1
+						PRINTFORMW 『それじゃあね、幽々子』
+						PRINTFORMW 「紫……またね……」
+						PRINTFORMW 幽々子の顔にはわずかに寂しさが表れていた
+					ELSE
+						PRINTFORMW 「紫……行っちゃうの……？」
+						PRINTFORMW 『ええ。命令だもの。またね。』
+						PRINTFORMW 「うん……」
+					ENDIF
+				;リグル助手
+				ELSEIF NO:ASSI == 24
+					PRINTFORMW 「ぐ……うぅっ！！あ、なた……こんなこと……して……」
+					PRINTFORMW 『へえ、まだまだ抵抗はできるんですね。』
+					PRINTFORMW 『まあ、あっさり潰れてもらっても困るんですけどね』
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:8001 == 1
+						IF CFLAG:8000 == 1
+							PRINTFORMW 服を着た後、幽々子は部屋の隅ですすり泣いていた。
+							PRINTFORMW 『あーすっきりした♪また来るから。』
+							PRINTFORMW そう言ってミスティアが出て行った後、幽々子からは嗚咽が漏れていた……
+						ELSE
+							PRINTFORML 「もうこんなの嫌……」
+							PRINTFORMW 服を着た後、幽々子は部屋の隅で咽び泣いていた。
+							PRINTFORMW ミスティアはその光景を見て満足して帰っていった。
+						ENDIF
+					ELSE
+						PRINTFORMW 「あら、もう帰っちゃうの？」
+						PRINTFORMW ミスティアが急いで部屋から出て行った後、幽々子はわずかに寂しそうな表情をした
+					ENDIF
+				;ヤマメ助手
+				ELSEIF NO:ASSI == 58
+					PRINTFORMW 『さすがになかなか手強いねえ。』
+					PRINTFORMW 「……帰って」
+					PRINTFORMW 『抵抗すればするほど傷は深まるのに。……後で嫌でも知ることになるだろうけど。』
+				ELSE
+					PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+					PRINTFORMW こちらを意識する様子は無い
+					PRINTFORMW だが、無視を決め込んでいるのか自制で手一杯なのかの判断がつかなかった……
+				ENDIF
+			ELSE
+				PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+				PRINTFORMW こちらを意識する様子は無い
+				PRINTFORMW だが、無視を決め込んでいるのか自制で手一杯なのかの判断がつかなかった……
+			ENDIF
+		ENDIF
+	CFLAG:8002 = 0
+	RETURN 1
+	
+
+;屈服刻印Lv3取りたて
+ELSEIF MARK:2 == 3 && TALENT:150 == 0 && ( CFLAG:5312 == 4 || CFLAG:5312 == 3 )
+	DRAWLINE
+		IF CFLAG:5312 == 4
+		;A絶頂屈服3って俺の中ではこんなイメージ
+			PRINTFORMW 「ううん、こんなのありえないわ……」
+			PRINTFORMW ただそう呟くと、幽々子は真っ先に布団にくるまった。
+			PRINTFORMW どうやら、幽々子は不浄の穴で絶頂を迎えてしまったことがまだ信じられないようだ。
+			PRINTFORMW だが、本人が認めなくても事実は事実。幽々子の身体は来るところまで来てしまった事に変わりはない。
+			PRINTFORMW 今、幽々子は何を思っているのかは分からない。しかし、少なくとも虚無感は感じていることだろう。
+			PRINTFORMW これで今後の調教もやりやすくなる……そう考え、部屋を出た。
+			CFLAG:5312 = 6
+			;Ａ系の調教に役立てようかなと考えてます。
+		ELSEIF CFLAG:5312 == 3
+			PRINTFORMW (私……もうこの人に逆らえないの……？)
+			PRINTFORMW (私は……)
+			CFLAG:5312 = 5
+		ENDIF
+		CFLAG:8002 = 0
+		RETURN 1
+		
+;屈服刻印Lv3で3回以上中田氏された
+ELSEIF MARK:2 == 3 && TALENT:150 == 0 && CFLAG:8002 >= 3
+	DRAWLINE
+	PRINTFORMW 幽々子は人形の様に力なく呆然としている
+	PRINTFORMW 虚ろな目からはいくつのもの涙がこぼれ落ちていた。
+	PRINTFORMW いくらか諦めはついていても、陵辱され何回も中に出されたことはショックで仕方ない様だ。
+	CFLAG:8002 = 0
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:150 == 0
+	DRAWLINE
+		IF CFLAG:8001 == 3
+		;心がBroken　気力もBroken
+		;逆にあまり泣かなくなる
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					PRINTFORMW 『はーっ、やっと墜ちたのね。長かったわ』
+					PRINTFORMW 「霊夢……」
+					PRINTFORMW 『ちょっ……！急に抱きつかないでよ……』
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					PRINTFORMW 『へへっ、吹っ切れると気持ちいいモンだろ？』
+					PRINTFORMW 『深刻に考えすぎても疲れるだけだしな』
+					PRINTFORMW 「魔理沙……その通りかもね……」
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 『……これでいいと思う。みんながいるし、賑やかになると思う』
+					PRINTFORMW 「そうかもしれないわね……」
+					PRINTFORMW (そう、これでいいの……よかったの……)
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					PRINTFORMW 『幽々子様……』
+					PRINTFORMW 「ごめんね……遊んであげられなくて……」
+					PRINTFORMW 「今日は、少しだけ……休ませて……」
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様ー！また来るね！』
+						IF CFLAG:8000 == 1
+							PRINTFORMW 「ええ……また、ね……」
+							PRINTFORMW 幽々子は声を絞り出すように言った
+						ELSE
+							PRINTFORMW 「……」
+							PRINTFORMW 今の幽々子には返事をする余裕すらないようだ……
+						ENDIF
+					ELSE
+						PRINTFORMW 『あれ？幽々子様……今日は泣いてない？』
+						PRINTFORMW 「違うのよ、リリカ」
+						PRINTFORMW 「本当に辛い時って、逆に泣かないものなのよ……」
+					ENDIF
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					IF RAND:2 == 0
+						IF CFLAG:8000 == 1
+							PRINTFORMW 『幽々子様、泣かなくなったの？それがいいよー！もっと明るく行かないとね！』
+							PRINTFORMW 「メルラン……違うの」
+							PRINTFORMW 「もう……涙もでないわ……」
+							;相手がメルランなので涙は出ません
+						ELSE
+							PRINTFORMW 『幽々子様、悲観的になったら駄目駄目ー！今いる状況を楽しもう？』
+							PRINTFORMW 「……そうね。楽観的にいかないと駄目ね……」
+							PRINTFORMW 「楽観的に……ね……」
+						ENDIF
+					ELSE
+						PRINTFORMW 陰気な雰囲気を払拭するかのように、静かな部屋にメルランの陽気な音楽が響いていた
+						PRINTFORMW 「ありがとう、メルラン……ちょっとだけ明るくなれた気がするわ……」
+						PRINTFORMW 『幽々子様が落ち込んでるとこっちまで悲しくなっちゃうからね！』
+						PRINTFORMW 『これくらいならいつでもしてあげるよ！』
+					ENDIF
+				;ルナサ助手
+				ELSEIF NO:ASSI == 18
+					PRINTFORMW もはや幽々子は正座すらしなくなっていた
+					PRINTFORMW 『幽々子様……私でよければ……』
+					PRINTFORMW 「ええ……お願い……」
+					PRINTFORMW 調教の終了を告げた後も、ルナサは幽々子の側に座っていた
+				;妖夢助手
+				ELSEIF NO:ASSI == 19
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様……いいのですか？私はもう……』
+						PRINTFORMW 「いいのよ……味方でなくてもいいの……」
+						PRINTFORMW 「でも……今はできるだけ普通の妖夢でいて……」
+						PRINTFORMW 『はい……わかりました』
+					ELSE
+						PRINTFORMW 「もう、元の生活に戻れないことは分かってるわ……」
+						PRINTFORMW 「ただ……妖夢、普段通りに接して……」
+						PRINTFORMW 『はい……わかりました』
+					ENDIF
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様、ついに吹っ切れたのですね……』
+						PRINTFORMW 『こちらなら妖夢も紫様もいます。』
+						PRINTFORMW 「ええ……そうね……」
+						PRINTFORMW 「妖夢も……紫も……いるなら……心強いわね……」
+					ELSE
+						PRINTFORMW 『最近、幽々子様の口から冗談を聞いていません……』
+						PRINTFORMW 『幽々子様……』
+						PRINTFORMW 藍は心の底から心配している表情をしていた
+					ENDIF
+				;紫助手
+				ELSEIF NO:ASSI == 22
+					IF RAND:2 == 0
+						IF CFLAG:8000 == 1
+							PRINTFORMW 『幽々子がこんなに泣いてるのを見るのっていつ以来かしら』
+							PRINTFORMW 「私も……こんなに……」
+							;PRINTFORMW 「私も……こんなに……泣いたのは……久しぶり……ね……」
+							PRINTFORMW 『……今は何も言わないで、泣いてすっきりしなさい』
+							PRINTFORMW 「ええ……そうさせて……」
+						ELSE
+							PRINTFORMW 『幽々子がこんなに泣いてるのを見るのっていつ以来かしら』
+							PRINTFORMW 『……今は何も言わないで、泣いてすっきりしなさい』
+							PRINTFORMW 「紫……うううっ……」
+						ENDIF
+					ELSE
+						PRINTFORMW 『知ってるわ。もう幽々子には頼れる人がいないってこと。後は……』
+						PRINTFORMW 「紫……それ以上……やめて……」
+						PRINTFORMW 「……そういう話……聞きたくないの……」
+						PRINTFORMW 『……ごめんね。私もやり過ぎたわ』
+					ENDIF
+				;リグル助手
+				ELSEIF NO:ASSI == 24
+					PRINTFORMW 『つまんないなーもっと抵抗してよ。わんわん泣いてよ。また誰かに哀れに助けを求めてよ』
+					PRINTFORMW (もう……どうにでもして……)
+					PRINTFORMW 無反応になった幽々子をげしげしと蹴りながらリグルは言った
+					;下のミスティアと比べて泣く余裕もないほどフルボッコにされてるという
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:8001 == 2
+						PRINTFORMW 『～～～～！！！』
+						PRINTFORMW 急に幽々子に抱きしめられたミスティアは言葉に表せないような悲鳴をあげた
+					ELSE
+						IF RAND:2 == 0
+							PRINTFORMW 『あははーそんなに泣いて、ホント惨めだねー。どう？悔しい？』
+							IF CFLAG:8000 == 1
+								PRINTFORMW 終始ミスティアに弄ばれ、幽々子はずっとすすり泣いていた……
+							ELSE
+								PRINTFORMW 「う……うああああああっ！」
+								PRINTFORMW 目に見えない様々な物を破壊されて、幽々子はずっと泣いていた……
+								;要はプライドをオーバーキルされたってことです
+							ENDIF
+						ELSE
+							PRINTFORMW 『ねえ、悔しいでしょ？仕方ないよねーこんなにいいようにされちゃってさー』
+							PRINTFORMW (……。今は耐える時……たとえ、悔しくても、辛くても……)
+							PRINTFORMW ミスティアは気付いていないようだったが、幽々子の肩は僅かに震えていた
+						ENDIF
+					ENDIF
+				;ヤマメ助手
+				ELSEIF NO:ASSI == 58
+					PRINTFORMW 『悪いけど、私にはどうすることもできないよ？』
+					PRINTFORMW 「別にいいのよ……」
+					PRINTFORMW 『そうかい……私で良ければ、話し相手にはなってあげるよ』
+				ELSE
+					IF RAND:2 == 0
+						PRINTFORMW 幽々子はゆっくりと服を着た後、正座はせずにベッドに座りこんだ
+						PRINTFORMW 頬から伝った涙が、ぽろぽろと膝元に落ちていった
+					ELSE
+						PRINTFORMW (私も、皆と同じ考えを持てば楽になれるのかしら……)
+						PRINTFORMW (プライドや常識を捨てれば、軽くなれるのかしら……)
+						PRINTFORMW ふふっ、と幽々子は笑った
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 幽々子はゆっくりと服を着た後、正座はせずにベッドに座りこんだ
+					PRINTFORMW 頬から伝った涙が、ぽろぽろと膝元に落ちていった
+				ELSE
+					PRINTFORMW (私も、皆と同じ考えを持てば楽になれるのかしら……)
+					PRINTFORMW (プライドや常識を捨てれば、軽くなれるのかしら……)
+					PRINTFORMW ふふっ、と幽々子は笑った
+				ENDIF
+			ENDIF
+		ELSE
+			IF ASSI > 0
+				;霊夢助手
+				IF NO:ASSI == 1
+					PRINTFORMW 「もう……抵抗するだけ……無駄なのね……」
+					PRINTFORMW 『分かってるじゃない。できれば最初からそれでいて欲しかったわ』
+					PRINTFORMW 「霊夢……私達どうなっちゃうの……？」
+				;魔理沙助手
+				ELSEIF NO:ASSI == 2
+					PRINTFORMW 『別に正解なんて変わりはしないからな』
+					PRINTFORMW 『好きにに生きてみたらどうだ？』
+					PRINTFORMW 「魔理沙……ふふっ、あなたらしいわね……」
+				;レティ助手
+				ELSEIF NO:ASSI == 12
+					PRINTFORMW 部屋の中は、重い沈黙で満たされていた
+				;橙助手
+				ELSEIF NO:ASSI == 13
+					PRINTFORMW 『幽々子様……』
+					PRINTFORMW 「私も……泣きたくなるときもあるわ……」
+					PRINTFORMW 「橙も、いつかわかる時が来ると思うわ……」
+				;リリカ助手
+				ELSEIF NO:ASSI == 16
+					PRINTFORMW 『幽々子様、泣いてる？』
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「あら、意外かしら……？私にも、こういう時もあるわ。」
+						PRINTFORMW 『ちょっと意外かも(幽々子様、絶対強がってる……)』
+					ELSE
+						PRINTFORMW 「ばれちゃった……？」
+						PRINTFORMW 『さすがにわかっちゃうよー(幽々子様、いつものキレがない……)』
+					ENDIF
+				;メルラン助手
+				ELSEIF NO:ASSI == 17
+					IF RAND:2 == 0
+						PRINTFORMW 『どう？ハッピーでしょ？』
+						IF CFLAG:8000 == 1
+							PRINTFORMW 「そう、ね……」
+							PRINTFORMW (抵抗しても……苦しむだけね……)
+						ELSE
+							PRINTFORMW 「あはは……」
+							PRINTFORMW (もう……抵抗するのも……)
+						ENDIF
+						PRINTFORMW 幽々子は吹っ切れたかのような笑いを見せていた。
+					ELSE
+						PRINTFORMW 『幽々子様ー……そんな悲しい顔しないでよー……』
+						PRINTFORMW 『私まで気分が沈んじゃうわー……』
+						PRINTFORMW 「ごめんね、メルラン……」
+						PRINTFORMW 「分かってはいるんだけど……どうしても……」
+					ENDIF
+				;ルナサ助手
+				ELSEIF NO:ASSI == 18
+					IF RAND:2 == 0
+						PRINTFORMW 『幽々子様、全てを捨てて楽になれましたか？』
+						PRINTFORMW 「そうね……全てを捨てるって……とっても楽になれるわ……」
+						PRINTFORMW 「それに、気持ちよくて……スッキリとすること……なの、ね……」
+					ELSE
+						PRINTFORMW 服を着た後、幽々子は部屋の隅で正座をしていた。
+						PRINTFORMW その目からは自然と涙がこぼれていた。
+						PRINTFORMW 『幽々子様……』
+						PRINTFORMW ルナサはしばらく部屋に残り、しばらく幽々子のそばにいてあげたようだ。
+					ENDIF
+				;妖夢助手
+				ELSEIF NO:ASSI == 19
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「妖夢……」
+						PRINTFORMW 『何でしょうか？』
+						PRINTFORMW 「やっぱり何でもないわ……何でも……」
+					ELSE
+						PRINTFORMW 「妖夢……もう少しここにいて……」
+						PRINTFORMW 『……わかりました。』
+						PRINTFORMW 幽々子の泣く声はしばらく止むことはなかった。
+					ENDIF
+				;藍助手
+				ELSEIF NO:ASSI == 21
+					IF RAND:2 == 0
+						IF CFLAG:8000 == 1
+							PRINTFORMW 「藍……ちょっといいかしら……？」
+						ELSE
+							PRINTFORMW 「藍……ちょっとだけいい……？」
+						ENDIF
+							PRINTFORMW 『……何でしょうか？』
+							PRINTFORMW 幽々子の意図を理解したあなたは藍に任せて部屋を出ることにした。
+					ELSE
+						PRINTFORMW 『幽々子様……何か手伝うことは……』
+						PRINTFORMW 「藍……ありがと。でも、今は一人になりたいの……」
+						PRINTFORML 
+						PRINTFORMW 『幽々子様……墜ちる瞬間は呆気ないものなのですね……』
+						PRINTFORMW 『私も……そうだったのでしょうか』
+					ENDIF
+				;紫助手
+				ELSEIF NO:ASSI == 22
+					IF RAND:2 == 0
+						IF CFLAG:8000 == 1
+							PRINTFORMW 『幽々子……ついに諦めたのね』
+							PRINTFORMW 「もう、私にはどうすることもできないの……」
+							IF TALENT:ASSI:150 == 1
+								PRINTFORMW 『賢明な判断ね。それに悲観的すぎるわ。意外とここの暮らしも悪くないわよ？』
+								PRINTFORMW 「紫……うん、そうかもね……」
+							ELSEIF MARK:ASSI:2 == 3
+								PRINTFORMW 『私も通った道よ……』
+								PRINTFORMW 『しばらくここままでいましょう……その方が気分も楽になるわ……』
+							ELSE
+								PRINTFORMW 『そう……幽々子まで……』
+								PRINTFORMW 『早くあの外道を殺す手立てを考えないとマズイわね……』
+								PRINTFORMW 「紫……もう無駄だと思うの……」
+							ENDIF
+						ELSE
+							PRINTFORMW 「紫……私……もう……」
+							PRINTFORMW 『いいのよ……思いっきり泣きなさい。』
+							PRINTFORMW 「紫……！う……ううっ……」
+							SIF TALENT:ASSI:150 == 0
+								PRINTFORMW 部屋から二人のすすり泣く声が止むことはなかった……
+						ENDIF
+					ELSE
+						PRINTFORMW 『何もかも捨てるってどんな感じかしら？』
+						PRINTFORMW 「心が……軽くなったわ……」
+						PRINTFORMW 「でも……」
+						PRINTFORMW 『ふふ……辛かったらそれ以上は言わなくてもいいわ』
+					ENDIF
+				;リグル助手
+				ELSEIF NO:ASSI == 24
+					IF RAND:2 == 0
+						PRINTFORMW 『今の気分はどうですか？』
+						PRINTFORMW 幽々子は呆然とへたり込み、何も答えない
+						PRINTFORMW 『あははっ。答える気力も湧かないですか。最高ですよ。』
+					ELSE
+						PRINTFORMW 『幽々子さんは頑張った方だと思いますよ』
+						PRINTFORMW 『無駄なのに惨めに抵抗し続けて、私を楽しませてくれたんだから』
+						PRINTFORMW リグルが部屋から出た後、悔しさからか幽々子は声を殺して泣いていた
+					ENDIF
+				;ミスティア助手
+				ELSEIF NO:ASSI == 25
+					IF CFLAG:8001 == 1
+						PRINTFORMW 幽々子は服も着ず、ふらふらとベッドまで歩いていきそのまま臥して動かなくなった。
+						PRINTFORMW どうやら精神的に消耗しきっていて泣くことすらできないようだ。
+						PRINTFORMW その光景を見たミスティアは平静を装っているが、顔がにやけてしまっていた。
+					ELSE
+						PRINTFORMW 『し、失礼しました……』
+						PRINTFORMW 「……」
+						PRINTFORMW 幽々子には、ミスティアに構う余裕はもはや残っていなかった。
+					ENDIF
+				;ヤマメ助手
+				ELSEIF NO:ASSI == 58
+					IF RAND:2 == 0
+						PRINTFORMW 『何とかしてあげたいけど、私には無理そうだね』
+						PRINTFORMW 『まあ、なんとかなるんじゃないかね？』
+						PRINTFORMW それだけ言うとヤマメは部屋に戻っていった
+					ELSE
+						PRINTFORMW ヤマメに急かされ、足早に部屋を出ることにした
+						PRINTFORMW 『……あんな時は、1人にさせる方が精神的にくるのさ』
+						PRINTFORMW それだけ言うとヤマメは部屋に戻っていった
+					ENDIF
+				ELSE
+					PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+					PRINTFORMW その頬は涙が伝い、うわ言で助けを求めているようだ……
+				ENDIF
+			ELSE
+				PRINTFORMW いそいそと服を着ると、幽々子は部屋の隅で正座をしていた
+				PRINTFORMW その頬は涙が伝い、うわ言で助けを求めているようだ……
+			ENDIF
+		ENDIF
+	CFLAG:8002 = 0
+	RETURN 1
+
+;恋慕＋体力500未満
+ELSEIF TALENT:150 == 1 && BASE:0 < 500
+	DRAWLINE
+	;好感度1600以下　つまり、恋慕取って、あまり間がない
+	;冗談やおとぼけが少ない
+	IF CFLAG:2 < 1600
+		IF ASSI > 0
+			;霊夢助手
+			IF NO:ASSI == 1
+				PRINTFORMW 「霊夢ったら……ちょっと羨ましそうね」
+				PRINTFORMW 『べ、別に羨ましくなんか……』
+				PRINTFORMW 「あらあら……典型的な反応ね……」
+			;魔理沙助手
+			ELSEIF NO:ASSI == 2
+				PRINTFORMW 『どうしたんだ？』
+				PRINTFORMW 「何だか変な感じなのよ……スッキリはしたんだけど」
+				PRINTFORMW 『あいつに大変なものを盗まれたのかもな』
+			;レティ助手
+			ELSEIF NO:ASSI == 12
+				PRINTFORMW 「王子様に出会えて、これで良かったのかもしれないわ」
+				PRINTFORMW 『……明るくなりましたね』
+				PRINTFORMW 「ええ、変われたわ」
+			;橙助手
+			ELSEIF NO:ASSI == 13
+				PRINTFORMW 『幽々子様、一緒に寝ていい？』
+				PRINTFORMW 「ええ、少し休憩しましょう？」
+			;リリカ助手
+			ELSEIF NO:ASSI == 16
+				PRINTFORMW 『幽々子様、いつも通りに戻ってくれて良かった！心配したんだよー』
+				PRINTFORMW 「あらあら……心配してくれてたのね。ありがとう、リリカ」
+			;メルラン助手
+			ELSEIF NO:ASSI == 17
+				PRINTFORMW 「今日も愛してもらって楽しかったわ……心の中のもやもやも少し吹き飛んだわ……」
+				PRINTFORMW 『大丈夫大丈夫、数日たったらそんな気持ちも全て吹き飛ぶよ！』
+				PRINTFORMW 「ふふっ……心強いわね」
+			;ルナサ助手
+			ELSEIF NO:ASSI == 18
+				PRINTFORMW 「あらあら、機嫌が良さそうね」
+				PRINTFORMW 「仲間が増えたからでしょ？あ、あと私が元に戻ったから？」
+				PRINTFORMW 『え……私いつの間に……？』
+			;妖夢助手
+			ELSEIF NO:ASSI == 19
+				PRINTFORMW 「ねえ、妖夢……ちょっと疲れちゃった。何か用意してくださらない？」
+				PRINTFORMW 『そ、そんな急に言われましても……』
+				PRINTFORMW 妖夢の声は自然と弾んでるように聞こえた
+			;藍助手
+			ELSEIF NO:ASSI == 21
+				PRINTFORMW 「あら、藍ったら嬉しそうね」
+				PRINTFORMW 『そうですか……？』
+				PRINTFORMW 『恐らく……幽々子様が戻って安心したからです』
+			;紫助手
+			ELSEIF NO:ASSI == 22
+				PRINTFORMW 『ふふっ……こっちの世界へようこそ』
+				PRINTFORMW 「紫……共に墜ちていきましょう……ずっと……」
+				PRINTFORMW 『ええ、幽々子……ずっと、奈落へ……』
+			;リグル助手
+			;変化無し
+			ELSEIF NO:ASSI == 24
+				PRINTFORMW 『ふー……なんだかこっちも疲れましたよ。また泣かせに来ますから、覚悟してくださいね』
+				PRINTFORMW 今回はいつもより、幽々子がしがみついてくる力が強かった気がした
+			;ミスティア助手
+			;変化無し
+			ELSEIF NO:ASSI == 25
+				PRINTFORMW 「ごめんなさい……もう動けないわ……。ね、最後に少しだけ……」
+				PRINTFORMW まあいいかと思い、幽々子と軽く口づけを交わす。
+					IF CFLAG:7004 == 1 || CFLAG:8001 == 2 
+						PRINTFORMW ちらっとミスティアの方を見ると、ミスティアは私にも下さいと言わんばかりの視線をこちらに向けていた……
+					ELSE
+						PRINTFORMW ちらっとミスティアの方を見ると、ミスティアはむすっとして頬を膨らませていた。
+					ENDIF
+			;ヤマメ助手
+			ELSEIF NO:ASSI == 58
+				PRINTFORMW 『いいんじゃない？たまにはこういうのも』
+				PRINTFORMW 「たまには？でも、何だか幸せな感じがするのよね～」
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「お腹空いた～……もう無理よー、ご飯にしましょ？」
+					PRINTFORMW 飄々としてはいるものの、体はぐったりとして限界を訴えていた……
+				ELSE
+					PRINTFORMW 「%SAVESTR%……その……ちょっとだけ、休まない……？」
+					PRINTFORMW 甘えてくる幽々子を受け入れ、少し休憩を取ることにした
+				ENDIF
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「お腹空いた～……もう無理よー、ご飯にしましょ？」
+				PRINTFORMW 飄々としてはいるものの、体はぐったりとして限界を訴えていた……
+			ELSE
+				PRINTFORMW 「%SAVESTR%……その……ちょっとだけ、休まない……？」
+				PRINTFORMW 甘えてくる幽々子を受け入れ、少し休憩を取ることにした
+			ENDIF
+		ENDIF
+	ELSE
+		IF ASSI > 0
+			;霊夢助手
+			IF NO:ASSI == 1
+				PRINTFORMW 『あー……ねえ、%CALLNAME:MASTER%……私も我慢できなくなってきたから、ちょっとだけいい……？』
+				PRINTFORMW 「へー霊夢も女の子らしい仕草をするときもあるのね」
+				PRINTFORMW 『あんた私を何だと思ってるのよ』
+			;魔理沙助手
+			ELSEIF NO:ASSI == 2
+				PRINTFORMW 「ちょっと%SAVESTR%と夢の世界へ日帰りツアーに行ってくるわ。おやすみ～」
+				PRINTFORMW 『……なんだよマイペースな奴だな』
+				PRINTFORMW 『まあ、いつもの幽々子らしいっちゃらしいか』
+			;レティ助手
+			ELSEIF NO:ASSI == 12
+				PRINTFORMW 「運動をしたらお腹が空いたわ。今日のごはんは何かしら？」
+				PRINTFORMW 『……幽々子さんって、いつもこんな感じなのですか？』
+				PRINTFORMW 「あら、紛う事なきいつもの私よ」
+			;橙助手
+			ELSEIF NO:ASSI == 13
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子様ー、一緒に寝ていい？』
+					PRINTFORMW 「よしよし、ちょっとだけ休みましょう？」
+				ELSE
+					PRINTFORMW 『幽々子様ー、一緒に休もう？』
+					PRINTFORMW 「ええ、みんなで休憩しましょ」
+				ENDIF
+			;リリカ助手
+			ELSEIF NO:ASSI == 16
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子様、大丈夫？』
+					PRINTFORMW 「ええ、大丈夫よ……こんなに愛してもらって嬉しいわ……」
+				ELSE
+					PRINTFORMW 『ねえ～ご主人様ー次は私がいいなー』
+					PRINTFORMW 『二人を見ていたらエッチな気分になっちゃった♪』
+					PRINTFORMW 「リリカったらこんなにも淫乱になっちゃって、お姉さん悲しいわ～」
+					PRINTFORMW 『う……で、でも身体が疼いちゃうんだよー……』
+				ENDIF
+			;メルラン助手
+			ELSEIF NO:ASSI == 17
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子様、今すっごく幸せでしょ？』
+					PRINTFORMW 「ええ……こんな……素敵な時間、滅多にないわ……」
+				ELSE
+					PRINTFORMW 『幽々子様いいな～』
+					PRINTFORMW 『ご主人様！わたしも準備万端だよ！！早く早くー』
+					PRINTFORMW 「あらあら、メルランったらせっかちさんね～」
+				ENDIF
+			;ルナサ助手
+			ELSEIF NO:ASSI == 18
+				IF RAND:2 == 0
+					PRINTFORMW 『幽々子様、お体の方は……』
+					PRINTFORMW 「私は大丈夫よ。強いて言うならお腹がすいちゃった位かしら……」
+				ELSE
+					PRINTFORMW 『幽々子様……少し、羨ましい……』
+					PRINTFORMW 「あらあら、本当に少しかしら？」
+					PRINTFORMW 『……とても羨ましいです』
+					PRINTFORMW 「ふふっ、素直ね～こっちにいらっしゃい」
+				ENDIF
+			;妖夢助手
+			ELSEIF NO:ASSI == 19
+				IF RAND:2 == 0
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「ねえ妖夢、ご飯はまだかしら？運動したらお腹が空いたのよ」
+					ELSE
+						PRINTFORMW 「お腹すいた～  ようむーご飯まだ？」
+					ENDIF
+					PRINTFORMW 『幽々子様……そんなこと急に言われましても……』
+					PRINTFORMW 顔は呆れているものの、いつも通りの幽々子に妖夢は安心しているようだ。
+				ELSE
+					PRINTFORMW 「今日もいっぱい愛してもらえたわ……」
+					PRINTFORMW 「あ、妖夢ったら今羨ましいって顔したでしょ」
+					PRINTFORMW 『い、いえ！とんでもございません！』
+					PRINTFORMW 「隠さなくても私には分かるわ～」
+				ENDIF
+			;藍助手
+			ELSEIF NO:ASSI == 21
+				PRINTFORMW 「ねえ、藍。お腹すいたわ。」
+				PRINTFORMW 『といいましても……』
+				PRINTFORMW とは言っても、いつもの幽々子に藍は少し安心しているようだ。
+			;紫助手
+			ELSEIF NO:ASSI == 22
+				PRINTFORMW 『こんなにも愛してもらえるなんて……羨ましいわ。』
+				PRINTFORMW 「大丈夫よ……次は紫も可愛がってもらえるわよ。」
+			;リグル助手
+			ELSEIF NO:ASSI == 24
+				PRINTFORMW 『ふー……なんだかこっちも疲れましたよ。また泣かせに来ますから、覚悟してくださいね』
+				PRINTFORMW 今回はいつもより、幽々子がしがみついてくる力が強かった気がした
+			;ミスティア助手
+			ELSEIF NO:ASSI == 25
+				PRINTFORMW 「ごめんなさい……もう動けないわ……。ね、最後に少しだけ……」
+				PRINTFORMW まあいいかと思い、幽々子と軽く口づけを交わす。
+					IF CFLAG:7004 == 1 || CFLAG:8001 == 2 
+						PRINTFORMW ちらっとミスティアの方を見ると、ミスティアは私にも下さいと言わんばかりの視線をこちらに向けていた……
+					ELSE
+						PRINTFORMW ちらっとミスティアの方を見ると、ミスティアはむすっとして頬を膨らませていた。
+					ENDIF
+			;ヤマメ助手
+			ELSEIF NO:ASSI == 58
+				PRINTFORMW 「ちょっと疲れちゃったわ。でも、最後に少しだけ……」
+				PRINTFORMW 『う～ん、見せつけてくれるねえ』
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「お腹空いた～……もう無理よー、ご飯にしましょ？」
+					PRINTFORMW 飄々としてはいるものの、体はぐったりとして限界を訴えていた……
+				ELSE
+					PRINTFORMW 「%SAVESTR%……ちょっとだけ休みましょう……？」
+					PRINTFORMW 甘えてくる幽々子を受け入れ、少し休憩を取ることにした
+				ENDIF
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「お腹空いた～……もう無理よー、ご飯にしましょ？」
+				PRINTFORMW 飄々としてはいるものの、体はぐったりとして限界を訴えていた……
+			ELSE
+				PRINTFORMW 「%SAVESTR%……ちょっとだけ休みましょう……？」
+				PRINTFORMW 甘えてくる幽々子を受け入れ、少し休憩を取ることにした
+			ENDIF
+		ENDIF
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:150 == 1
+	DRAWLINE
+	;好感度1600以下　つまり、恋慕取って、あまり間がない
+	IF CFLAG:2 < 1600
+		IF ASSI > 0
+			;霊夢助手
+			IF NO:ASSI == 1
+				PRINTFORMW 『幽々子が元に戻って安心したわ、何だかんだ言って心配してたから』
+				PRINTFORMW 「背筋がぞわっとしたわ」
+				PRINTFORMW 『何よその言いぐさ』
+			;魔理沙助手
+			ELSEIF NO:ASSI == 2
+				PRINTFORMW 『晴れて私達の仲間入りだな！よろしくな！』
+				PRINTFORMW 「ええ、よろしくお願いね、魔理沙」
+				PRINTFORMW 『……なんか、何だろな。このよく分からない感じは』
+			;レティ助手
+			ELSEIF NO:ASSI == 12
+				PRINTFORMW 『……幽々子さん、雰囲気が変わりましたね』
+				PRINTFORMW 『……春を迎えたみたいですね』
+				PRINTFORMW 「ふふっ……素敵な比喩ね」
+			;橙助手
+			ELSEIF NO:ASSI == 13
+				PRINTFORMW 『幽々子様ー！よかったー！』
+				PRINTFORMW 「心配かけてごめんね。私はもう大丈夫よ」
+				PRINTFORMW 「……これでよかったのね」
+			;リリカ助手
+			ELSEIF NO:ASSI == 16
+				PRINTFORMW 「んー……終わっちゃうの……？もう少ししたいなぁー……」
+				PRINTFORMW 「あら、リリカったらニコニコしちゃってどうしたのかしら？」
+				PRINTFORMW 『何か安心できるんだよねー幽々子様のふわっとした会話って』
+			;メルラン助手
+			ELSEIF NO:ASSI == 17
+				PRINTFORMW 『ね、幽々子様！自分の欲望に素直になるって良いことでしょ？』
+				PRINTFORMW 「あらあら、メルランったらエッチね～」
+				PRINTFORMW 「でも、確かに素晴らしいことだと思うわ」
+			;ルナサ助手
+			ELSEIF NO:ASSI == 18
+				PRINTFORML 『幽々子様、私がお手伝いできることは……
+				PRINTFORMW 「ルナサったらこんなところでも真面目ね～」
+				PRINTFORMW 「もう少し肩の力を抜いた方がいいんじゃないかしら？こんな風に……」
+				PRINTFORMW 『や……ぁっ……ゆ、ゆゆこ……様ぁっ……』
+			;妖夢助手
+			ELSEIF NO:ASSI == 19
+				PRINTFORMW 「……もう終わっちゃうの？」
+				PRINTFORMW 「妖夢、続きやりましょ？」
+				PRINTFORMW 『え、ええっ！！？』
+				PRINTFORMW 『い、いけません！ご主人様が……っんん！んん～っ！！』
+			;藍助手
+			ELSEIF NO:ASSI == 21
+				PRINTFORMW 「あら、もう終わっちゃうの？」
+				PRINTFORMW 「……藍、どうかしたの？凄く驚いちゃって」
+				PRINTFORMW 『い、いえ……幽々子様からそのようなお言葉を聞けるなんて……』
+			;紫助手
+			ELSEIF NO:ASSI == 22
+				PRINTFORMW 『ふふっ……墜ちてみるって意外と快感でしょ？』
+				PRINTFORMW 「そうね、確かに悪くないわ」
+			;リグル助手
+			;変化無し
+			ELSEIF NO:ASSI == 24
+				PRINTFORMW 『ご主人様の命令なら仕方ありません。今回はこれで失礼しますね。』
+				PRINTFORMW 『また来るので楽しみにしてくださいね。幽　々　子　様』
+				PRINTFORMW 「%SAVESTR%……お願い……ぐすっ……もう少し……甘えさせて……」
+			;ミスティア助手
+			;変化無し
+			ELSEIF NO:ASSI == 25
+				IF BASE:0 >= 1200
+					PRINTFORMW どうやら幽々子はまだ体力がまだ有り余っているようだ。
+				ELSE 
+					PRINTFORMW 幽々子はまだやれると言い張っている。
+				ENDIF
+				PRINTFORMW そう言って聞かない幽々子の唇を塞ぎ頭を撫でてなだめてから部屋を出た。
+					IF CFLAG:7004 == 1 || CFLAG:8001 == 2
+						PRINTFORMW 『ご主人様……』
+						PRINTFORMW よっぽど怖かったのか、部屋から出た後ミスティアはぎゅっとあなたに抱きついた。
+					ELSE
+						PRINTFORMW 『ご主人様……私にも欲しいです……』
+						PRINTFORMW 部屋から出た後、ミスティアはそっとあなたに抱きついた。
+					ENDIF
+			;ヤマメ助手
+			ELSEIF NO:ASSI == 58
+				PRINTFORMW 「ちょっと吹っ切れちゃったわ、ここで過ごすのも悪くはないわね」
+				PRINTFORMW 『墜ちるとこまで墜ちたら何も怖くないはずだからね』
+				PRINTFORMW 「私は、彼と自分を信じる。ボロボロになってもいいわ」
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「凄くよかった……ねぇ、もう少しだけ……」
+					PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+				ELSE
+					PRINTFORMW 「終わりなの……？もうちょっとだけ傍にいさせて……」
+					PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+				ENDIF
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「凄くよかった……ねぇ、もう少しだけ……」
+				PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+			ELSE
+				PRINTFORMW 「終わりなの……？もうちょっとだけ傍にいさせて……」
+				PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+			ENDIF
+		ENDIF
+	ELSE
+		IF ASSI > 0
+			;霊夢助手
+			IF NO:ASSI == 1
+				PRINTFORMW 『本当に底なしね。妖夢に同情するわ』
+				PRINTFORMW 「何か言ったかしら？」
+				PRINTFORMW 『別に何も』
+			;魔理沙助手
+			ELSEIF NO:ASSI == 2
+				PRINTFORMW 『こうやって助手として働くのも悪くはないかな』
+				PRINTFORMW 「なんか魔理沙も生き生きとしてるわ」
+				PRINTFORMW 『性具を扱って生き生きしてるってのも変な話だな』
+			;レティ助手
+			ELSEIF NO:ASSI == 12
+				PRINTFORMW 「もう終わっちゃうの～？」
+				PRINTFORMW 『……幽々子さんっていつもこんな感じなのですか？』
+				PRINTFORMW 「あら、紛う事なきいつもの私よ」
+			;橙助手
+			ELSEIF NO:ASSI == 13
+				PRINTFORMW 『幽々子様、私頑張ったよ！』
+				PRINTFORMW 「ええ、とても偉いと思うわ。よしよし」
+				PRINTFORMW 『えへへ、褒められちゃった！』
+			;リリカ助手
+			ELSEIF NO:ASSI == 16
+				PRINTFORMW 『ねっ、みんなで一緒にお風呂入ろ？』
+				PRINTFORMW 「あ、それいいわね。%SAVESTR%も行きましょ？」
+				PRINTFORMW こちらの返事を待たずに二人は風呂場まで向かっていった……
+			;メルラン助手
+			ELSEIF NO:ASSI == 17
+				PRINTFORMW 「こうしている時が一番幸せね～」
+				PRINTFORMW 『私も～♪』
+				IF TIME == 0
+					PRINTFORMW 三人で寄り添い合いながらしばらく仮眠を取ることにした。
+				ELSE
+					PRINTFORMW 三人で寄り添い合いながらしばらく眠ることにした。
+				ENDIF
+			;ルナサ助手
+			ELSEIF NO:ASSI == 18
+				PRINTFORMW 『……失礼します。幽々子様。』
+				PRINTFORMW 「そんなに気を使わなくても良いのよ？一緒にいましょ？」
+				PRINTFORMW ルナサに目で許可を出すと、ルナサは申し訳なさそうに、少しだけ嬉しそうに幽々子に寄り添った。
+			;妖夢助手
+			ELSEIF NO:ASSI == 19
+				PRINTFORMW 「えー……もう終わっちゃうの？」
+				PRINTFORMW 「じゃあ妖夢、続きやりましょ？」
+				PRINTFORMW 『駄目ですよ幽々子様……ご主人様が……んむうっ！』
+			;藍助手
+			ELSEIF NO:ASSI == 21
+				PRINTFORMW 「もう終わっちゃうの？」
+				PRINTFORMW 『ご主人様がそう言ってるのですから、仕方ありません』
+				IF CFLAG:8000 == 1
+					PRINTFORMW 「なら足りない分は藍に頼もうかしら？」
+					PRINTFORMW 『そ、そんな！私が幽々子様の相手だなんて滅相もないです！』
+					PRINTFORMW 「本気にしちゃって、可愛らしいわ～」
+				ELSE
+					PRINTFORMW 「なら足りない分は藍に頼もうかな？」
+					PRINTFORMW 『そ、そんな！私が幽々子様の相手だなんて滅相もないです！』
+					PRINTFORMW 「本気にしちゃって、可愛いわ～」
+				ENDIF
+			;紫助手
+			ELSEIF NO:ASSI == 22
+				IF CFLAG:8000 == 1
+					PRINTFORMW 「終わっちゃうの？ねえ、もう少しだけ……駄目？」
+				ELSE
+					PRINTFORMW 「終わっちゃうの……？もっとしようよぉ……」
+				ENDIF
+				PRINTFORMW 『また今度いっしょに今日の分まで可愛がってもらいましょう？』
+				PRINTFORMW 二人は期待した視線をこちらに投げかけていた……
+			;リグル助手
+			ELSEIF NO:ASSI == 24
+				PRINTFORMW 『ご主人様の命令なら仕方ありません。今回はこれで失礼しますね。』
+				PRINTFORMW 『また来るので楽しみにしてくださいね。幽　々　子　様』
+				PRINTFORMW 「%SAVESTR%……お願い……ぐすっ……もう少し……甘えさせて……」
+			;ミスティア助手
+			ELSEIF NO:ASSI == 25
+				IF BASE:0 >= 1200
+					PRINTFORMW どうやら幽々子はまだ体力がまだ有り余っているようだ。
+				ELSE 
+					PRINTFORMW 幽々子はまだやれると言い張っている。
+				ENDIF
+				PRINTFORMW そう言って聞かない幽々子の唇を塞ぎ頭を撫でてなだめてから部屋を出た。
+					IF CFLAG:7004 == 1 || CFLAG:8001 == 2
+						PRINTFORMW 『ご主人様……』
+						PRINTFORMW よっぽど怖かったのか、部屋から出た後ミスティアはぎゅっとあなたに抱きついた。
+					ELSE
+						PRINTFORMW 『ご主人様……私にも欲しいです……』
+						PRINTFORMW 部屋から出た後、ミスティアはそっとあなたに抱きついた。
+					ENDIF
+			;ヤマメ助手
+			ELSEIF NO:ASSI == 58
+				PRINTFORMW 『それじゃ、私はお邪魔みたいだし失礼するよ』
+				PRINTFORMW こちらの返事を待つ間もなく、ヤマメは部屋を去っていった
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「んー、凄くよかった……ねぇ、もう一回しましょ？」
+					PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+				ELSE
+					PRINTFORMW 「もう行っちゃうの～？もうちょっとだけ傍にいさせて……？」
+					PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+				ENDIF
+			ENDIF
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「んー、凄くよかった……ねぇ、もう一回しましょ？」
+				PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+			ELSE
+				PRINTFORMW 「もう行っちゃうの～？もうちょっとだけ傍にいさせて……？」
+				PRINTFORMW 幽々子はベッドの中でにじり寄ってきた……
+			ENDIF
+		ENDIF
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+;==================================================
+;@KOJO_20_MESSAGE_PLAYERCHANGE関係
+;助手切り替え時に出力されます。
+;助手に交代した時、助手調教から戻したときに
+;助手としてしゃべる為の機能
+;==================================================
+@KOJO_20_MESSAGE_PLAYERCHANGE
+;PRINTFORMW 
+
+;==================================================
+;@KOJO_20_MESSAGE_CHANGEASSI関係
+;調教対象で助手切り替え時に出力されます。
+;助手に交代した時、助手調教から戻したときに
+;対象としてしゃべる為の機能
+;==================================================
+@KOJO_20_MESSAGE_CHANGEASSI
+;PRINTFORMW 
+
+;========================================================
+;イベント口上前の共通関数
+;特定の条件下でイベント口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はイベント口上は表示される
+;========================================================
+@KOJO_20_MESSAGE_SUB_EVENT_BEFORE
+
+
+;========================================================
+;イベント口上
+;調教中、調教外問わず様々な状況で呼ばれる
+;========================================================
+;-------------------------------------------------
+;強精神薬の反動(調教中)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE2
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬の反動(調教終了後)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE3
+;PRINTFORMW 
+
+;-------------------------------------------------
+;道具装着中に毎ターン表示するメッセージ
+;TFLAG:99=0:浣腸プラグ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE4
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蟲風呂イベント口上
+;TFLAG:99=0:[狂気]取得、1:反発低下、2:体力気力消耗、3:[幼児退行]取得、4:[臆病]取得
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE6
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鈴蘭の毒イベント口上
+;TFLAG:99=0:[臆病]取得、1:[感情乏しい]取得、2:気力消耗、3:[悲観的]取得、4:[楽観的]取得、5:[目立ちたがり]取得、6:[抑圧]取得、7:[汚臭敏感]取得、8:[汚臭鈍感]取得、9:Ｃ感度アップ、10:Ｃ感度ダウン
+;11:Ｖ感度アップ、12:Ｖ感度ダウン、13:Ａ感度アップ、14:Ａ感度ダウン、15:Ｂ感度アップ、16:Ｂ感度ダウン、17:回復力ダウン、18:体力気力最大値ダウン、19:毒に耐性がついた
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE7
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手催眠中
+;TFLAG:99=0:やすらぎ、1:レズ、2:デート、3:反発低下、4:異常なプレイ、5:淫らな自分を見せられる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE8
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手として調教対象に射精した
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE10
+;PRINTFORMW 
+
+;-------------------------------------------------
+;奴隷の失神状態継続
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE11
+;PRINTFORMW 
+
+;-------------------------------------------------
+;失神状態から回復
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE12
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＣ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE13
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＶ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE14
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＡ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE15
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＢ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE16
+;PRINTFORMW 
+
+;-------------------------------------------------
+;精愛味覚取得
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE17
+;PRINTFORMW 
+
+;-------------------------------------------------
+;精飲絶頂取得で弱みを握られた時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;開発度関連をフォローするイベント
+;Ｃ敏感を取得するイベントなどの兆候をわかりやすくするため使う？
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE19
+;SIF CFLAG:60 >= 1000 && TALENT:100 == 0
+	;PRINTFORMW 
+;SIF CFLAG:61 >= 2000 && TALENT:102 == 0
+	;PRINTFORMW 
+;SIF CFLAG:62 >= 2500 && TALENT:104 == 0
+	;PRINTFORMW 
+;SIF CFLAG:63 >= 5000 && TALENT:106 == 0
+	;PRINTFORMW 
+;IF CFLAG:64 >= 10000 && TALENT:66 == 0
+	;PRINTFORMW 
+;ENDIF
+
+;-------------------------------------------------
+;射精渇望中
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE20
+;PRINTFORMW 
+
+;-------------------------------------------------
+;噴乳渇望中
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;放尿渇望中
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE22
+;PRINTFORMW 
+
+;-------------------------------------------------
+;貞操を守れるなら後ろを攻められてもよいと思った
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE30
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教防衛用狂気の目発動時
+;基本的に鈴仙イナバ専用じゃないかこれ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE31
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教時の結果により母乳が出るようになった
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE33
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象が酔いのために調教終了になった
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE34
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手時に調教道具を購入した
+;現状購入したアイテムを判別できない
+;TFLAG:99を立てないでおくと後で奴隷側の口上が呼ばれる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象時に調教道具を購入した時の口上
+;現状購入したアイテムを判別できない
+;助手側でTFLAG:99を立てられたときは呼ばれない
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;体内に放尿された助手のイベント口上
+;TFLAG:99にTARGETを入れてある
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手の体内に放尿した対象のイベント口上
+;TFLAG:99が0なら助手調教、1なら主人調教
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でヴァギナから卵を放出するイベント口上
+;TEQUIP:93で放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE39
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でアナルから卵を放出するイベント口上
+;TEQUIP:94で放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE40
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でＶとＡの両方から卵を放出するイベント口上
+;TEQUIP:93と94でそれぞれＶとＡから放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE41
+;PRINTFORMW 
+
+;-------------------------------------------------
+;[妖狐]の効果で媚薬を入手できた
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE47
+;PRINTFORMW 
+
+;-------------------------------------------------
+;[化け狸]の効果で媚薬を入手できた
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝を迎える奴隷のイベント口上
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;従順上昇による反抗的消滅＆素直取得イベント(ツンデレイベント)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;従順下降による素直消滅＆反抗的取得イベント(ツンデレイベント)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抵抗消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抑圧消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;無関心消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;反抗的消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;生意気消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;男嫌い消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE57
+;PRINTFORMW 
+
+;-------------------------------------------------
+;女嫌い消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE58
+;PRINTFORMW 
+
+;-------------------------------------------------
+;快感の否定消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE59
+;PRINTFORMW 
+
+;-------------------------------------------------
+;一線越えない消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE60
+;PRINTFORMW 
+
+;-------------------------------------------------
+;素直取得イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE61
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;狂気消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;欲望上昇による抑圧または抵抗消滅イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE69
+;抑圧と抵抗の両方が消滅
+IF TALENT:32 && TALENT:34
+	;PRINTFORMW 
+;抵抗だけ消滅
+ELSEIF TALENT:34
+	;PRINTFORMW 
+;抑圧だけ消滅
+ELSEIF TALENT:32
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;恋慕取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE70
+PRINTFORMW 「……行っちゃった」
+IF TALENT:MASTER:120 == 0
+	PRINTFORMW 「やっぱり、彼女は私の……」
+	PRINTFORMW 「性別なんて……関係ないわ」
+ELSE
+	PRINTFORMW 「やっぱり……彼は私の……」
+ENDIF
+;そして「王子様……」に繋がります
+
+;-------------------------------------------------
+;妄信取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE71
+PRINTFORMW 調教の終了を告げた。しかし、幽々子の様子はいつもと異なっていた。
+PRINTFORMW 「んーん……離れたくない……」
+PRINTFORMW 「ダメなの……うん、分かったわ……」
+PRINTFORMW これだけは言わせて、と幽々子は最後に言った
+PRINTFORMW 「あなたは私をどう思っているかはわからない」
+PRINTFORMW 「ただの奴隷でしかないのかもしれない」
+PRINTFORMW 「でも、私はあなたを愛しているわ」
+PRINTFORMW 「ごめんね、クサイ台詞だけどこれだけは伝えたかったの」
+PRINTFORMW 「覚えておいてくれたら、嬉しいな」
+PRINTFORMW 幽々子は寂しげに笑った
+PRINTFORMW 
+PRINTFORMW 「……」
+PRINTFORMW 「忘れないで、ずっと覚えていて……%SAVESTR%……」
+
+;-------------------------------------------------
+;親愛取得イベント
+;これは数日後見直して死にたくなりそうだ
+;呼び名があなたになっているところがポイント　素が出てます
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE72
+PRINTFORMW 「何度経験しても、別れって嫌なものなのよ。たとえ、短い間でもね」
+PRINTFORMW 幽々子は、唐突に口を開いた
+PRINTFORMW 「嫌なものだけど、避けることのできないものなの。悲しい話よね」
+PRINTFORMW 「だから……私は、あなたと離れたくないわ……」
+PRINTFORMW 「わかってる……あなたは私だけのものではないってことも、あなたと別れる時が来るってことも……」
+PRINTFORMW 「でも……あなたと離ればなれになるのは嫌……ずっと傍にいたい……」
+PRINTFORMW 「……ごめんなさい、わがまま言って」
+PRINTFORMW またねと幽々子は言った。それ以降、何も話さなくなった。
+;-------------------------------------------------
+;依存イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE73
+;PRINTFORMW 
+
+;-------------------------------------------------
+;服従取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE74
+PRINTFORMW (崩れちゃった……私の全て……)
+PRINTFORMW 「私は……ご主人様の奴隷になります……」
+PRINTFORMW (これでいいの……これが……正しいの……)
+PRINTFORMW 「私の身体……すべてご主人様の好きなように使ってください……」
+PRINTFORMW (これでいいの……これで……よかった……)
+PRINTFORMW 幽々子は泣き崩れた
+PRINTFORMW ただただ、泣き続けた
+
+;-------------------------------------------------
+;淫乱取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE75
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「んー……全然足りないよぉ……」
+	PRINTFORMW 「もっとあなたと繋がっていたいわ……身体があなたを求めるの」
+	PRINTFORMW 「こうなった責任とって、ね……」
+ELSE
+	PRINTFORMW (どうしようかしら……)
+	PRINTFORMW (身体が疼いて止まらない……欲しい……身体が芯から熱い……)
+	PRINTFORMW (もうすっかり調教されちゃったわ……)
+ENDIF
+
+;-------------------------------------------------
+;淫乱系全素質取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫核／淫茎取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE81
+;ペニスあり
+IF TALENT:オトコ || TALENT:ふたなり
+	;PRINTFORMW 
+;その他
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;淫壷取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫尻取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫乳取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道狂取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キス魔取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ドＳ取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE87
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ドＭ取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫魔取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE89
+;PRINTFORMW 
+
+;-------------------------------------------------
+;薬毒耐性を薬物と快楽により消滅させるイベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE90
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キャラ死亡時口上
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE98
+
+;-------------------------------------------------
+;調教前おねだり口上
+;ランダムで表示されるようにすると鬱陶しくないかも
+;表示の関係で1行に収めることを推奨
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE99
+SIF TFLAG:224 == 555 || ASSIPLAY != 0
+	RETURN 0
+IF RAND:20 < 0
+	;PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;ふたなり取得(不思議な根or具現)時の口上
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE101
+;PRINTFORMW 
+
+;-------------------------------------------------
+;おねしょイベント(おもらし癖取得)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE102
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の幼児退行取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE103
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ビデオによる人気取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE104
+;PRINTFORMW 
+
+;-------------------------------------------------
+;媚薬中毒取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE105
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の精神崩壊取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE107
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の傀儡取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE108
+;PRINTFORMW 
+
+;-------------------------------------------------
+;両刀取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE109
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手時に雑事を手伝わせた
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE110
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ストレスの影響表示
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE111
+;PRINTFORMW 
+
+;-------------------------------------------------
+;体力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE120
+;PRINTFORMW 
+
+;-------------------------------------------------
+;気力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE121
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売却可能になった
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE122
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「ねえ、%SAVESTR%……」
+	PRINTFORMW 今後の予定をたてていると、突然幽々子が部屋に上がり込んできた
+	PRINTFORMW よく見ると服は情欲をかき立てるのにほどよいはだけ具合をしている
+	PRINTFORMW 「あなたが調教師だってのも知ってるし、女の子を売って生計を立てているのも分かっているわ」
+	PRINTFORMW 「でも……私は……私はあなたの傍にいたいの」
+	PRINTFORMW 「この身体を好きに使ってもらっても私は構わないわ。奉仕もして欲しかったらいくらでもしてあげる。だから……」
+	PRINTFORMW 「……ごめんなさいね、急にわがまま言っちゃって……。でも、どうしても言いたかったの」
+	PRINTFORMW そう言って、幽々子は部屋を出て行った。服は、終始はだけたままであった
+ELSEIF MARK:2 == 3
+	PRINTFORMW 「私を売り飛ばすの……？好きにすればいいじゃない……」
+	PRINTFORMW 幽々子の周りには諦めたかのような雰囲気がかもし出されていた……
+ELSE
+	PRINTFORMW 「乙女に酷いことしておいて売り飛ばす計画まで立てているなんて、最低よ」
+ENDIF
+
+;-------------------------------------------------
+;助手可能になった
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE123
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「私も助手として参加してもいいの？」
+	PRINTFORMW 「楽しみね～他にどんな人がいるのかしら」
+ELSE
+	PRINTFORMW 「ふ～ん、助手として参加してもいいのかしら？」
+	PRINTFORMW 「楽しそうね。やってみようかしら」
+	PRINTFORMW (色々探れるいい機会かもしれないわね)
+ENDIF
+;-------------------------------------------------
+;調教対象に選抜された
+;TFLAG:99で前の調教対象番号を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE124
+;PRINTFORMW 
+
+;-------------------------------------------------
+;肥大陰核取得
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE125
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核肥大化完了(異様な大きさ)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE126
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象から外されそうになった
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE127
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象から外された
+;TFLAG:99で新たな調教対象番号を取得可能
+;いない場合-1が入る
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE128
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE130
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「……売る？何を？……私？なんで？」
+	PRINTFORMW 首を傾げる幽々子に奴隷という立場を教える
+	PRINTFORMW 「奴隷ってなぁに？私はあなたの女よ……あなただけの女」
+	PRINTFORMW 幽々子は%CALLNAME:MASTER%の胸元に顔を埋める
+	PRINTFORMW 「お願い……傍に居させて……」
+	PRINTFORMW 幽々子の体は僅かに震えていた
+	PRINTFORMW なんとか説得して、売人に幽々子を引き渡す
+	PRINTFORMW 幽々子は最後の時、その姿が見えなくなるまで、一度も涙を見せなかった
+		IF CFLAG:5805 == 1
+			PRINTFORML 
+			PRINTFORMW 幽々子のいなくなった部屋でふと思った。……本当にこれでよかったのだろうか。
+			PRINTFORMW いや、自分は調教師だ。私情を挟んでいてはいけない。さっさと次の計画を立てよう。
+			PRINTFORMW 次なる奴隷を探すべく、幽々子の事は忘れてあなたはカタログに目を通すことにした。
+		ENDIF
+;反発刻印Lv3
+ELSEIF MARK:9 == 3
+	PRINTFORMW 「……覚えておきなさい」
+	PRINTFORMW 「あなたが二度死ぬことになるのだから」
+	PRINTFORMW 幽々子は意味の解らないことを呟いていった……
+;淫乱
+;ELSEIF TALENT:170
+;	PRINTFORMW 
+;それ以外
+ELSE
+	PRINTFORMW 幽々子は平然とした面持ちで売られていった……
+ENDIF
+
+;-------------------------------------------------
+;ビデオ売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE131
+;PRINTFORMW 
+
+;-------------------------------------------------
+;写真売却
+;金額はTFLAG:124で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE132
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「私の写真集の売れ行き、どうかしら？」
+ELSE
+	PRINTFORMW 「あの写真がいろいろ使われちゃうのね……」
+	PRINTFORMW 「考えたくもないわね……」
+ENDIF
+
+;-------------------------------------------------
+;母乳売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE133
+;PRINTFORMW 
+
+;-------------------------------------------------
+;聖水売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE134
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「私のあれ……本当に売れちゃったの？」
+	PRINTFORMW 「世の中色々な趣味を持った人がいるのね～」
+ELSE
+	PRINTFORMW 「私のあれ……本当に売れたの？」
+	PRINTFORMW 「……世界は広いのね」
+ENDIF
+
+;-------------------------------------------------
+;卵売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE135
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛お守り作成
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE136
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛お守り売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE137
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE138
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝フェラ
+;TFLAG:99でフェラ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE140
+;恋慕
+IF TALENT:150 ==1
+	PRINTFORMW 「ん……ほはよう、ひもひいい？……ん～」
+	PRINTFORMW 幽々子はペニスの先に舌を丹念に這わせてきた……
+;奉仕精神Lv5以上
+ELSEIF ABL:13 >= 3
+	PRINTFORMW 「ん……これでいいんでしょ？」
+;それ以外
+ELSE
+	PRINTFORMW 幽々子は何も言わずにペニスに舌を這わせていた……
+ENDIF
+
+;-------------------------------------------------
+;朝パイズリ
+;TFLAG:99で精液経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE141
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「うふふ、どうかしら？こういう目覚めも悪くないでしょ？」
+	RETURN 0
+;その他の場合
+ELSE
+	PRINTFORMW 「こういうのは深く追求したら駄目よ」
+ENDIF
+
+;-------------------------------------------------
+;朝騎乗位
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE142
+;恋慕
+IF TALENT:恋慕 == 1
+	IF CFLAG:8000 == 1
+		PRINTFORMW 「ごめんなさいね、立派すぎて我慢できなくなっちゃったのよ」
+	ELSE
+		PRINTFORMW 「ごめんね、我慢できなくなっちゃって……」
+	ENDIF
+	RETURN 0
+;その他の場合
+ELSE
+	PRINTFORMW 幽々子はこちらの様子を全く気にせずに腰を振り続けていた……
+ENDIF
+
+;-------------------------------------------------
+;朝キス
+;TFLAG:99で増加する愛情経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE143
+;恋慕
+IF TALENT:恋慕 == 1
+	IF CFLAG:8000 == 1
+		PRINTFORMW 「おはようのキスから始まる朝も素敵でしょ？」
+	ELSE
+		PRINTFORMW 「%SAVESTR%……おはよう。お目覚めのキスしよ？んー」
+	ENDIF
+	RETURN 0
+;その他の場合
+ELSE
+	PRINTFORMW 「あら、目覚めたの？」
+ENDIF
+
+;-------------------------------------------------
+;朝の搾乳
+;TFLAG:99で噴乳経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE144
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「おはよう、%SAVESTR%」
+	PRINTFORMW 「寝起きに私の特製ミルクはいかがかしら？」
+	RETURN 0
+;その他の場合
+ELSE
+	PRINTFORMW 「寝起きにこれはどうかしら？」
+	PRINTFORMW 「あら、毒とかは入っていないわよ」
+ENDIF
+
+;-------------------------------------------------
+;朝の新妻プレイ
+;TFLAG:99で絶頂経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE145
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝騎乗位＋胸揉み
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE146
+;PRINTFORMW 「朝騎乗位＋胸揉みの時の口上です」
+
+;-------------------------------------------------
+;朝騎乗位アナル
+;TFLAG:99でＡ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE147
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の足コキ
+;TFLAG:99で増加する精液経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE148
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後セックス
+;TFLAG:99=1 主人棒あり＞相手Ｖあり
+;TFLAG:99=2 主人棒あり＞相手Ｖなし
+;TFLAG:99=3 主人棒なしＶあり＞相手棒あり
+;TFLAG:99=4 主人棒なしＶあり＞相手棒なしＶあり
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE150
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「あっ！い、いい……もっと、お、奥！奥！あんっ！」
+;それ以外
+ELSE
+	PRINTFORMW 「はっはっもっと、もっとぉ……気持ちいいよぉ……」
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE151
+;恋慕
+IF TALENT:150 ==1
+	PRINTFORMW 「は、はぁん……もっとぉ！……」
+	PRINTFORMW 幽々子は%CALLNAME:MASTER%の夢想に抱かれていたようだ……
+;野外自慰バレ後
+ELSEIF CFLAG:8003 == 1
+	PRINTFORMW (あの時のことを思い出すだけで身体が熱い……)
+	PRINTFORMW (私……こんなにも変態になっちゃった……)
+		;妖夢と紫に会ってない
+		IF CFLAG:7251 == 0 && CFLAG:7051 == 0
+			PRINTFORMW (妖夢……紫……私……もう……そっちには……戻れないのかな……)
+		ELSE
+			PRINTFORMW (でも……気持ちいいし……どうでもいい……かな……)
+		ENDIF
+;自慰中毒Lv2以上+屈服刻印Lv3
+ELSEIF MARK:2 == 3 && ABL:30 >= 2
+	PRINTFORMW (もう……何も……考えられない……)
+	PRINTFORMW (私……こんなにも……)
+		;妖夢と紫に会ってない
+		IF CFLAG:7251 == 0 && CFLAG:7051 == 0
+			PRINTFORMW (ごめんね……妖夢、紫……私……もう、ダメ……みたい……)
+		ELSE
+			PRINTFORMW (私が……頑張らないといけないのに……)
+			PRINTFORMW (でも……気持ちいい……もう少しだけ……)
+		ENDIF
+;自慰中毒Lv2以上+屈服刻印が3でない
+ELSEIF ABL:30 >= 2 && MARK:2 < 3
+	PRINTFORMW 「ああ……気持ち良くて止まらない……」
+		;妖夢か紫に会った
+		IF CFLAG:7251 != 0 || CFLAG:7051 != 0
+			PRINTFORMW (ダメ……私が堕ちたら……でも……)
+		ELSE
+			PRINTFORMW (私……このままじゃ……誰か助けて……)
+		ENDIF
+;自慰中毒Lv1以上+ C感覚+B感覚が6以上
+ELSEIF ABL:30 >= 1 && (ABL:0 + ABL:3) >= 6 && MARK:2 < 3
+	PRINTFORMW 「んあぁっ！違う！違うぅ……」
+;それ以外
+ELSE
+	PRINTFORMW 「う、うう……あっ！こ、こんな……」
+ENDIF
+
+;-------------------------------------------------
+;調教後アナニー
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE152
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「こんなイケナイ遊びにはまっちゃうなんて、私ってイケナイ子ね……」
+	PRINTFORMW 幽々子は背徳感を快楽に替えているようだ……
+	RETURN 0
+;その他の場合
+ELSE
+	PRINTFORMW (こっちでやるのがおかしいだなんて、思い込みよね……)
+	PRINTFORMW (ううん……私、正当化してる訳じゃないの……違うのよ……)
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰搾乳
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE153
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「んんっ……」
+	PRINTFORMW 「は、ぁっ……ちょっと予想外ね……この気持ちよさ……」
+		SIF ABL:34 >= 3
+		PRINTFORMW 「あら……夢中になりすぎちゃったわ……。この母乳どうしようかしら」
+;その他の場合
+ELSE
+	PRINTFORMW 「んん……胸が張ってしょうがないわ……」
+	PRINTFORMW 「は……ぁっ……んんっ……胸が、熱い……」
+ENDIF
+
+;-------------------------------------------------
+;調教後レズプレイ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE154
+IF ASSI > 0
+	;恋慕
+	IF TALENT:150 ==1 && (CFLAG:5262 < 4 )
+		;助手が妖夢
+		IF NO:ASSI == 19
+			IF RAND:2 == 0
+				PRINTFORMW 『ゆ、幽々子様……もう……無理です……』
+				PRINTFORMW 「まだ始めたばっかりよ？もう少し我慢しなさいよぉ。」
+				PRINTFORMW 『ほ、本当にこれ以上はっ！ああぁーーっ！』
+			ELSE
+				PRINTFORMW 『……幽々子様？どうされました？』
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「妖夢～私まだ足りないわ。もう少しだけつきあって？」
+					ELSE
+						PRINTFORMW 「……妖夢ぅ～まだ足りないよぉ……」
+					ENDIF
+				PRINTFORMW 『んむっ！んんんーーっ！』
+			ENDIF
+		;助手が藍
+		ELSEIF NO:ASSI == 21
+			PRINTFORMW 『幽々子様……申し訳ございません……身体の火照りが治まらないんです……』
+			PRINTFORMW 「いいのよ……私もまだ足りないのよ……。だから、ね……？」
+		;助手が紫
+		;基本この二人って性欲無限に書かれ(描かれ)ますよね
+		ELSEIF NO:ASSI == 22
+			IF RAND:2 == 0
+				PRINTFORMW 『相変わらず素敵な身体ね……女の私でも欲情しちゃうわ……』
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「やあん、紫の手つきいやらしすぎよぉ」
+					ELSE
+						PRINTFORMW 「や、やめて……強く揉まないでぇ……」
+					ENDIF
+			ELSE
+				IF CFLAG:8000 == 1
+					PRINTFORMW 「はあっ……はぁっ……ゆかりぃ……私まだ足りないわ……」
+				ELSE
+					PRINTFORMW 「はあっ……はぁっ……ゆかりぃ……まだ足りないよぉ……」
+				ENDIF
+				PRINTFORMW 『私もよ……見てるだけじゃ全然満足できないわ……』
+			ENDIF
+		ENDIF
+	;それ以外
+	ELSEIF CFLAG:5262 < 1 
+		;助手が妖夢
+		IF NO:ASSI == 22
+			PRINTFORMW 『幽々子様……まだ足りないようでしたら、私でよければ……』
+			PRINTFORMW 「妖夢……」
+			PRINTFORMW (こうしている時はいつもの妖夢なのに……)
+		;助手が紫
+		ELSEIF NO:ASSI == 22
+			IF RAND:2 == 0
+				PRINTFORMW 『あの時からこんなにも濡れて……身体は正直じゃない。』
+				PRINTFORMW 「んぁっ……そんな……ち、違う……」
+			ELSE
+				PRINTFORMW 『まだ足りてなさそうね。大丈夫よ。私がいくらでも満足させてあげるわ……』
+				PRINTFORMW (流されちゃだめなのに……気持ち……いい……)
+			ENDIF
+		ENDIF
+		CFLAG:5262 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後レズプレイ(69)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE155
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後ＢＬプレイ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE156
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後ＢＬプレイ(69)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE157
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後夜這い
+;TFLAG:99=2:主人が女性で調教対象が男性のとき
+;TFLAG:99=1:それ以外
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE158
+;恋慕
+IF TALENT:恋慕 == 1
+	IF CFLAG:8000 == 1
+		PRINTFORMW 「まだ足りないわ～。もっとしましょ？」
+		PRINTFORMW 幽々子はこちらの返答を聞くまでもなくあなたの上に覆い被さってきた。
+	ELSE
+		PRINTFORMW 「まだ足りないよぉ……もっとしよ？」
+		PRINTFORMW 幽々子はこちらの返答を聞くまでもなくあなたの上に覆い被さってきた。
+	ENDIF
+;それ以外
+ELSE
+	PRINTFORMW 「もう我慢できないのよ……もっと私と一緒に気持ちよくなりましょ……？」
+ENDIF
+
+;-------------------------------------------------
+;調教後の自慰ができない時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE160
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「うう……触りたい……触れたいよぉ……」
+	PRINTFORMW 「こんな生殺しにさせるなんて……酷すぎるわ……」
+	PRINTFORMW 「%SAVESTR%のばかぁ……」
+	;ゆゆ様にうるうるした目をされながらばかぁ……って言われたい
+;その他の場合
+ELSE
+	PRINTFORMW 「あらあら……まさか自慰を禁止されるなんて」
+	PRINTFORMW 「これ以上私を淫乱にしないように気遣ってくれるのね。親切な人だわ」
+ENDIF
+;-------------------------------------------------
+;調教後に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE161
+;PRINTFORMW 
+
+;-------------------------------------------------
+;気絶中に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE162
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE163
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ助手側
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE164
+;PRINTFORMW 
+
+;-------------------------------------------------
+;妊娠時
+;誰によって妊娠させられたかをTFLAG:99で分岐可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE170
+;主人による
+IF TFLAG:99 == MASTER
+	;PRINTFORMW 
+;主人以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;出産時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE171
+;PRINTFORMW 
+
+;-------------------------------------------------
+;子供が親離れ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE172
+;PRINTFORMW 
+
+;-------------------------------------------------
+;育児部屋入り
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE173
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳母になる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE174
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抱卵取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE175
+;PRINTFORMW 
+
+;-------------------------------------------------
+;孵化イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE176
+;PRINTFORMW 
+
+;-------------------------------------------------
+;孵化イベント後の母性本能取得イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE177
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵
+;TFLAG:99で産んだ卵の個数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE179
+;PRINTFORMW 
+
+;-------------------------------------------------
+;狂気持ちキャラ売却脱走時
+;TFLAG:99で売却額を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE180
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人を刺殺した奴隷(そしてバッドエンド直行)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE182
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放消失イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE183
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵で発狂するイベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE184
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、友人を連れて戻ってきた奴隷
+;TFLAG:99で誰をつれてきたかを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE190
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、資金調達して戻ってきた奴隷
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE191
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、戻ってきた反発奴隷
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE192
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、ただ戻ってきた奴隷
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE193
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売られそうになって狼狽しているヤンデレ奴隷
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE194
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放(これでこのキャラはこの周回からは消えていく)
+;TFLAG部分のIF分岐は変更しないこと
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE195
+;売却時
+IF TFLAG:99 == 130
+	;PRINTFORMW 
+;狂気脱走した売却時
+ELSEIF TFLAG:99 == 180
+	;PRINTFORMW 
+;解放されて去った時
+ELSEIF TFLAG:99 == 196
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;解放され立ち去る奴隷(解放直後)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE196
+;PRINTFORMW 
+
+;-------------------------------------------------
+;発狂した口上呼び出し(地下牢に閉じ込められ続けて)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE197
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キャラ購入直後
+;TFLAG:208を立てることで購入後のSPキャラ化の選択肢を表示しないようにできる
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE198
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放した奴隷に連れてこられた時
+;TFLAG:99で誰につれてこられたかを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE199
+;PRINTFORMW 
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE200
+PRINTFORMW 「あ……」
+PRINTFORMW 「こ、これ……私に……？」
+PRINTFORMW 「本気……なの？私だけに……あなたを……」
+PRINTFORMW 「ひっく……う、嬉しいよぉ……」
+PRINTFORMW 涙ぐむ幽々子を見ていると、軽い眩暈を感じた
+
+;-------------------------------------------------
+;赤い首輪使用時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE201
+;PRINTFORMW 
+
+;-------------------------------------------------
+;烙印を押されたとき(隷属の証)
+;TFLAG:99でどの選択肢を選んだかを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE202
+;PRINTFORMW 
+
+;-------------------------------------------------
+;使い魔イベント(契約締結)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE203
+;PRINTFORMW 
+
+;-------------------------------------------------
+;使い魔イベント(契約破棄)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE204
+;PRINTFORMW 
+
+;-------------------------------------------------
+;青珊瑚の指輪使用時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE205
+;PRINTFORMW 
+
+;-------------------------------------------------
+;空晶石の首輪使用時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE206
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻子玉入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE210
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黄金水入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE211
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE212
+;PRINTFORMW 
+
+;-------------------------------------------------
+;血液入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE213
+;PRINTFORMW 
+
+;-------------------------------------------------
+;破瓜血入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE214
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パンティー入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE215
+;PRINTFORMW 
+
+;-------------------------------------------------
+;母乳入手イベント(搾乳コマンド)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE216
+;PRINTFORMW 
+
+;-------------------------------------------------
+;母乳入手イベント(調教後搾乳)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE217
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛入手イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE218
+;PRINTFORMW 
+
+;-------------------------------------------------
+;クリトリスリング装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE230
+;PRINTFORMW 
+
+;-------------------------------------------------
+;奴隷管理用貞操帯装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE231
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ベリージュエル装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE232
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ボンデージ装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE233
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ラビアピアス装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE234
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ニプルピアス装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE235
+;PRINTFORMW 
+
+;-------------------------------------------------
+;家屋敷を購入したとき
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE239
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(開始時)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE250
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(凌辱中)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE251
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(事後)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE252
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(開始時)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE253
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(事後)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE254
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(凌辱中)
+;TFLAG:99でインプラントされた箇所を取得可能
+;0でインプラント箇所無し
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE255
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手同化イベント(旧261を含む)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE256
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手生贄イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE257
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手種付イベント
+;TFLAG:99で何故か否定の珠入手量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE258
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手懐卵イベント
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE259
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手出産イベント
+;TFLAG:99で何故か否定の珠入手量を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE260
+;PRINTFORMW 
+
+;-------------------------------------------------
+;不死刻印取得 
+;TFLAG:99で取得したLv、TFLAG:201で消費する触手の本数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE270
+;PRINTFORMW 
+
+;-------------------------------------------------
+;種族改造イベント
+;TFLAG:99で改造先の種族を取得可能、資料を参考
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE280
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢収監イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE290
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢解放イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE291
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢での拷問イベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE292
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鎮静茶使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE309
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「あらあら、優しいのね」
+;それ以外
+ELSE
+	PRINTFORMW 「あら、お気遣いありがと」
+ENDIF
+
+;-------------------------------------------------
+;栄養剤使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE310
+;恋慕
+IF TALENT:恋慕 == 1
+	PRINTFORMW 「気遣ってくれるの？ありがとうね」
+;それ以外
+ELSE
+	PRINTFORMW 「そこまでして私とやりたいのかしら？」
+	PRINTFORMW 「嬉しいわけじゃないわ。むしろ不名誉ね」
+ENDIF
+
+;-------------------------------------------------
+;ふたなり薬使用(TFLAG:99=1:消去時, 3:付加時)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE311
+;消去時
+IF TFLAG:99 == 1
+	;PRINTFORMW 
+;付加時
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ふたたま薬使用(TALENT:121=2:消去時, 1:付加時)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE312
+;消去時
+IF TALENT:121 == 1
+	;PRINTFORMW 
+;付加時
+ELSEIF TALENT:121 == 3
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;性露錠使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE313
+;PRINTFORMW 
+
+;-------------------------------------------------
+;根素勃乳使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE314
+;PRINTFORMW 
+
+;-------------------------------------------------
+;睡眠薬使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE315
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豊胸剤使用
+;素質分岐は薬使用前の素質で行うこと
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE320
+;PRINTFORMW 
+
+;-------------------------------------------------
+;縮胸剤使用
+;素質分岐は薬使用前の素質で行うこと
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE321
+;PRINTFORMW 
+
+;-------------------------------------------------
+;止乳剤使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE322
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿漏れ改善薬使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE323
+;PRINTFORMW 
+
+;-------------------------------------------------
+;記憶消去薬使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE324
+;PRINTFORMW 
+
+;-------------------------------------------------
+;赤の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE330
+;PRINTFORMW 
+
+;-------------------------------------------------
+;青の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE331
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黄の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE332
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緑の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE333
+;PRINTFORMW 
+
+;-------------------------------------------------
+;白の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE334
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黒の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE335
+;PRINTFORMW 
+
+;-------------------------------------------------
+;灰の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE336
+;PRINTFORMW 
+
+;-------------------------------------------------
+;金の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE337
+;PRINTFORMW 
+
+;-------------------------------------------------
+;銀の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE338
+;PRINTFORMW 
+
+;-------------------------------------------------
+;虹の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE339
+;PRINTFORMW 
+
+;-------------------------------------------------
+;翠の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE340
+;PRINTFORMW 
+
+;-------------------------------------------------
+;紺の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE341
+;PRINTFORMW 
+
+;-------------------------------------------------
+;桃の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE342
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鈍の飴玉使用
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE343
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰しているところから主人に目撃される
+;自慰バレイベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE350
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰バレイベントで主人に弱味を握られた
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE351
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二穴バイブオナニーバレ後(好感系・求愛)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE352
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルバイブオナニーバレ後(好感系・求愛)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE353
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バイブオナニーバレ後(好感系・求愛)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE354
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰バレ後の精液おねだり(好感系・求愛)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE355
+;PRINTFORMW 
+
+;-------------------------------------------------
+;通常の自慰バレ後(好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE356
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰がバレた後も公開自慰続行(好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE357
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰がバレた後もおそるおそる自慰続行(好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE358
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰バレ後の精液おねだり(非好感系・求愛)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE359
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰がバレた後も公開自慰続行(非好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE360
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰がバレた後もおそるおそる自慰続行(非好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE361
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰がバレた後で屈辱にまみれながらも自慰続行(非好感係)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE362
+;PRINTFORMW 
+
+;-------------------------------------------------
+;弁当作成
+;TFLAG:99で料理の種類の番号を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE400
+;得意料理
+;IF TFLAG:99 == 0
+	;PRINTFORMW 
+;それ以外
+;ELSE
+	;恋慕
+	IF TALENT:150 == 1
+		IF ASSI > 0
+			;妖夢助手
+			IF NO:ASSI == 19
+				PRINTFORMW 『幽々子様……本当に大丈夫ですか……？』
+				PRINTFORMW 「信用無いわね～。まあ見てなさい」
+			;藍助手
+			ELSEIF NO:ASSI == 21
+				PRINTFORMW 『幽々子様、藍にお手伝いできることはありませんか？』
+				PRINTFORMW 「お気遣いありがと。でも大丈夫よ」
+			ELSE
+				PRINTFORMW 「食べる方ばっかりと思ってるでしょ」
+				PRINTFORMW 「失礼ね～私も人並みにはできるわ」
+			ENDIF
+		ELSE
+			PRINTFORMW 「食べる方ばっかりと思ってるでしょ」
+			PRINTFORMW 「失礼ね～私も人並みにはできるわ」
+		ENDIF
+	ELSE
+		PRINTFORMW 「料理？私がするの？」
+		PRINTFORMW 「調教と思ったら料理させるなんて、変なの」
+	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;弁当を主人に食べてもらった時
+;TFLAG:99で料理の効果の基本値を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE401
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人と一緒に弁当を食べた時
+;TFLAG:99で料理の効果の基本値を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE402
+;PRINTFORMW 
+
+;-------------------------------------------------
+;弁当を売った時
+;TFLAG:99で料理の値段を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE403
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「あらあら、私の作ったお弁当が売れたの？」
+	PRINTFORMW 「頑張って作った甲斐があったわ～」
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;毒入り弁当作成
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE410
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毒入り弁当を主人が食べた時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE411
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毒入り弁当の巻き添えを食らった時
+;TFLAG:99で弁当作成者、TFLAG:243で毒の影響を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE412
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毒入り弁当を食べたが不発した時
+;TFLAG:99で弁当作成者を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE413
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毒入り弁当を振舞われそうになった時
+;TFLAG:99で弁当製作者の番号を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE414
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毒入り弁当を見破られた時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE415
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬チョコ作成
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE420
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬チョコを食べてもらった時
+;TFLAG:99でチョコで受けたダメージを取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE421
+;PRINTFORMW 
+
+;-------------------------------------------------
+;チョコを叩き売られた嫁
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE422
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬チョコで反発刻印を取得した時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE423
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬チョコを食べて嫉妬を失うイベント
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE424
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人が弁当を作っている時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE430
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人の弁当を食べる
+;TFLAG:99で料理の種類の番号を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE431
+;PRINTFORMW 
+
+;-------------------------------------------------
+;素敵な食後の運動
+;TFLAG:99で分岐可能、詳しくはSHOP_LUNCH0.ERB参照
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE440
+;PRINTFORMW 
+
+;-------------------------------------------------
+;素敵な食後の自慰
+;TFLAG:99で分岐可能、詳しくはSHOP_LUNCH0.ERB参照
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE441
+;PRINTFORMW 
+
+;-------------------------------------------------
+;貞操帯で食後の自慰失敗
+;TFLAG:201で予定回数を取得可能
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE442
+;PRINTFORMW 
+
+;-------------------------------------------------
+;野外ライブ失敗
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE450
+;PRINTFORMW 
+
+;-------------------------------------------------
+;野外ライブ成功
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE451
+;PRINTFORMW 
+
+;-------------------------------------------------
+;野外ライブで[人気]を取得
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE452
+;PRINTFORMW 
+
+;-------------------------------------------------
+;野外ライブでプレゼント入手
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE453
+;PRINTFORMW 
+
+;========================================================
+;501～513:集団風呂イベントで使用
+;========================================================
+;-------------------------------------------------
+;バカルテット＋保護者の集団入浴(6人)
+;対象……ルーミア、チルノ、リグル、ミスティア、大妖精、レティ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE501
+;PRINTFORMW 
+
+;-------------------------------------------------
+;八雲一家＋白玉楼の女性たちの集団入浴(6人)
+;対象……橙、藍、紫、妖夢、幽々子、半霊(妖夢)
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE502
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蓬莱の診療所のみなさんの集団入浴(4人)
+;対象……てゐ、鈴仙、永琳、輝夜
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE503
+;PRINTFORMW 
+
+;-------------------------------------------------
+;紅魔館のみなさんの集団入浴(6人)
+;対象……美鈴、小悪魔、パチュリー、咲夜、レミリア、フラン
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE504
+;PRINTFORMW 
+
+;-------------------------------------------------
+;守矢の神様と豊穣の神様と厄神様の集団入浴(6人)
+;対象……早苗、神奈子、諏訪子、静葉、穣子、雛
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE505
+;PRINTFORMW 
+
+;-------------------------------------------------
+;プリズムリバー三姉妹VS三月精(6人)
+;対象……リリカ、メルラン、ルナサ、サニー、ルナ、スター
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE506
+;PRINTFORMW 
+
+;-------------------------------------------------
+;古明地一家の集団入浴(4人)
+;対象……さとり、お燐、おくう、こいし
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE507
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アリスとかわいい人形たち(4人)
+;対象……アリス(EX不可)、上海、蓬莱、ゴリアテ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE508
+;PRINTFORMW 
+
+;-------------------------------------------------
+;白蓮さんとゆかいなみんなの集団入浴(6人)
+;対象……ナズーリン、一輪、村紗、星、白蓮、ぬえ
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE509
+;PRINTFORMW 
+
+;-------------------------------------------------
+;夢のおねーさんオールスター！(9人)
+;対象……幽々子、紫、永琳、幽香、映姫、神奈子、白蓮、魅魔、神綺
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE510
+;PRINTFORMW 
+
+;-------------------------------------------------
+;最愛の妹大集合!(7人)
+;対象……フラン、メルラン、リリカ、穣子、依姫、こいし、夢月
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE511
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人公たちの集団入浴(5人)
+;対象……霊夢、魔理沙、咲夜、文、早苗
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE512
+;PRINTFORMW 
+
+;-------------------------------------------------
+;魔理沙ハーレムの集団入浴(6人)
+;対象……魔理沙(EX不可)、アリス、パチュリー、フラン、にとり、こいし
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE513
+;PRINTFORMW 
+
+;-------------------------------------------------
+;日常イベントの休養時
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE600
+;PRINTFORMW 
+
+;-------------------------------------------------
+;日常イベントの割れ目責めイベント時
+;TFLAG:99で反応決定用の値を取得できる
+;地の文（DAILY_EVENT.ERB）を見て書くとよい
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE601
+IF TFLAG:99 <= 7
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 14
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 22
+	;PRINTFORMW 
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;日常イベントのバイブを入れて通りを歩くイベント時
+;TFLAG:99で反応決定用の値を取得できる
+;地の文（DAILY_EVENT.ERB）を見て書くとよい
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE602
+IF TFLAG:99 <= 9
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 13
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 20
+	;PRINTFORMW 
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;日常イベントのＡバイブを入れて通りを歩くイベント時
+;TFLAG:99で反応決定用の値を取得できる
+;地の文（DAILY_EVENT.ERB）を見て書くとよい
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE603
+IF TFLAG:99 <= 9
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 13
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 20
+	;PRINTFORMW 
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;日常イベントの街頭自慰強制イベント時
+;TFLAG:99で反応決定用の値を取得できる
+;地の文（DAILY_EVENT.ERB）を見て書くとよい
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SUB_EVENT_SCENE604
+IF TFLAG:99 <= 25
+	;PRINTFORMW 
+ELSEIF TFLAG:99 <= 29
+	;PRINTFORMW 
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;========================================================
+;調教コマンド拒否口上
+;ARGでコマンドの番号を取得できる
+;========================================================
+@KOJO_20_DENIAL_MESSAGE, ARG
+;PRINTFORMW 
+
+
+
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_20_MESSAGE_PALAMCNG
+
+PRINTFORML 
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+
+;処女喪失時のメッセージ呼び出し
+;SIF TALENT:処女 && TFLAG:1
+;	TRYCALL K20_MESSAGE_LOST_VIRGIN
+;初めてPALAMがLV2超えた時の口上呼び出し
+;FOR LOCAL, 0, 35
+;	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+;		TRYCALLFORM K20_MESSAGE_OVERLV2_{LOCAL}
+;NEXT
+;絶頂時の口上呼び出し
+;FOR LOCAL, 0, 50
+;	SIF NOWEX:LOCAL
+;		TRYCALLFORM K20_MESSAGE_ORGASM_{LOCAL}
+;NEXT
+;射精させた
+;FOR LOCAL, 11, 29
+;	SIF TFLAG:LOCAL
+;		TRYCALLFORM K20_MESSAGE_EJAC_PLAYER_{LOCAL}
+;NEXT
+
+;-------------------------------------------------
+;処女喪失
+;-------------------------------------------------
+;@K20_MESSAGE_LOST_VIRGIN
+IF TFLAG:0 > 0
+	A = UP:20 + UP:21
+	;恋慕時かつ主人のペニス
+	IF TFLAG:2
+		;恋慕かつ反発刻印未取得
+		IF TALENT:150 == 1 && (A < 500 || TFLAG:105 == 1)
+			PRINTFORMW 「んぐ……大事な人にあげれて……よかった……」
+			PRINTFORMW 幽々子はあなたにキスをして、さらに愛慕と感謝の言葉を連ねた
+		;恋慕かつ反発刻印取得
+		ELSE
+			PRINTFORMW 「はぐ……く、苦しい……けど、嬉しいの……」
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「……そう……よね……指……も……あなたの……体の……一部……だから……」
+			PRINTFORMW 幽々子は涙を流しながらも健気にあなたに向かって微笑みかけている……
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ふぐっ……ひっく……いや、いや……助けて……」
+			PRINTFORMW 幽々子は純潔を奪われた事実に、顔を背け、震えながら泣き続けていた……
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「……なんで奪ってくれないの？」
+			PRINTFORMW 幽々子は悲しそうに呟くと、涙を零した……
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ふぐっ……ひっく……いや、いや……助けて……」
+			PRINTFORMW 幽々子は純潔を奪われた事実に、顔を背け、震えながら泣き続けていた……
+		ENDIF
+	ENDIF
+ENDIF
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_20_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+;@K20_MESSAGE_OVERLV2_10
+P = PALAM:10 + UP:10
+IF P > PALAMLV:2 && CFLAG:5330 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「ぬるぬる～♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、ああ……ぬるぬるするわぁ……」
+		ENDIF
+	;それ以外
+	ELSE
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「なんか、ぬるぬるするわね～」
+		;それ以外
+		ELSE
+			PRINTFORMW 「濡れてる……やぁね、恥ずかしい」
+		ENDIF
+	ENDIF
+		CFLAG:5330 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+;@K20_MESSAGE_OVERLV2_13
+P = PALAM:13 + UP:13
+IF P > PALAMLV:2 && CFLAG:5333 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「ああ、なんだかあなたがいつもより素敵……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「もう、我慢できないわ～」
+		ENDIF
+	;それ以外
+	ELSE
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「ん……頭がぽ～っと……これは変ね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「う……こんなの、何かの間違いよ……」
+		ENDIF
+	ENDIF
+		CFLAG:5333 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+;@K20_MESSAGE_OVERLV2_15
+P = PALAM:15 + UP:15
+IF P > PALAMLV:2 && CFLAG:5335 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「あぁん、恥ずかしいわ～」
+	;それ以外
+	ELSE
+		PRINTFORMW 「こんなの……いや……」
+	ENDIF
+		CFLAG:5335 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;-------------------------------------------------
+;@K20_MESSAGE_OVERLV2_17
+P = PALAM:17 + UP:17
+IF P > PALAMLV:2 && CFLAG:5337 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「う～こういうのは、やめにしない？」
+	ELSEIF TEQUIP:52
+		PRINTFORMW 「もうこんなの嫌……お願い……帰らせて……」
+		PRINTFORMW 幽々子は必死になって懇願し始めた。
+	;それ以外
+	ELSE
+		PRINTFORMW 「もういや……助けて……」
+		PRINTFORMW 幽々子は顔を青褪めて震えている……
+	ENDIF
+		CFLAG:5337 = 1
+ENDIF
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5300～を使用
+;@KOJO_20_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_0
+IF NOWEX:0 > 0 && ( NOWEX:1 + NOWEX:2 + NOWEX:3 ) <= 0
+	IF CFLAG:5300 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「あぁ、凄い。素敵……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ……うぐっ……イっちゃったぁ……！」
+			PRINTFORMW 涙が一筋流れた……
+		ENDIF
+		CFLAG:5300 = 1
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			;愛撫かクンニで
+			IF SELECTCOM == 0 || SELECTCOM == 1 || SELECTCOM == 606
+				PRINTFORMW 「ああん……%SAVESTR%にまたイかされちゃったわ」
+			;自慰で
+			ELSEIF SELECTCOM == 7 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+				PRINTFORMW 「また一人寂しくイっちゃったわ……」
+				PRINTFORMW 「おあずけだなんて%SAVESTR%もずるいわよ……」
+			;素股で
+			ELSEIF SELECTCOM == 43
+				PRINTFORMW 「～～～っ！！」
+				PRINTFORMW 「なんだろう……挿入れて……それでイったみたい……」
+			ELSE
+				PRINTFORMW 「あ、ああっ……きちゃううううっ！」
+			ENDIF
+		;それ以外
+		ELSE
+			;愛撫かクンニで
+			IF SELECTCOM == 0 || SELECTCOM == 1
+				PRINTFORMW 「ん、んっ……それ以上は駄目っ……」
+			;自慰で
+			ELSEIF SELECTCOM == 7 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+				PRINTFORMW 「何よ、オナニーしてるんだから当然イっちゃうわよ……」
+			;素股で
+			ELSEIF SELECTCOM == 43
+				PRINTFORMW 「……ぁ……っ！」
+				PRINTFORMW 「……今のでイったって？気のせいよ……」
+			ELSE
+				PRINTFORMW 「あ……んんっ……またイっちゃう……！」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_1
+IF NOWEX:1 > 0 && ( NOWEX:0 + NOWEX:2 + NOWEX:3 ) <= 0
+	;初めて
+	IF CFLAG:5301 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「あっ！中がっ……気持ちいい……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ！中がっ……い、やぁ！」
+		ENDIF
+			CFLAG:5301 = 1
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			;指で
+			IF SELECTCOM == 4
+				PRINTFORMW 「%SAVESTR%の指使い……上手すぎるわ……」
+				PRINTFORMW 「気持ちよすぎてとろけちゃいそう……」
+			;バイブで
+			ELSEIF SELECTCOM == 12 || TEQUIP:20 == 1
+				PRINTFORMW 「気持ちよかったけど……道具だと満たされないわ……」
+			ELSE
+				PRINTFORMW 「中が……イくぅ、いっちゃうぅっ！」
+			ENDIF
+		;それ以外
+		ELSE
+			;指で
+			IF SELECTCOM == 4
+				PRINTFORMW 「ああ……ダ……メっ……イっちゃううっ……！」
+				PRINTFORMW 「……。ええ……確かに気持ちよかったわ……不快だったけど」
+			;バイブで
+			ELSEIF SELECTCOM == 12 || TEQUIP:20 == 1
+				PRINTFORMW 「だ、ダメ……バイブでなんてっ……いやああっ！」
+			ELSE
+				PRINTFORMW 「う……うぅっ……イきたくなかったのに……」
+				PRINTFORMW 「そんな勝ち誇った顔しないで……」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_2
+IF NOWEX:2 > 0 && ( NOWEX:0 + NOWEX:1 + NOWEX:3 ) <= 0
+	;初めて
+	IF CFLAG:5302 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「あっお尻、凄い、凄いよぉ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「いや……こんな……いや、いやああああぁぁぁ……！！ 」
+		ENDIF
+			CFLAG:5302 = 1
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			;愛撫で
+			IF SELECTCOM == 2
+				PRINTFORMW 「%SAVESTR%に……お尻でイかされちゃったぁ……」
+				PRINTFORMW 「私をこんなにしちゃって……責任とってね……？」
+			;バイブ・アナルビーズで
+			ELSEIF SELECTCOM == 13 || TEQUIP:25 == 1 || SELECTCOM == 172 || TEQUIP:25 == 5
+				PRINTFORMW 「ああああんっっ！この道具凄いぃっ！」
+			;アナニーで
+			ELSEIF SELECTCOM == 182
+				PRINTFORMW 「あは……私……アナニーでイっちゃったぁ……」
+			ELSE
+				PRINTFORMW 「イケナイことなのにっ、またお尻でイっちゃううぅっっ！」
+			ENDIF
+		;それ以外
+		ELSE
+			;愛撫で
+			IF SELECTCOM == 2
+				PRINTFORMW 「くうぅっ……」
+				PRINTFORMW 幽々子は絶頂を悟られないように、声を押し殺して喘いだ
+			;バイブ・アナルビーズで
+			ELSEIF SELECTCOM == 13 || TEQUIP:25 == 1 || SELECTCOM == 172 || TEQUIP:25 == 5
+				PRINTFORMW 「ち、ちがっ……道具でだなんて……私……」
+				PRINTFORMW 「い……や……いやあああぁっ！」
+			;アナニーで
+			ELSEIF SELECTCOM == 182
+				PRINTFORMW 「まさか……そんな……私……」
+				PRINTFORMW 「自分の……手で……？」
+			ELSE
+				PRINTFORMW 「いや……お尻で気持ちよくなるなんて……こんなのいやああああ！」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_3
+IF NOWEX:3 > 0 && ( NOWEX:0 + NOWEX:1 + NOWEX:2 ) <= 0
+	;初めて
+	IF CFLAG:5303 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「んん～おっぱい、気持ちいいわぁ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ああ……胸なんかで……いやぁ！ 」
+		ENDIF
+			CFLAG:5303 = 1
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「胸が凄く気持ちよかったわ……とろけそう……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「胸でイかされるなんて……」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;四重絶頂	CFLAG:9019
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;恋慕
+	;4重でも口調は特に変わらず普段通り
+	;3重絶頂の総集編みたいな感じ
+	IF TALENT:恋慕
+		PRINTFORMW 「もうダメっ！全部っ！全部がイイのぉっ！！」
+		PRINTFORMW 「気持ちよすぎて頭が真っ白になっちゃうぅ！」
+		PRINTFORMW 「あああっ！イクううぅぅっ！イっちゃううぅっっ！！」
+		PRINTFORMW 「ああああぁぁあーーーーっ！！！」
+		PRINTFORMW 
+		PRINTFORMW 「凄くよかった……」
+		PRINTFORMW 「こんなに気持ちいいこと……初めてだわ」
+		PRINTFORMW 「なんだか申し訳ないわね、こんなに気持ちよくさせてもらえるなんて」
+		IF BASE:0 > 500
+			PRINTFORMW 「疲れたかって？ううん、まだ大丈夫よ」
+			PRINTFORMW 「でももう少し%SAVESTR%に抱かれていたいな……余韻に浸っていたいの」
+		ELSE
+			PRINTFORMW 「疲れたかって？そうね、ちょっと疲れちゃったかも……」
+			PRINTFORMW 「だからもう少し%SAVESTR%に抱かれていたいな……余韻に浸っていたいの」
+		ENDIF
+	;それ以外
+	;精神的ダメージの方が高い(他も同様)
+	ELSE
+		PRINTFORMW 「何で……こんなに……っ……イっ……て……」
+		PRINTFORMW 「もう…………わ……たし……身体……駄目……あ……はは……」
+		PRINTFORMW 「ひっく……ぐすっ……うぅ……っ……」
+		PRINTFORMW どうやら呂律が回ってない訳でなく、ショックから言葉が途切れ途切れとなっているのだろう……
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;V+A+B絶頂	CFLAG:8237
+;流石に3重ともなると……
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「あぁ……凄かったわ……まだジンジンする……」
+		PRINTFORMW 「%SAVESTR%ったら……テクニシャンすぎるわ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「前も……後ろも……あ……ああぁぁ……」
+		PRINTFORMW 「なんで……こんな……なっちゃったのよぉ……」
+		PRINTFORMW 自分の惨めな姿に幽々子はすすり泣いていた……
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+A+B絶頂	CFLAG:9021
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「凄いっ、同時凄いいいぃっ！ああああぁぁあっ！」
+		PRINTFORMW 「はーっ、はぁっ……3つ、同時にイっちゃったぁ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「駄目っ……止めてぇっ！うぁあああああっ！」
+		PRINTFORMW 「……いやぁっ……違う、こんなの違ううっ！」
+		PRINTFORMW 幽々子は悔し涙を目ににじませていた……
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+V+B絶頂	CFLAG:9022
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「これっ、気持ちよすぎてぇっ！」
+		PRINTFORMW 「はぁんっ！イっちゃううううっ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やあぁっ！イきたくないのにっ！イっちゃううっ！！」
+		PRINTFORMW 「いやああああああぁぁぁっ！！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+V+A絶頂	CFLAG:9023
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「全部っ！下が全部イイっ！ふあああぁぁっ！」
+		PRINTFORMW 「あれ……？何でだろ、立てなくなっちゃった……起こして%SAVESTR%……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「前も……後ろも……あ……ああぁぁ……」
+		PRINTFORMW 「なんで……私……こんな……あ……うぅっ……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;A+B絶頂	CFLAG:9024
+;二重系も、Aが入ってるかどうかで主に分かれています(Aがあると抵抗が強くなります)
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「斬新ね……こんな組み合わせでイったの初めてかもしれないわ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「っああああぁぁっっ！」
+		PRINTFORMW 「ちが……う……気持ちよくなんて……っ……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;V+B絶頂	CFLAG:9025
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ふぁっ、あああああんっ！」
+		PRINTFORMW 「あぁ……凄い、全身が気持ちよくてとろけちゃいそうだわ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やだ……も……やめて……止めてぇっ……」
+		PRINTFORMW 「んはあっ！い……ぃ、良くなんか……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;V+A絶頂	CFLAG:9026
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「両方でイっちゃううっ！」
+		PRINTFORMW 「こんなのが好きなの……？激しいのね……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「そ、そんな……両方でイっちゃうなんて……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+B絶頂	CFLAG:9027
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕
+		;愛撫で
+		IF SELECTCOM == 0 || SELECTCOM == 606
+			PRINTFORMW 「すごく気持ちよかったわ……」
+			PRINTFORMW 「大好きよ……%SAVESTR%……」
+		;その他　多分道具か助手がないとできない
+		ELSE
+			PRINTFORMW 「あっ……イくうぅっ……！ん……はぁっ……！」
+			PRINTFORMW 「今の……すごく気持ちよかったわ……」
+		ENDIF
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ……んうぅ……っ！」
+		PRINTFORMW 「な……何よ……気持ち悪かっただけよ……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+A絶頂	CFLAG:9028
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「お尻だったけど、これはこれでいいかも……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「イヤあっ！もう動かないでっ！それ以上はやめて……っ！」
+		PRINTFORMW 「いやあああああぁぁぁっ！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;C+V絶頂	CFLAG:9029
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「はぁ……凄かったわ。こんなこと１人じゃできないわ……」
+	;それ以外
+	ELSE
+		PRINTFORML 「はーっ、はーっ……」
+		PRINTFORMW (やだ……何で私……気持ちよく……)
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5304
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_10
+IF TFLAG:31 > 0
+	;初めて
+	IF CFLAG:5304 == 0
+		;従順Lv4以上
+		IF ABL:10 >= 4
+				PRINTFORMW 「あ……母乳……私妊娠したの？……なんだ、違うの……」
+		;それ以外
+		ELSE
+				PRINTFORMW 「母乳が……こんなことまでするなんて……」
+		ENDIF
+			CFLAG:5304 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;従順Lv4以上
+		IF ABL:10 >= 4 && (CFLAG:5304 <= 2 )
+				PRINTFORMW 「ん……うぅん……母乳、美味しい？」
+			CFLAG:5304 = 3
+		;それ以外
+		ELSEIF CFLAG:5236 <= 1 
+				PRINTFORMW 「やぁっ……舐めないでぇ……」
+			CFLAG:5304 = 2
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;射精 CFLAG:5305
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_11
+IF TFLAG:30 > 0
+	IF ASSI > 0 && ASSIPLAY
+		;フェラで射精
+		IF SELECTCOM == 5
+			;助手がメルラン
+			IF NO:ASSI == 17
+				IF CFLAG:7152 == 0
+					IF CFLAG:5305 == 1
+						PRINTFORMW 「メルラン……もうそろそろ出そうかも……」
+						PRINTFORMW 『幽々子様、遠慮無く私にかけていいよ！』
+						PRINTFORMW 「本当に遠慮無く……やっ、出ちゃう！」
+					ELSE
+						PRINTFORMW 「何かしら……何か出てきそう……」
+						PRINTFORMW 『幽々子様、遠慮無く出しちゃっていいよ！』
+						PRINTFORMW 「これ、まさか本当に……やっ、出ちゃう！」
+					ENDIF
+					PRINTFORMW 『んーっ！……いっぱい出たね～。』
+					PRINTFORMW 『すっごく気持ちよかったでしょ？』
+					PRINTFORMW 「確かにそうだけど……変な感じね……」
+					CFLAG:7152 = 1
+				ELSE
+					PRINTFORMW 『んー……幽々子様の量が多すぎて飲むのが大変ー……』
+					PRINTFORMW 「メルランが上手すぎるのよ……してもらってる%SAVESTR%が羨ましいわ」
+					CFLAG:7152 = 2
+				ENDIF
+			;助手が紫
+			ELSEIF NO:ASSI == 22
+				IF CFLAG:7052 == 0
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「紫……もう出そうかも……！」
+					ELSE
+						PRINTFORMW 「紫……もう出ちゃう……！」
+					ENDIF
+						PRINTFORMW 『……！ごほっ！ごほっ！』
+						PRINTFORMW 『ちょっと、幽々子……いきなり大量に出し過ぎよ……』
+					CFLAG:7052 = 1
+				ELSE
+				PRINTFORMW 『幽々子のも%CALLNAME:MASTER%顔負けの量と濃さね……なかなか美味よ』
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「自分のを目の前で飲まれるのも、なんだか複雑ね～」
+					ELSE
+						PRINTFORMW 「紫……本当に苦くないの？」
+					ENDIF
+					CFLAG:7052 = 2
+				ENDIF
+			;助手がミスティア
+			ELSEIF NO:ASSI == 25
+				IF CFLAG:7004 == 0
+				PRINTFORMW 「あ……だ、駄目……出ちゃう……っ！」
+					IF CFLAG:7001 == 1
+						PRINTFORMW 『こんなに出して……出したとき凄い顔してたよ？』
+						PRINTFORMW 「そ、そんな……そんなはずは……」
+						PRINTFORMW 幽々子は顔を真っ赤にしてうつむいていた
+					ELSE
+						PRINTFORMW 『んぐううっ！！……うえぇっ……けほっ、けほっ……』
+						PRINTFORMW ミスティアの口からは飲みきれなかった精液が溢れ出していた。
+					ENDIF
+					CFLAG:7004 = 1
+				ELSE
+					IF CFLAG:7001 == 1
+						PRINTFORMW 「ダ……ダメ……出ちゃ……う……！」
+						PRINTFORMW 『バカみたいな顔してイっちゃって、そんなに気持ちよかったの？』
+						PRINTFORMW ミスティアにあざ笑われ、幽々子の目から涙があふれた
+					ELSE
+						PRINTFORMW 『むっ！むぐうううう！』
+						PRINTFORMW 「ああ……この感じ……癖になりそう……」
+						PRINTFORMW 幽々子は無意識のうちにミスティアの頭を押さえつけ、射精の快楽を楽しんでいた。
+						PRINTFORMW 片やミスティアは容赦なく口の中に注がれる精液に溺れないよう必死にもがいていた。
+					ENDIF
+					CFLAG:7004 = 2
+				ENDIF
+			ENDIF
+		;足コキで射精
+		ELSEIF SELECTCOM == 302
+			;助手が紫
+			IF NO:ASSI == 22
+				PRINTFORMW 『こんなのでイっちゃうなんて……』
+				PRINTFORMW 『……幽々子って、そんな気があったのね。』
+				PRINTFORMW 「ち、違うの！これは……」
+				PRINTFORMW 必死に否定し続ける幽々子を紫は弄んでいる……
+				CFLAG:7053 = 1
+			;助手がミスティア
+			ELSEIF NO:ASSI == 25
+				IF CFLAG:7001 == 1
+					PRINTFORMW 『あはははは！こんなので射精しちゃったの？変　態　さ　ん　！』
+					PRINTFORMW 「違う……違……う……こんなの、私じゃない……」
+					PRINTFORMW 見下した笑みを浮かべて煽り続けるミスティアが、幽々子のプライドをズタズタに引き裂いていった。
+						SIF ABL:21 >= 3
+						PRINTFORMW 心なしか幽々子の頬が赤かったのは、見なかったことにしておこう。
+				ENDIF
+				CFLAG:7005 = 1
+			ENDIF
+		ENDIF
+	ELSE
+		;初めて
+		IF CFLAG:5305 == 0
+		PRINTFORMW 「なに……な、なんかきちゃうぅっ！」
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「はあ……はあ……なに……これ……す……ごい……気持ちいい……」
+				PRINTFORMW 幽々子は初めて体験する射精の感覚に浸っていた。
+			;それ以外
+			ELSE
+				PRINTFORMW 「……う……うう……嫌……見ないで……」
+				PRINTFORMW 幽々子は目を手で覆い、声を詰まらせて泣いていた。
+				PRINTFORMW 手の間からは涙がいくつもこぼれ落ちていた……
+			ENDIF
+				CFLAG:5305 = 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				IF CFLAG:8000 == 1
+					PRINTFORMW 「これ……すごく気持ちいい……」
+				ELSE
+					PRINTFORMW 「あはっ……これ……すごく気持ちいいよぉ……」
+				ENDIF
+				PRINTFORMW 射精した後も幽々子はペニスを弄り続けていた……
+				CFLAG:5305 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「嫌あ……こんなの……出したくないのに……」
+				PRINTFORMW 幽々子は床にこぼれている精液から目をそらし、泣き続けていた……
+				CFLAG:5305 = 2
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;放尿 CFLAG:5306
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+;@K20_MESSAGE_ORGASM_12
+SIF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+;初めて
+;IF CFLAG:5306 == 0
+	;PRINTFORMW 
+	;CFLAG:5306 = 1
+;２回目以降
+;ELSE
+	;PRINTFORMW 
+;ENDIF
+
+;-------------------------------------------------
+;アナルセックスで射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_12
+IF TFLAG:12 > 0
+		IF ASSI > 0 && ASSIPLAY
+			;助手が紫
+			IF NO:ASSI == 22
+				PRINTFORMW 『あっ！あはあっ！もう出すわよ！受け止めなさい！』
+				PRINTFORMW 「ひっあああ！紫の……熱いのが……中にたくさん……」
+			;助手がミスティア
+			ELSEIF NO:ASSI == 25
+				IF CFLAG:7001 == 1
+					PRINTFORMW 「やああっ！お尻なんかに出さないで！」
+					PRINTFORMW 『はあっ……はあっ……あ、あんたのお尻がきついのが悪いのよ……搾り取られそうだったわ……』
+					PRINTFORMW 「うっ……ううっ……ひっぐ……」
+					PRINTFORMW 幽々子はお尻を押さえて泣き続けている……
+				ELSE
+					PRINTFORMW 『もう……我慢できませんっ……』
+					PRINTFORMW 「なっ、何出そうとして……っああああ！」
+					PRINTFORMW 『ごめんなさい……ごめんなさいい……』
+					PRINTFORMW 幽々子の中に精液を注ぎながらミスティアはひたすら謝っていた……
+				ENDIF
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:150 == 1
+				PRINTFORMW 「あぁっ！お尻……気持ちいい……」
+			CFLAG:5231 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ううっ……おなかが気持ち悪い……」
+			CFLAG:5231 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「そっ……そんなところに出さないでっ……！嫌あああっ！」
+		CFLAG:5231 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;セックスで射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_11
+;主人のペニス
+;IF TFLAG:35
+IF TFLAG:11 > 0
+	IF ASSI > 0 && ASSIPLAY
+		;助手が紫
+		IF NO:ASSI == 22
+			IF RAND:2 == 0
+				PRINTFORMW 『幽々子の中凄くいいわぁ！！もう出ちゃいそう！』
+				PRINTFORMW 「あっ！あああっ！ゆ……紫のが……中に……」
+			ELSE
+				PRINTFORMW 『はぁはぁ……凄く良かったわよ……幽々子……』
+				PRINTFORMW 紫はそう言い、光悦とした表情で幽々子を見つめていた。
+			ENDIF
+		;助手がミスティア
+		ELSEIF NO:ASSI == 25
+			IF CFLAG:7001 == 1
+				PRINTFORMW 「な、中はやめて！」
+				PRINTFORMW 『えー？あんたの中、凄い気持ちいいんだもん。』
+				PRINTFORMW 「中は本当に嫌あ！やめて！やめてえぇぇ！」
+				PRINTFORMW 泣き叫ぶ幽々子の膣内にミスティアは容赦なく精液を注いでいった。
+			ELSE
+				PRINTFORMW 『ご、ごめんなさい！幽々子様、もう……出そ……う……ーっ！』
+				PRINTFORMW 「えっ、ちょっと……何……や、やああああ！」
+				PRINTFORMW ミスティアは泣きながら幽々子の膣内に精液を注いでいった……
+			ENDIF
+		ENDIF
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「中にでてるっ……どう？すっきり……した？」
+			CFLAG:5230 = 6
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「はぁ……もう……好きにすればいいじゃない……」
+			PRINTFORMW 幽々子はぼんやりと諦めきった表情で呟いていた……
+			CFLAG:5230 = 4
+			CFLAG:8002 += 1
+		;それ以外
+		ELSE
+			PRINTFORMW 「はっ……中に、嫌っ！やだっ出さないで……！」
+			PRINTFORMW 泣き叫ぶ幽々子の膣内に容赦なく精液を吐き出していった……
+			CFLAG:5230 = 2
+			CFLAG:8002 += 1
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;口で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_15
+IF TFLAG:15 > 0
+	;ダブルフェラの場合(個人的な趣味で、二人とも恋慕状態のみ対応)
+	IF SELECTCOM == 303
+		;助手が紫かつ二人とも恋慕
+		IF ASSI > 0 && NO:ASSI == 22 && TALENT:150 == 1 && TALENT:ASSI:150 == 1
+			;精液がどちらにかかるかがRANDで決まります。RAND:2 == 0なら紫に、ELSEなら幽々子にかかる
+			;以下、どちらに精液中毒Lv3がついてるかでも分岐
+			IF ABL:31 >= 3 && ABL:ASSI:31 >= 3
+				IF RAND:2 == 0
+					PRINTFORMW 「あーっ！」
+					PRINTFORMW 『相変わらずの濃さ……ね。じゅるっ。美味しい……』
+					PRINTFORMW 「紫ばっかりずるいわ！私も！」
+					PRINTFORMW 『ちょっと！ゆゆ……むぐっ！』
+				ELSE
+					PRINTFORMW 『ちょっと……わたしにもよこしなさいよ……』
+					PRINTFORMW 「んー濃くておいし～」
+					PRINTFORMW 『幽々子も何独占しようとしているのよ！』
+					PRINTFORMW 「え……？ゆか……むぐうっ！」
+				ENDIF
+					PRINTFORMW 二人はお互いの顔を舐め合い、口の中に舌を入れ合いながら精液を奪い合っている……
+			ELSEIF ABL:31 >= 3
+				IF RAND:2 == 0
+					IF CFLAG:8000 == 1
+						PRINTFORMW 「あ、取られちゃった……。紫……？」
+						PRINTFORMW 幽々子は紫に向かって口を開け、舌を出した。
+						PRINTFORMW 『その渡し方？仕方ないわね。』
+						PRINTFORMW 紫と幽々子は舌を絡ませながら、精液を交換した。
+					ELSE
+						PRINTFORMW 「あ……取られちゃった……う……うう……」
+						PRINTFORMW 幽々子は子犬のように目を潤ませながら、物欲しそうな視線を紫に向けている。
+						PRINTFORMW 『そんなにこれがほしいの？』
+						PRINTFORMW 紫は口移しで精液を幽々子の口の中に流し込むと、幽々子は少しばかり目を見開いたがすぐに幸せそうな表情になった。
+					ENDIF
+				ELSE
+					PRINTFORMW 「おいし～♪」
+					PRINTFORMW 幽々子は満面の笑みを浮かべながらペニスに残る精液を舐めとっていった。
+					PRINTFORMW 『本当においしそうに舐めるわね……』
+					PRINTFORMW 紫は怪訝そうな顔をしながら呟いた。
+				ENDIF
+			ELSEIF ABL:ASSI:31 >= 3
+				IF RAND:2 == 0
+					PRINTFORMW 『そうよ……もっと出しなさい……ここに溜ってるもの全部無くなるくらいにね……』
+					PRINTFORMW 紫は幽々子を突き飛ばしてペニスを独占し、あふれている精液を残らず舐め取っている。
+					PRINTFORMW 幽々子は場所を強引にとられてふてくされていた……
+				ELSE
+					PRINTFORMW 「んっ！……いっぱい出たね。%SAVESTR%。」
+					PRINTFORMW 『ちょっと……なに独占してるのよ……』
+					PRINTFORMW ジト目で幽々子を見た後、紫は幽々子の口内を舌で犯し精液を強引に奪い取った……
+				ENDIF
+			ELSE
+			;これだけ違います
+				PRINTFORMW 「いっぱい出たね～」
+				PRINTFORMW 『どう？気持ちよかったかしら？』
+				PRINTFORMW 二人は精液がべっとり付いた顔で微笑みながらこちらを見ている……
+			ENDIF
+		ENDIF
+	;フェラ、イラマチオの場合
+	ELSEIF SELECTCOM == 41 || SELECTCOM == 230
+		;精液中毒Lv5
+		IF ABL:31 >= 5
+			PRINTFORMW 「ん……んく……足りないわ～もっと出してよぉ～」
+			CFLAG:5233 = 5
+		;精液中毒Lv3
+		ELSEIF ABL:31 >= 3
+			PRINTFORMW 「んん……お、美味しい…… 」
+			CFLAG:5233 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「んん！んぐっ！……ん……」コクッコクッ
+			CFLAG:5233 = 2
+		;それ以外
+		ELSE 
+			PRINTFORMW 「んん！んぐっ！……ゲホッゲホッ！！ 」
+			CFLAG:5233 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_16
+IF TFLAG:16 > 0
+	;奉仕精神Lv5
+	IF ABL:13 >= 5
+		PRINTFORMW 「こんなにビクビクさせて、私のおっぱいってそんなに気持ちいい？」
+		PRINTFORMW 幽々子は胸に挟まれたペニスの先の精液を舐めながら、甘い声で囁いてきた……
+		CFLAG:5234 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 「んっ！……凄い……出てる……美味しい……」
+		CFLAG:5234 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……ゲホッ……やぁ……ベトベトする…… 」
+		CFLAG:5234 = 1
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;手で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_19
+IF TFLAG:19 > 0
+	;奉仕精神Lv5
+	IF ABL:13 >= 5
+		PRINTFORMW 「もっと……もっとよくしてあげる……」
+		PRINTFORMW 蕩けるような甘い声で幽々子は囁いた
+		CFLAG:5232 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 「あ……でてる……気持ちよかった？」
+		CFLAG:5232 = 2
+	;それ以外
+	ELSE 
+		PRINTFORMW 「ううっ……何か出てる……」
+		CFLAG:5232 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスで射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_26
+IF TFLAG:26 > 0
+;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;素股で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_20
+IF TFLAG:20 > 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「すごい……こんなにもいっぱい……」
+		PRINTFORMW 「あなたのと私ので……私のココ凄いことになっちゃったわ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「はっ……！」
+		PRINTFORMW 「もう、びっくりしたじゃない。心臓に悪いわ」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;髪の毛で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_13
+IF TFLAG:13 > 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ……私、%SAVESTR%に汚されちゃった……」
+		PRINTFORMW 「%SAVESTR%の臭いがこんな近くに……クラクラしちゃうわ」
+	;それ以外
+	ELSE
+		PRINTFORMW 「髪の毛は女の子の命なのよ」
+		PRINTFORMW 「ぞんざいに扱っていいものではないわ」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;中出しされて喜ぶ恋慕助手を見せるって相当なダメージじゃない？
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_27
+IF TFLAG:27 > 0
+	IF ASSI > 0
+		;助手がリリカ
+		IF NO:ASSI == 16
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『ご主人様にナカに出されちゃった……♪赤ちゃんできたらどうしよっかな？』
+				PRINTFORMW 「リリカったら気が早いわね～」
+				PRINTFORMW 『だって欲しいんだもーん』
+			;それ以外
+			ELSE
+				PRINTFORMW 『ご主人様にナカに出されちゃった……♪赤ちゃんできたらどうしよっかな？』
+				PRINTFORMW 「え…………あなた……まさか……」
+				PRINTFORMW 『幽々子様……私こんなにナカに出されちゃった……♪』
+				PRINTFORMW 幽々子は目眩がしたのか、その場に倒れてしまった……
+			ENDIF
+			RETURN 0
+		;助手がメルラン
+		ELSEIF NO:ASSI == 17
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『ご主人様のが中に……幸せすぎておかしくなっちゃう……♪』
+				PRINTFORMW 「いい笑顔ね～」
+				PRINTFORMW 『どうしても顔がほころんじゃう♪』
+			;それ以外
+			ELSE
+				PRINTFORMW 『ご主人様のが中に……幸せすぎておかしくなっちゃう……♪』
+				PRINTFORMW 「メルラン……正気なの？妊娠しちゃうかもしれないのよ？」
+				PRINTFORMW 『妊娠してもご主人様なら全然構わないわ♪』
+				PRINTFORMW 「メルラン……あ、あなた……何言って……」
+			ENDIF
+			RETURN 0
+		;助手がルナサ
+		ELSEIF NO:ASSI == 18
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『ご主人様……いっぱい、私の中に……出して……』
+				PRINTFORMW 「え～ルナサってそんな積極的になるんだ～」
+				PRINTFORMW 『はっ……！い、今のは……』
+				PRINTFORMW ルナサの顔がみるみる赤くなっていった……
+			;それ以外
+			ELSE
+				PRINTFORMW 『ご主人様……いっぱい、私の中に……出して……』
+				PRINTFORMW 『あ……ご主人様……。ありがとう……好き……』
+				PRINTFORMW 「あ……はは……ルナサって、こんな反応もするんだー……」
+			ENDIF
+		;助手が妖夢
+		ELSEIF NO:ASSI == 19
+			;幽々子が恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『はぁっ、はあっ……ご主人様の……中に出てる……暖かい……』
+				PRINTFORMW 「この中に入ってるのよね～すりすりっと」
+				PRINTFORMW 『ひゃんっ！？』
+			ELSE
+				PRINTFORMW 『はぁっ、はあっ……ご主人様の……中に出てる……暖かい……』
+				PRINTFORMW 「妖夢になんてことを……もし孕んじゃったら……」
+				PRINTFORMW 『あ……幽々子様……私、孕んでしまっても構わないです……それに』
+				PRINTFORMW 『ご主人様の子供……欲しいです』
+				PRINTFORMW 幽々子は膝から崩れ落ちた
+			ENDIF
+		;助手が藍
+		ELSEIF NO:ASSI == 21
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『中にっ、奥に出してくださいっ！はああぁぁんっっ！！』
+				PRINTFORMW 「あらあら、たっぷり中に出されちゃって……藍はいいの？」
+				PRINTFORMW 『ご主人様の子供なら……本望です』
+				PRINTFORMW 「あら～お熱いこと言ってくれるじゃない」
+			;それ以外
+			ELSE
+				PRINTFORMW 『中にっ、奥に出してくださいっ！はああぁぁんっっ！！』
+				PRINTFORMW 「藍……目を覚まして。孕んでしまったら……」
+				PRINTFORMW 『ご主人様の子供……それもいいかもしれませんね』
+				PRINTFORMW (もう駄目ね……目がすわってる……)
+			ENDIF
+				RETURN 0
+		;助手が紫
+		ELSEIF NO:ASSI == 22
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 『ねえ、幽々子……私膣内に出されちゃった』
+				PRINTFORMW 「いいな～……」
+				PRINTFORMW 『そんな目で見ないの。幽々子もしてもらえるわよ』
+			;それ以外
+			ELSE
+				PRINTFORMW 『ごめんね、幽々子……膣内に出されちゃった』
+				PRINTFORMW 「い……嫌ぁ……紫、嘘よね……？」
+				PRINTFORMW 『そんなに悲愴しないで。私なら大丈夫よ』
+			ENDIF
+			RETURN 0
+		ENDIF
+	ELSE
+		PRINTFORMW 『
+	RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_24
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿で射精
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸で調教者が射精(舐めない)
+;-------------------------------------------------
+;@K20_MESSAGE_EJAC_PLAYER_16
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_20_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;気絶中も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K20_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+
+;余裕だったゆゆ様が余裕を無くしていく
+;たまらんね
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+@K20_MESSAGE_MARK0_1
+SIF TALENT:150 == 1
+	;なんだかんだ言って痛みに強い
+	PRINTFORMW 「やん……まさか痛みで屈服させる気？」
+	PRINTFORMW 「暴力的な人は嫌われるわよ～」
+CFLAG:5310 = 1
+
+@K20_MESSAGE_MARK0_2
+	PRINTFORMW 「ちょっ……と……もう少し優しくしようという気はないのかしら……？」
+	PRINTFORMW (痛い……ここまで本気でしてくるなんて……)
+CFLAG:5310 = 2
+
+@K20_MESSAGE_MARK0_3
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「う～なんだかよくわからないけど、言うこと聞くから、やーめーてー」
+ELSE
+	PRINTFORMW 「痛い……痛いよ……」
+	PRINTFORMW 幽々子はずっとすすり泣いていた
+ENDIF
+CFLAG:5310 = 3
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;よっぽどアブノーマルな経験をしていない限り、刻印Lv2以上の快楽は未経験としています
+;-------------------------------------------------
+@K20_MESSAGE_MARK1_1
+PRINTFORMW 「今の……気持ちよかったわ」
+PRINTFORMW 「またお願いできるかしら？」
+CFLAG:5311 = 1
+
+@K20_MESSAGE_MARK1_2
+PRINTFORMW 「今の……何……？」
+PRINTFORMW 「気持ちよかった……もしかして私……」
+PRINTFORMW 「あら……聞こえちゃったかしら……？」
+CFLAG:5311 = 2
+
+@K20_MESSAGE_MARK1_3
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「あ、ぅぅん……いいのぉ、気持ちいいのぉ……もっと、してぇ……」
+ELSE
+	PRINTFORMW 「嘘……嘘よ……きもちいいなんて……嘘よ……」
+ENDIF
+CFLAG:5311 = 3
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+@K20_MESSAGE_MARK2_1
+PRINTFORMW 「あらあら……」
+PRINTFORMW 「あなたってなかなかのやり手なのね」
+CFLAG:5312 = 1
+
+@K20_MESSAGE_MARK2_2
+PRINTFORMW 「あ……っ……」
+PRINTFORMW 「な、何……？あまりこっちを見ないで……」
+PRINTFORMW はっきりと、幽々子から焦りが現れていた
+CFLAG:5312 = 2
+
+@K20_MESSAGE_MARK2_3
+;恋慕
+IF TALENT:150 == 1
+		PRINTFORMW 「……なんでもしてあげる。だから傍に居て……」
+ELSE
+	;A絶頂して取得
+	IF NOWEX:2 > 0
+		PRINTFORMW 「嘘……私……お尻なんかで……」
+		PRINTFORMW 「私……どうしちゃったの……？」
+		PRINTFORMW 幽々子の頬から数多の涙が零れ落ちていった……
+		CFLAG:5312 = 4
+	ELSE
+		PRINTFORMW (もう……逆らう気力が湧いてこなくなっちゃった……)
+		PRINTFORMW (私……この人に逆らえないのかな……)
+		PRINTFORMW 幽々子はぼんやりとした目でこちらを見ている……
+		CFLAG:5312 = 3
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+@K20_MESSAGE_MARK3_1
+;PRINTFORMW 
+;CFLAG:5313 = 1
+
+@K20_MESSAGE_MARK3_2
+;PRINTFORMW 
+;CFLAG:5313 = 2
+
+@K20_MESSAGE_MARK3_3
+;PRINTFORMW 
+;CFLAG:5313 = 3
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+@K20_MESSAGE_MARK4_1
+;PRINTFORMW 
+;CFLAG:5314 = 1
+
+@K20_MESSAGE_MARK4_2
+;PRINTFORMW 
+;CFLAG:5314 = 2
+
+@K20_MESSAGE_MARK4_3
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「こんなの、いくらあなたでも酷いですわ、よよよ～」
+	PRINTFORMW 幽々子は袖で顔を覆って隠している
+	PRINTFORMW 言動は惚けていても、本気で泣いているようだ……
+ELSE
+	IF CFLAG:8000 == 1
+		PRINTFORMW 「あらあら、本当にいいのかしら？」
+		PRINTFORMW 「私を怒らせて、どうなっても知らないわよ？」
+	ELSE
+		PRINTFORMW 「あなたは閻魔様にも渡さない……」
+		PRINTFORMW 「永遠に苦痛を味あわせてやる……」
+	ENDIF
+ENDIF
+CFLAG:5314 = 3
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+@K20_MESSAGE_MARK6_1
+;PRINTFORMW 
+;CFLAG:5316 = 1
+
+@K20_MESSAGE_MARK6_2
+;PRINTFORMW 
+;CFLAG:5316 = 2
+
+@K20_MESSAGE_MARK6_3
+;恋慕
+IF TALENT:150 == 1
+	PRINTFORMW 「うう……%SAVESTR%……」
+	PRINTFORMW 目をうるうるとさせながら、幽々子は抱きついてきた
+	PRINTFORMW 幽々子の身体は小刻みに震えていた……
+ELSE
+	PRINTFORMW 「うう……こんな、辱めを……もう私……」
+	PRINTFORMW 悔しさからか、幽々子の目からは大粒の涙がこぼれ落ちた
+ENDIF
+;CFLAG:5316 = 3
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_20_MESSAGE_LOOK_VIDEO
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_20_MESSAGE_IMPRESSION
+;PRINTFORML 　　　「」
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SINGLE_ENDING
+;エンド分岐を判定
+;霊夢を売却済み（見ているのは購入済み）の場合に分岐
+IF ITEM:101
+	TRYCALL SINGLE_ENDING_K20_T
+ELSEIF CFLAG:5201 == 50
+	TRYCALL SINGLE_ENDING_K20_H
+ELSE
+	TRYCALL SINGLE_ENDING_K20_N
+ENDIF
+
+@SINGLE_ENDING_K20_N
+;初期のエンド
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW %CALLNAME:MASTER%は気づくと布団の中で眠っていた。
+PRINTFORMW まだ眠る時間では無い気がしたが、記憶が曖昧になっている。
+PRINTFORMW 「やっと起きたわね」
+PRINTFORMW 隣に座って居たのであろう、幽々子はそう言うと布団を剥ぎ取り、跨ってくる。
+PRINTFORMW 自分はどうしたのか、今は何時なのか、ここはどこなのか。
+PRINTFORMW 状況が飲み込めない%CALLNAME:MASTER%は思いつくまま疑問をぶつけるが、幽々子は笑みを深めるだけであった。
+PRINTFORMW 「ふふ、%SAVESTR%は死んだの。私の力でね。つまり、ここはあの世」
+PRINTFORMW 幽々子は着物をはだけ、豊かな胸を露にすると、それをあなたの胸に押し当てる。
+PRINTFORMW 「あなたを殺して私も死ぬって奴よ」
+PRINTFORMW 反論しようとした%CALLNAME:MASTER%の口を幽々子は舌を入れて塞ぐ。
+PRINTFORMW 「んっ、だってこのままじゃ%SAVESTR%、また他の女に手を出しそうだもの・・・」
+PRINTFORMW 幽々子はさらに舌を絡めながら、器用に互いの性器を摺り合わせる。
+PRINTFORMW 「%SAVESTR%は私のもの、私は%SAVESTR%のもの」
+PRINTFORMW それも悪くないかと、%CALLNAME:MASTER%は思った。
+PRINTFORMW 十分に前戯をすると幽々子は%CALLNAME:MASTER%のペニスを自身に挿入し、腰を振り始める。
+PRINTFORMW %CALLNAME:MASTER%はそれを受け入れ、幽々子を起こして下から突き上げていった。
+PRINTFORMW 「永遠にね・・・・・・」
+PRINTFORMW 幽々子は薬指の指輪に囁く、二人は肉欲に身を任せてまぐわい続けた・・・・・・。
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.1020 (幽々子エンド)
+;CALL GAME_CONTINUE
+RETURN 0
+
+@SINGLE_ENDING_K20_H
+;追加したEDです
+;ver4.1で微妙に加筆しました
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 目覚めたら見知らぬ場所にいた。
+PRINTFORMW 畳の匂いや感触が懐かしい和室の部屋だった。
+PRINTFORMW 押し入れ、どこかの部屋に続いているであろう襖、丸い形をした窓くらいしか特徴のない質素な部屋だ。
+PRINTFORMW ふと近くの窓を開け、外に目をやってみるとそこにはよく手入れされている庭が広がっていた。
+PRINTFORMW 広々とした庭に様々な種類の木々や色とりどりの花々が美しく咲き乱れている。
+PRINTFORMW 写真を撮れば、これがどこかにある名園と言っても十分納得できる。それくらい立派な庭だ。
+PRINTFORMW 眺めているとまるで楽園にいるかのような感覚になっていく……
+PRINTFORMW 「あなたは死んだの。私の能力でね。」
+PRINTFORMW 庭に見入っていると後ろから声がした。紛れもない幽々子の声だった。
+PRINTFORMW 振り向くと幽々子は正座をしていて、目が合うと丁寧に座礼をした。
+PRINTFORMW 「ごめんなさいね……私気付いちゃったの。このままだと、%SAVESTR%と死別する日が来てしまう……って」
+PRINTFORMW 「何でか分からないけど、それがとても怖くて……だから避けたかったの」
+PRINTFORMW 幽々子の言葉を理解するのに少し時間を要したが、案外すんなりと悟ることができた。
+PRINTFORMW 自分は死んだ。
+PRINTFORMW 自分は殺された。
+PRINTFORMW だが、怒る気にはならない。
+PRINTFORMW 「これで永遠に一緒にいられるわ。不老のおまけ付きよ。」
+PRINTFORMW 幽々子と共にいられる。このまま永遠に。
+PRINTFORMW それだけで十分だ。他には何もいらない。
+PRINTFORMW すり寄ってきた幽々子を抱きしめ、礼を言う。
+PRINTFORMW 「ずっと、ずっと一緒にいましょ……%SAVESTR%……」
+PRINTFORMW これからずっと、幽々子とこうしていられる。これ以上の幸せはない。
+PRINTFORML 
+IF CFLAG:8000 == 1
+	PRINTFORMW 「そうそう。朝ご飯の準備が出来ているわ。行きましょう？」
+	PRINTFORMW 感傷に浸っていると、幽々子は急に話題を変えた。
+	PRINTFORMW 「あら、どうしたのかしら？お腹空いてないの？」
+	PRINTFORMW 話題のぶっ飛びっぷりに若干拍子抜けしていると、幽々子はきょとんとした表情で言った。
+ELSE
+	PRINTFORMW 「そうそう、朝ご飯の準備が出来ているわ。お腹も空いたし行きましょう？」
+	PRINTFORMW 感傷に浸っていると、腹の虫を鳴かしながら幽々子は言った。
+	PRINTFORML 「何よ～。そんな顔しなくてもいいじゃない。」
+	PRINTFORMW 突飛な発言に拍子抜けしていると、幽々子は頬をぷくっとふくらませて言った。
+ENDIF
+PRINTFORMW 
+PRINTFORMW 今までの時間に追われる生活とは一変した、マイペースな第二の生活をこれから幽々子と送っていける。
+PRINTFORMW 様々な表情を見せてくれる幽々子を見ると、そんな気がする。
+PRINTFORMW 「さ、行きましょう？」
+PRINTFORMW 幽々子に急かされ立ち上がろうとする時、幽々子はそっと手を差し出した。
+PRINTFORMW 薬指には銀色の指輪が美しく輝いている。
+PRINTFORMW 差し出された手を取り、幽々子と共に歩き始めた。
+PRINTFORMW 今日から始まる、新たな生活に思いをはせながら――
+PRINTFORMW 　　　　　　　　―― Ending No.1020 (幽々子エンド2)
+;CALL GAME_CONTINUE
+RETURN 0
+
+@SINGLE_ENDING_K20_T
+;条件は霊夢を売却していること、幽々子が処女であること。恋慕霊夢を条件にしたかったが、仕様上断念
+;霊夢「ぱるぱるぱるぱるぱるぱるぱるぱるぱるぱるぱるぱる（ｒｙ」
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 濁った空の下の博麗神社
+PRINTFORMW %CALLNAME:MASTER%と幽々子は、主の居ない神社で神前式を執り行っていた
+PRINTFORMW わずか三人の神前式は、粛々と進んでいく
+PRINTFORMW 神前に捧ぐ言葉とこの場に合わぬ機械音だけが響いていた
+PRINTFORMW 頬を上気させつつも、幽々子は雅に歩を進め、玉串の奉納をしていく
+PRINTFORMW 式を終え、%CALLNAME:MASTER%と幽々子は神社から出る
+PRINTFORMW その優雅な足取りは微塵も揺るがず、晴れ着に包まれた肢体は魅惑的であった
+PRINTFORMW 「これで……私は%SAVESTR%のものですね……」
+PRINTFORMW 敏感な部位を責められて欲情していたのか、幽々子の声はこれまで無いほど艶やかに響く
+PRINTFORMW 「あなたになら、私はすべてを捧げられます……」
+PRINTFORMW 幽々子はそっと%CALLNAME:MASTER%に擦り寄る
+PRINTFORMW 晴れ着は僅かにはだけて、白い肌を覗かせる
+PRINTFORMW 上気した頬ととろんとした瞳をした幽々子の顔が近づく
+PRINTFORMW 「%SAVESTR%……どうぞ、私のこと……お好きになさってください……」
+PRINTFORMW 幽々子の頬を撫で、お互いの唇を重ねていった……
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.1020A (幽々子真エンド)
+;CALL GAME_CONTINUE
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SINGLE_ENDING_AFTER
+PRINTFORMW 「ねえ、%SAVESTR%……」
+PRINTFORMW 「うふふっ……やっぱり%SAVESTR%もなのね……」
+PRINTFORMW 「身体が疼いてきちゃったの……また一緒に……ね？」
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――奴隷エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+;PRINTFORMW 
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_20_MESSAGE_SLAVE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_20_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+LOCAL = TARGET
+TARGET = TFLAG:710
+
+;恋慕
+IF TALENT:150 == 1
+	LOCAL:1 = 3
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 2
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+ELSE
+	LOCAL:1 = 1
+ENDIF
+;退避した対象を元に戻す
+TARGET = LOCAL
+RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+@SHOW_SLAVE_AFTERWARDS_K20, ARG, ARG:1
+DRAWLINE
+PRINTFORMW 幽々子のその後
+DRAWLINE
+IF ARG == 3
+	PRINTFORMW ノルマを達成し、しばらく休暇を楽しんでいると手紙が２通届いていた
+	PRINTFORMW １通は幽々子の購入者から、もう１つは幽々子からであった
+	PRINTFORMW 購入者からの手紙には、幽々子という商品の素晴らしさが長々と書かれていた
+	PRINTFORMW 幽々子からの手紙には、和歌が書かれていた
+	PRINTFORMW 「あらざらむこの世の外の思ひ出に　今ひとたびの逢ふこともがな」
+	;百人一首より和泉式部の和歌　意味は
+	;「(私はもうすぐ死んでしまい)この世にはいないでしょう。
+	;死後のあの世での思い出に、せめてもう一度あなたにお逢いしたいものです」
+	;病床から恋人に送った歌とされている
+	;……って最新国語便覧に書いてあった
+	;ここでは病気は精神的なもので、自殺に関連させています
+ELSEIF ARG == 1
+	PRINTFORMW ノルマを達成し、しばらく休暇を楽しんでいると幽々子を購入した顧客が屋敷にやってきた
+	PRINTFORMW 話を聞く限り、幽々子はかなり優良な商品だそうだ
+	PRINTFORMW ただ一つ苦情を挙げるならば、淡々としすぎている、だけらしい
+ENDIF
+DRAWLINE
+RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.20 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.20の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_20
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.20の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_20
+PRINTL [20] プロローグNo.20 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.20 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_20
+PRINTW 　　　　　　　　―― Prologue No.20 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.20に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.20に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_20
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.20に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_20
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.20 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.20の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_20
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.20 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_20
+
+;…………………………………
+;キャラ追加イベントを盛り込む場合
+;…………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;…………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.20 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

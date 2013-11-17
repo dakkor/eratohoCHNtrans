@@ -1,0 +1,353 @@
+;浣腸装着後の口上　これと、SOURCE0との連携でつけている間、常に一定の向上を表示できる
+;そこにCFLAGを用いることで時間経過によるセリフの変化を表す（COUNTの方がいいかも…）
+;また、TRAIN.ERBの装着道具関連のチェックの直後に関数を置くことで、
+;他のアイテム度も同一の効果が得られるものと予想できる。
+;------------------------------------------------------------------------------------
+;道具装着中に毎ターン表示するメッセージ
+;TFLAG:99=0:浣腸プラグ
+@KOJO_13_MESSAGE_SUB_EVENT_SCENE4
+
+;浣腸プラグ
+IF TFLAG:99 == 0
+	;一回目
+	IF CFLAG:7009 == 0
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「お腹の中…すごいのぉ…もっとしてぇ…」
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「お腹の中…すごいのぉ…」
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「うぅ…おトイレいかせてよぉ…いじわる…」
+			PRINTFORMW （%CALLNAME:MASTER%も、それなりの所で行かせてくれるよね…）
+			PRINTFORMW 橙はもじもじしながら頼んでいるが、表情には余裕が見える
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「うぅ…おトイレいかせてぇ…」
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「うぅ…おトイレいかせてよぉ…いじわる…」
+			PRINTFORMW （%CALLNAME:MASTER%も、それなりの所で行かせてくれるよね…）
+			PRINTFORMW 橙はもじもじしながら頼んでいるが、表情には余裕が見える
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「うぅ…おトイレいかせてぇ…」
+		ENDIF
+		CFLAG:7009 = 1
+	;2回目
+	ELSEIF CFLAG:7009 == 1
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「お腹…痛いのに…気持ちいいよぉ…もっと、チェンをいじめてぇ…」
+			PRINTFORMW 橙は腹痛を楽しんでいる
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「お腹…痛くて、辛くて、…気持ちいい……これすきぃ…」
+			PRINTFORMW 橙は腹痛を楽しんでいる
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 ==1
+			PRINTFORMW 「お腹いたいのぉ…ねぇおトイレいかせてぇ…お願い…」
+			PRINTFORMW 橙はついに涙ながらに頼んでいる。
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「お腹いたいのぉ…おトイレいかせてぇ…」
+			PRINTFORMW 橙は涙ながらに懇願している
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 ==1
+			PRINTFORMW 「お腹いたいのぉ…ねぇおトイレいかせてぇ…お願い…」
+			PRINTFORMW 橙はついに涙ながらに頼んでいる。
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「お腹いたいのぉ…おトイレいかせてぇ…」
+			PRINTFORMW 橙は涙ながらに懇願している
+		ENDIF
+		CFLAG:7009 = 2
+	;3回目
+	ELSEIF CFLAG:7009 == 2
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「あっ…出ちゃいそう…まだダメぇ……もっと、よくなりたいのぉ…」
+			PRINTFORMW 「チェン…いっぱい、いっぱい我慢するから…もっと、メチャクチャにしてぇ……」
+			PRINTFORMW 橙は脂汗をかき、お腹を押さえながらも更なる行為を期待してる。
+			CFLAG:7009 = 3
+			PRINTFORMW [0]なにもしない
+			PRINTFORMW [1]プラグを動かす
+			PRINTFORMW [2]浣腸液追加
+			$INPUT_LOOP
+			INPUT
+				IF RESULT == 0
+					PRINTFORMW 「もっといじめてほしいのぉ…」
+				ELSEIF RESULT == 1
+					PRINTFORMW 「あぁぁ…気持ちいいのぉ…もっとぉ…」
+					SOURCE:2 = SOURCE:2 + 250
+					BASE:1 = BASE:1 - 20
+				ELSEIF RESULT == 2
+					PRINTFORMW 「お腹…もう、パンパンなのに…もっと来るのぉ……」
+					PRINTFORMW 「お腹のなか…破裂しちゃうよぉ……」
+					PRINTFORMW 「ぁ……ぁ………」
+					PRINTFORMW （苦しい……痛い…辛い……でも…気持ちいいよぉ…）
+					PRINTFORMW 橙は浣腸液を入れる間叫んでいたが、すべて入れ終わる頃には、呼吸さえままならなくなり口を開閉するだけになった。
+					SOURCE:2 = SOURCE:2 + 300
+					SOURCE:18 = SOURCE:18 + 250
+					SOURCE:20 = SOURCE:20 + 250
+					SOURCE:22 = SOURCE:22 + 100
+					BASE:1 = BASE:1 - 250
+					CFLAG:7009 = 4
+				ELSE
+					GOTO INPUT_LOOP
+				ENDIF
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「あっ…出そう……まだ出ちゃダメぇ……もっと、よくなりたいのぉ…」
+			PRINTFORMW 橙はお腹を押さえながら、我慢を続けたいようだ
+			CFLAG:7009 = 3
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 ==1
+			PRINTFORMW 「ホントに痛いのぉ…もうダメなのぉ……」
+			PRINTFORMW 「お願い…ねぇ…いかせてよぉ……チェンおトイレ行きたいのぉ…」
+			PRINTFORMW （あれ…なんだろ……痛いのに変な感じがする…）
+			PRINTFORMW 橙はお腹を押さえてすがるような視線を向けているが表情からは多少の快楽を得ていることがわかる
+			CFLAG:7009 = 3
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「ホントに痛いのぉ…もう出ちゃうよぉ……」
+			PRINTFORMW （あれ…なんだろ……痛いのに変な感じがする…）
+			PRINTFORMW 橙はお腹を押さえて必死だが表情からは多少の快楽を得ていることがわかる
+			CFLAG:7009 = 3
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 ==1
+			PRINTFORMW 「ホントに痛いのぉ…もうダメなのぉ……」
+			PRINTFORMW 「お願い…ねぇ…いかせてよぉ……チェンおトイレ行きたいのぉ…」
+			PRINTFORMW 橙はお腹を押さえながら、すがるような視線を向けている
+			CFLAG:7009 = 3
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「ホントに痛いのぉ…もう出ちゃうよぉ……」
+			PRINTFORMW 橙はお腹を押さえて必死だ
+			CFLAG:7009 = 3
+		ENDIF
+	;4回目
+	ELSEIF CFLAG:7009 == 3
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「はぁ…あっはぁ…うぅ……出ちゃうぅぅ……出さない…%CALLNAME:MASTER%……もっとぉ…」
+			PRINTFORMW 「チェンの恥ずかしいとこ…いっぱい見てぇ……」
+			PRINTFORMW 橙は腹痛と排泄感を快楽としか受け取っていないようだ
+			PRINTFORMW 橙はうずくまりながら快楽におぼれた表情を作り出している
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「うぅ…出ちゃう……出さない……もっと…もっとぉ……」
+			PRINTFORMW 橙は腹痛と排泄感を快楽としか受け取っていないようだ
+			PRINTFORMW 橙はうずくまりながら快楽におぼれた表情を作り出している
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「はぁ…あっはぁ…うぅ……出ちゃうぅぅ……%CALLNAME:MASTER%に見られてるのに……そんな…いやぁ…」
+			PRINTFORMW 「チェン…へんなのぉ……痛いのに…苦しいのに、変な気持になっちゃうの……」
+			PRINTFORMW 「これ以上続けたら……チェンおかしくなっちゃうから…おトイレ…いかせてよぉぉぉ……」
+			PRINTFORMW 橙はうずくまり震えだした
+			PRINTFORMW その顔は赤く、吐息は熱っぽい
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「はぁ…あっはぁ…うぅ……出ちゃうぅぅ……」
+			PRINTFORMW （ダメ……この感覚に呑まれたら……）
+			PRINTFORMW 橙はうずくまり震えだした
+			PRINTFORMW その顔は赤く、吐息は熱っぽい
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「はぁ…出したくないのぉ……%CALLNAME:MASTER%のまえで……そんな…いやぁ…」
+			PRINTFORMW 「うぅ……もう……出ちゃうぅぅぅ……%CALLNAME:MASTER%のばかぁ…いじわるっ…いじめっ子ぉ」
+			PRINTFORMW 「おトイレ…いかせてよぉぉぉ……」
+			PRINTFORMW 橙はうずくまりながら、%CALLNAME:MASTER%に怒っているが、声に覇気がなくなっている。
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「はぁ…はぁ…うぅ……出ちゃうぅぅ……」
+			PRINTFORMW 橙はうずくまり泣きながら震えだした。
+		ENDIF
+		CFLAG:7009 = 4
+	;5回目
+	ELSEIF CFLAG:7009 == 4
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「あっ…はぁはぁ…ん…あぁぁん……」
+			PRINTFORMW （ガマンすれば…もっと、気持ちよくなる……もっとよくなりたい……）
+			PRINTFORMW 橙は喋れなくなっても、なお喘いでいる
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「あっ…はぁはぁ…ん…あぁぁん……」
+			PRINTFORMW （ガマンすれば…もっと、気持ちよくなる……もっとよくなりたい……）
+			PRINTFORMW 橙は喋れなくなっても、なお喘いでいる
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「うっ……ん……」
+			PRINTFORMW 橙はもう喋ることも出来ないようだ。
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「うっ……ん……」
+			PRINTFORMW 橙はもう喋ることも出来ないようだ。
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 < 2 && TALENT:150 == 1
+			PRINTFORMW 「うぅ……ん…グス……」
+			PRINTFORMW （%CALLNAME:MASTER%のばか…ここまでするなんてぇ）
+			PRINTFORMW 橙は泣きだし、喋ることも出来ないようだ。
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「うっ……ん……」
+			PRINTFORMW 橙はもう喋ることも出来ないようだ。
+		ENDIF
+		CFLAG:7009 = 5
+	;6回目
+	ELSEIF CFLAG:7009 == 5
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「あぁ…もう出るっ出ちゃうぅぅダメもっと良くなりたいのにぃ」
+			PRINTFORMW 「出すからっチェンいっぱいいっぱい出すから、見てっあっだめぇぇぇぇぇぇぇ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「あぁ…もう出るっ出ちゃうぅぅダメもっと良くなりたいのにぃ…だめぇぇぇぇぇぇ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「やぁ…もうダメぇ出るっでるっでちゃうぅぅ見ないでぇぇぇぇぇ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「やぁ…もうダメぇ出るっでるっでちゃうぅぅぅぅ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 < 2 && TALENT:150 == 1
+			PRINTFORMW 「やぁ…もうダメぇ出るっでるっでちゃうぅぅ見ないでぇぇぇぇぇ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「やぁ…もうダメぇ出るっでるっでちゃうぅぅぅぅ」
+			PRINTFORMW 橙は錯乱したかのように言葉を紡ぎだした。
+		ENDIF
+		CFLAG:7009 = 6
+	;7回目
+	ELSEIF CFLAG:7009 == 6
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW （あっ返ってくる…お腹の中ぐちゃぐちゃになってるぅぅぅぅ）
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW （あっ返ってくる…お腹の中ぐちゃぐちゃになってるぅぅぅぅ）
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		;マゾッ気3以上4以下+恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW （おなかイタイ　気持ちいい　おなかイタイ　気持ちいい　おなかイタイ　気持ちいい　おなかイタイ　気持ちいい…）
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW （おなかイタイ　気持ちいい　おなかイタイ　気持ちいい　おなかイタイ　気持ちいい　おなかイタイ　気持ちいい…）
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		;マゾッ気2以下+恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「やぁぁぁあぁぁぁああぁあぁあぁあぁあぁああぁぁ」
+			PRINTFORMW 橙は絶叫と共に、肛門の力を抜いたが栓によって逆流を起こし
+			PRINTFORMW 腸内を浣腸液と自らの排泄物に掻き回されている。
+		ENDIF
+		SOURCE:2 += 100
+		CFLAG:7009 = 7
+	;8回目
+	ELSEIF CFLAG:7009 == 7
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「あはぁ…まだ気持ちいい…気持ちいい…お腹の中…ひっくり返ってるぅ…」
+			PRINTFORMW 橙は体をぐったりと倒し目は虚ろになっている
+			PRINTFORMW 常に感じているのか体は痙攣し続けている
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「あはぁ…まだ気持ちいい…気持ちいい…お腹の中…ひっくり返ってるぅ…」
+			PRINTFORMW 橙は体をぐったりと倒し目は虚ろになっている
+			PRINTFORMW 常に感じているのか体は痙攣し続けている
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「やぁあぁ……いつ…まで…続くの……%CALLNAME:MASTER%のばかぁぁ」
+			PRINTFORMW 「%CALLNAME:MASTER%がここまでするなんてぇ……」
+			PRINTFORMW 橙は収まらない逆流に疲れ果てたかのようにぐったりとしているが
+			PRINTFORMW 小刻みに全身を痙攣させている
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「やぁあぁ……いつ…まで…続くの……」
+			PRINTFORMW 橙は収まらない逆流に疲れ果てたかのようにぐったりとしているが
+			PRINTFORMW 小刻みに全身を痙攣させている
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「やぁあぁ……いつ…まで…続くの……%CALLNAME:MASTER%のばかぁぁ」
+			PRINTFORMW 「%CALLNAME:MASTER%は…ここまでしないって思ったからぁ、チェン信じてたから…カンチョウ、恥ずかしいけど…いいよって言ったのにぃ……」
+			PRINTFORMW 橙は収まらない逆流に疲れ果てたかのようにぐったりとしている
+			PRINTFORMW 橙は限界になってもトイレに行かせてもらえなかった事がよほど嫌だったようだ
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「やぁあぁ……いつ…まで…続くの……」
+			PRINTFORMW 橙は収まらない逆流に疲れ果てたかのようにぐったりとしている
+		ENDIF
+		CFLAG:7009 = 8
+	;9回目
+	ELSEIF CFLAG:7009 == 8
+		;マゾッ気5以上＋恋慕
+		IF ABL:21 >= 5 && TALENT:150 == 1
+			PRINTFORMW 「まだ…出てない……お腹の中…いっぱい……%CALLNAME:MASTER%…まだ続けるから…もっと橙をいじめてぇ…」
+			PRINTFORMW 橙は自らが排泄していないと気付くと肛門に力を入れ直し、我慢を再開するようだ
+			CFLAG:7009 = 0
+		;マゾッ気5以上
+		ELSEIF ABL:21 >= 5
+			PRINTFORMW 「まだ…出てない……お腹の中…いっぱい……おしり気持ちいいの…続けるのぉ…」
+			PRINTFORMW 橙は自らが排泄していないと気付くと肛門に力を入れ直し、我慢を再開するようだ
+			CFLAG:7009 = 0
+		;マゾッ気3以上4以下＋恋慕
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「はぁ…はぁ……もう…おトイレいかせてよぉ…」
+			PRINTFORMW 「さっきの、なんだったの……チェンおかしくなっちゃったの…ねぇたすけて……」
+			PRINTFORMW 橙は快感を得た自身へ不信感を抱いている
+			PRINTFORMW 逆流が収まった橙は再びは排泄感を感じているようだ
+			CFLAG:7009 = 10
+		;マゾッ気3以上4以下
+		ELSEIF ABL:21 <= 3 && ABL:21 >= 4
+			PRINTFORMW 「はぁ…はぁ……もう…おトイレいかせてぇ…」
+			PRINTFORMW （さっきの、なんだったの……チェンおかしくなっちゃったの…？）
+			PRINTFORMW 橙は快感を得た自身へ不信感を抱いている
+			PRINTFORMW 逆流が収まった橙は再びは排泄感を感じているようだ
+			CFLAG:7009 = 0
+		;マゾッ気2以下＋恋慕
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「もういいでしょ！おトイレいかせてよぉ！」
+			PRINTFORMW 橙は珍しく怒っている
+			PRINTFORMW %CALLNAME:MASTER%が黙っていると、橙は再び感じ出した排泄感を意識しだしているようだ
+			CFLAG:7009 = 10
+		;マゾッ気2以下
+		ELSEIF ABL:21 <= 2
+			PRINTFORMW 「はぁ…はぁ……もう…おトイレいかせてぇ…」
+			PRINTFORMW 逆流が収まった橙は再びは排泄感を感じているようだ
+			CFLAG:7009 = 0
+		ENDIF
+	;ループ時のセリフ変更用
+	ELSEIF CFLAG:7009 == 10
+		;マゾッ気3以上4以下＋恋慕(ループ時のみこちら）
+		IF ABL:21 <= 3 && ABL:21 >= 4 && TALENT:150 == 1
+			PRINTFORMW 「うぅ…おトイレいかせてよぉ…」
+			CFLAG:7009 = 1
+		;マゾッ気2以下＋恋慕(ループ時のみこちら）
+		ELSEIF ABL:21 <= 2 && TALENT:150 == 1
+			PRINTFORMW 「うぅ…おトイレいかせてよぉ…」
+			CFLAG:7009 = 1
+		ENDIF
+	ENDIF
+ENDIF
+

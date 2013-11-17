@@ -1,0 +1,212 @@
+;-------------------------------------------------
+;YM天子用アナルセックス用ファイル
+;
+;分量が多くなりそうなのでコレだけ分割
+;
+;CFLAG:8246＝アナル正常位＝30　→　基本CFLAGとしてはコレを使用。0：未開通。1:開通済、2:未定義、3:ガバガバアナル
+;CFLAG:8247＝アナル後背位＝31
+;CFLAG:8248＝対面座位アナル＝32
+;CFLAG:8249＝背面座位アナル=33
+;CFLAG:8250＝騎乗位アナル=34
+;CFLAG:8253＝対面立位アナル=37
+;CFLAG:8254＝背面立位アナル=38
+;-------------------------------------------------
+@K52_ANALSEX_KOJO
+
+;前コマンドで脱腸アナルオナホセックスが出ている場合
+;脱腸プレスアナルセックス
+IF CFLAG:8246 == 3 && (PREVCOM == 30 || PREVCOM == 31 || PREVCOM == 32 || PREVCOM == 33 || PREVCOM == 34 || PREVCOM == 37 || PREVCOM == 38)
+
+	IF 0
+	ELSEIF SELECTCOM == 30
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 30) ? そのまま # 腸が捻じれるのも構わず体勢を正常位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 31
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 31) ? そのまま # 腸が捻じれるのも構わず体勢を後背位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 32
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 32) ? そのまま # 腸が捻じれるのも構わず体勢を対面座位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 33
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 33) ? そのまま # 腸が捻じれるのも構わず体勢を背面座位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 34
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 34) ? そのまま # 腸が捻じれるのも構わず体勢を騎乗位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 37
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 37) ? そのまま # 腸が捻じれるのも構わず体勢を対面立位に変え\@尻たぶの奥へと突き込んだ。
+	ELSEIF SELECTCOM == 38
+		PRINTFORMW %CALLNAME:PLAYER%はオナホにしていた腸管から手を離し、\@(PREVCOM == 38) ? そのまま # 腸が捻じれるのも構わず体勢を背面立位に変え\@尻たぶの奥へと突き込んだ。
+	ENDIF
+	
+	IF RAND:3 == 0
+		PRINTFORMW 「ほひぃっ♪はひぃっ♪ぐちゅってぇ♪潰れるのが気持ちイィのぉ♪もっろぉ♪もっろ%CALLNAME:TARGET%の内臓潰してぇっ♪ぐちゃぐちゃにしてぇっ♪おぼっほおぉっ♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「あ゛がっ♪う゛ごっ♪ないぞーつぶれるぅっ♪%CALLNAME:TARGET%しんじゃうぅ♪ほひゃぁっ♪ぐちゃってぇ♪ぐちゃっていったぁ♪もどれにゃいぃっ♪どっかいっひゃうぅ～♪」
+	ELSE
+		PRINTFORMW 「ぐひぃぃぃぃぃっ♪ずちゅっずちゅって内臓潰れてるぅっ♪抉ってぇっ♪もっろ！もっろ%CALLNAME:TARGET%の内臓抉って潰してかきまぜてぇっ♪おひぃあっひゃぁぁぁぁ♪」
+	ENDIF
+	
+	PRINTFORMW %CALLNAME:PLAYER%が奥まで突き入れる度、飛び出した腸管は尻たぶと恥骨の間で幾度となく潰され充血していく。
+	PRINTFORMW 普通の人間なら死んでしまうような痛みの波にも%CALLNAME:TARGET%は耐え、むしろ瞳を裏返すほどの快感としているようだ。
+	PRINTFORMW 何度となく突き入れるうち、ようやく尻尾のような脱腸は全て%CALLNAME:TARGET%の腹の中へ収まった。
+
+CFLAG:8726 = 2
+RETURN 0
+ENDIF
+
+;ガバガバアナルかどうか判定。ガバガバなら脱腸アナルオナホセックス
+;淫尻かつＡ拡張経験３０以上かつアナルフィスト経験とアナルセックス経験ありかつ先のプレイがアナル調教の場合1/3の確率で発生
+;ただし、アナルおねだり、浣腸、腹パン、足で踏むからの派生の場合１００％
+;この分岐の長さ…気が狂っとるｗ
+IF CFLAG:8246 > 0 && CFLAG:8441 > 0 && TALENT:173 == 1 && EXP:33 >= 30 &&  (PREVCOM == 45 || PREVCOM == 240 || PREVCOM:174 || PREVCOM == 241)
+	PRINTFORMW %CALLNAME:PLAYER%は\@(PREVCOM == 45) ? %CALLNAME:TARGET%が自らひり出した # 苛烈な調教で飛び出してしまった%CALLNAME:TARGET%の \@腸管をむんずと掴んだ
+	PRINTFORMW 「んひぃ♪触られるだけでびりびりすりゅぅ♪メチャクチャにしてぇ♪んはぁっ♪」
+	PRINTFORMW そして飛び出した腸管をにペニスを突っ込みオナホールのようにしてしごき始めた。
+	IF RAND:3 == 0
+		PRINTFORMW 「お゛ひぃっ♪使ってェ♪あんっ♪私のブッ壊れたあなぅ、オナホにして使ってェ♪ひぅんっ♪もっろぉ♪もっろ激しく握ってぇ♪おひぃぃぃっ♪けちゅあにゃオナホにされて頭バカになっちゃうぅぅぅ♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「い゛ぎひぃっ♪もっろ゛ぉ♪私の脱腸オナホでオナニーしてぇっ♪い゛ひぁっ！もっとぉ♪もっと握って強くこひゅってぇ♪にゃぁぁ♪頭オカシクなり゛ゅう♪脱腸をオナホにされてイっちゃうよぉぉぉぉぉ♪」
+	ELSE
+		PRINTFORMW 「えへへ…♪こんなブッ壊れたアナルでも%CALLNAME:PLAYER%をキモチヨクできるなんてェ♪あ゛ひぃぃぃぃ♪ひあわひぇぇ♪うひぃ♪もっろぉ♪もっろ強くしごいてぇ♪お゛ひぃっひゃぁうひょあ゛ぁぁぁぁぁぁ♪」
+	ENDIF
+	
+	PRINTFORML 
+	
+	IF RAND:3 == 0
+		PRINTFORMW 「い゛ぐうっ！ガバガバアナルオナホにされたままイっちゃうぅぅ♪あぐぅっ♪」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「ケツマンコオナホにされてイ゛っぢゃう゛ぅぅぅぅ♪あ゛へえ゛っ♪」
+	ELSE
+		PRINTFORMW 「けちゅぅ♪けちゅまんこオナホで頭フットーしちゃうぅ♪お゛っほおぉぉぉぉぉ♪」
+	ENDIF
+	
+	CFLAG:8726 = 3
+	
+	RETURN 0
+ENDIF
+
+
+;初物
+IF CFLAG:8726 == 0
+	;恋慕か服従か淫乱か淫尻の場合
+	IF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 || TALENT:173 == 1
+		PRINTFORMW 「え？お尻の穴に挿入するの？…えへへ♪%CALLNAME:PLAYER%って変態なのね♪んぅっ♪」
+		
+	;屈服刻印３かつＡ感覚３以上の場合
+	ELSEIF MARK:2 == 3 && ABL:2 >= 3
+	;屈服刻印２以上の場合
+	ELSEIF MARK:2 >= 2
+	;その他
+	ELSE
+	ENDIF
+;突き抜けが怖いのでここにもRETURN 0を配置
+CFLAG:8726 = 1
+RETURN 0
+;恋慕か服従か淫乱か淫尻の場合
+ELSEIF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 || TALENT:173 == 1
+
+	IF 0
+	ELSEIF SELECTCOM == 30
+	ELSEIF SELECTCOM == 31
+	ELSEIF SELECTCOM == 32
+	ELSEIF SELECTCOM == 33
+	ELSEIF SELECTCOM == 34
+	ELSEIF SELECTCOM == 37
+	ELSEIF SELECTCOM == 38
+	ENDIF
+
+;屈服刻印３かつＡ感覚３以上の場合
+ELSEIF MARK:2 == 3 && ABL:2 >= 3
+
+	IF 0
+	ELSEIF SELECTCOM == 30
+	ELSEIF SELECTCOM == 31
+	ELSEIF SELECTCOM == 32
+	ELSEIF SELECTCOM == 33
+	ELSEIF SELECTCOM == 34
+	ELSEIF SELECTCOM == 37
+	ELSEIF SELECTCOM == 38
+	ENDIF
+
+;屈服刻印２以上の場合
+ELSEIF MARK:2 >= 2
+
+	IF 0
+	ELSEIF SELECTCOM == 30
+	ELSEIF SELECTCOM == 31
+	ELSEIF SELECTCOM == 32
+	ELSEIF SELECTCOM == 33
+	ELSEIF SELECTCOM == 34
+	ELSEIF SELECTCOM == 37
+	ELSEIF SELECTCOM == 38
+	ENDIF
+
+;その他
+ELSE
+
+	IF 0
+	ELSEIF SELECTCOM == 30
+	ELSEIF SELECTCOM == 31
+	ELSEIF SELECTCOM == 32
+	ELSEIF SELECTCOM == 33
+	ELSEIF SELECTCOM == 34
+	ELSEIF SELECTCOM == 37
+	ELSEIF SELECTCOM == 38
+	ENDIF
+
+ENDIF
+
+CFLAG:8726 = 1
+RETURN 0
+
+@K52_ANALSEX_VOICE
+;恋慕か服従か淫乱か淫尻の場合
+IF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 || TALENT:173 == 1
+
+	IF RAND:5 == 0
+	ELSEIF RAND:4 == 0
+	ELSEIF RAND:3 == 0
+	ELSEIF RAND:2 == 0
+	ELSE
+	ENDIF
+
+;屈服刻印３かつＡ感覚３以上の場合
+ELSEIF MARK:2 == 3 && ABL:2 >= 3
+
+	IF RAND:5 == 0
+	ELSEIF RAND:4 == 0
+	ELSEIF RAND:3 == 0
+	ELSEIF RAND:2 == 0
+	ELSE
+	ENDIF
+
+;屈服刻印２以上の場合
+ELSEIF MARK:2 >= 2
+
+	IF RAND:5 == 0
+		PRINTFORMW 「痛っ……す、少しは優しくしなさいよバカあっ！」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「ぐぅっ、はっ…痛っ、ひっかけないでよ！痛いのよっ」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「んぐぅっ…痛っ…あんまり強く、っしないでぇ…」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「太…いぃ…あまり激しくされると裂けるゥっ…」
+	ELSE
+		
+	ENDIF
+
+;その他
+ELSE
+
+	IF RAND:5 == 0
+		PRINTFORMW 「い゛だい゛ぃっ！い゛だい゛よぉっ！抜いて！抜いてよおっ」
+	ELSEIF RAND:4 == 0
+		PRINTFORMW 「くっ…あ゛あ゛っ…裂け、るぅ…」
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「い゛、ぎぃっ！？おじりっ！いだいぃっ！」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「やめぇっ、ひぎぃっ！そっちは違が゛ぁっ」
+	ELSE
+		PRINTFORMW 「裂けるぅっ！お尻の穴裂けちゃうぅっ！ぎあぁぁぁぁっ」
+	ENDIF
+
+ENDIF
+
+RETURN 0
+

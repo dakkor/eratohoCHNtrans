@@ -1,0 +1,4664 @@
+;-------------------------------------------------
+;YM用淫乱阿求口上
+;-------------------------------------------------
+;
+;使用したCFLAG 
+;5100 独自の処女喪失フラグ
+;5101,5102 日焼けフラグ（昼に野外でスク水を着ると発生。結局全然使いませんでした）
+;
+;自分用メモ 
+;屈伏1以下　虚勢、反抗的
+;屈服2　弱音、泣き
+;屈伏3　レイプ目、マグロ
+;淫乱　レイプ目、奉仕に喜び
+;淫乱　レイプ目、快楽に素直    
+;
+;体力: 1300	気力: 2000	
+;処女 気丈 好奇心 貞操観念 恥じらい 習得早い 自慰しやすい 小柄体型 Ｃ敏感 貧乳 回復遅い 
+;欲望	2 技巧	2
+;自慰経験	10  異常経験	9
+;霊夢	110  八雲紫	120  慧音	110
+;-------------------------------------------------
+;----------------------------------------------------------------------------------
+;【この口上の改変等について】
+;----------------------------------------------------------------------------------
+;この口上の修正・加筆・改変は自由です。
+;加筆等をしてアップする場合は「別人修正版」「別人加筆版」などの名前をつけ、元の口上と区別できるようにしてください。
+;また、別バリアント用にこの口上をコンバートしてうpしたり、口上まとめへ導入したりするのもOKです。
+;いずれの場合もこの口上のreadmeを同梱してください。その際は「元作者のreadme」などにファイル名を変えてもかまいません。
+;
+;上記のことを行う際に、スレで私の許可を取る必要はありません。
+;その他、私（作者）に質問があればウフフ板のeratohoスレにお願いします。でも居なかったらごめん。
+;
+;作者のトリップ:◆Eviqcp2haU
+;----------------------------------------------------------------------------------
+
+;--------------------------------------------------
+;口上ファイルの存在判定
+;--------------------------------------------------
+;口上の存在判定（YM版）
+@TRY_48
+RETURN 1
+
+;--------------------------------------------------
+;エキストラモード構文 CFLAG:5020を使用
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------
+;@KOJO_48_EXTRA_INITIALIZATION
+;IF CFLAG:5020 == 0
+;	PRINTL 処女モードに移行しますか？
+;	PRINTL [0] はい
+;	PRINTL [1] いいえ
+;	$INPUT_LOOP
+;	INPUT
+;	IF RESULT == 0
+;		PRINTFORMW ―処女モードに素質、能力を変更します―
+;		TALENT:0 = 1
+;		ABL:Ｖ感覚 = 0
+;		EXP:Ｖ経験 = 0
+;	ELSEIF RESULT == 1
+;		PRINTFORMW ―通常モードで調教を開始します―
+;	ELSE
+;		GOTO INPUT_LOOP
+;	ENDIF
+;	CFLAG:5020 = 1
+;ENDIF
+
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG:5001～5019を使用
+;-------------------------------------------------
+@KOJO_48_SLAVE_MESSAGE_TRAIN_START
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5021 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時 CFLAG:5001
+;-------------------------------------------------
+
+IF CFLAG:5001 == 0
+	DRAWLINE
+	PRINTFORMW 「……これは、私が阿礼乙女と知っての狼藉ですか」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%をじろりと睨みつける
+	PRINTFORMW 「悪いことは言いませんから、この枷を外してください。後悔しますよ」
+	PRINTFORMW 稚い顔立ちとは裏腹に、態度は高圧的で自信に満ちている
+	PRINTFORMW 家柄や頭の出来に恵まれ、蝶よ花よと育てられたのだろう
+	PRINTFORMW 目の前にいる者の邪な意図には気付いていないようだ
+	PRINTFORMW 「…お地蔵様でもないでしょうに、何か言ったらどうなんです……かっ！？」
+	PRINTFORMW %CALLNAME:MASTER%は阿求の腰帯に手をかけ、解きにかかった
+	PRINTFORMW 「ちょっと、嘘、服、脱がしてる……？　ま、まさか、あなた……」
+	PRINTFORMW 阿求はようやく状況を把握し、血相を変えて抵抗する
+	PRINTFORMW しかし、少女の細腕では太刀打ちできない
+	PRINTFORMW 「止めてくださいっ！　私に手を出せば、里の者たちが黙っていませんよ！？」
+	PRINTFORMW 叫びも虚しく、帯が解かれ血色の薄い胸が露わになった
+	PRINTFORMW 「……こ、これから、私に何をするつもりですか……」
+	PRINTFORMW 阿求は両手で胸を隠し、震える声で問いかけた…
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG:5001
+;-------------------------------------------------
+
+;淫乱
+ELSEIF CFLAG:5001 < 6 && TALENT:淫乱 == 1 
+	;ちんこあり
+	IF TALENT:MASTER:120 == 1 || TALENT:MASTER:121 == 1
+		DRAWLINE
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、阿求が抱きついてきた
+		PRINTFORMW 「……来るのが遅い、です」
+		PRINTFORMW そう言うと阿求は%CALLNAME:MASTER%の手を取り、秘所に導いていく
+		PRINTFORMW 「ほら……ここ濡れてるの、分かりますよね？　何度も慰めたのに、抑まらないんです。どんどん溢れて止まらないんです……」
+		PRINTFORMW 白い指を%CALLNAME:MASTER%の股間に這わせ、するりと下着を取り去る
+		PRINTFORMW まだ柔らかい陰茎を引きずり出すと、阿求は目を潤ませてそれにむしゃぶりついた…
+		PRINTFORMW 「ちゅぱ、ちゅう、ちゅう……はぁ、ご主人様の、おいひい……♪　もう、これがないと生きられません……」
+		PRINTFORMW 夢中で陰茎を吸う阿求の瞳は、何も映していなかった…
+	;ちんこなし
+	ELSE
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、阿求が抱きついてきた
+		PRINTFORMW 「……来るのが遅い、です」
+		PRINTFORMW そう言うと阿求は%CALLNAME:MASTER%の手を取り、秘所に導いていく
+		PRINTFORMW 「ほら……ここ濡れてるの、分かりますよね？　何回も慰めたのに、抑まらないんです。どんどん溢れて止まらないんです……」
+		PRINTFORMW 阿求は白い指を%CALLNAME:MASTER%の股間に這わせ、するりと下着を取り去り秘所に口づける…
+		PRINTFORMW 「お願いです、ご主人様。何でもしますから……捨てないでください……」
+		PRINTFORMW 夢中で奉仕する阿求の瞳は、何も映していなかった…
+	ENDIF
+	CFLAG:5001 = 6
+	RETURN 1
+
+;恋慕
+ELSEIF CFLAG:5001 < 5 && TALENT:恋慕
+	DRAWLINE
+	PRINTFORMW 「ぁ……」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の姿に気が付くと、弛緩しきった笑顔を浮かべた…
+	CFLAG:5001 = 5
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:屈服刻印 == 3 && TALENT:淫乱 == 0
+	DRAWLINE
+	PRINTFORMW 「……」
+	PRINTFORMW 阿求の瞳にあった意思の光は失われている…
+	CFLAG:5001 = 4
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW 「どうして、こんなことに……」
+	PRINTFORMW 阿求はうわごとのように繰り返している…
+	CFLAG:5001 = 3
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW 「くっ……こんなもの、勝手に見ればいいでしょう……！」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の命令に屈し、袴の裾をたくしあげた…
+	CFLAG:5001 = 2
+	RETURN 1
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K48_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上 CFLAG:5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;助手
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5002 == 0
+		;淫乱＋淫乱時初口上（陥落イベント）が発生済み
+;		IF TALENT:淫乱 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5002 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;淫乱
+;		IF TALENT:淫乱
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5003 == 0
+		;淫乱＋淫乱時初口上（陥落イベント）が発生済み
+;		IF TALENT:淫乱 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5003 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;淫乱
+;		IF TALENT:淫乱
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K48_KOJO2
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降） CFLAGなし 
+;-------------------------------------------------
+@K48_KOJO2
+
+;淫乱
+IF TALENT:淫乱
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:3 == 0
+		PRINTFORML 「ご主人様……今日も、阿求にお情けをください……」
+		PRINTFORMW 阿求は生まれたままの秘所を曝けだした…
+	ELSEIF 	RAND:2 == 0
+		PRINTFORML 「はぁ、今日も素敵です…」
+		PRINTFORMW 阿求は%CALLNAME:MASTER%の前に跪くと、慣れた手つきで下穿きを脱がせた…
+	ELSE
+		PRINTFORML 「今日は着たまま……というのは如何ですか？」
+		PRINTFORMW 阿求は袴の裾をたくしあげ、挑発的な笑みを浮かべた…
+	ENDIF
+	RETURN 1
+
+;淫乱無し＋恋慕
+ELSEIF TALENT:恋慕 == 1 && TALENT:淫乱 == 0
+	DRAWLINE
+	PRINTFORML 「あっ……いらっしゃいませ」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の顔を見るとぱっと表情を明るくする…
+	RETURN 1
+
+;屈服刻印Lv3＋淫乱無し
+ELSEIF MARK:屈服刻印 == 3 && TALENT:淫乱 == 0
+	DRAWLINE
+	PRINTFORML 「……」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の姿を視界に入れても、眉一つ動かさない…
+	RETURN 1
+
+;反発刻印Lv3+屈服2以下
+ELSEIF MARK:9 == 3 && MARK:2 == 2
+	DRAWLINE
+	PRINTFORML 「…あなたが地獄に落ちた時が楽しみです」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の顔を見るなり、酷薄な笑みを浮かべた…
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORML 「……うっ、ひぐっ……」
+	PRINTFORMW 阿求はただ己の運命を嘆いて泣き続けている…
+	RETURN 1
+
+;屈服刻印Lv1以下
+ELSEIF MARK:屈服刻印 <= 1
+	DRAWLINE
+	PRINTFORML 「いつまで続ければ気が済むんですか…？」
+	PRINTFORMW 阿求はうんざりとした視線を向ける…
+	RETURN 1
+ENDIF
+
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_48_SLAVE_MESSAGE_TRAIN_END
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K48_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;恋慕or淫乱or屈服3でセックス処女喪失後＋反発なし
+IF CFLAG:5100 == 2 && MARK:9 == 0
+	DRAWLINE
+	PRINTFORMW 「……」
+	PRINTFORMW 阿求は己の股に残る出血の跡を虚ろな目で眺めている
+	PRINTFORMW その事について思考することを放棄しているようだ…
+	CFLAG:5100 = 3
+	RETURN 1
+
+;非恋慕・淫乱でセックスで処女喪失後＋屈服2以下
+ELSEIF CFLAG:5100 == 1 && MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 阿求は右手を振り上げて平手を打とうとしたが、%CALLNAME:MASTER%は手首を掴んで阻止する
+	PRINTFORMW 「放せっ、放せっ……！」
+	PRINTFORMW 阿求の股からはまだ血が滲み、見るだけで痛みを感じさせる
+	PRINTFORMW だが、彼女を動かしているのはそれ以上に深い怒りと悲しみだった
+	PRINTFORMW 「やめてって言ったのに、言ったのに……！　あ、ああぁあ、あああっ、あああぁああっ……」
+	PRINTFORMW 無残に散らされてしまった純潔を悼むように、阿求は大粒の涙を零す
+	PRINTFORMW やがて疲れて抵抗する力を無くしてからも、嗚咽はなかなか止むことはなかった…
+	CFLAG:5100 = 3
+	RETURN 1
+
+;日焼けしている。一回きり
+ELSEIF CFLAG:5101 == 1 && CFLAG:5102 == 0
+	DRAWLINE
+	PRINTFORMW 「あれ」
+	PRINTFORMW 阿求は服を着替える最中に、自分の肌の異変に気が付いた
+	PRINTFORMW 「あちゃぁ、水着の形が白いまま残っちゃってる……」
+	PRINTFORMW 阿求の全身はスクール水着の形に日焼けしていて、どこか扇情的に見えた…
+	CFLAG:5102 = 1
+	RETURN 1
+
+;淫乱＋体力500未満
+ELSEIF TALENT:淫乱 == 1 && BASE:0 < 500
+	DRAWLINE
+	PRINTFORML 「はぁ……はぁ……やめないで……もっと……私を壊して……」
+	PRINTFORMW 阿求は、弱々しく%CALLNAME:MASTER%の袖を掴んできた……
+	RETURN 1
+
+;淫乱
+ELSEIF TALENT:淫乱 == 1
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:4 == 0
+		PRINTFORML 「今度、そこらの妖精でも捕まえてきて楽しみませんか？　……くすり」
+		PRINTFORMW 阿求は無垢な娼婦の表情で微笑する…
+	ELSEIF RAND:3 == 0
+		PRINTFORML 阿求は行為が終わると%CALLNAME:MASTER%に寄り添い腕を絡めた
+		PRINTFORML 「…きっと、お役目を放り出してこんな情事に耽っている私を、先代たちは許さないでしょうね」
+		PRINTFORMW 「でも。ご主人様のためなら、私は罰が当たったって構いませんから」
+	ELSEIF RAND:2 == 0
+		PRINTFORML 阿求は調教が終わった後も名残惜しそうにペニスをしゃぶっている…
+		PRINTFORMW 「…ん、ちゅく、んむぅ……もっと、精子ください……んぷ、ぺろ」
+	ELSE
+		PRINTFORML 「まだ、し足りないのに…」
+		PRINTFORMW 阿求は太腿を切なそうに擦り合わせている…
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:淫乱 == 0 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORML 「お疲れ様でした…」
+	PRINTFORMW 阿求は体液塗れの肢体を横たえ、熱っぽく挨拶を口にした…
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:淫乱 == 0 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORML 「……」
+	PRINTFORMW 阿求はひたすら虚空を見つめている…
+	RETURN 1
+
+;反発刻印Lv3+屈服2以下
+ELSEIF MARK:9 == 3 && MARK:2 <= 2
+	DRAWLINE
+	PRINTFORML 「……今日も有難う御座いました。七代先まで呪ってあげます」
+	PRINTFORMW 阿求は台詞に毒を隠そうともしない…
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	PRINTFORML （皆、心配してるだろうなぁ…）
+	PRINTFORMW 阿求は疲れた体を横たえ、里に残してきた人々のことに思いを馳せた…
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	PRINTFORML （…諦めたら駄目です。助けが来るまで頑張らないと…）
+	PRINTFORMW 阿求は折れそうな心を必死に鼓舞した…
+	RETURN 1
+
+;屈服刻印なし
+ELSEIF MARK:2 == 0
+	DRAWLINE
+	PRINTFORML 「……あなたの思い通りになんて、なりませんから」
+	PRINTFORMW 阿求は%CALLNAME:MASTER%の目を睨みつけた…
+	RETURN 1
+ENDIF
+
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係
+;コマンド実行時に出力されます
+;--------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_48_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_48_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ・猿轡(?)・触手口屈辱時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 && (SELECTCOM != 226 && SELECTCOM != 229 && SELECTCOM != 506 && SELECTCOM != 583)
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG:9000～9999を使用（コマンド番号＋9000）
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG:9000
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:9000 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「は、う……」
+			PRINTFORMW 阿求は性感帯を弄られてぼうっとしている…
+		;それ以外
+		ELSE
+			IF SELECTCOM == 606
+				PRINTFORMW 「汚い口をつけないでっ……！」
+				PRINTFORMW 阿求は唇を固く閉ざして嫌がっている…
+			ELSE
+				PRINTFORMW 「く……ふっ……」
+				PRINTFORMW 阿求は緊張に身体を強張らせている…
+			ENDIF
+		ENDIF
+		CFLAG:9000 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱
+			IF RAND:2 == 0 && SELECTCOM == 606
+				PRINTFORML 「あ、んっ、んーーっ」
+				PRINTFORMW 指で下の方を擦りながら唇を吸うと、発情した猫のように喉を鳴らした…
+			ELSE
+				PRINTFORML 敏感なクリトリスを弄ると、愛液がどんどん湧き出して%CALLNAME:MASTER%の指で糸を引いた
+				PRINTFORMW それを阿求の目の前に持っていって見せると、恥ずかしそうに顔を隠した…
+			ENDIF
+			CFLAG:9000 = 6
+		;屈服刻印Lv3＋C感覚Lv3
+		ELSEIF MARK:2 == 3 && ABL:0 >= 3
+			PRINTFORML 「あっ、そこは、ぁぅ……」
+			PRINTFORMW 無抵抗な肢体に触れると、びくんと大きく跳ねた…
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「んっ…」
+			PRINTFORMW 無抵抗な肢体に触れると、微かに身じろぎした…
+			CFLAG:9000 = 4
+		;屈服刻印Lv2か恋慕
+		ELSEIF (MARK:2 == 2 || TALENT:恋慕)
+			PRINTFORMW 阿求は紅潮した顔を見られないように背けている…
+			CFLAG:9000 = 3
+		;それ以外
+		ELSEIF MARK:2 <= 1
+			PRINTFORMW 阿求は顔を逸らし、責め苦が早く終わるのを待っている…
+			CFLAG:9000 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG:9001
+;岩清水 CFLAG:9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9001 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「いやぁ…」
+			PRINTFORMW 阿求は舐められている部分をじっと見つめている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「このっ、このぉっ……」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の頭を手で押しのけようとしている…
+		ENDIF
+		CFLAG:9001 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:2 == 0
+				PRINTFORML 「ん……もっと舐めてほしいです……」
+				PRINTFORMW 阿求は恥ずかしそうに愛撫をねだる…
+			ELSE
+				PRINTFORML 「ふああっ、いい、いいっ……」
+				PRINTFORMW 未成熟な性器から淫水が溢れ出るギャップにひどく情欲をそそられる…
+			ENDIF
+			CFLAG:9001 = 6
+		;屈服刻印Lv3＋C感覚Lv3
+		ELSEIF MARK:2 == 3 && ABL:0 >= 3
+			PRINTFORML 「あ……濡れてる……」
+			PRINTFORMW 阿求の秘唇から口を放すと、名残惜しそうに愛液が垂れ落ちた…
+			CFLAG:9001 = 5
+		;屈服刻印Lv3か恋慕
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕)
+			PRINTFORML 「あぅ……」
+			PRINTFORMW 阿求の秘所は舌で蹂躙されて反応している…
+			CFLAG:9001 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「もう、やめてください……」
+			CFLAG:9001 = 3
+		;それ以外
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORML 「～～～ッ」
+				PRINTFORMW 阿求は紅潮した顔を見られまいと横に背けている…
+			ELSE
+				PRINTFORMW 「こんな、汚らわしい……」
+			ENDIF
+			CFLAG:9001 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611
+	;淫乱+露出癖Lv3以上+C感覚Lv3以上
+	IF TALENT:淫乱 == 1 && ABL:14 >= 3 && ABL:0 >= 3
+		PRINTFORML 「ああぁ、私、あそこ啜られていやらしい顔してますっ……！」
+		PRINTFORMW 阿求は鏡に映った己の痴態を見て倒錯的な快楽に浸っている…
+		CFLAG:9611 = 7
+	;淫乱
+	ELSEIF TALENT:淫乱 == 1
+		PRINTFORML 「ふうんっ、これ、すごいっ……！」
+		PRINTFORMW 阿求は鏡に映った己の痴態を見て発情している…
+		CFLAG:9611 = 6
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:0 >= 3 && ABL:14 >= 3
+		PRINTFORML 「ふあ……こんなに溢れてる……」
+		PRINTFORMW 阿求は鏡に映った己の秘部の状態をまじまじと見つめている…
+		CFLAG:9611 = 5
+	;屈服刻印Lv3か恋慕
+	ELSEIF (MARK:2 == 3 || TALENT:恋慕)
+		PRINTFORML 「あぅ……全部、吸い取られてます……」
+		PRINTFORMW 溢れる蜜を音を立てて啜ると、阿求は頬を紅潮させる…
+		CFLAG:9611 = 4
+	;屈服2
+	ELSEIF CFLAG:9611 == 2
+		PRINTFORMW 「ひぐっ……こんなの、嫌ぁ……」
+		CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「お、音立てないでっ」
+		CFLAG:9611 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG:9002
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「え、そこは不浄のっ……！」
+		PRINTFORMW 薄桃色の蕾に指を差し込むと、きゅっと窄まった…
+		CFLAG:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱＋潤滑2＋A感覚5
+		IF TALENT:淫乱 == 1 && ABL:2 >= 5 && LOCAL >= PALAMLV:2
+			IF TEQUIP:25 == 0 && TEQUIP:25 == 0
+				PRINTFORML 「ふうぅっ、指だけでイっちゃうぅっ……！」
+				PRINTFORMW 阿求の肛門は開発されきって、僅かな刺激でも絶頂に達しようとしている…
+			ELSE
+				PRINTFORML 「はぁっ、ぐりぐりされたら、頭真っ白になっちゃいますっ……！」
+				PRINTFORMW 阿求の敏感なアナルは、強烈な刺激を受けてすぐに絶頂に達しようとしている…
+			ENDIF
+			CFLAG:9002 = 7
+		;淫乱+潤滑Lv2以上
+		ELSEIF TALENT:淫乱 == 1 && LOCAL >= PALAMLV:2
+			PRINTFORML 「は、はうぅっ、出し入れされるの……いいですっ……！」
+			PRINTFORMW 阿求は口元をだらしなく開けて快楽の声を上げる…
+			CFLAG:9002 = 6
+		;淫乱+潤滑Lv2未満
+		ELSEIF TALENT:淫乱 == 1 && LOCAL < PALAMLV:2
+			PRINTFORMW 「痛っ……まだ、濡れてないから……」
+			CFLAG:9002 = 5
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「あうう、ぬるぬるがぁ……くぅうんっ」
+			IF TEQUIP:25 == 0 && TEQUIP:25 == 0
+				PRINTFORMW 阿求の肛門は順調に指を受け入れている…
+			ELSE
+				PRINTFORMW 阿求の肛門は順調に異物を受け入れている…
+			ENDIF
+			CFLAG:9002 = 4
+		;屈伏3か恋慕
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+			PRINTFORML 「んんっ、んんんっ……」
+			PRINTFORMW 阿求は慣れない感覚に戸惑う…
+			CFLAG:9002 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「この、変態っ……！」
+			PRINTFORMW 排泄にしか使ったことのない器官を弄られ、阿求は屈辱に顔を歪める…
+			CFLAG:9002 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG:9003
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:9003 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「なんというか……改めて触れられると、緊張しますね、んっ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、ふっ……そんな風に、撫でないでください……」
+		ENDIF
+		CFLAG:9003 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱
+			IF TEQUIP:59 == 2
+				PRINTFORML スク水の生地の上から乳房に吸い付くと、阿求は声を上げてのけ反った…
+				PRINTFORMW 「ひゃうっ、ちくび吸っちゃ、駄目ですっ……！」
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORMW 「やぁ、舌で転がすの、反則ぅ……」
+				ELSE
+					PRINTFORML 「あ、んっ、きゃふ……」
+					PRINTFORMW 唾液をまぶして高速で擦ると、面白いように阿求の身体が跳ねる…
+				ENDIF
+			ENDIF
+			CFLAG:9003 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			IF TEQUIP:59 == 2
+				PRINTFORML スク水の上から乳房を撫で回すと、つんとした突起が盛り上がってきた…
+				PRINTFORMW 「こ、これは、生理現象で……く、ふっ」
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORML 「そこは、触られるの、嫌いじゃないです……」
+					PRINTFORMW 女児特有のぷにっとした脇腹を撫でると、阿求は恥ずかしそうに呟いた…
+				ELSE
+					PRINTFORML 「あっ、ふっ」
+					PRINTFORMW 愛撫するたびに阿求の口から熱っぽい吐息が洩れる…
+				ENDIF
+			ENDIF
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			IF TEQUIP:59 == 2
+				PRINTFORML 「んっ」
+				PRINTFORMW 水着の上から乳輪をなぞると、阿求はくすぐったそうに声を漏らした…
+			ELSEIF TALENT:PLAYER:120 == 1
+				PRINTFORMW 「男の人は胸が好きって、本当だったんですね……」
+			ELSE
+				PRINTFORMW 「私の胸なんか触って嬉しいですか…？」
+			ENDIF
+			CFLAG:9003 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG:9004
+;Gスポット刺激 CFLAG:9600
+;-------------------------------------------------
+;指挿入れ
+IF SELECTCOM == 4
+	;初めて
+	IF CFLAG:9004 == 0
+		;処女
+		IF TALENT:0 == 1
+			;淫乱
+			IF TALENT:淫乱 == 1
+				PRINTFORMW 「あっ、%CALLNAME:PLAYER%の指が……入ってますっ……」
+				PRINTFORMW 阿求の膣は初めての挿入にもかかわらず蛸のように吸い付いてきた…
+			;それ以外
+			ELSE
+				PRINTFORMW 「うぐぅっ、きついっ……」
+				PRINTFORMW 指を力任せに押し込むと、何かが破れる感触がして抵抗がなくなった…
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		;非処女
+		ELSE
+			;淫乱
+			IF TALENT:淫乱 == 1
+				PRINTFORMW 「あ……もっと奥まで、触ってください……」
+				PRINTFORMW 阿求は%CALLNAME:PLAYER%の愛撫を受け入れている…
+			;V感覚Lv3以上
+			ELSEIF ABL:1 >= 3
+				PRINTFORMW 「はあっ、指、上手っ……！」
+				PRINTFORMW %CALLNAME:PLAYER%が巧みに膣内を愛撫すると、阿求は娼婦のように乱れた…
+			;それ以外
+			ELSE
+				PRINTFORMW 「き、傷つけないでくださいね……」
+				PRINTFORMW 阿求はまだ膣内を弄られることに怯えているようだ…
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		ENDIF
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORML 「入口もっ、天井もっ、気持ちいいですぅっ……」
+			PRINTFORMW 阿求は押し寄せる快楽に身を委ねきっている…
+			CFLAG:9004 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORML 「そ、そんなにかき回しさないでっ……」
+			PRINTFORMW 阿求は激しい快感に翻弄されているようだ…
+			CFLAG:9004 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「く、うぅぅぅっ」
+			PRINTFORMW 最も無防備な場所を弄られることにまだ抵抗があるようだ…
+			CFLAG:9004 = 2
+		ENDIF		
+		RETURN 0
+	ENDIF
+ENDIF
+;Gスポット刺激
+IF SELECTCOM == 600
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「ん、きゅふぅっ、イっちゃうぅっ……！！」
+			CFLAG:9600 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「あっ、くっ、きゅうっ！？　い、今の、凄かった…」
+			CFLAG:9600 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、へっ！？？　な、何ですか今の……！？」
+		CFLAG:9600 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG:9005
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:9005 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「え、ちょっ……あ、ああああっ！？　やあっ…先っぽ、ぬるりって……んう、だめ、これ以上は駄目ですっ」
+			PRINTFORMW 「あっ、んっ、んっ、んーーーっ♪　駄目って言ってるのに、舐めないでぇ……気持ちいいよう……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「！？　んあっ、あっ、あっ、ああっ！？　何これ、ぴりって来た……」
+			PRINTFORMW 「や、駄目です、そんなの舐めたらおかしくなりますっ」
+		ENDIF
+		CFLAG:9005 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:5 == 0
+				PRINTFORML 「やぁ、射精しちゃう、射精しちゃいますっ……んんんっ！！！」
+				PRINTFORMW 阿求は%CALLNAME:PLAYER%の頭を押さえ、無我夢中で腰を振った…
+			ELSEIF RAND:4 == 0
+				PRINTFORML 「あうっ……そこ、舐めてぇ……裏のすじも先もぺろぺろしてぇっ……」
+				PRINTFORMW %CALLNAME:PLAYER%がペニスを舌でなぞると、阿求は甘い声を漏らして身悶えする…
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「ふあっ、吸われるの、すごいですっ……！　も、もう、出ちゃうぅっ……！！」
+				PRINTFORMW 阿求は涎を垂らしながら激しくのけ反っている…
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あは……また精液出しますから、飲んでくださいね……。んっ、くふぅん……」
+				PRINTFORMW 阿求は異常な快楽の虜になったようだ…
+			ELSE
+				PRINTFORML 「んゆぅ、先ちろちろするのらめぇ……もっと奥まで咥えてください……ふ、ううううんっ」
+				PRINTFORMW 阿求の可愛らしいペニスが%CALLNAME:PLAYER%の口の中で震えた…
+			ENDIF
+			CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			IF RAND:2 == 0
+				PRINTFORMW 「んふぅ……ねとって舐めるから、おちんちんびんびんになってるじゃないですかぁ……あ、うっ、うーっ」
+			ELSE
+				PRINTFORML 「はっ……はっ……」
+				PRINTFORMW 阿求の陰茎はてらてらと光り、もの欲しそうにびくびく震えている…
+			ENDIF
+			CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんーっ、うーっ、はあっ、やめて、これ辛いからやめてくださいっ……んふああぁっ」
+			CFLAG:9005 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする CFLAG:9006
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:9006 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「んんんっ……%CALLNAME:PLAYER%の舌、美味しいでふ……」
+			PRINTFORMW 阿求は陶然とした表情を浮かべる…
+		;屈服3か恋慕
+		ELSEIF TALENT:恋慕 || MARK:2 == 3
+			PRINTFORMW 「あっ、うん、んむ……」
+			PRINTFORMW 阿求は抵抗もせずに%CALLNAME:PLAYER%の舌を受け入れている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ！？　ん、うむぅ、んーーっ！！　う、むぐ、んぶうぅ……」
+			PRINTFORMW 無理矢理阿求の口中に唾液を流し込み、飲むように命令した
+			PRINTFORMW 阿求は首を振って拒否したが、吐き出すこともできずに飲み下した…
+		ENDIF
+		CFLAG:9006 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			IF RAND:2 == 0 && TALENT:PLAYER:120 == 1
+				PRINTFORML 阿求は%CALLNAME:MASTER%のモノをやわやわと触りながら口を吸う…
+				PRINTFORMW 「ちゅば、ちゅく、ちろ……あ、凄い、キスだけでこんなに反り返って……」
+			ELSE
+				PRINTFORML 「はむっ……ん……れる、ちゅうう……」
+				PRINTFORMW 阿求は%CALLNAME:MASTER%の舌肉を貪るように求めてくる…
+			ENDIF
+			CFLAG:9006 = 4
+		;従順Lv2以上
+		ELSEIF ABL:10 >= 2
+			PRINTFORML 「んっ……くちゅ……」
+			PRINTFORMW %CALLNAME:PLAYER%が舌で阿求の舌をつつくと、応じるように絡めてきた…
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぶっ……ううぅ……」
+			CFLAG:9006 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG:9007
+;シャワーオナニー CFLAG:8801
+;-------------------------------------------------
+;二穴バイブオナニー
+IF SELECTCOM == 7 && TEQUIP:25 == 1 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:5452 == 0
+		PRINTFORMW 「ふ、二つ一緒に……ん、あっ、くっ、あっ、くううっ！！」
+		CFLAG:5452 = 1
+		RETURN 0
+	ELSE
+		IF TALENT:淫乱 == 1 && (ABL:1 >= 3 && ABL:2 >= 3)
+			PRINTFORMW 「ん、ん、んっ、すごい、あそこもおしりも、すごいですっ、ふああああっ♪」
+			CFLAG:5452 = 4
+		ELSEIF (ABL:1 >= 3 && ABL:2 >= 3)
+			PRINTFORMW 「あっ、ふあっ？　これ、二つも挿れられたら、立ってられませんっ……」
+			CFLAG:5452 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「はっ、ぐ、かっ……両方なんてやっぱり無理です……！」
+			CFLAG:5452 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5450 == 0
+		PRINTFORMW 「コレを抜き差しするんですかっ……？　……酷い命令」
+		PRINTFORMW 「うっ……ふっ……んっ、くっ、あっ、あああっ」
+		CFLAG:5450 = 1
+		RETURN 0
+	ELSE
+		;淫乱＋A感覚Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:2 >= 3
+			PRINTFORMW 「あっ、あっ、そんな、私、自分でバイブ出し入れして、イっちゃう、う、やああっ…！」
+			CFLAG:5450 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 「あ、え、あ、ふぅっ……腰、勝手に動くっ……」
+			CFLAG:5450 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあああっ……きついぃっ……！」
+			CFLAG:5450 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:5451 == 0
+		PRINTFORMW 「む、無理です！　入れてるだけでもきついのに、この上動かすことなんて……！」
+		PRINTFORMW 「う、ぐ……あ、ううう、あっ……」
+		CFLAG:5451 = 1
+		RETURN 0
+	ELSE
+		;淫乱＋V感覚Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:1 >= 3
+			PRINTFORMW 「はーっ、ふ、ふあぁあ！　手の、動き、止まんないいぃっ♪」
+			CFLAG:5451 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「やだっ、あそこ、きゅうってする……」
+			CFLAG:5451 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ、おなか、くるしっ……」
+			CFLAG:5451 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;シャワーオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:54
+	;初めて
+	IF CFLAG:8801 == 0
+		PRINTFORMW 「こ、これ、変です……。あっ、はあぁ……」
+		CFLAG:8801 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋自慰中毒Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:30 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「いくら洗っても、溢れてきちゃう……」
+			ELSE
+				PRINTFORMW 「んふっ…んんん……あ……お、おしっこでそう……」
+			ENDIF
+			CFLAG:8801 = 5
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORML 「あはぁ、しゃーって、刺激強いっ……」
+			PRINTFORMW 阿求はシャワーの刺激の虜になっている…
+			CFLAG:8801 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORML （あ……この角度、……んっ……）
+			PRINTFORMW 阿求は水流をあてがう作業に没頭している…
+			CFLAG:8801 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ、ぬるぬる、とれません…」
+			CFLAG:8801 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;通常自慰（シャワー無し）
+ELSEIF SELECTCOM == 7
+	;初めて
+	IF CFLAG:9007 == 0
+		PRINTFORMW 「うぅ、あんまり見ないでください……。ん……」
+		PRINTFORMW くちゅ…と指を唾液で湿らせ、こわごわと秘裂を触り始める
+		PRINTFORMW 幼い少女が息を弾ませて自分を慰める光景は、ひどく淫猥だった…
+		CFLAG:9007 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋自慰中毒Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:30 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「はい……私が達するところ、見てください……んっ、ふっ、うううっ」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んく、ふっ、もお、こりこり以外考えられませんっ」
+			ELSE
+				PRINTFORMW 「はあっ、見られながら自分で弄るのって、すごいぃ……」
+			ENDIF
+			CFLAG:9007 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			IF RAND:2 == 0 
+				PRINTFORML 「やだ……見てるのに………すぐそこで見てるのにぃ……」
+				PRINTFORMW 阿求は目をとろんとさせて快楽に耽っている…
+			ELSE
+				PRINTFORML 「はっ……ふぅ……んっ、くぅ……」
+				PRINTFORMW 阿求の手は淫靡なリズムで秘所を掻き回している…
+			ENDIF
+			CFLAG:9007 = 3
+		;それ以外
+		ELSE
+			IF RAND:3 == 0
+				PRINTFORML 「あ……ん、ん、んっ」
+				PRINTFORMW 阿求は鼻にかかった声を漏らし、自慰に没頭し始めている…
+			ELSEIF RAND:3 == 1
+				PRINTFORMW 「い、今まで何回したって……そんなこと聞かないでくださいっ」
+				PRINTFORMW 「…………」
+				PRINTFORMW 「さ、三回……。本当ですってば……」
+			ELSE
+				PRINTFORML 「ふっ……ん、あ、はぁっ……」
+				PRINTFORMW 阿求は慣れた手つきで陰核の周りを円を描くようになぞる…
+			ENDIF
+			CFLAG:9007 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG:9009
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:9009 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「どうして止めるんですかぁ……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「…今度は何を企んでいるんですか」
+		ENDIF
+		CFLAG:9009 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋欲情Lv3以上
+		IF TALENT:淫乱 == 1 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「意地悪、です……」
+			CFLAG:9009 = 4
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「んっ、はぁ……何もしないんですか……？」
+			CFLAG:9009 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%が手を出してこないのを訝っている…
+			CFLAG:9009 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG:9010
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:9010 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「今度は、それで私をいじめるんですね…。もう……」
+			PRINTFORMW 「んっ、ふっ、すごい、これ、振動速いぃっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あの、道具は、できれば勘弁して頂けないかと……ふっ、ううっ！？」
+			PRINTFORMW ぷっくりとした突起を苛めると、苦しそうな声を漏らした…
+		ENDIF
+		CFLAG:9010 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「はぁっ、腰、勝手に踊っちゃう……！」
+			CFLAG:9010 = 4
+		;屈服刻印Lv3
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+			PRINTFORMW 「だめですぅ、それ刺激強過ぎるからぁ……」
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、こんなの…全然気持ちよくなんかっ…！」
+			CFLAG:9010 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG:9011
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:9011 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 目の前で機械を駆動させてやると、阿求はゴクリと唾を飲んだ…
+			PRINTFORMW （凄い……こんなのでされたら、滅茶苦茶になっちゃう……）
+		;それ以外
+		ELSE
+			PRINTFORMW 「やあっ、こ、これ、拷問ですっ……！」
+		ENDIF
+		CFLAG:9011 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「ふああっ、そこっ、びんかん、だから、すぐにいっちゃうぅっ……！！」
+			CFLAG:9011 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「それしたら、おかしくなっちゃうのにぃっ……」
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「それ、あたま、真っ白になるからだめっ……ん、ふううっ」
+			CFLAG:9011 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG:9012　CFLAG:8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20
+	;初めて
+	IF CFLAG:9012 == 0
+		;処女
+		IF TALENT:0 == 1
+			;淫乱
+			IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+				PRINTFORMW 「……は、はい」
+				PRINTFORMW 阿求は頷き、脚を開いてバイブの挿入を待ち受ける…
+				PRINTFORMW 「痛くしないでください……うっ、んっ！　あっ、か、きっ……は、挿入るっ……！」
+				PRINTFORMW 阿求の幼い性器の中に異物を突っ込むと、赤い血が筋となって流れ落ちた…
+			;それ以外
+			ELSE
+				PRINTFORMW 「嫌ああっ、それ、近づけないでくださいっ……！」
+				PRINTFORMW 阿求を地面にねじ伏せ、高速で振動する器具を秘所に近づけると、恐怖に我を忘れて叫んだ
+				PRINTFORMW 「そんなの入ったら壊れちゃ……あ、が、ぎっ！？　嫌あああっ、ぶちぶちって、裂けちゃうよぉ…！！」
+				PRINTFORMW 成長途中の体には大きすぎたようで、膜が破れて鮮血が流れ出している…
+			ENDIF
+		;非処女
+		ELSE
+			;淫乱
+			IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+				PRINTFORMW 「……は、はい」
+				PRINTFORMW 阿求は頷き、脚を開いてバイブの挿入を待ち受ける…
+				PRINTFORMW 「痛くしないでください……うっ、んっ！　あっ、か、きっ……は、挿入るっ……！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「やあぁ……怖いです……」
+				PRINTFORMW 歯医者の治療台に乗せられた子供のように、阿求は身を強張らせている…
+				PRINTFORMW 「あ……ぐっ、ぎ……い、痛っ！　痛いです、やめてっ……！」
+			ENDIF
+		ENDIF
+		CFLAG:9012 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱+V感覚LV5
+		IF TALENT:淫乱 == 1 && ABL:1 >= 5
+			IF RAND:2 == 0
+				PRINTFORML 「んあんっ、なか、ぐりぐりされるのっ、いいですっ……！」
+				PRINTFORMW 阿求は膣奥に侵入するバイブの振動に、大きくのけ反って悶えている…
+			ELSE
+				PRINTFORML 震えるモノを阿求の前に差し出すと、美味しそうにしゃぶり始める…
+				PRINTFORML 「んっ……ぐっ、れろ、ちゅぱぁ……」
+				PRINTFORMW 唾液でねっとりと濡れたそれを性器に突っ込むと、愛らしい小鳥のようにさえずった…
+			ENDIF
+			CFLAG:9012 = 4
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「また、挿入れるんですね…？　ん……く、ん、んんっ」
+			CFLAG:9012 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			PRINTFORMW 「はっ、ふあっ、奥でかき回されてるっ……」
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んううっ、中で暴れてっ……！」
+			CFLAG:9012 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「んっ……いっ、膣内で引っかかってっ……んううっ！」
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ……おなか、びりびり……」
+		CFLAG:8811 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG:9013　CFLAG:8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25
+	;初めて
+	IF CFLAG:9013 == 0
+		;淫乱か恋慕
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「あ……お尻に、入れるんですか……？」
+			PRINTFORMW 阿求は腰を高く突き上げ、期待に震える眼差しでバイブを見つめる…
+			PRINTFORMW 「は、はい……どうぞ……あっ、ふっ、くううぅぅっ……あ、ぐにぐに、広がってるぅ……」
+		;屈伏3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「あくっ……ごつごつしたのが、お尻にぃっ……」
+			PRINTFORMW 阿求は異物を差し込まれて悶絶している…
+		;それ以外
+		ELSE
+			PRINTFORMW 「駄目っ、絶対駄目！！　壊れちゃったらどうするんですかっ！！」
+			PRINTFORMW 肛門に動くバイブをあてがうと、阿求は必死に逃れようと体を動かす
+			PRINTFORMW 「だめっ、だめだからっ、あ、ぐっ……！？」
+			PRINTFORMW 狭い穴の中にそれを埋めていくと、阿求の顔が苦痛に引き歪む…
+			PRINTFORMW 「あ、あ、やぁあああっ……お尻でなにか、動いてるよぅ……！」
+		ENDIF
+		CFLAG:9013 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋A感覚Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:2 >= 3
+			PRINTFORMW 「あ、お尻、来たぁっ……♪　あ、ふあ、あああぁああっ……♪」
+			CFLAG:9013 = 5
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「んっ……ちょっときついけど、やばいです、これ……」
+			CFLAG:9013 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 「んううっ、腰、勝手にひけちゃうぅっ」
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「もう分かったから、抜いてくださいっ……ぐうぅっ……」
+			CFLAG:9013 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「や、抜いたら、またいっちゃいますっ……」
+		CFLAG:8812 = 3
+	;A感覚Lv3以上
+	ELSEIF ABL:2 >= 3
+		PRINTFORMW 「なかに、引っかかってっ……ふくうぅっ」
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「あ、ううぅっ……」
+		CFLAG:8812 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG:9014　CFLAG:8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30
+	;初めて
+	IF CFLAG:9014 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「え……？　それは、いったい……ふ、ん、んんんっ！？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あああっ、無理矢理されて、勃っちゃうぅ……！！」
+		ENDIF
+		CFLAG:9014 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「あっ、くり、くりとりすがぁっ、おかしくなるぅっ」
+			CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「それ付けたら、おかしくなっちゃいますっ……ふ、う、んんっ」
+			CFLAG:9014 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORML 「は、うううっ」
+		PRINTFORMW 力を入れて外すと、それさえも気持ちいいという風に身悶えした…
+		CFLAG:8813 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「ッ……！」
+		PRINTFORMW 外す時の刺激が堪えたらしく、阿求は歯を食いしばっている…
+		CFLAG:8813 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG:9015　CFLAG:8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35
+	;初めて
+	IF CFLAG:9015 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「あ……やだ、私、おっぱいで感じてます……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ここ、今度は、胸って……私をどうする気ですかぁ……」
+		ENDIF
+		CFLAG:9015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「そ、それ、だめです、気持ちいいの終わらないからっ……ふ、ふあああっ！」
+			CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「はふぁ、んうっ、変な風に成長しちゃったらどうするんですかぁ」
+			CFLAG:9015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「ん、ふううっ」
+		CFLAG:8814 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ、もっと優しく外してください…」
+		CFLAG:8814 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG:9016　CFLAG:8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30
+	;初めて
+	IF CFLAG:9016 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「え、ええ…？　それをどうするん……ひゃああああんっ！？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふあ、ふぁあああっ！？　きゅうきゅうすごいいいっ……！」
+		ENDIF
+		CFLAG:9016 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「やぁ、にゅるんってしごかれたらすぐに白いのでちゃいますぅっ！！」
+			CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「だめえっ、また、柔らかいのが、あっ、あああああっ」
+			CFLAG:9016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「あっ……ぬぷぬぷって、抜けてく……」
+		CFLAG:8815 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うっ……ふー、ふー、ああ、まだ、おちんちん敏感なままです……」
+		CFLAG:8815 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG:9020
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:9020 == 0
+		;処女
+		IF TALENT:0 == 1
+			;淫乱か恋慕で反発不快合計が500以上
+			IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) >= 500
+				PRINTFORMW 「ちょ、ちょっと待ってください」
+				PRINTFORMW 挿入の直前、蕩けていた瞳に逡巡の色が浮かぶ
+				PRINTFORMW 「初めてでこの状況はちょっと……嫌です……」
+				PRINTFORMW 阿求は遠慮がちにそう囁くが、%CALLNAME:PLAYER%は暴発寸前の逸物を擦りつけ続ける…
+				PRINTFORMW 「あ、はっ……うぅ、その、普通になら、構いませんから……あっ、え、うああっ……！？」
+				PRINTFORMW %CALLNAME:PLAYER%は我慢できなくなり、阿求の言葉を遮りペニスを膣内にぶち込んだ…
+			;淫乱か恋慕で反発不快合計500以下
+			ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) < 500
+				PRINTFORMW 「あは……とうとう、繋がるんですね……。いいですよ、……来て…………」
+				IF TEQUIP:59 == 2
+					PRINTFORMW 阿求の体に密着し、水着の股布をずらしてペニスを膣奥に侵入させる
+				ELSE
+					PRINTFORMW 阿求の体に密着し、ペニスを膣奥に侵入させる
+				ENDIF
+				PRINTFORMW 途中引っかかりがあったが、少しの抵抗の後突き破ると温かい肉の厚みに蕩けそうになった…
+			;屈服3
+			ELSEIF MARK:2 == 3
+				PRINTFORMW 「ぁ……ぅ……」
+				IF TEQUIP:59 == 2
+					PRINTFORMW 水着の股布をずらしてペニスを押し当てると、生気のない瞳に僅かに意志の色が戻ったように見えた
+				ELSE
+					PRINTFORMW 阿求の秘所にペニスを押し当てると、生気のない瞳に僅かに意志の色が戻ったように見えた
+				ENDIF
+				PRINTFORMW 入り口で壁のようなものにぶつかるが、それをぶちぶちと破って奥に侵入していく…
+				PRINTFORMW 「うっ……ううううーっ、いた、ぁ、いや……嫌ぁあああ……」
+				PRINTFORMW 破瓜の痛みか、それとも処女を散らされたショックか、阿求はそっと涙を流した
+				PRINTFORMW 阿求の膣はペニスが埋まり切らないほど小さく、きゅうきゅうと強く締めつけてくる…
+			;それ以外
+			ELSE
+				IF TEQUIP:59 == 2
+					PRINTFORMW 水着の股布をずらし、怒張をつるつるの性器に押し当てると、阿求の顔色が変わった
+				ELSE
+					PRINTFORMW 怒張をつるつるの性器に押し当てると、阿求の顔色が変わった
+				ENDIF
+				PRINTFORMW 「あっ、あのっ、私まだ生娘なんです…！　手や口でならいくらでもしてあげますから、そこは、勘弁して……！」
+				PRINTFORMW 阿求の顔は恐怖に青ざめ、こじ開けられた両脚がカタカタと震えている
+				PRINTFORMW 必死に許しを乞う声を聞き流し、ずぐんとペニスを膣内に突き入れた…
+			ENDIF
+		;非処女
+		ELSE
+			;淫乱
+			IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+				PRINTFORMW 「%CALLNAME:PLAYER%の……こんなに大きかったんですね……。ちゃんと入れば、いいんですけど……」
+				PRINTFORMW 阿求の身体を仰向けにすると、互いの身体をよく観察できるようになった
+				PRINTFORMW 亀頭を割れ目に押し付け、めりめりと力を入れて侵入させる…
+				PRINTFORMW 「あ、く、はっ……！　ん、いいですよ、もっと強くしても……ん、く、うううっ……あ、入ったぁ……」
+				PRINTFORMW 阿求の体型では最奥まで入れてもペニスは入りきらない。阿求は接合部をどこか上の空で見つめている…
+			;それ以外
+			ELSE
+				PRINTFORMW 阿求の身体を仰向けに転がし、まだ開いていない割れ目の中に分け入った…
+				PRINTFORMW 「は、う、う、うっ……！　きついですっ……！」
+				PRINTFORMW 阿求は顔を手の甲で隠し、苦悶の涙を零している…
+			ENDIF
+		ENDIF
+		CFLAG:9020 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:3 == 0
+				PRINTFORML 膣の天井を擦るようにペニスを動かすと、阿求は涎を垂らして乱れる…
+				PRINTFORMW 「あっ、んああっ……はぁ、はぁ……こんなの、切ないですよう……」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 阿求の両脚を海老のように丸めて抱えあげ、全力で腰を打ちつける…
+				PRINTFORMW 「はっ、はぁっ、激しくされたら、またすぐイっちゃうっ……ん、んんーーーっ！！」
+			ELSE
+				PRINTFORML 「んんんっ、凄いぃっ、奥の奥までペニスでごしごしされてますっ……！」
+				PRINTFORMW 阿求の中は柔肉と愛液で蕩けきっており、極上の蜜壺のような味わいだった…
+			ENDIF
+			CFLAG:9020 = 6
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORML 「あ、あ、あ、うあ……？」
+			PRINTFORMW 突くたびに内部が愛液で濡れるようになり、阿求の目に微かに驚きの色が混じる…
+			CFLAG:9020 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「あ、う、う、う……」
+			PRINTFORMW 阿求は抵抗する気力を失い、犯されるがままになっている…
+			CFLAG:9020 = 4
+		;V感覚Lv3
+		ELSEIF ABL:1 >= 3
+			PRINTFORML 「はっ、く、こんなのでっ、感じてあげませんっ……！」
+			PRINTFORMW 子宮口をノックするたびに、阿求は快感に流されまいと奥歯を噛んだ…
+			CFLAG:9020 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「やだぁっ、どいてっ、どいてくださいよおっ」
+			PRINTFORMW 阿求は覆い被さる身体を押しのけようとするが、抽送は止まらなかった…
+			CFLAG:9020 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG:9021
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:9021 == 0
+		;処女
+		IF TALENT:0 == 1
+			;淫乱か恋慕で反発不快合計が500以上
+			IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) >= 500
+				PRINTFORMW 「ちょ、ちょっと待ってください……」
+				PRINTFORMW 処女を散らされる直前になって、阿求の目に微かに正気の色が戻った
+				PRINTFORMW 「は、初めてでこの状況はちょっと……嫌です……」
+				PRINTFORMW 弱弱しく拒絶するが、滾る欲望は抑えられない。ぬるぬると入口周辺を擦るたびに、阿求の肩が震えた
+				PRINTFORMW 「あ、うう……ふ、普通にならしても構いませんから……あっ……え、ぐうっ……！？」
+			;淫乱
+			ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) < 500
+				PRINTFORMW 「あっ……はい……。どうぞ、阿求の処女を後ろから犯してください……」
+				IF TEQUIP:59 == 2
+					PRINTFORMW 阿求は四つん這いの姿勢で自ら水着の股布をずらし、性器を開いて待ち受ける
+				ELSE
+					PRINTFORMW 阿求は四つん這いの姿勢で自ら性器を開いて待ち受ける
+				ENDIF
+				PRINTFORMW くぱぁと広げられた陰唇からは期待に震えるかのように蜜が溢れ出している
+				PRINTFORMW %CALLNAME:PLAYER%はその柔らかい肉壺に己のモノを突き入れていった…
+			ELSEIF MARK:2 == 3
+				IF TEQUIP:59 == 2
+					PRINTFORMW 四つん這いになった阿求の尻を両手で固定し、水着の股布をずらしてずぶずぶとペニスを埋めていく…
+				ELSE
+					PRINTFORMW 四つん這いになった阿求の尻を両手で固定し、ずぶずぶとペニスを埋めていく…
+				ENDIF
+				PRINTFORMW 「う……うっ、うううっ。は、い、って……くる……」
+				PRINTFORMW 途中で処女膜を破ると、虚ろだった阿求の表情に恐怖の色が蘇った
+			;それ以外
+			ELSE
+				IF TEQUIP:59 == 2
+					PRINTFORMW 阿求の頭を地面に押さえつけ、水着の股布をずらしてペニスを押し当てた
+				ELSE
+					PRINTFORMW 阿求の頭を地面に押さえつけ、秘所にペニスを押し当てた
+				ENDIF
+				PRINTFORMW 「ひっ！？　はっ、離してっ！　離してええぇっっ！！」
+				PRINTFORMW 髪を振り乱して泣き叫ぶので、尻に平手でしたたかに打つ
+				PRINTFORMW 何度も痛みを加えると、観念して腰を高く差し出した
+				PRINTFORMW 「うっ……ぐすっ……酷い、こんなこと、今まで誰にもされたことないのに……うあああん……」
+			ENDIF
+		;非処女
+		ELSE
+			;淫乱
+			IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+				PRINTFORMW 「んん……どきどきしますね、この姿勢……」
+				PRINTFORMW 四つん這いの恰好で突き出した尻の間で、秘貝が物欲しそうに涎を垂らす
+				PRINTFORMW くちゅりと入口に亀頭を押し当て、そのまま一気に最奥まで突き入れた
+				PRINTFORMW 「……っ！　あ、はあぁっ、くうううううんっ♪　%CALLNAME:PLAYER%のが入ってますっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 阿求の身体をうつぶせに転がし、腰を高く上げさせて挿入した…
+				PRINTFORMW 「うっ、くうっ……やめて、奥まで入れないでっ……！」
+				PRINTFORMW ペニスは少女の体の奥深くまで埋まりきり、子宮口をノックした…
+			ENDIF
+		ENDIF
+		CFLAG:9021 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:2 == 0
+				PRINTFORML ペニスを抜き差しする度に阿求の尻肉が骨盤とぶつかり合って弾む…
+				PRINTFORMW 「ふうっ、んぅんっ、もっと奥まで、突いてぇっ！　一番、深いとこじゃないと駄目ですっ……あっ、あっ、あっ、あっ！」
+			ELSE
+				PRINTFORML 「はぁ、ふぅ、んんっ、くああっ……」
+				PRINTFORMW ただでさえ狭い腸内が突くたびに締まり、子種を搾り出そうとする…
+			ENDIF
+			CFLAG:9021 = 6
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORML 「あっ、うっ、あっ、やぁ、奥まで届く……」
+			PRINTFORMW 阿求はバックで犯されながら甘ったるい声を漏らしている…
+			CFLAG:9021 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「んっ……ふうっ……」
+			PRINTFORMW 阿求は抽送のリズムに合わせて苦しそうに息を吐く…
+			CFLAG:9021 = 4
+		;V感覚Lv3
+		ELSEIF ABL:1 >= 3
+			PRINTFORML 「やだっ、感じたくないっ、感じたくなんかないのにぃ……」
+			PRINTFORMW 阿求の意思に反して膣肉はペニスによく絡みつく…
+			CFLAG:9021 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 大人しくなった少女の膣にペニスを挿入し、何度も何度も突き入れる…
+			PRINTFORMW 「ごめんなさい、ごめんなさい……う、あああっ……」
+			CFLAG:9021 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG:9022
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:9022 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「じゃあ、腰、降ろしますね……。んくっ、んぁっ、きてるぅ……」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%と抱き合い、ゆっくりと互いの性器を接合する…
+			PRINTFORMW 「んっ……ほら、くちゅくちゅってやらしい音、してます……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「顔、近いですって……んう……」
+			PRINTFORMW 阿求に腰を落とさせ、ペニスを幼い性器に埋めていく…
+			PRINTFORMW 「はいり、ましたぁ……あっ、んふっ……」
+		ENDIF
+		CFLAG:9022 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:3 == 0
+				PRINTFORML 阿求の胸を愛撫すると、肉壺がさらに強く締めつけてくる…
+				PRINTFORMW 「やっ、同時に責めるのだめぇっ、だめなのにぃっ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 阿求は挿入したままの姿勢で、積極的に舌を絡めてきた…
+				PRINTFORMW 「んっ……ちゅるっ……ふあっ、んふっ……」
+			ELSE
+				PRINTFORML %CALLNAME:PLAYER%のピストンに合わせ、阿求も腰を激しく打ちつける…
+				PRINTFORMW 「んあっ、いいっ、いいっ、いいっ、いいですっ、ふくぅうんっ！」
+			ENDIF
+			CFLAG:9022 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORML 「お願い、離さないで……あ、んっ、んんっ……」
+			PRINTFORMW 体をしっかり抱きかかえてピストンすると、阿求は甘えるような声を上げた…
+			CFLAG:9022 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ん、くちゅっ……ぷはっ、あ、あっあっ」
+			CFLAG:9022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ごりごりって、中で押されてますっ……」
+			CFLAG:9022 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG:9023
+;乱れ牡丹 CFLAG:9612
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23
+	;初めて
+	IF CFLAG:9023 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「は、あ、う、ぐっ、脚っ、がくがくに、なっちゃうのぉっ」
+			PRINTFORMW 腰を打ちつけるたびに体液がぼたぼたと落ち、水溜りを広げた…
+		;それ以外
+		ELSE
+			PRINTFORMW %CALLNAME:PLAYER%は阿求を膝に抱え、屹立を秘肉の中に埋めていった…
+			PRINTFORMW 「は、あ、ふっ………！　奥に、刺さってるぅ……」
+		ENDIF
+		CFLAG:9023 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:3 == 0
+				PRINTFORML 「あっ、くひぃっ、あしっ、ガクガク、なっちゃいますってばぁっ」
+				PRINTFORMW 腰を打ちつけるたびに混じり合った体液が零れ、水溜りを広げた…
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あぅっ、ふ、うぅうっ……や、優しくされたら、だめになっちゃいます……っ」
+				PRINTFORMW 阿求の小さな体を膝に乗せてゆっくりと交わった…
+			ELSE
+				PRINTFORML 「あっあっあっあっあっ、ちょっと、手加減してっ……馬鹿に、馬鹿になっちゃ、ふぅんっ」
+				PRINTFORMW 阿求の小さな体を後ろから抱え込み、何度も小刻みに突き上げた…
+			ENDIF
+			CFLAG:9023 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORML 「んっ、んっ、んっ、んううっ……あんまり、揺すらないで……」
+			PRINTFORMW 柔らかい尻の弾力を味わいながら緩慢にペニスを動かす…
+			CFLAG:9023 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「あっ……ひゃめ、れぅ……」
+			PRINTFORMW 大人しくなった阿求の口の中に指を入れて遊んだ…
+			CFLAG:9023 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「むっ、んっ、んーっ、んううっーー！」
+			PRINTFORMW 阿求の口を塞ぎ、くぐもった叫びを聞きながら腰を動かした…
+			CFLAG:9023 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612
+	;初めて
+	IF CFLAG:9612 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「うあ……凄ぉい、奥まで、おちんぽ咥え込んでる…」
+			;それ以外
+		ELSE
+			PRINTFORMW 「えっ、嘘っ、冗談は止してくださいっ！」
+			PRINTFORMW 阿求は股を開いてペニスを受け入れている己の姿を見て恥辱を覚えている…
+		ENDIF
+		CFLAG:9612 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:14 >= 3 && ABL:1 >= 3
+			PRINTFORML 「あははっ、じゅぷじゅぷって擦れ合ってますよっ……！」
+			PRINTFORMW 阿求は肉壺に肉棒が出し入れされる所を嬉しそうに眺めている……
+			CFLAG:9612 = 6
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORML 「ああっ、これ、いやらしいですっ……」
+			PRINTFORMW 阿求は突き上げられてよがる己の痴態に目を釘付けにされている…
+			CFLAG:9612 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3 && ABL:14 >= 3
+			PRINTFORML 「どうして……頭の芯が、ふんわりします……ひゃんっ」
+			PRINTFORMW 阿求は己の乱れる様を見て興奮を覚えている…
+			CFLAG:9612 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「あ、う……こぽこぽ……」
+			PRINTFORMW 接合部からは%CALLNAME:PLAYER%と阿求の体液が混ざり、白濁となって垂れ落ちている…
+			CFLAG:9612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなの、晒し者じゃないですかっ……！」
+			CFLAG:9612 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG:9024
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:9024 == 0
+		;処女
+		IF TALENT:0 == 1
+			;淫乱・恋慕だが反発つき
+			IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) >= 500
+				PRINTFORMW 「ちょ、ちょっと待ってください……」
+				PRINTFORMW 処女を散らされる直前になって、阿求の目に微かに正気の色が戻った
+				PRINTFORMW 「は、初めてでこの状況はちょっと……嫌です……」
+				PRINTFORMW 弱弱しく拒絶するが、滾る欲望は抑えられない。ぬるぬると入口周辺を擦るたびに、阿求の肩が震えた
+				PRINTFORMW 「あ、うう……ふ、普通にならしても構いませんから……あっ……え、ぐうっ……！？」
+			;淫乱・恋慕で反発なし
+			ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) < 500
+				PRINTFORMW 「くす、ここからだと%CALLNAME:PLAYER%の顔がよく見えますよ……」
+				PRINTFORMW 阿求は悪戯に唇を歪め、%CALLNAME:PLAYER%の上に跨る…
+				PRINTFORMW 「沢山、私の中で気持ち良くなって下さいね♪　ん、んんんっ……あ、はああっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 自分から挿入するように命じるが、許してと泣くばかりで一向に進む気配がない
+				PRINTFORMW このままでは生殺しなので、%CALLNAME:PLAYER%は分かったと言って頷いた
+				PRINTFORMW 「あっ……。わ、分かっていただけましたか……あっ、ぎ……！？」
+				PRINTFORMW %CALLNAME:PLAYER%は両手で阿求の腰を掴むと、容赦なく引き落とす
+				PRINTFORMW 途中で膜が引っ掛かったが、肉棒は簡単にそれを突き破った…
+			ENDIF
+		;非処女
+		ELSE
+			;淫乱・恋慕
+			IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+				PRINTFORMW 「えっと……次は、跨るんですね。分かりました……ん……」
+				PRINTFORMW 阿求は熱に浮かされたように命令に従い、%CALLNAME:PLAYER%の上に跨る…
+				PRINTFORMW （あ……これ、周りが良く見えて良いかも……）
+				PRINTFORMW 阿求の秘所が亀頭に触れると、咥え込むのを待ちきれないように吸いついた…
+				PRINTFORMW 「んっ…♪　では、挿入しますね……んんっ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「じ、自分からなんて……。わ、分かりましたよ、やればいいんでしょう……」
+				PRINTFORMW 阿求は涙ぐみながらそそり立つペニスを握って照準を合わせる
+				PRINTFORMW そのまま垂直に腰を落とし、めりめりと熱い肉棒を受け入れていった…
+			ENDIF
+		ENDIF
+		CFLAG:9024 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:3 == 0
+				PRINTFORML 「んああっ、おちんぽたまりませんっ……」
+				PRINTFORMW 阿求はだらしなく涎を垂らして腰を振り続ける…
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ふあああっ……そんなに突きあげられたら、壊れちゃいますっ……！」
+				PRINTFORMW 腹の上で乱れる少女の姿はとても扇情的だった…
+			ELSE
+				PRINTFORML 「あはっ、イイ顔……♪　もっと感じさせてあげます……んっ、やぁっ」
+				PRINTFORMW 阿求は互いの最も気持ちいい場所が擦れ合うように腰を動かす…
+			ENDIF
+			CFLAG:9024 = 6
+		;屈服刻印Lv3+奉仕精神Lv3以上＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:13 >= 3 && ABL:1 >= 3
+			PRINTFORML 「あ、なんだか……なんだか、いいっ……」
+			PRINTFORMW 潤滑液でほぐれた肉壺を突くと、無意識のうちに腰の動きを合わせてきた…
+			CFLAG:9024 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「お、く……すごい……」
+			PRINTFORMW 阿求は目尻をとろんと垂れさせ、結合の感覚を味わっている…
+			CFLAG:9024 = 4
+		;V感覚Lv3
+		ELSEIF ABL:1 >= 3
+			PRINTFORML 「あ、突かないで、突かないでぇ……」
+			PRINTFORMW 柔らかい膣肉を掻き回すと、阿求は堪え切れず喘ぎ声を洩らした…
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「うっ、く、ふっ……！」
+			PRINTFORMW 阿求はペニスを受け入れるだけで精一杯のようだ…
+			CFLAG:9024 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位 CFLAG:9028
+;-------------------------------------------------
+IF SELECTCOM == 28
+	;初めて
+	IF CFLAG:9028 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕
+			PRINTFORMW 「手をついて後ろを向けって……こうですか……？」
+			PRINTFORMW 阿求は期待しながら%CALLNAME:PLAYER%の命令したポーズをとる
+			IF TEQUIP:59 == 2
+				PRINTFORMW %CALLNAME:PLAYER%はそのわき腹を掴み、隆起したペニスを水着の股布に擦りつける
+				PRINTFORMW 「うっ……くっ、ふうっ、ううっ。挿入れるなら……さっさとすればいいでしょう……」
+				PRINTFORMW 待ちきれないとばかりに愛液を垂れ流す阿求の膣に、%CALLNAME:PLAYER%は水着をずらしてペニスを挿入した…
+			ELSE
+				PRINTFORMW %CALLNAME:PLAYER%はそのわき腹を掴み、隆起したペニスを阿求の割れ目に擦りつける
+				PRINTFORMW 「うっ……くっ、ふうっ、ううっ。挿入れるなら……さっさとすればいいでしょう……」
+				PRINTFORMW 待ちきれないとばかりに愛液を垂れ流す阿求の膣に、%CALLNAME:PLAYER%は深々とペニスを挿入した…
+			ENDIF
+			PRINTFORMW 「うああっ……！　な、なかで、おちんちんがぐにぐにぃってしてます……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「手をついて後ろを向けって……こうですか……？」
+			PRINTFORMW 阿求は怯えながらも%CALLNAME:PLAYER%の命令したポーズをとる
+			IF TEQUIP:59 == 2
+				PRINTFORMW %CALLNAME:PLAYER%はそのわき腹を掴み、隆起したペニスを水着の股布に擦りつける
+				PRINTFORMW 「うっ……くっ、ふうっ、ううっ。挿入れるなら……さっさとすればいいでしょう……」
+				PRINTFORMW 生意気な口を利く阿求をしつけるために、%CALLNAME:PLAYER%は水着をずらしてペニスを挿入した…
+			ELSE
+				PRINTFORMW %CALLNAME:PLAYER%はそのわき腹を掴み、隆起したペニスを阿求の割れ目に擦りつける
+				PRINTFORMW 「うっ……くっ、ふうっ、ううっ。挿入れるなら……さっさとすればいいでしょう……」
+				PRINTFORMW 生意気な口を利く阿求をしつけるために、%CALLNAME:PLAYER%は深々とペニスを挿入した…
+			ENDIF
+			PRINTFORMW 「うああっ……！　な、なかで、ぐにぐにしてるっ……！」
+		ENDIF
+		CFLAG:9028 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:3 == 0
+				IF TEQUIP:52
+					PRINTFORML 阿求の手を木の幹につかせ、ペニスを突き入れる…
+					PRINTFORMW 「あっ、うっ……来てますっ……！　はっ、はあっ、膣で擦れて、ぬるぬるってぇ……ん、んんんっ！」
+				ELSE
+					PRINTFORML 阿求の手を壁につかせ、ペニスを突き入れる…
+					PRINTFORMW 「あっ、うっ……来てますっ……！　はっ、はあっ、膣で擦れて、ぬるぬるってぇ……ん、んんんっ！」
+				ENDIF
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あっ、……ふっ、んんんっ」
+				PRINTFORML 阿求は背を向けており、その表情は窺えない
+				PRINTFORMW しかし、%CALLNAME:PLAYER%が腰をパンパンと打ちつけるたびに後ろ髪が乱れ、背中に汗の珠が滲む様は十二分に扇情的だ…
+			ELSE
+				PRINTFORML 「ひゃううぅ、だめ、もう無理、もぉ無理なのぉっ♪」
+				PRINTFORML %CALLNAME:PLAYER%があまりに激しくピストンするので、阿求の両足が床から浮いてしまう
+				PRINTFORMW そうするとさらに奥深くまで刺さるので、阿求は襲い来る快楽の前に足をつける余裕など失ってしまっている…
+			ENDIF
+			CFLAG:9028 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORML 「あっ、……ふっ、んんんっ」
+			PRINTFORML 阿求は背を向けており、その表情は窺えない
+			PRINTFORMW しかし、%CALLNAME:PLAYER%が腰をパンパンと打ちつけるたびに後ろ髪が乱れ、背中に汗の珠が滲む様は十二分に扇情的だ…
+			CFLAG:9028 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「あ、う、あ……！」
+			PRINTFORMW 阿求の表情は虚ろなものになり、ただ背後から突き上げられるがままにされている…
+			CFLAG:9028 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「やだやだっ、そんなに突き上げないでぇっ！」
+			PRINTFORMW 阿求は顔を真っ赤にしていやいやと首を振っている…
+			CFLAG:9028 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG:9026
+;-------------------------------------------------
+IF SELECTCOM == 26
+	;初めて
+	IF CFLAG:9026 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「え……私は、お預けですか？　そんな……」
+			PRINTFORMW 阿求は%CALLNAME:ASSI%たちが交わる様をもどかしそうに眺めている…
+			PRINTFORMW 「ああ……いいな、気持良さそう……」
+		;処女で淫乱なし
+		ELSEIF TALENT:0 == 1 && TALENT:淫乱 == 0 
+			PRINTFORMW 「ちょっと、人の目の前で何をっ……えっ、嘘っ、えっえっ、うわ……」
+			PRINTFORMW 阿求は%CALLNAME:ASSI%たちのセックスを凝視して息を呑む
+			PRINTFORMW 「すごい……セックスって、あんな風に……」
+			PRINTFORMW 全てを記憶する阿求の網膜に、淫らな光景が焼きつけられる…
+		ENDIF
+		CFLAG:9026 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORML 「はぁ……ず、ずるいです……んっ……」
+			PRINTFORMW 阿求の手は自然と股間に伸びている…
+			CFLAG:9026 = 3
+		;処女で淫乱なし
+		ELSEIF TALENT:0 == 1 && TALENT:淫乱 == 0
+			PRINTFORML 「こんなの、ずっと見てたら毒です……」
+			PRINTFORMW %CALLNAME:ASSI%の嬌声が阿求の耳朶を打ち、常識や倫理観を犯していく…
+			CFLAG:9026 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;------------------------------------------------
+;正常位アナル CFLAG:9030
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:9030 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「えっ、そ、そっちの穴へ入れるんですか？　私はてっきり……あ、その……」
+			PRINTFORMW 阿求が口ごもった隙に直腸にペニスをねじ込んだ…
+			PRINTFORMW 「は、あ、ふっ……！？　す、すごっ、こっちの穴もいいぃっ……！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ……ああ……」
+			PRINTFORMW 膝裏を押さえつけて菊穴がよく見えるようにすると、阿求は羞恥に顔を歪ませる
+			PRINTFORMW 上からペニスを叩きつけるように挿入すると、穴の中できつく締めつけられた
+			PRINTFORMW 「あっ、かふっ……！　やぁ、おっきいのが、奥までぇっ……！」
+		ENDIF
+		CFLAG:9030 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚LV3以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF RAND:2 == 0
+				PRINTFORML 「くひぃっ、いっ、いいっ、おしりあないいっ……♪」
+				PRINTFORMW 阿求は涎を垂らして肛門への挿入に悶絶している…
+			ELSE
+				PRINTFORML 「ごりごりするのだめっ……馬鹿になっちゃう、アナルセックスしか考えられなくなっちゃいますっ……！」
+				PRINTFORMW 阿求のアナルは%CALLNAME:PLAYER%の猛りきった肉棒を丁度良く締めつける…
+			ENDIF
+			CFLAG:9030 = 5
+		;淫乱+潤滑Lv2未満
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL < PALAMLV:2
+			PRINTFORML 「あっ！　まだ、準備できてないのにぃ……ふふ、そんなに射精したいんですか？」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の頬を恋人にするように撫でている…
+			CFLAG:9030 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「違うっ、濡れてなんか、感じてなんかあっ……あ、ぅ、うっ！」
+			PRINTFORMW 阿求は歯をくいしばって押し寄せる感覚の波に耐えている…
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「あああ……私、お尻の穴まで犯されちゃってる……」
+			PRINTFORMW 阿求はこの世のすべてに絶望したかのように表情を曇らせている…
+			CFLAG:9030 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG:9031
+;-------------------------------------------------
+IF SELECTCOM == 31
+	;初めて
+	IF CFLAG:9031 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 阿求の排泄器官はヒクヒクと物欲しそうに収縮している…
+			PRINTFORMW 「さ、どうぞ……阿求の肛門で、お好きなだけ気持ち良くなってくださいませ……んっ、んんうっ♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 這いつくばった阿求の尻を持ち上げ、硬くなった怒張を突き立てる
+			PRINTFORMW 「はっ、くっ……！　やだぁあ、破けるぅうぅっ……！」
+			PRINTFORMW 阿求は腸内に挿入されたショックで泣きじゃくった…
+		ENDIF
+		CFLAG:9031 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚LV3以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF RAND:2 == 0
+				PRINTFORML 「あっ、ああっ、んあぁあっ、そんな乱暴にされたら、お尻の穴壊れちゃううぅ！！」
+				PRINTFORMW 欲望のままにぬめる腸内にペニスを出し入れした…
+			ELSE
+				PRINTFORML 「はぁ、これっ、無理矢理って感じがして……興奮、します……。あはは、私、変態だぁ……」
+				PRINTFORMW 少女は完全に肛虐狂いの奴隷となっている…
+			ENDIF
+			CFLAG:9031 = 5
+		;淫乱+潤滑Lv2未満
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL < PALAMLV:2
+			PRINTFORML 「そっ、そんなにがっつかないでください……んああっ！」
+			PRINTFORMW 阿求の腸内はまだ滑りが良くないが、その分%CALLNAME:PLAYER%のペニスはよく絞り上げられた…
+			CFLAG:9031 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「あ、う……うん、うん…………ん……」
+			PRINTFORMW 腰の動きに合わせて漏れる吐息には、異なるイントネーションがにじみ始めている…
+			CFLAG:9031 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「わたし……稗田の娘なのに……御阿礼の子なのに…………」
+			PRINTFORMW 阿求は後ろの穴を蹂躙され、プライドを粉々に打ち砕かれている…
+			CFLAG:9031 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG:9032
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:9032 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW （あ……息が、かかりそう……）
+			PRINTFORMW 阿求は頬を赤く染めて肛門に%CALLNAME:PLAYER%のペニスを誘う…
+		;それ以外
+		ELSE
+			PRINTFORMW 「は、く……っ、やだぁ、顔、近づけないで……」
+			PRINTFORMW %CALLNAME:PLAYER%の手から逃れようともがく阿求を捕まえ、強引にアナルを奪った…
+		ENDIF
+		CFLAG:9032 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚LV3以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF RAND:2 == 0
+				PRINTFORML 少女の体の重みを全身に感じながら、ペニスを埋めていった…
+				PRINTFORMW 「あっ……は……にゅぷぷって……んくう……」
+			ELSE
+				PRINTFORML 「だめぇっ、体っ、離さないと、気持ちいいの逃げられないぃっ！！」
+				PRINTFORMW %CALLNAME:PLAYER%は阿求の身体をがっちりと抱え、強制的に高みへと持ち上げていく…
+			ENDIF
+			CFLAG:9032 = 5
+		;淫乱+潤滑Lv2未満
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL < PALAMLV:2
+			PRINTFORML 「くうっ、太いぃい……」
+			PRINTFORMW 阿求は挿入の辛さに涙をにじませて%CALLNAME:PLAYER%に抱きつく…
+			CFLAG:9032 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「ふむぅっ、お尻で気持ち良くなんか、ならないっ……！」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の肩を強く握り必死に堪えている…
+			CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 抱きかかえたまま%CALLNAME:PLAYER%が唇を奪うと、阿求は嫌悪の眼差しを向けた…
+			PRINTFORMW 「ふぐっ……こんなの、望んでなんかない……」
+			CFLAG:9032 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG:9033
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:9033 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「座るように……くっ……」
+			PRINTFORMW やはり後ろの穴は狭く、ペニスを痛いほど締めつけてくる…
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんな太いの、入らないですって……！　ぐ、う、ううーっ……！」
+			PRINTFORMW 狭い菊門に半ば無理やりに剛直を入れると、阿求は苦悶に顔を歪めた…
+		ENDIF
+		CFLAG:9033 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚LV3以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF RAND:2 == 0
+				PRINTFORML 阿求のすべすべした脇腹を掴み、小刻みに腰を動かして腸壁を刺激した…
+				PRINTFORMW 「んっ、ああああっ、これっ、のぼっちゃいそうっ……！」
+			ELSE
+				PRINTFORML 背後から阿求の胸を掴み、乳首とアナルを同時に責め立てる…
+				PRINTFORMW 「はっ、ふっ、……ッ！　こえ、でひゃうぅ……」
+			ENDIF
+			CFLAG:9033 = 5
+		;淫乱+潤滑Lv2未満
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL < PALAMLV:2
+			PRINTFORML 「ふううっ……まるで、排泄してるみたい……」
+			PRINTFORMW 柔らかな肉壁をペニスが掻き分け、繋がる二人に快楽を与える…
+			CFLAG:9033 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「やああぁぁあ、お尻突いちゃだめえぇぇええ！！」
+			PRINTFORMW 阿求は肛内を突かれて快楽を得ることに戸惑っている…
+			CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「はぁっ、くっ、こんな、こんなのって……！」
+			PRINTFORMW 股間を阿求の小ぶりな尻に密着させ、腸内をペニスで削るように抜き差しした…
+			CFLAG:9033 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG:9034
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:9034 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「はー、はー……ふふ、お尻での締めつけはどうですか？　ご主人様…」
+			PRINTFORMW 阿求のアナルは太い逸物を飲み込み、いやらしく絡みついている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうしてこんな事を……うっ、ふぅっ……痛いぃ……」
+			PRINTFORMW 阿求は腰を落としながら、直腸を拡げられる痛みに耐えている…
+		ENDIF
+		CFLAG:9034 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚LV3以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF RAND:2 == 0
+				PRINTFORML 「今度は、こちらが動く番です……んっ、んんっ！」
+				PRINTFORMW 阿求は巧みに腰をグラインドさせ、%CALLNAME:PLAYER%のペニスを締めつける…
+			ELSE
+				PRINTFORML 「ひゃふぅっ、お尻突いてっ……！　奥まで擦ってぇっ！」
+				PRINTFORMW 阿求はすっかりアナルで感じる体になっている…
+			ENDIF
+			CFLAG:9034 = 5
+		;淫乱+潤滑Lv2未満
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && LOCAL < PALAMLV:2
+			PRINTFORML 「は、うっ……もっと濡らしてからじゃないと、あ、うぅんっ！」
+			PRINTFORMW 阿求の細い体が突きあげるごとに踊り、嗜虐心をかき立てる…
+			CFLAG:9034 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「んっ……ふっ、きゅうきゅうって……」
+			PRINTFORMW 阿求の腸内は挿入に慣れ、滑らかに動かせるようになっている…
+			CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「もう、無理……許してください……ふ、ぐ、うえぇえん……」
+			PRINTFORMW 阿求は襲いくる痛みと屈辱に鼻を啜ってしゃくりあげる…
+			CFLAG:9034 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル CFLAG9038	RR口上のアナルセックスをリサイクル
+;-------------------------------------------------
+IF SELECTCOM == 38
+	;初めて
+	IF CFLAG:9038 == 0
+		;淫乱か恋慕
+		IF TALENT:淫乱 == 1 || TALENT:恋慕
+			PRINTFORMW 「お、お尻……どうぞ、好きなだけ犯してください……」
+			PRINTFORMW 阿求は期待と不安の入り混じった様子で自ら菊門を差し出す
+			PRINTFORMW 「んっ……！　%CALLNAME:PLAYER%のが、入ってる……んっ、んんっ」
+		;V処女
+		ELSEIF TALENT:0 == 1
+			PRINTFORMW 小さな蕾にペニスをあてがうと、阿求の瞳が恐怖に揺らめいた
+			PRINTFORMW 「ど……どうぞ……。こちらのあ、あな……で満足してくれるなら……」
+			PRINTFORMW 処女を奪われるよりはまし、と健気に妥協してみせる
+			PRINTFORMW お言葉に甘えて遠慮なく菊座にモノを突き入れた…
+			PRINTFORMW 「あ……ぐっ、うううっ……く、ふぐっ……！　あぁぁ、お尻に入っちゃってるぅ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「おっ、お尻に入れるんですかっ？　変わったことを……じゃなくて、無理ですよ！」
+			PRINTFORMW 暴れる体を組み伏せ、肛門に剛直をずぶずぶと挿入する
+			PRINTFORMW 「は、ひゃっ、ああううぅ……！　無理っ、むりぃっ！」
+			PRINTFORMW 阿求は逃れようとするが、腰をがっちりと捕まえられていて動けない…
+		ENDIF
+			CFLAG:9038 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;淫乱+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:淫乱 == 1 && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			IF TALENT:0 == 1
+				IF RAND:3 == 0
+					PRINTFORML 「ふあああっ、私っ、まだ処女なのに、後ろでいっちゃうぅっ……！」
+					PRINTFORMW 阿求はすっかり肛姦の虜となり、涎を垂らしてペニスをねだっている…
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「はぁん、いいっ、ずぽずぽされるの、いいですっ……！」
+					PRINTFORMW 阿求の腸内はぬるぬるとよく滑り、性感を否が応にも増す…
+				ELSE
+					PRINTFORML 差し出された阿求の尻を鷲掴みにし、欲望の赴くままにペニスを出し入れする…
+					PRINTFORMW 「ふぐううっ、無理矢理犯されてるのにぃっ、いい、いいっ……ふあああっ……！」
+				ENDIF
+			ELSE
+				IF RAND:2 == 0
+					PRINTFORML 「はぁん、いいっ、ずぽずぽされるの、いいですっ……！」
+					PRINTFORMW 阿求の腸内はぬるぬるとよく滑り、性感を否が応にも増す…
+				ELSE
+					PRINTFORML 高く差し出された尻を鷲掴みにし、欲望の赴くままにペニスを出し入れする…
+					PRINTFORMW 「ふぐううっ、無理矢理犯されてるのにぃっ、いい、いいっ……ふあああっ……！」
+				ENDIF
+			ENDIF
+			CFLAG:9038 = 7
+		;淫乱+潤滑Lv2以上
+		ELSEIF TALENT:淫乱 == 1 && LOCAL >= PALAMLV:2
+			PRINTFORML 「くうぅっ……これ、嵌まっちゃいそう……」
+			PRINTFORMW まだ幾分不慣れなものの、阿求のアナルは挿入を受け入れ始めている…
+			CFLAG:9038 = 6
+		;潤滑Lv2以上+屈服刻印Lv3＋A感覚Lv3以上
+		ELSEIF MARK:2 == 3 && LOCAL >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORML 「あっ、う、ん、あっ……？　あっ、やあっ、あああっ」
+			PRINTFORMW 肛虐の喜びに目覚めたのか、生気の無い目に快楽の色が宿っている…
+			CFLAG:9038 = 5
+		;潤滑Lv2以上+A感覚Lv3以上
+		ELSEIF ABL:2 >= 3 && LOCAL >= PALAMLV:2
+			PRINTFORML 阿求の腸壁は挿入に慣れ、いやらしくペニスを包み込んで蠕動する…
+			PRINTFORMW 「はぁ、ふあああっ……違う、私は、後ろで感じたりなんかっ、は、ふううぅっ」
+			CFLAG:9038 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「うっ、ぐううぅ、ふううっ」
+			PRINTFORMW 抵抗はしなくなったが、まだアナルに挿入されるのは苦しさを伴うようだ…
+			CFLAG:9038 = 4
+		;それ以外
+		ELSE
+			PRINTFORML 「ううっ、こんな、こんなのってない……！」
+			PRINTFORMW 阿求は後ろの穴に何度も出し入れされ、屈辱に頬を濡らす…
+			CFLAG:9038 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG:9040
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:9040 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「あ……これが、ペニス……。熱くて、硬くて……ちょっと怖いですけど、やってみますね」
+			PRINTFORMW 「んっ……ぎゅ、にゅるっ、にゅるっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「これがおちんちん……。ほ、本で見たのより小さいですね……つんっ」
+			PRINTFORMW 「えっ、わっ、わわっ……むくむくってふくらんできた……って、えええっ！？」
+			PRINTFORMW 阿求は膨張したペニスを化け物を見るような目で見ている…
+		ENDIF
+		CFLAG:9040 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋奉仕精神Lv5＋サドっ気1以上
+		IF TALENT:淫乱 && ABL:奉仕精神 >= 5 && ABL:20 >= 1
+			IF RAND:6 == 0
+				PRINTFORML 「あは……手淫、好きなんですよね？　私も上位に立ってる気分がして、好きですよ」
+				PRINTFORMW 「んっ、ふっ、んっ……この亀頭がぷくって膨らむところとか、見てて面白いですよね。んふふ」
+			ELSEIF RAND:5 == 0
+				PRINTFORML 「いつも手だけじゃ可哀想ですから、ちょっとつばで濡らしてあげますね。えい……ぬりゅ、ぬりゅ」
+				PRINTFORMW 「ふふ、気持よさそうですね……しごくたびに震えてますよ？　ぬりゅ、ぬるるっ、くに、ぬるん……」
+			ELSEIF RAND:4 == 0
+				PRINTFORML 阿求のぷにぷにとした手のひらで陰茎を包み込まれる…
+				PRINTFORMW 「んっ、ぬるぬる、ん、ふっ……ほらほら、早く精子出しちゃってください……」
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「ねぇ、たまにはしごくだけじゃなくて、こんな風に……ほら、下の袋の縫い目を刺激してあげます」
+				PRINTFORMW 「さわ、さわ……あ、すごぉい、ビキビキになってます……ふふ、ほら、すりすり、なでなで……」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「はい……では、たっぷりお触りしますね……。ぷにぷに、くにゅくにゅ……」
+				PRINTFORMW 「くにゅくにゅ、ぬるり、しこしこ、ぎゅっぎゅ。あ、いつでも射精していいですよ……」
+			ELSE
+				PRINTFORML 「えい、やっ……くす、そんなにいい顔されると、こちらも満更でもありません……ふっ」
+				PRINTFORMW 「ん、ん、ん……にちゅ、にち、ぬりゅっ……じゅぽじゅぽ、にゅるるぅ……」
+			ENDIF
+			CFLAG:9040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			IF RAND:5 == 0
+				PRINTFORML 「あ、気持ちいいやり方、見つけたかも……」
+				PRINTFORMW 阿求の手技は急速に上達していっている…
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「あれ、先から透明な汁が出てる……。これって、感じてるってことですか？」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW （擦るたびに脈打って……そんなにいいんでしょうか……）
+			ELSEIF RAND:2 == 0
+				PRINTFORMW （あ、手の中でカチカチ……。あれ……？　私、欲情してる……？）
+			ELSE
+				PRINTFORMW 「しこしこ、しこしこ……え、えっと、これでよろしいでしょうか……」
+			ENDIF
+			CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			IF RAND:4 == 0
+				PRINTFORMW 「くっ……手がべとべとして気持ち悪いです……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「えい、ぎゅっぎゅっ……あ、痛かったですか、すいません……。って何を謝ってるんですか私はっ」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「手でしますから、それで満足してください……」
+				PRINTFORMW 阿求は顔を嫌悪に歪めながらぎこちなくペニスを扱いている…
+			ELSE
+				PRINTFORML 「ううっ……女の子の手にこんなの握らせてどう責任取るんですかっ。そこまでして射精したいだなんて馬鹿じゃないですかっ」
+				PRINTFORMW 阿求は不快を露わにしてペニスを扱いている…
+			ENDIF
+			CFLAG:9040 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ・雁が首 CFLAG:9041
+;-------------------------------------------------
+IF SELECTCOM == 41 || SELECTCOM == 604
+	;初めて
+	IF CFLAG:9041 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3 || TALENT:淫乱 == 1
+			PRINTFORMW 「はい……お口でたくさん気持ち良くなって下さいね……？　……ん、ちゅく……」
+			PRINTFORMW %CALLNAME:PLAYER%が促すと阿求は陰茎にしゃぶりついた…
+			PRINTFORMW 「はぁ、んふ……じゅぱ、れろれろ……ん、ふ、ん、んーーっ、口の中で、跳ねてまふっ……」
+			PRINTFORMW 「んっ、ぱくっ、んじゅる、ちゅう、ちゅうう～～っ、じゅぶ、ぬぷぷぷぅ……」
+		ELSEIF MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 勃起したペニスを阿求の前に差し出すと、阿求は黙ってしゃぶり始めた
+			PRINTFORMW 「んっ……ふ、じゅる、ぺちゃ……ぬるん、ちゅぶぅ……」
+			PRINTFORMW 子猫が母猫の乳を吸うように、ちゅうちゅうと亀頭を吸い立てる…
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、んんっ、汚いモノを近づけないでくださいっ……！」
+			PRINTFORMW ペニスを顔に近づけてフェラチオを強要するが、阿求は強く拒絶している
+			PRINTFORMW 仕方がないので強引にねじこみ、頭を掴んで前後に激しく揺さぶった…
+			PRINTFORMW 「んぶうっ！？　げほっ、ぉえっ……はー、ふ、ん、んううぅ……」
+			PRINTFORMW 阿求の口内は熱く蕩けるような感触で、%CALLNAME:PLAYER%に充分な快感を与える
+			PRINTFORMW 奉仕奴隷の素質を十分に感じさせる具合のお口だ…
+		ENDIF
+		CFLAG:9041 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋奉仕精神Lv5＋サドっ気1以上
+		IF TALENT:淫乱 == 1 && ABL:13 >= 5 && ABL:20 >= 1
+			;技巧5以上で調教者が小柄体型
+			IF ABL:12 >= 5 && TALENT:PLAYER:128 == 1
+				IF RAND:14 == 0
+					PRINTFORML 「うふふ……」
+					PRINTFORML 阿求は自分の髪の毛を一本抜き、それでペニスの根元を縛ると柔らかい手で握った
+					PRINTFORML 「これでよし、と。イキたくなっても我慢してくださいね？　ぎゅ、しこしこ、しゅっしゅっ……」
+					PRINTFORML 「……ぬりゅ、ぬりゅ、しゅ、しゅ……どうしました、辛そうなお顔して。もっと強くした方がいいですか？　えい、しゅっしゅ……」
+					PRINTFORML 絶妙な手技に性感が高まるが、根元を縛られているので絶頂を迎えられない。阿求はそんな様子を見て悪戯に笑っている…
+					PRINTFORML 「おや、亀頭がぱんぱんに腫れてますね。つばでもつけて治しましょう……んぷっ」
+					PRINTFORML 亀頭にねっとりとした舌肉が絡みつき、容赦なく粘膜を刺激する
+					PRINTFORML 「じゅる、ちゅぷ、んっ、じゅぢゅっ、ちろちろ……どうひまふぃた、いつでもお口にびゅーびゅーしちゃっていいんでふよ？　くすくす」
+					PRINTFORML 「んふ、ぺろ、んぶ、ん～……しゅっしゅっしゅ……ぢゅる、ずじゅ、ぬりゅう……ぷはっ♪　…じゃあ、そろそろ取ってあげますね、これ」
+					PRINTFORML ペニスの拘束が解かれると、溜まった欲望がマグマのように尿道をせりあがっていく
+					PRINTFORMW 「いいでふよ、全部出ひてくださいっ……！　ん、じゅるるる、ぢゅずうっ！　じゅず、ちゅうーーっ……！」
+				ELSEIF RAND:13 == 0
+					PRINTFORML 「うわぁ、ちっちゃい……しかも皮かむってるし……くすくす、粗末なおちんちんですねぇ」
+					PRINTFORML 「可哀想なので、お口で剥いてあげます、んふ……んちゅ、じゅる、ちろちろ、ほら、できあがり」
+					PRINTFORMW 「あれ、そんなに涎垂らして、もう我慢できないですか？　ひと舐めしただけなのに？　しょうがないですね……ん、ふむ、ちゅるちゅる、こくん、ぢゅううっ、ぢゅるるううっ」
+				ELSE
+					CALL K48_FELLATIO
+				ENDIF
+			;小柄体型のみ
+			ELSEIF TALENT:PLAYER:128 == 1
+				IF RAND:13 == 0
+					PRINTFORML 「うわぁ、ちっちゃい……しかも皮かむってるし……くすくす、粗末なおちんちんですねぇ」
+					PRINTFORML 「可哀想なので、お口で剥いてあげます、んふ……んちゅ、じゅる、ちろちろ、ほら、できあがり」
+					PRINTFORMW 「あれ、そんなに涎垂らして、もう我慢できないですか？　ひと舐めしただけなのに？　しょうがないですね……ん、ふむ、ちゅるちゅる、こくん、ぢゅううっ、ぢゅるるううっ」
+				ELSE
+					CALL K48_FELLATIO
+				ENDIF
+			;技巧５のみ
+			ELSEIF ABL:12 >= 5
+				IF RAND:13 == 0
+					PRINTFORML 「うふふ……」
+					PRINTFORML 阿求は自分の髪の毛を一本抜き、それでペニスの根元を縛ると柔らかい手で握った
+					PRINTFORML 「これでよし、と。イキたくなっても我慢してくださいね？　ぎゅ、しこしこ、しゅっしゅっ……」
+					PRINTFORML 「……ぬりゅ、ぬりゅ、しゅ、しゅ……どうしました、辛そうなお顔して。もっと強くした方がいいですか？　えい、しゅっしゅ……」
+					PRINTFORML 絶妙な手技に性感が高まるが、根元を縛られているので絶頂を迎えられない。阿求はそんな様子を見て悪戯に笑っている…
+					PRINTFORML 「おや、亀頭がぱんぱんに腫れてますね。つばでもつけて治しましょう……んぷっ」
+					PRINTFORML 亀頭にねっとりとした舌肉が絡みつき、容赦なく粘膜を刺激する
+					PRINTFORML 「じゅる、ちゅぷ、んっ、じゅぢゅっ、ちろちろ……どうひまふぃた、いつでもお口にびゅーびゅーしちゃっていいんでふよ？　くすくす」
+					PRINTFORML 「んふ、ぺろ、んぶ、ん～……しゅっしゅっしゅ……ぢゅる、ずじゅ、ぬりゅう……ぷはっ♪　…じゃあ、そろそろ取ってあげますね、これ」
+					PRINTFORML ペニスの拘束が解かれると、溜まった欲望がマグマのように尿道をせりあがっていく
+					PRINTFORMW 「いいでふよ、全部出ひてくださいっ……！　ん、じゅるるる、ぢゅずうっ！　じゅず、ちゅうーーっ……！」
+				ELSE
+					CALL K48_FELLATIO
+				ENDIF
+			;それ以外
+			ELSE
+				CALL K48_FELLATIO
+			ENDIF
+			CFLAG:9041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF (ABL:13 >= 3 || TALENT:恋慕 == 1)
+			IF RAND:8 == 0
+				PRINTFORMW 「んっ、ふ、ぐ、ちゅぷ……あの、気持ちいいですか……」
+			ELSEIF RAND:7 == 0
+				PRINTFORMW 「ん～っ、こくこく、ぷはぁ……うえぇ、やっぱり苦いです…」
+			ELSEIF RAND:6 == 0
+				PRINTFORMW 「もう、早くイってください……もが、んぐ、じゅっ……じゅるるぅ……」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW （あ……びくんって跳ねた。今の、良かったのかな？）
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「ん～、逃げませんから、手どけてください……んも、んじゅ……ちゅっちゅっ……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW （この人、すごく興奮してる……。私の口、役に立ってるのかな……）
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふぁい、手と舌を同時に使って……んじゅ、ずじゅう……ぬぷぷぷ……」
+			ELSE
+				PRINTFORMW 「んっ、ちゅ、ぷぷぅ……へ？　見上げながらした方がいいんでふか？　分かりまふぃた……んっ、はむぅ、れろ」
+			ENDIF
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			IF RAND:5 == 0
+				PRINTFORMW 「んー、んむー、じゅるっ……じゅ、ず、ず、ずーっ……」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「うう……ちゅぱ……汚い、臭い……うぶぅ、じゅるる……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「飴を舐めるように…？　こ、こうでふか？　ちゅばっ、ちゅぷ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「むぐぅ……おっきすぎて、入りきらないでふ……んちゅ、るぅ……」
+			ELSE
+				PRINTFORMW 「ご先祖様、御免なさい……。私は、お役目も果たさずこんなモノをしゃぶってまふ……うぐっ、んぢゅぷ……」
+			ENDIF
+			CFLAG:9041 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG:9042
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:9042 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「あの、恥ずかしいからあまり見ないでください……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「胸で擦るのが好いなんて……変な趣味ですね……」
+		ENDIF
+		CFLAG:9042 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋奉仕精神Lv5＋サドっ気1以上
+		IF TALENT:淫乱 == 1 && ABL:13 >= 5 && ABL:20 >= 1
+			;貧乳か絶壁
+			IF TALENT:111 == 1 || TALENT:110 == 1
+				IF RAND:8 == 0
+					PRINTFORML 「ふふ、胸で擦りあげられてイくんですか？　責められるのもお好きなんですね」
+					PRINTFORMW 阿求はうっとりと上気しながら平らな胸で奉仕している…
+				ELSEIF RAND:7 == 0
+					PRINTFORML 「ふにふに、ふにふに……。こうしてたら、もう少し大人っぽい体型になるかなぁ…」
+					PRINTFORMW 阿求は小さな膨らみを寄せてやわやわとペニスを挟んでいる…
+				ELSEIF RAND:6 == 0
+					PRINTFORML 「くすっ、いいですよ？　私を%CALLNAME:PLAYER%の精液で汚してください……はっ、んっ」
+					PRINTFORMW 阿求の胸からはとくとくと熱い高鳴りが伝わってくる…
+				ELSEIF RAND:5 == 0
+					PRINTFORML 「つーっ……ほら、ぬるぬるになりましたよ？　えい、ぬりゅ、ぬりゅぬりゅ……」
+					PRINTFORMW 舌から垂らした唾液を塗りつけ、摩擦の気持ちよさを高めている…
+				ELSEIF RAND:4 == 0
+					PRINTFORML 「びくびくして、可哀想…。気持ち良くしてあげますね……は、あ、ふっ、んん」
+					PRINTFORMW 阿求は献身的に胸で奉仕している…
+				ELSEIF RAND:3 == 0
+					PRINTFORML 「舐めるのも一緒にすると反応が面白いなぁ…。ちるちる、れ～ろれ～ろ、ちゅるんっ♪」
+					PRINTFORMW 「えい、ぬらぬら、ずりずり、ぺろぉ、ぴちゃ、……あ、先端が真っ赤です……もうすぐ射精するんですね♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「ほら、乳首固いのわかりますよね？　擦ったらおちんぽ喜んでますもんね♪」
+					PRINTFORMW 「んっ、しょっ、くにゅくにゅ……あっ、なんか、こっちも盛り上がってきました、はっ、ふあ、ぁん……」
+				ELSE
+					PRINTFORML 「あ、く…！　ちょ、ちょっと、そんなに勢いよくしたら、おっぱいが変な感じに……ふああっ！」
+					PRINTFORMW 熱い猛りを薄い胸に押し付けて擦ると、阿求の性感を刺激したようだ…
+				ENDIF
+			;普通か巨乳
+			ELSE
+				IF RAND:8 == 0
+					PRINTFORML 「ふにふに……これがいいんですか？　……うんっ、しょっ」
+					PRINTFORMW 阿求は柔らかな双丘にペニスを挟み込んでしごいている…
+				ELSEIF RAND:7 == 0
+					PRINTFORML 「ふふ……圧迫されるの、そんなにいいんですか？　やらしい顔してます…」
+					PRINTFORMW 阿求は膨らみを寄せてやわやわとペニスを挟んでいる…
+				ELSEIF RAND:6 == 0
+					PRINTFORML 「いいですよっ、私を%CALLNAME:PLAYER%の精液で汚してください、はっ、んんっ」
+					PRINTFORMW 阿求の胸からはとくとくと熱い高鳴りが伝わってくる…
+				ELSEIF RAND:5 == 0
+					PRINTFORML 「つーっ……あは、ぬるぬるになりましたよ？　えい、ぬりゅぬりゅぬりゅる……」
+					PRINTFORMW 舌から垂らした唾液を塗りつけ、摩擦の性感を高めている…
+				ELSEIF RAND:4 == 0
+					PRINTFORML 「びくびくして、可哀想…。気持ち良くしてあげますね……は、あ、ふっ、んん」
+					PRINTFORMW 阿求は献身的に胸で奉仕している…
+				ELSEIF RAND:3 == 0
+					PRINTFORML 「舐めるのも一緒にすると反応が面白いなぁ…。ちるちる、れ～ろれ～ろ、ちゅるんっ♪」
+					PRINTFORMW 「えい、ぬらぬら、ずりずり、ぺろぉ、ぴちゃ、……あ、先端が真っ赤です……もうすぐ射精するんですね♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「ほら、乳首固いのわかりますよね？　こんなにおちんぽ喜んでますもんね♪」
+					PRINTFORMW 「んっ、しょっ、くにゅくにゅ……あっ、なんか、こっちも盛り上がってきました、はっ、ふあ、ぁん……」
+				ELSE
+					PRINTFORML 「あ、く…！　ちょ、ちょっと、そんなに勢いよくしたら、おっぱいが変な感じに……ふああっ！」
+					PRINTFORMW 阿求の柔らかい乳房にペニスを押し付けると、性感を刺激したようだ…
+				ENDIF
+			ENDIF
+			CFLAG:9042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「乳首で擦るんですか……？　んん、上手くいかない…」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「…あっ、ふ……ちょっと、これ……ムズムズしますね……」
+			ELSE
+				PRINTFORMW 「んぅ、んんぅ、んっ……声が、出ちゃう……んん、ん、んふっ」
+			ENDIF
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			IF TALENT:111 == 1
+				PRINTFORMW 「どうせ貧相ですよ…」
+			ELSE
+				PRINTFORMW 「疲れるだけです、こんなやり方…」
+			ENDIF
+			CFLAG:9042 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG:9043
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:9043 == 0
+		;淫乱有り
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「へぇ、こういうやり方もあるんですね。んっ……固いのが、擦れてますっ……」
+		;処女
+		ELSEIF TALENT:0 == 1
+			PRINTFORMW 「い、挿入れないでくださいねっ？　く、んんっ、擦れてるっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やあっ、固いおちんちんが当たってるぅ……」
+		ENDIF
+		IF TEQUIP:59 == 2
+			PRINTFORMW 水着のざらついた股布に、ガチガチになったペニスを擦りつける…
+		ELSE
+			PRINTFORMW 阿求のすべすべした股に興奮しきったペニスを擦りつける…
+		ENDIF
+		CFLAG:9043 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱有り
+		IF TALENT:淫乱 == 1
+			IF TEQUIP:59 == 2
+				IF RAND:2 == 0
+					PRINTFORML 阿求を仰向けに寝かせ、水着のスカート部分の隙間にペニスを挟んで抽送した…
+					PRINTFORMW 「えっ……んっ、ひゃっ……本当に挿入してるみたいです……」
+				ELSE
+					PRINTFORML ざらざらした水着の股間部分にペニスを押し付け、激しく擦り上げた…
+					PRINTFORMW 「んっ、ふうっ、んっ……あ、やだ、私まで濡れてきちゃう……」
+				ENDIF
+			ELSE
+				IF RAND:4 == 0
+					PRINTFORML 阿求は壁に手をつき、腰を%CALLNAME:PLAYER%に突き出して誘っている…
+					PRINTFORMW 「ほら、ここを擦ってください……。んっ、ふうっ、ちんちん、滑ってますっ……」
+				ELSEIF RAND:3 == 0
+					PRINTFORML 「あっ……挿入れないんですか……？　んっ、はぁっ、はぁっ」
+					PRINTFORMW 「すごい……あそこ、%CALLNAME:PLAYER%と私のつゆでびちゃびちゃ……ふっ、んうっ」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「こちらからも動き、合わせてみますね……えい、ん、ん……ぬりゅっ、ぬりゅっ」
+					PRINTFORMW 「どうですか……？　……あ、もうぎんぎんで我慢できそうにないですね……んくっ」
+				ELSE
+					PRINTFORML 「何となく、コツが掴めてきました…。こうやって、太ももで挟みながら苛めてあげるんです、んっ……」
+					PRINTFORMW 「ほら、思う存分射精しちゃっていいんですよ？　阿求のすべすべの体に、白いのかけてみたくないですか？　ほら、ほらっ…」
+				ENDIF
+			CFLAG:9043 = 3
+			ENDIF
+		;それ以外
+		ELSE
+			IF TEQUIP:59 == 2
+				PRINTFORMW 「んっ、水着の布越しに擦れて、変な感じです……」
+			ELSE
+				PRINTFORMW 「こ、これ、クリトリスに当たっちゃいますよう……」
+			ENDIF
+			CFLAG:9043 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG:9044
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:9044 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1 || MARK:2 == 3
+			PRINTFORMW 「お、お尻を……。はい、舐め、ます……」
+			PRINTFORMW 阿求は目を閉じ、恐る恐る%CALLNAME:PLAYER%の肛門に舌を伸ばす…
+		;それ以外
+		ELSE
+			PRINTFORMW 「……この外道、鬼畜、卑劣漢……！　うぅ、きっ、汚い……」
+			PRINTFORMW アナルを舐めるよう命令すると、阿求はひとしきり罵った後おずおずと舌を出した
+			PRINTFORMW 「ん、ちゅぷ、ぬりゅ……うえぇ、もろに見てしまいました……うぐっ」
+		ENDIF
+		CFLAG:9044 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱+従順Lv5以上
+		IF TALENT:淫乱 == 1 && ABL:10 >= 5
+			PRINTFORML 「はい……阿求の舌を、お使いください……ん、れろぉ……」
+			PRINTFORMW 阿求は頬を赤らめ、敏感な部位を丹念に舌で綺麗にする…
+			CFLAG:9044 = 5
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORML 「んっ、ちゅるっ、ぬろぉ、んむっ」
+			PRINTFORMW 阿求は奉仕に集中している…
+			CFLAG:9044 = 4
+		;奉仕精神Lv3以上
+		ELSEIF (ABL:13 >= 3 || TALENT:恋慕 == 1)
+			PRINTFORML 「ん、ふぅ……ちゅる、ぺちゃっ……」
+			PRINTFORMW 阿求は犬のように舌を出して、不浄の穴を丁寧に舐めとる…
+			CFLAG:9044 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「うぶううぅっ、お、お掃除、まごころを込めて、頑張ります……」
+			PRINTFORMW 阿求に心にも無いことを言わせると、昏い充足が%CALLNAME:PLAYER%を満たす…
+			CFLAG:9044 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローション CFLAG:9060
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:9060 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「今日は、ぬるぬるをお望みですか……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「な、何ですかこれ……ぬるぬるしてます……」
+		ENDIF
+		CFLAG:9060 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:2 == 0
+				PRINTFORMW 「あはっ、まるで料理の下ごしらえみたい……」
+			ELSE
+				PRINTFORMW 「あ、今日はたくさん付けるんですね……んっ、ふっ」
+			ENDIF
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ、ぞわぞわする……」
+			CFLAG:9060 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG:9061
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:9061 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「今度はお薬で遊ぶんですか…？　んっ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、ちゅく……けふけふっ、な、何を飲ませたんですか」
+		ENDIF
+			CFLAG:9061 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORML 「せっかくだからもう少し……んっ」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の口内から薬が無くなってもしばらくキスをせがんだ…
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……ぷはぁ……」
+			CFLAG:9061 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG:9062
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;淫乱+おもらし癖
+	IF TALENT:淫乱 && TALENT:45
+		PRINTFORML 「あは、お漏らし見たいんですか……？　んっ……」
+		PRINTFORMW 阿求はこくんと喉を鳴らして薬を嚥下した…
+		CFLAG:9062 = 5
+	;淫乱
+	ELSEIF TALENT:淫乱
+		PRINTFORML 「ああ、また何かされるんですね……♪」
+		PRINTFORMW 阿求の目は期待に潤んでいる…
+		CFLAG:9062 = 4
+	;屈服刻印Lv3
+	ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+		PRINTFORML 「ん、ちゅぷぅ……」
+		PRINTFORMW 阿求は抵抗もせず薬を飲み下す…
+		CFLAG:9062 = 3
+	;それ以外＋おもらし癖
+	ELSEIF TALENT:45
+		PRINTFORML 「やだっ、もうお漏らしはいやぁ……んぐっ……！」
+		PRINTFORMW 嫌がる阿求の口に無理矢理利尿剤を流し込む…
+		CFLAG:9062 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ、けほけほっ……うー、今飲ませたのは何ですか……？」
+		CFLAG:9062 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン(新妻プレイ) CFLAG:9090 解除 CFLAG:8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:9090 == 0
+		PRINTFORMW 「へぇ、これがエプロンですか。あまり洋服は着ないので新鮮です」
+		CFLAG:9090 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		PRINTFORMW 「ちょっと可愛いですね、この服……」
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	PRINTFORML 「あ……もう脱がないといけませんか？」
+	PRINTFORMW どうやらエプロンを気に入っているようだ…
+	CFLAG:8823 = 1
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG:9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:9100 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「え……人に見せるんですか？　そ、そんな……」
+			PRINTFORMW 阿求は表向きは躊躇っているが、密かに生唾を飲み込んだのを%CALLNAME:PLAYER%は見逃さなかった…
+		;屈伏3か恋慕
+		ELSEIF MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 「……」
+			PRINTFORMW 阿求は無感情にレンズを見返す…
+		;それ以外
+		ELSE
+			PRINTFORMW 「……本当に、最低ですね……」
+		ENDIF
+		CFLAG:9100 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋露出癖３
+		IF TALENT:淫乱 == 1 && ABL:14 >= 3
+			PRINTFORMW 「綺麗に撮ってくださいね？」
+			CFLAG:9100 = 5
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「んっ……録られてるって思うと、何だか……」
+			CFLAG:9100 = 4
+		;屈伏3か恋慕
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+			PRINTFORMW 「また、録るんですか？　いいですけど……」
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「ひっ……」
+			PRINTFORMW 阿求は無機質なレンズを脅えながら見ている…
+			CFLAG:9100 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG:9103 解除 CFLAG:8822
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:9103 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「鏡……？　あっ……」
+			PRINTFORMW 阿求はその意図に気付いた瞬間、ぞくぞくと身悶えた…
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3 || MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 「また、奇妙な趣向ですね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「鏡って……どこまで、どこまで辱めれば……！」
+		ENDIF
+			CFLAG:9103 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORML 「あ、うぅ……」
+			PRINTFORMW 阿求はこれからされることを想像してもじもじと太腿をすり合わせている…
+			CFLAG:9103 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3 || MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORML 「あぁ……これ、ですか……」
+			PRINTFORMW 阿求の表情はどこか熱っぽい…
+			CFLAG:9103 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「また、見せつけるんですか……？」
+			PRINTFORMW 阿求は恥辱責めに怯えている…
+			CFLAG:9103 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG:9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:9104 == 0
+		;昼でスク水着用時
+		IF TEQUIP:59 == 2 && TIME == 0
+			PRINTFORMW 「首輪に水着って……こんなの、知り合いに見られたら……」
+			PRINTFORMW 阿求はスクール水着を着た状態でもじもじと恥ずかしそうにしている…
+			CFLAG:5101 = 1
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「大胆、ですね……。くす」
+			PRINTFORMW 阿求は少し躊躇したが、強く嫌がりはしなかった…
+		;屈伏3か恋慕
+		ELSEIF MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 「あ、はい……」
+			PRINTFORMW 首輪のリードを引くと、阿求は黙って後に従った…
+		;それ以外
+		ELSE
+			PRINTFORMW 「く、首輪なんて付けて外に出るんですかっ？　あうっ」
+			PRINTFORMW 嫌がる阿求のリードを引っ張り、屋敷の外へ連れ出した…
+		ENDIF
+			CFLAG:9104 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;昼でスク水着用時
+		IF TEQUIP:59 == 2 && TIME == 0
+			PRINTFORML 「またこの恰好で外に出るんですか？　何だか、誰かに見られていそうで……」
+			PRINTFORMW 泳ぎもしないのに水着姿で外出することには少し抵抗を覚えるようだ…
+			CFLAG:5101 = 1
+			CFLAG:9104 = 6
+		;淫乱＋露出癖Lv3以上
+		ELSEIF TALENT:淫乱 == 1 && ABL:14 >= 3
+			PRINTFORML 「あれ……何だか、疼いて……」
+			PRINTFORMW 阿求は他人に見られるかもしれないという状況に興奮しているようだ…
+			CFLAG:9104 = 5
+		;露出癖Lv3以上もしくは淫乱
+		ELSEIF (ABL:14 >= 3 || TALENT:淫乱 == 1)
+			PRINTFORML 「誰かが通りかかりでもしたら、お終いですね……」
+			PRINTFORMW 見晴らしの良い野外に連れ出され、阿求の吐息は熱くなっている…
+			CFLAG:9104 = 4
+		;屈伏3か恋慕
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+			PRINTFORML 「あ……お外、行くんですか？」
+			PRINTFORMW 阿求の頬は心なしか上気している…
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「せ、せめて人が通らないような所で……ぐっ、げほっ」
+			PRINTFORMW 口答えできないように首輪のリードを強く引いた…
+			CFLAG:9104 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「わぁ……部屋の中、いやらしい匂い……」
+		CFLAG:8821 = 3
+	;屈伏3か恋慕
+	ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+		PRINTFORMW 「ただいま、です」
+		CFLAG:8821 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ……外は心臓に悪いです……」
+		CFLAG:8821 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:9111
+;強制放尿 CFLAG:9620
+;-------------------------------------------------
+;放尿
+IF SELECTCOM == 111
+	;淫乱+おもらし癖+野外プレイ
+	IF TALENT:淫乱 && TALENT:45 && TEQUIP:52
+		PRINTFORMW 「は、ふ、うぅっ……こんなところ人に見られたら、言い訳できません……」
+		CFLAG:9111 = 5
+	;淫乱+おもらし癖
+	ELSEIF TALENT:淫乱 && TALENT:45
+		PRINTFORMW （あ……音聞かれてる……私の、お小水の音……）
+		CFLAG:9111 = 4
+	;露出癖Lv5
+	ELSEIF ABL:14 >= 5
+		PRINTFORMW 「やだっ……私、おしっこ見られて……濡れちゃいました……」
+		CFLAG:9111 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW （あ……見てる……私の、おしっこしてるとこ……）
+		CFLAG:9111 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「は、うぅ……見ないで……ください……」
+		CFLAG:9111 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+;強制放尿
+IF SELECTCOM == 620
+	;淫乱+おもらし癖+野外プレイ
+	IF TALENT:淫乱 && TALENT:45 && TEQUIP:52
+		PRINTFORMW 「そんあっ、あ、ふああっ、もれちゃう、外であそこ弄られておもらし、しちゃううぅっ」
+		CFLAG:9620 = 5
+	;淫乱+おもらし癖
+	ELSEIF TALENT:淫乱 && TALENT:45
+		PRINTFORMW 「だから、そんなに触れちゃ、だめぇ……あ、うっ、出てる、おしっこ出てるよう……」
+		CFLAG:9620 = 4
+	;露出癖Lv5
+	ELSEIF ABL:14 >= 5
+		PRINTFORMW 「あ、ふ、やだっ、私、見られてイっちゃいそうっ……あ、あああっ！」
+		CFLAG:9620 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「あ、う、もらしちゃうっ……」
+		CFLAG:9620 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「駄目ですっ、刺激されたらっ、おしっこ出ちゃいますっ……！　ふあ、ふあああんっ！！」
+		CFLAG:9620 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG:9172 終了時CFLAG:8852
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25
+	;初めて
+	IF CFLAG:9172 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕
+			PRINTFORMW 「ああっ、しっぽ、しっぽが刺さってますっ……♪」
+		;屈伏3か恋慕
+		ELSEIF MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 「やぁ、奥まで入ります……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ……珠がごてごてと、悪趣味ですね……ふっ、ううっ！」
+		ENDIF
+			CFLAG:9172 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 「はぁっ……もう、入れられるだけでおかしくなっちゃいますっ……ふぅぅっ！」
+			CFLAG:9172 = 5
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「あう……一つずつ、入ってきてます……」
+			CFLAG:9172 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 「ん、あ、反応するたびに中でぐりぐり動いてっ……ふああっ！」
+			CFLAG:9172 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ……ぷちゅん、ぷちゅんって入ってます……」
+			CFLAG:9172 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「は、ん、ふああ、あ゛～～っ♪」
+		CFLAG:8852 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 「やらぁ、抜くときにごりごりってなるの、癖になっちゃふぅっ……」
+		CFLAG:8852 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はふっ……」
+		CFLAG:8852 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め CFLAG:9180
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:9180 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「あっ、え……あああっ！？　これ、あたま、ふわふわするぅ……ふはぁ……」
+			PRINTFORMW 恥情と肛門への刺激が混じり合って阿求の思考を犯している…
+		;屈伏3か恋慕
+		ELSEIF MARK:2 == 3 || TALENT:恋慕 == 1
+			PRINTFORMW 「ひぁっ……！　き、汚いですよっ……」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の突飛な行動に目を白黒させている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「きゃああっ！？　えっ、あっ、ひいっ……！？」
+			PRINTFORMW %CALLNAME:PLAYER%はつるりとした尻肉の間に顔を埋め、ぴちゃぴちゃと舐め始めた…
+			PRINTFORMW 「う、嘘っ、この人……お尻舐めてる……！？　どうして、どうしてぇ……！？」
+			PRINTFORMW 理解を超えた行動に、阿求は混乱してしまっている…
+		ENDIF
+			CFLAG:9180 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「あ、はうぅ……私、お尻舐められてるのにっ……のにぃ……」
+			CFLAG:9180 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 「ん、くっ……なんか、ぞわぞわするっ……？」
+			CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「う…うぅ……だから、そこ汚いですからぁっ……」
+			CFLAG:9180 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG:9220
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:9220 == 0
+		;淫乱
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORMW 「んつっ！　こ、これってお仕置きですか…？」
+			PRINTFORMW 阿求は直接暴力を振るわれて戸惑っている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「いっ、いきなり何をっ……あっ、痛ッ！？」
+			PRINTFORMW 阿求の丸い尻に痣が残るまで平手を打った……
+		ENDIF
+			CFLAG:9220 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋マゾっ気Lv5以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 5 && (UP:20 + UP:21) < 500
+			PRINTFORML 「あっ、あああっ！　もっと、もっとぶってくださいぃっ♪」
+			PRINTFORMW 阿求は目をとろんとさせ、苦痛に溺れている…
+			CFLAG:9220 = 6
+		;淫乱＋マゾっ気Lv3以上
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 3 && (UP:20 + UP:21) < 500
+			PRINTFORML 「あっ、くうう、これ、癖になりそうです……！」
+			PRINTFORMW 阿求は被虐の快感に目覚めつつあるようだ…
+			CFLAG:9220 = 5
+		;淫乱
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORML 「んっ、くあっ」
+			PRINTFORMW 性行為とは違った痛みに阿求は身をのけ反らせて苦悶する…
+			CFLAG:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML 尻を叩くと、物欲しそうに腰が反応した…
+			PRINTFORMW （やだっ、どうして……？）
+			CFLAG:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「ふぐっ、ううっ……」
+			PRINTFORMW 阿求は顔を歪めて苦痛に耐えている…
+			CFLAG:9220 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG:9221
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:9221 == 0
+		;淫乱
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORMW 「愛の鞭ってやつですか、あははっ……あ、ぎッ……！？」
+			PRINTFORMW 身も心も堕ちたとはいえ、苦痛にはやはり眉を顰める…
+		;それ以外
+		ELSE
+			PRINTFORMW 「あぐっ！　やっ、やめてっ！　ひぎぃっ！」
+			PRINTFORMW 顔を守ろうと掲げた両腕に容赦なく鞭を振り下ろした…
+		ENDIF
+			CFLAG:9221 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋マゾっ気Lv5以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 5 && (UP:20 + UP:21) < 500
+			PRINTFORML 「あはぁっ、もっと、もっと酷い事してくださいっ……！」
+			PRINTFORMW 阿求は壊れ、もはや苦痛を快楽としか見做さない体になっている…
+			CFLAG:9221 = 7
+		;淫乱＋マゾっ気Lv3以上
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 3 && (UP:20 + UP:21) < 500
+			PRINTFORML 「あっ……ご主人様ぁ……」
+			PRINTFORMW 四つん這いの阿求に鞭を振るうと、犬が尻尾を振るように身をよじった…
+			CFLAG:9221 = 6
+		;淫乱
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) < 500
+			PRINTFORML 「あは……私の体に、あなたのつけた傷が沢山……」
+			PRINTFORMW 阿求は苦痛に表情を歪めながらも、どこか満足そうだ…
+			CFLAG:9221 = 5
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML 「はうっ、うぎっ！　痛ぁっ……！」
+			PRINTFORMW （あ、あれ……も、もしかして、あそこ……濡れてる……？）
+			CFLAG:9221 = 4
+		;屈伏3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「あう゛っ、ぐうっ」
+			PRINTFORMW 阿求は憔悴しているが、鞭を振り下ろすと痛みに声を上げる…
+			CFLAG:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「うっ、あぐっ、た、助けて……誰かぁ……」
+			PRINTFORMW 白い肌に何本もミミズ腫れが浮き上がり、痛々しい姿になっている…
+			CFLAG:9221 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;針 CFLAG:9222
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:9222 == 0
+		;淫乱
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORMW 「ど……どうぞ……」
+			PRINTFORMW 阿求は恐怖に歯をカチカチと鳴らすが、%CALLNAME:MASTER%の為にそれを堪えて頷いた…
+			PRINTFORMW 「……ッ！　ア……かっ……いぎぃっ……！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 暴れないように拘束し、おもむろに鋭い針を取り出すと阿求は血色を失った…
+			PRINTFORMW 「……ヒッ……そ、それ、冗談ですよね……？　お願い……危ないから仕舞ってください……」
+			PRINTFORMW 冷徹に針を突き刺すと、耳をつんざくような悲鳴がこだました…
+		ENDIF
+			CFLAG:9222 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋マゾっ気Lv5以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 5 && (UP:20 + UP:21) < 500
+			PRINTFORML 「～～～ッ……！　もう、ダメっ……いっちゃいますっ……！　ん、んんううっ♪」
+			PRINTFORMW 敏感な部位を貫くと、阿求は全身を強張らせて嬌声をあげた…
+			CFLAG:9222 = 7
+		;淫乱＋マゾっ気Lv3以上
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 3 && (UP:20 + UP:21) < 500
+			PRINTFORML いつの間にか乳首もクリトリスも苦痛を与えると固く勃起するようになっている…
+			PRINTFORMW 「あっ……こ、これはっ、そのっ、うくっ……！　だって、何度も、痛くするから……」
+			CFLAG:9222 = 6
+		;淫乱
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && (UP:20 + UP:21) < 500
+			PRINTFORML 「あ、づ、う……！　……え、えへ、まだまだ、あなたの気の済むまで、いいですよ……？」
+			PRINTFORMW 阿求は脂汗を垂らしながらも、奴隷として従順に責め苦を受け入れる…
+			CFLAG:9222 = 5
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML 「あっ……かっ、は…………ッ！！」
+			PRINTFORMW 阿求は目を剥き、全身をぶるぶると震わせている…
+			CFLAG:9222 = 4
+		;屈伏3
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「……ッ！！　……ッ、………ッ！！」
+			PRINTFORMW 阿求は身をのけ反らせ、一瞬失神した…
+			CFLAG:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「いやあああああっ、針はいやあああああっ！！」
+			PRINTFORMW %CALLNAME:PLAYER%は淡々と針を使い、絶叫と悲鳴のコンサートを奏でる…
+			CFLAG:9222 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG:9224　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:9224 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……ふ……」
+			PRINTFORMW 全身を拘束されると、阿求は熱っぽく息を吐く…
+		;それ以外
+		ELSE
+			PRINTFORMW 「縄責めとは……また悪趣味なものを持ってきましたね……」
+			PRINTFORMW 阿求は苦虫を噛み潰したような表情で吐き捨てた…
+		ENDIF
+			CFLAG:9224 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋マゾっ気Lv5以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 5
+			PRINTFORML 「ああ……また、苛めてもらえるんですか……？」
+			PRINTFORMW 縛られているというのに、阿求の唇は歓喜の形に歪んでいる…
+			CFLAG:9224 = 6
+		;淫乱＋マゾっ気Lv3以上
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 3
+			PRINTFORML 「あっ……あの、もうちょっときつくしても大丈夫ですよ……？」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%から視線を逸らしてごにょごにょと呟く…
+			CFLAG:9224 = 5
+		;淫乱
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORML 「縛るの、お好きなんですか……？　ふふ……」
+			PRINTFORMW 阿求はこんな状況でもどこか楽しそうに笑っている…
+			CFLAG:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML きつく縛ると、それだけで乳首を勃起させた…
+			PRINTFORMW 「あ、これは、そのっ……」
+			CFLAG:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐぅっ……手首、擦れて痛い……」
+			CFLAG:9224 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0
+	;淫乱
+	IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+		PRINTFORML 「わぁ、縄目の跡が残っちゃいました」
+		PRINTFORMW 阿求はうっとりと肌に刻まれた赤い線を眺めている…
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ……もう、こりごり……」
+		CFLAG:8872 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG:9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41
+	;初めて
+	IF CFLAG:9225 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「はい……つけてください……」
+			PRINTFORMW 阿求は期待と不安の入り混じった様子で促す…
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ、そんなものを持って何をする気ですかっ……！」
+			PRINTFORMW 阿求は視覚を奪われることに強い不安を抱いているようだ…
+		ENDIF
+			CFLAG:9225 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋マゾっ気Lv5以上
+		IF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 5
+			PRINTFORML 「何をされるか分からないって……興奮します」
+			PRINTFORMW 阿求は仄暗い欲望を隠そうともせずにそう呟く…
+			CFLAG:9225 = 6
+		;淫乱＋マゾっ気Lv3以上
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1) && ABL:21 >= 3
+			PRINTFORML 「何だか、どきどきします……」
+			PRINTFORMW 阿求は手を股に挟み、もじもじと落ち着かない素振りを見せる…
+			CFLAG:9225 = 5
+		;淫乱
+		ELSEIF (TALENT:淫乱 == 1 || TALENT:恋慕 == 1)
+			PRINTFORML （あ……。今度は何されるんでしょう……）
+			CFLAG:9225 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML 「あ……」
+			PRINTFORMW 装着する時、微かに阿求の口元が期待に歪んだような気がした…
+			CFLAG:9225 = 3
+		;屈伏３
+		ELSEIF MARK:2 == 3
+			PRINTFORML 「ぅ……」
+			PRINTFORMW 阿求は大人しく目隠しを受け入れる…
+			CFLAG:9225 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「ひっ……！」
+			PRINTFORMW 目隠しをした状態だと、阿求は些細な物音にも恐怖で身を震わせる…
+			CFLAG:9225 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORML 「あ……もうお終いですか……」
+		PRINTFORMW 阿求は残念そうに呟く…
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW アイマスクを外すと、その下から疲れきった眸が現れた…
+		CFLAG:8871 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG:9230
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:9230 == 0
+		;奉仕精神Lv3以上か淫乱か恋慕か屈伏３か服従
+		IF ABL:13 >= 3 || TALENT:淫乱 == 1 || TALENT:恋慕 == 1 || MARK:2 == 3 || TALENT:服従
+			PRINTFORMW 「んんふううっ、ぐちゅ、むぐ、ふむ、じゅるううっ」
+			PRINTFORMW 「んぷ、んば、じゅくじゅく、にゅるっ、う、げほっげほっ……ぷはぁ、もっと優しくしてください……」
+			PRINTFORMW 阿求は口の端から白い泡を零し、涙目で訴えた…
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんー、やだぁ、やらぁああっ！　ん、ぶ、うぶううーーーっ！！」
+			PRINTFORMW 小さな口を無理矢理こじ開けてペニスをねじ込むと、舌肉がぬるぬると吸いついてきた…
+			PRINTFORMW 「ぐちゅっ、ぬちゅ、ぬぶうう、んぐううっ！！　ひっく、うえっ……」
+		ENDIF
+			CFLAG:9230 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋奉仕精神Lv5
+		IF TALENT:淫乱 == 1 && ABL:13 >= 5
+			IF RAND:5 == 0
+				PRINTFORML 「ん、ぶ、んぐうううっ！！　ちゅぅ、じゅるるっ、げほっ、げほげほっ！　ぷはっ……うぶぅっ！」
+				PRINTFORMW 「んじゅ、ずちゅ、ごぶっ、おえぇ、ずっぽっ、ずっぽ、にゅるにゅるっ……」
+			ELSEIF RAND:4 == 0
+				PRINTFORML 涙や涎まみれの顔面に大量の精液をぶち撒ける光景を思い浮かべながら喉奥を突きまくった… 
+				PRINTFORMW 「んっ、じゅろろっ、えほっ、おえぇ……んーっ！　じゅく、ぬりゅ、りゅぷぷぷっ、ずじゅるるるっ！」
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「ずぷっ……ぬぷぷっ、んっ、んんっ！！　ちょ、待って、鼻、むせたっ、ちんっ、ちんっ」
+				PRINTFORMW 「んん！？　むぐううーーっ！！　じゅぷ、じゅる、れろ、ちゅば、ちゅうぅぅぅ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「は、はい、私は%CALLNAME:PLAYER%の奴隷ですから……好きなように犯してください……。うっ……」
+				PRINTFORMW 「んーーっ、んむうーーっ！　じゅる、ねと、ぐぶっ、じゅぶじゅぶっ、ぬぷぅ……」
+			ELSE
+				PRINTFORML 肉棒を咥える阿求の頭を太腿でがっちりと固定し、欲望の赴くままに腰を振った…
+				PRINTFORMW 「むぐっ！？　ち、窒息すっ……ぐぶ、むぐ、うーっ、んんんっ、じゅる、ごぽ、じゅろ、ぐぶっ、うううーっ」
+			ENDIF
+			CFLAG:9230 = 4
+		;奉仕精神Lv3以上か恋慕か屈伏３
+		ELSEIF (ABL:13 >= 3 || TALENT:恋慕 == 1 || MARK:2 == 3)
+			IF RAND:4 == 0
+				PRINTFORML 阿求の口内に怒張をぶちこむと、涙をにじませながら懸命に奉仕する…
+				PRINTFORMW 「んぶっ……んぐ、じゅう、おぇ……ちゅる、ちゅるるっ……ぢゅるるるっ……」
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「あうぅ、まだイかないんですかぁ……じごぶっ、じゅるる、ぞぶ、ぬっぷぬっぷ……」
+				PRINTFORMW 「はん、むぐ、ちゅううっ、じゅるん、ごほっ！　げほげほっ、うぶうぅ……ずるん、ちゅる、ぷはぁ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORML ペニスを含んだ状態の阿求の頭を掴み、乱暴に前後運動させる…
+				PRINTFORMW 「んー、んー、んぶっ！！　ぐっちゅ、ぐっちゅ、ぐちゅうううっ！！　げほっ、ひっく……」
+			ELSE
+				PRINTFORML 「のどおく、きついでふっ……うえええっ！」
+				PRINTFORMW 「ぬりゅぬりゅ、じゅぶ、じゅちゅううっ！　じゅぱっ、じゅぽっ、ごぼぉっ！」
+			ENDIF
+			CFLAG:9230 = 3
+		;それ以外
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORML 「かっ……ふっ……！！　げぇっ、じゅるるっ、ずろろろろっ」
+				PRINTFORMW 「じゅぷん、ごぱぁ、じゅちゅ、ぬぷぷぷ……すびばせん、もう、ゆるひて、くださひいぃ……んぶうっ」
+			ELSE
+				PRINTFORML 「またそれ…？　いや、嫌ぁ……ずりゅっ、うむぅっ……！！」
+				PRINTFORMW 「ぬっぷ、ぬっぽ、じゅる、ちゅ、んぐおぅ……う、あああぁっ…もう帰して、家に帰してぇ……」
+			ENDIF
+			CFLAG:9230 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG:9350 解除 CFLAG:8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:9350 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「ここって……お風呂？　へぇ、ここにもあったんですね……」
+			PRINTFORMW 「え…と……ここに連れてこられたってことは……ここで、するんですか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ここって……お風呂？　へぇ、ここにもあったんですね……」
+			PRINTFORMW 「え…と……ここに連れてこられたってことは……ここで、するんですか？」
+		ENDIF
+			CFLAG:9350 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORML 「いらっしゃいませ、ご主人様。ふふっ…」
+			PRINTFORMW 阿求はタオル姿でマットの傍に正座し、恭しく%CALLNAME:MASTER%を迎え入れる…
+			CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また、ですか？　体を洗えるのは嬉しいですけど…」
+			CFLAG:9350 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG:9351
+;-------------------------------------------------
+IF SELECTCOM == 351 && TEQUIP:54
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORML 「こんなので感じて、いけないのに……」
+		PRINTFORMW 阿求の瞳には情欲の火が灯っている…
+		CFLAG:9351 = 3
+	;それ以外
+	ELSE
+		PRINTFORML 「ん……んーっ……」
+		PRINTFORMW 阿求は気まずそうに口をもごもごと動かしている…
+		CFLAG:9351 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG:9352
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:9352 == 0
+		;奉仕精神Lv3以上
+		IF ABL:13 >= 3
+			PRINTFORMW 「こ、こう、ですか……？　んっ、ぬるぬる……」
+			PRINTFORMW 阿求は%CALLNAME:PLAYER%の腰の上で淫らに踊る…
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうして、私がそんな湯女のような事を……」
+			PRINTFORMW 阿求は抗議したが、再三の命令には抗えず仕方なく奉仕を始めた…
+			PRINTFORMW 「あぅ、にゅるにゅるって、うぅ……こんなのがいいんですか……？」
+		ENDIF
+			CFLAG:9352 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋奉仕精神Lv5＋スク水
+		IF TEQUIP:59 == 2 && TALENT:淫乱 == 1 && ABL:13 >= 5
+			PRINTFORML 「わ……水着の感触ってそんなにいいですか？　反応が全然違います……」
+			PRINTFORMW 濡れたナイロン生地が%CALLNAME:PLAYER%の全身に擦りつけられる…
+			CFLAG:9352 = 5
+		;淫乱＋奉仕精神Lv5
+		ELSEIF TALENT:淫乱 == 1 && ABL:13 >= 5
+			IF RAND:2 == 0 && (TALENT:PLAYER:121 == 1 || TALENT:PLAYER:121 == 1 || TALENT:PLAYER:120 == 1)
+				PRINTFORML 「くす……勃起ちんぽ、ぬるぬるしてもう破裂しそうですよ……？」
+				PRINTFORMW 阿求は感じるところを心得ているかのように巧みに股間をすり合わせる…
+			ELSE
+				PRINTFORML 阿求は息遣いを荒くし、丹念に%CALLNAME:PLAYER%と己の秘所を擦り合わせる…
+				PRINTFORMW 「はぁ、だめぇ……ぬるぬる、気持ちいいですよぅ……」
+			ENDIF
+			CFLAG:9352 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「あ……これ、乳首が擦れて……ふぅ、ん……」
+			CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「本当に気持ちいいんですか……？」
+			CFLAG:9352 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シックスナイン CFLAG:9602
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:9602 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「くあ、ふぅっ……わ、私の方が先に気持ち良くさせてあげますからっ」
+			PRINTFORMW 阿求は熱心に%CALLNAME:PLAYER%の性器を舐める…
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、んん……」
+			PRINTFORMW %CALLNAME:PLAYER%の舌が阿求の秘所に触れると、軽く身じろぎした
+			PRINTFORMW 「ん、くう……はむっ、ちゅる、んぷはぁ……」
+		ENDIF
+			CFLAG:9602 = 1
+			RETURN 0
+	ELSE
+		;淫乱+奉仕精神Lv5以上+C感覚Lv3以上＋サドっ気1以上
+		IF TALENT:淫乱 == 1 && ABL:13 >= 5 && ABL:0 >= 3 && ABL:20 >= 1
+			;調教者にペニスあり
+			IF TALENT:PLAYER:120 == 1 || TALENT:PLAYER:121 == 1
+				IF RAND:10 == 0
+					PRINTFORML 「ふふ、知ってますか？　ここも愛撫すると気持ちいいんですよ？　ほぉら……」
+					PRINTFORML 阿求が%CALLNAME:PLAYER%の腿の付け根を舌先でくすぐると、感じたことのない官能が%CALLNAME:PLAYER%を襲った
+					PRINTFORMW 「れろ、ぴちゃ……ね、良いでしょう？　実は私も、そこされるの好きなんですよ……あんっ」
+				ELSEIF RAND:9 == 0
+					PRINTFORML 「%CALLNAME:PLAYER%の……てらてら光って、いやらしい……ん、ちゅううっ……」
+					PRINTFORML 阿求は%CALLNAME:PLAYER%の性器に口をつけ、思いっきり吸引した…
+					PRINTFORMW 「あは、そう……今度は、私にもお願いしますね……。んあっ、そっ、そこぉっ」
+				ELSEIF RAND:8 == 0
+					PRINTFORML 「んーっふ、ぺろ、んふ……ひゃっ、しゅうちゅう、できないでふって……あふっ、ん、んぷっ」
+					PRINTFORML 阿求の陰唇をねっとりと舐め上げると面白いように反応し、奉仕がさらに熱心になる…
+					PRINTFORMW 「ん……ふっ、ちゅぷ、じゅちゅ、んくっ……ふあっ、んむっ、ぢゅるぅ」
+				ELSEIF RAND:7 == 0
+					PRINTFORML 「あんっ、そこっ、反則っ……ん、ふっ、かぽかぽ、ちゅるぅ……んっ、もっと、もっとぉ……」
+					PRINTFORML 阿求が猫撫で声で愛撫をねだるたびに、口の中に含んだペニスに断続的な刺激が送られる…
+					PRINTFORMW 「…ふぁ？　何か、さらに大きくなったような……まあいいでふ、んふっ、にゅるにゅる、ん、ちゅぱぁ」
+				ELSEIF RAND:6 == 0
+					PRINTFORML %CALLNAME:PLAYER%のペニスは阿求の口に収まりきらず、頬肉を内側から圧迫して形を浮き上がらせている…
+					PRINTFORML 「んぶぅ……あむ、もが、ん、じゅるっ、ちゅぱぁ…」
+					PRINTFORMW 「ちゅるん、ちゅう、んふ、むぐ、んぶうぅ～……おちんちん、おいふぃいでふ……」	
+				ELSEIF RAND:5 == 0
+					PRINTFORML 「うふふ、おっきな筆……。いっぱい濡らさないといけませんね、んふ……」
+					PRINTFORML 「んふー、じゅう、ずろろろっ、ちゅばっ、んちゅう、じゅちゅううう……」
+					PRINTFORMW 「ちゅぽん……はー、結構重労働でふねこれ……はむっ、んっ、じゅちゅうう、ちゅるるるる…」	
+				ELSEIF RAND:4 == 0
+					PRINTFORML 「もう…ちょっと触るだけでこんなに元気になるなんて、節操無いおちんぽですねぇ。さわさわ、ふるる…」
+					PRINTFORML 「あ、いえ、ちゃんとご奉仕もしますから安心してください……。はむん、ちゅくちゅく、ぬっぷぬっぷ…」
+					PRINTFORMW 「さわさわ、ちゅるん、なでなで、じゅるるる……あはっ、もう出ますか？　いいですよ、阿求にいっぱいかけてください…♪」	
+				ELSEIF RAND:3 == 0
+					PRINTFORML 「ほらほら、まだ萎えるには早いですよ？　ぱくり……んふ……ぴとぴと～……」
+					PRINTFORML 「んーふ、んーむ、んーふ、んーう？　私のお口の具合はどうですか……？　ん、じゅっぷ、じゅっぽ、じゅぶぶ、ぷはぁ」
+					PRINTFORMW 「ほぉら、おっきした♪　えへへ……じゅるん、ちゅぶ、ぬぷぷぷ……ちうちう、ちゅううーっ」	
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「こんな小っちゃな女の子におちんぽ咥えられて勃っちゃうんですか？　救えませんね」
+					PRINTFORML 「そんな行儀の悪いペニスはお仕置きです……んふ、ちゅる、れろぉ～～っ……ちゅぱちゅぱ、あふ……」
+					PRINTFORMW 「タマタマ舐めるたびにのけ反っちゃって、情けないですねー♪　ほら、さっさと射精してください……じゅる、ぷちゅ、んっんっんっー♪」	
+				ELSE
+					PRINTFORML 「ああ……なんかコレ見てると、いじめたくなるっていうか……いやだなぁ、私そんなケないのに」
+					PRINTFORML 「……ぺちんっ！　あ、ご、ごめんなさい、つい…。はい……舐めて治しますね……」
+					PRINTFORMW 「……ぬるん……ぐちゅぐちゅ……ぷあ、んぐ、ちゅぶちゅぶ、じゅるる～……んもんも…じゅるる…」
+				ENDIF
+			;調教者にペニスなし
+			ELSE
+				IF RAND:3 == 0
+					PRINTFORML 「ふふ、知ってますか？　ここも愛撫すると気持ちいいんですよ？　ほぉら……」
+					PRINTFORML 阿求が%CALLNAME:PLAYER%の腿の付け根を舌先でくすぐると、感じたことのない官能が%CALLNAME:PLAYER%を襲った
+					PRINTFORMW 「れろ、ぴちゃ……ね、良いでしょう？　実は私も、そこされるの好きなんですよ……あんっ」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「%CALLNAME:PLAYER%の……てらてら光って、いやらしい……ん、ちゅううっ……」
+					PRINTFORML 阿求は%CALLNAME:PLAYER%の性器に口をつけ、思いっきり吸引した…
+					PRINTFORMW 「あは、そう……今度は、私にもお願いしますね……。んあっ、ふっ、ふぁあああんっ」
+				ELSE
+					PRINTFORML 「んーっふ、ぺろ、んふ……ひゃっ、しゅうちゅう、できないでふって……あふっ、ん、んぷっ」
+					PRINTFORML 阿求の陰唇をねっとりと舐め上げると面白いように反応し、奉仕がさらに熱心になる…
+					PRINTFORMW 「ん……ふっ、ちゅぷ、じゅちゅ、んくっ……ふあっ、んむっ、ぢゅるぅ」
+				ENDIF
+			ENDIF
+			CFLAG:9602 = 6
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORML 「ふむっ……んっ、ちゅばっ、ねもぉ、にっちゅにっちゅ……」
+			PRINTFORMW %CALLNAME:PLAYER%が愛撫のスピードを速めるのに合わせ、阿求の口技も激しくなる…
+			CFLAG:9602 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:13 >= 3 && ABL:0 >= 3
+			PRINTFORML 「んっ、ちゅる、んーっ、ちゅばちゅく、れろっ……んっ、んふっ」
+			PRINTFORMW 阿求も奉仕しながら興奮しているのか、普段よりも愛液の出が激しくなっている…
+			CFLAG:9602 = 4
+		;屈服刻印Lv3
+		ELSEIF (MARK:2 == 3 || TALENT:恋慕 == 1)
+			PRINTFORMW 「うう、あの、あまりあそこ見ないでください……」
+			CFLAG:9602 = 3
+		;それ以外
+		ELSE
+			IF RAND:2 == 0
+			PRINTFORMW 「あ、ふ、んく……あの、舐められると、気が散ります……」
+			ELSE
+			PRINTFORMW 固く主張する突起を念入りに舐めると、阿求は奉仕を続けられなくなった…
+			ENDIF
+			CFLAG:9602 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;足扱き CFLAG9047
+;-------------------------------------------------
+IF SELECTCOM == 47
+	;初めて
+	IF CFLAG:9047 == 0
+		;淫乱有り
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「足でしてほしいなんて、変態ですね……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、足で挟んでほしいなんて……変態……」
+		ENDIF
+			CFLAG:9047 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱＋サドっ気1以上
+		IF TALENT:淫乱 == 1 && ABL:20 >= 1
+				IF RAND:2 == 0
+					PRINTFORML 「うわ、女の子に踏まれてガチガチにしてる……。へぇ、こんなのが好きなんですね……」
+					PRINTFORMW 阿求は普段の仕返しとばかりに笑みを浮かべながらペニスを責め立てる…
+				ELSE
+					PRINTFORML 「んっ、ふっ、んしょ……どうですか、すっかり巧くなったでしょう？」
+					PRINTFORMW 阿求は器用に足指を使い、固い屹立を扱きあげる…
+				ENDIF
+			CFLAG:9047 = 3
+		;それ以外
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORML 「んっ、んっ、うまく挟めません……」
+				PRINTFORMW 拙い動作で阿求の柔らかい足裏が触れるたびに快楽が伝う…
+			ELSE
+				PRINTFORML 「こ、こんなので勃起しちゃうんですかっ？」
+				PRINTFORMW 阿求は嫌悪感を丸出しにしつつも足で陰茎を扱く…
+			ENDIF
+			CFLAG:9047 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;ダブルフェラ CFLAG9303
+;-------------------------------------------------
+IF SELECTCOM == 303
+	;淫乱
+	IF TALENT:淫乱 == 1
+		IF RAND:5 == 0
+			PRINTFORML 『ちゅ、じゅちゅ、むぐ、じゅううっ…じゅぷっ、じゅぷぅ……』
+			PRINTFORMW 「あ、%CALLNAME:ASSI%さんばかりずるいです。私だって……ちゅっ、ちゅく、ぴちゃ、ぺろぺろ」
+		ELSEIF RAND:4 == 0
+			PRINTFORML 「んん、ふっ、じゅる、ぷちゅ、ずびびっ……！　じゅ、ちゅ、じゅるるるっ」
+			PRINTFORMW 阿求が亀頭を舐める一方で、%CALLNAME:ASSI%は%CALLNAME:MASTER%の竿を扱き上げている…
+		ELSEIF RAND:3 == 0
+			PRINTFORML 阿求は%CALLNAME:ASSI%が献身的に奉仕する様を見てうっとりしている…
+			PRINTFORMW 「ああ、ご主人様のをあんなに美味しそうに頬張ってる…。私も頑張らないと、はぷっ……くちゅう、れろれろ」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 『じゅぷ、ちゅぱ、んぐ、ふ……ちゅるちゅる、じゅぢゅっ、ぢゅううっ』
+			PRINTFORML 「んふ、ちゅばっ、れろぉ……ちゅぴちゅぷ、ちゅるるん…」
+			PRINTFORMW %CALLNAME:ASSI%と阿求は同時に竿と玉を責め立て、%CALLNAME:MASTER%の顔を見上げながら気持ち良くなっているか確認している…
+		ELSE
+			PRINTFORML 「んじゅっ、じゅぶ、ちゅぱ、ちゅくるうぅ」『じゅぱ、れろ、んく、ちゅうちゅう、ぢゅちゅっ』
+			PRINTFORMW %CALLNAME:MASTER%の股間から、少女たちがペニスを舐め上げる水音の二重奏が響いてくる…
+		ENDIF
+		CFLAG:9303 = 3
+	;奉仕精神Lv3以上
+	ELSEIF (ABL:13 >= 3 || TALENT:恋慕 == 1)
+		PRINTFORML 『ふむっ、んんぐ…！　ちゅるっ、ぺろ、れるれる、んむぅ』
+		PRINTFORML 「こ、こんな感じでいいのでしょうか…。れろ、しこしこ、ぬりゅりゅっ、ちゅぷ、ぬりゅんりゅっ」
+		PRINTFORMW 阿求は%CALLNAME:ASSI%の奉仕を見習いながら、手と口を交えてペニスを愛撫している…
+		CFLAG:9303 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 『んふ……ちゅる、じゅく、ずぢゅちゅう～っ』
+		PRINTFORMW 「な、何であんなに嬉しそうにおちんぽ舐められるんですか……？」
+		CFLAG:9303 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｗフェラ CFLAG9304
+;-------------------------------------------------
+IF SELECTCOM == 304
+	;淫乱
+	IF TALENT:淫乱 == 1
+		IF RAND:3 == 0
+			PRINTFORML 「もう、焦らないでください。すぐに気持ち良くしてあげますから……んっ……」
+			PRINTFORML 阿求は小さな口をいっぱいに開け、二本のペニスを同時に舐めまわした…
+			PRINTFORMW 「んっ、ずるっ……はぷ、んぐぅ、ねもねも～……ふふ、お二人ともすっごく元気ですね……♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「んふっ、じゅぼっ、ちゅるんっ、しゅ、ちゅぴっ」
+			PRINTFORML 阿求は両手で器用に二本のペニスを扱きながら、交互に舌を撫でつけている…
+			PRINTFORMW 「んっ、ふうっ、ぢゅうっ、しゅっしゅっ、ちゅる、ほら、一緒に白いの射精しちゃってくださいっ……！」
+		ELSE
+			PRINTFORML 「んも……ぢゅく、にゅるん……ねも、くにくに、に゛ゅ、ぬぷぷぷぷぅ……」
+			PRINTFORML 阿求は手を動かしながらまったりとペニスを口にする…
+			PRINTFORMW 「ん、ぷは、んっ……ずぢゅーーーっ、ずちゅうううっ……きゅぽっ♪」
+		ENDIF
+		CFLAG:9304 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 「んっ……片方は手で我慢してください……んっ、ちゅっ、んふっ」
+		CFLAG:9304 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うー…うえ、ごほっ……いっぺんにするなんて、無茶ですよぉ……ちゅばっ」
+		CFLAG:9304 = 1
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;スクール水着（スク水）プレイ CFLAG9091  解除 CFLAG:8825
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 91 && TEQUIP:59 == 2
+	;初めて
+	IF CFLAG:9091 == 0
+		;野外で昼
+		IF TEQUIP:52 && TIME == 0
+			PRINTFORMW 「日の光が眩しい……。この分だと、日に焼けてしまいそうですね」
+			PRINTFORMW 太陽の下の少女の水着姿は、何も知らない者が見れば健康的な光景だ…
+			CFLAG:5101 = 1
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「外界の水着ですか？　初めて見ました……。あのう、着なきゃいけない……ですよね、やっぱり」
+			PRINTFORMW 阿求は困惑したように%CALLNAME:MASTER%を見るが、結局それに着替えた
+			PRINTFORMW 「なんだかいやらしいですね、これ……。本当にただの水着なんですか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「外界の水着ですか？　初めて見ました……。あのう、着なきゃいけない……ですよね、やっぱり」
+			PRINTFORMW 阿求は当惑の視線を向けるが、結局それに着替えた
+			PRINTFORMW 「なんだかこれ、生地が肌に張り付いて落ち着きません……」
+		ENDIF
+			CFLAG:9091 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 「あ、やらしい目つきです……もう」
+			CFLAG:9091 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、またこれ着るんですか…？」
+			CFLAG:9091 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 91 && TEQUIP:59 == 0
+		;日焼け
+		IF CFLAG:5101 == 1
+			PRINTFORML 「？　私の体に何かついてますか？」
+			PRINTFORMW 阿求の肌は日に焼け、白と褐色のコントラストが刻まれている…
+			CFLAG:8825 = 3
+		;淫乱
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORML 「ふぅ……」
+			PRINTFORMW 水着を脱いで現れた裸身は、いつもより淫らに映った…
+			CFLAG:8823 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっぱり、いつもの服が一番ですね」
+			CFLAG:8825 = 1
+		ENDIF
+			RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_48_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG:8001～8020を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:8001
+;-------------------------------------------------
+LOCAL = PALAM:10 + UP:10
+IF LOCAL > PALAMLV:2 && CFLAG:8001 == 0
+	;ローションを使った場合
+	IF SELECTCOM == 60
+		PRINTFORMW 「んん、そ、そんなところまで塗らないでくださいっ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 湧き出してきた愛液を指にとり、阿求に見せつけた
+		PRINTFORMW 「あ……いやぁ……」
+		PRINTFORMW 阿求は茹で蛸のように顔を赤く染める…
+	ENDIF
+	CFLAG:8001 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:8002
+;-------------------------------------------------
+LOCAL = PALAM:13 + UP:13
+IF LOCAL > PALAMLV:2 && CFLAG:8002 == 0
+	PRINTFORMW 阿求の薄桃色の突起は固くなり始めている…
+	PRINTFORMW 「ちっ、違います、これは女子ならどうしようもないことで……」
+	CFLAG:8002 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:8003
+;-------------------------------------------------
+LOCAL = PALAM:15 + UP:15
+IF LOCAL > PALAMLV:2 && CFLAG:8003 == 0
+	PRINTFORMW 「こんなの、恥ずかしいです…」
+	PRINTFORMW 阿求はもじもじしている…
+	CFLAG:8003 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:8004
+;-------------------------------------------------
+LOCAL = PALAM:17 + UP:17
+IF LOCAL > PALAMLV:2 && CFLAG:8004 == 0
+	PRINTFORMW 「あっ、く……もうやだぁ……ぐす、ひっく……」
+	PRINTFORMW 阿求はあまりの恐怖に泣き出してしまった…
+	CFLAG:8004 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてC絶頂 CFLAG:8005
+;-------------------------------------------------
+IF NOWEX:0 > 0 && CFLAG:8005 == 0
+	PRINTFORMW 「いやっ、くる、何かきちゃいますっ……ふぁ、ふあああっ……！！」
+	PRINTFORMW ぷしゃっ、と阿求の秘所から愛液が飛び散った
+	PRINTFORMW クリトリスを責められすぎて潮を吹いてしまったようだ…
+	CFLAG:8005 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてV絶頂 CFLAG:8006
+;-------------------------------------------------
+IF NOWEX:1 > 0 && CFLAG:8006 == 0
+	;セックスで絶頂
+	IF SELECTCOM == 20 || SELECTCOM == 21 || SELECTCOM == 22 || SELECTCOM == 23 || SELECTCOM == 24 || SELECTCOM == 27 || SELECTCOM == 28
+		PRINTFORMW 「んあああっ、こんなの、はじめ、てっ……ん、んんんんっ！！」
+		PRINTFORMW 膣奥を深く突くと、それを合図に肉壺が一際きつく収縮する
+		PRINTFORMW 雌の本能で精液を一滴残らず搾り出そうとしているようだ…
+	;それ以外
+	ELSE
+		PRINTFORMW 「そ、そんなにされたら、もう耐えられませっ……ん、あああっ！！」	
+		PRINTFORMW 阿求の膣は激しく収縮を繰り返し、愛液を迸らせながら絶頂に達した…
+	ENDIF
+	CFLAG:8006 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてA絶頂 CFLAG:8007
+;-------------------------------------------------
+IF NOWEX:2 > 0 && CFLAG:8007 == 0
+	PRINTFORMW 「えっ、うそっ、私、お尻でっ……ん、ん、んーーっ……！！」
+	PRINTFORMW 阿求の括約筋が締まり、腰をぶるぶると痙攣させて絶頂した…
+	CFLAG:8007 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてB絶頂 CFLAG:8008
+;-------------------------------------------------
+IF NOWEX:3 > 0 && CFLAG:8008 == 0
+	PRINTFORMW 「それ以上刺激するとっ……あ、にゃううううっ！！」
+	PRINTFORMW 阿求は全身をのけ反らせ、乳首を痛いほど勃起させて絶頂に達した…
+	CFLAG:8008 = 1
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG:8009
+;-------------------------------------------------
+LOCAL = UP:20 + UP:21
+IF TFLAG:0 > 0 && CFLAG:8009 == 0
+	;淫乱かつ主人のセックスによる処女喪失
+	IF TALENT:淫乱 && TFLAG:2
+		;淫乱or恋慕or屈服3かつ反発刻印未取得
+		IF (TALENT:淫乱 || TALENT:恋慕 || MARK:2 == 3) && ((UP:20 + UP:21) < 500 || TFLAG:105 == 1)
+			PRINTFORMW 「とうとう、私のはじめて……」
+			CFLAG:5100 = 2
+		;非淫乱・恋慕もしくは反発刻印取得
+		ELSE
+			PRINTFORMW 「あ、く、あああっ！？　嘘っ、血、出てるっ、ぶちぶちって裂けてるぅ……！！」
+			PRINTFORMW 口を塞いで黙らせると、阿求の膣は一際きつくペニスを締めつけた…
+			PRINTFORMW 「んんーーっ！　んんっ、んんんんーーっ！　わ、わたし、初めて、あげ、ちゃった……ぅあ、うあああああ……」
+			CFLAG:5100 = 1
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;淫乱
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「あ……そっか、これ……あっけないなぁ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「うそ、血が出てるってことは……まさかっ……」
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;淫乱or恋慕
+		IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1
+			PRINTFORMW 「あ、く、うっ……ほら、初めての印が……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「うあぁああっ、あああああああっ……」
+			PRINTFORMW 阿求は何が起こっているのか訳が分からないといった様子で泣き叫んでいる…
+		ENDIF
+	ENDIF
+	CFLAG:8009 = 1
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精させた CFLAG:8010 CFLAG:8011
+;-------------------------------------------------
+;アナルセックス
+IF TFLAG:12 > 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		IF RAND:5 == 0
+			PRINTFORMW 「あうううっ、お尻にきてるっ、精子きてるっ……！」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「あっ、熱いっ、お尻焼けちゃうぅぅっ……！」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ふー、はー、ふー……あぁあ、流れ込んでる………」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「たくさんっ、中で噴水みたいに噴き出してますっ……」
+		ELSE
+			PRINTFORMW 「あっ……もう、お尻で妊娠しちゃいますよう……」
+		ENDIF
+		CFLAG:8011 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「あっ、あーっ、あうーっ……」
+		CFLAG:8011 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「やだっ、汚いもの出さないでくださいっ……！」
+		CFLAG:8011 = 2
+	ENDIF
+;それ以外（膣内射精）
+ELSEIF TFLAG:11 > 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		IF RAND:5 == 0
+			PRINTFORML ひとしきり射精を終えてペニスを引き抜こうとすると、阿求の脚ががっちりと%CALLNAME:PLAYER%に絡みついた	
+			PRINTFORMW 「だーめ、休むなんて許しません。このまま中で絞り続けてあげます……♪」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「くふうぅっ……どくどく、せーえききてますっ……！」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ほら、締めつけるから、全部出しちゃってくださいっ……♪」
+		ELSEIF RAND:2 == 0 
+			PRINTFORMW 「あっ……お腹に、%CALLNAME:PLAYER%の精子がいっぱい……」
+		ELSE
+			PRINTFORMW 「ふああっ、射精っ♪　中に熱いのたくさん射精っ……♪」
+		ENDIF
+		CFLAG:8010 = 5
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「んっ……。お腹の中で、気持ち良く出してくれたんですね……」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 阿求は膣内射精されながら恍惚の表情を見せる…
+		ELSE
+			PRINTFORMW 「あっ、あああっ……零れちゃう……」
+		ENDIF
+		CFLAG:8010 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		IF RAND:3 == 0
+			PRINTFORMW 「あ……あつ、い……」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 阿求は何も言わず、ただ静かに涙を流した…
+		ELSE
+			PRINTFORMW 「また、中出しされちゃいました……」
+		ENDIF
+		CFLAG:8010 = 3
+	;それ以外
+	ELSE
+		IF RAND:3 == 0
+			PRINTFORMW 「なかっ、中はだめぇっ！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「は、ふうぅ……どくどく、出てるぅぅ……」
+		ELSE
+			PRINTFORMW 「ひっ……おなかの中で、びくびく震えてますぅ……」
+		ENDIF
+		CFLAG:8010 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG:8012
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;奉仕精神Lv5
+	IF ABL:13 >= 5
+		IF RAND:5 == 0
+			PRINTFORML 「んっ……ちゅ、ぺろ……」
+			PRINTFORMW 阿求は手にこびりついた白濁を舌で舐めとっている…
+		ELSEIF RAND:4 == 0
+			PRINTFORML 「ん、れろ……くす、濃くて美味しい。さてと……まだまだ出せますよね？」
+			PRINTFORMW 阿求は無邪気に笑ってペニスを再び扱き始めた…
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「んっ、凄い、飛び散ってるっ……。あ、あの、気持ち良かった……ですか？」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「あはっ…♪　手のひらが、どろどろだー……」
+		ELSE
+			PRINTFORMW 「くす……もう、手技では誰にも負けませんよ……？」
+		ENDIF
+		CFLAG:8012 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 「あっ……また、勢い良く出ましたね……」
+		CFLAG:8012 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うわっ……何これ、べとべとくっつきます……」
+		CFLAG:8012 = 1
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:15 > 0
+		;精液中毒Lv3＋淫乱
+		IF TALENT:淫乱 == 1 && ABL:31 >= 3
+			IF RAND:6 == 0
+				PRINTFORML 「んぶっ、んーっ……ちゅぶ、ごく、ごく、ちゅううっ……ぷぁ。すっごい青臭くて、美味しいです……」
+				PRINTFORMW 阿求は舌に残った精液の塊を見せつけるように口を開く…
+			ELSEIF RAND:5 == 0
+				PRINTFORML 「んーっ、んんんーっ！　ん、ごっきゅ、ごっきゅ……けぷっ。あ……すいません……」
+				PRINTFORMW 阿求は白濁を飲み込んだ後、小さくゲップをしてしまい恥ずかしそうにしている…
+			ELSEIF RAND:4 == 0
+				PRINTFORML 「むぐ、ん、んーっ♪　ちゅうちゅう、こく、こくん…。んふふ～、もう一回……じゅる、じゅちゅううっ……」
+				PRINTFORMW 阿求は飲み足りないといった様子で、再びペニスを咥内で愛撫し始める…
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「ん……溢さず、全部いただきます……。くちゅ、ちゅるるう、こぷん。れろ、ちゅぷぅ」
+				PRINTFORMW 阿求は吐精を続けるペニスを咥え、尿道にある精子をすべて吸い取っていく…
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ぷちゅ、ずちゅううーっ！！　ちゅ、ずずぢゅっ！！　ちゅうううっ……ちゅぽん♪」
+				PRINTFORMW 阿求は小さな口を窄ませ、幸福そうな表情で精液を飲み下していく…
+			ELSE
+				PRINTFORML 「んううっ、けほけほっ！　うぷ、ごめんなさい、勢いよく出るからむせちゃいました……」
+				PRINTFORMW 阿求は顔をあげ、ばつの悪そうな顔で微笑みかける…
+			ENDIF
+			CFLAG:8013 = 4
+		;精液中毒Lv3
+		ELSEIF ABL:31 >= 3
+			PRINTFORML 「んぶっ、んんーーっ！　ん、くちゅ……あは、たくさん出ましたね……。ほら、とろぉっ……」
+			PRINTFORMW 阿求は両手で受け皿を作り、その上にどろどろの白濁液を垂らしてみせる…
+			CFLAG:8013 = 3
+		;恋慕か奉仕精神Lv3以上
+		ELSEIF (TALENT:恋慕 == 1 || ABL:13 >= 3)
+			PRINTFORML 「んぐっ、んんっ、ん、こくん、こくん……」
+			PRINTFORMW 阿求は時折苦しそうにしながらも白濁を飲み下している…
+			CFLAG:8013 = 2
+		;それ以外（恋慕なし）
+		ELSEIF CFLAG:8013 < 1 && TALENT:恋慕 == 0
+			PRINTFORMW 「んぶうっ！　ぐっ、げほげほっ……何ですかこれっ、苦いです……」
+			CFLAG:8013 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:16 > 0
+		;奉仕精神Lv5
+		IF ABL:13 >= 5
+			IF RAND:5 == 0
+				PRINTFORMW 「はぁっ、胸、いっぱいかかっちゃいましたね……。まだしますか？」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「あうっ、熱いのが飛び出てるっ……！」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「へへぇ、私の胸だって捨てたものじゃないでしょう？」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あ……また、どくどくって……」
+			ELSE
+				PRINTFORMW 「んっ、かけてくださいっ、私のからだに好きなだけっ……！」
+			ENDIF
+			CFLAG:8014 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 「あ、胸の上でぴくぴくして……ちょっと愛嬌がある、かも……」
+			CFLAG:8014 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「えーっ、ほんとに胸でいっちゃった……」
+			CFLAG:8014 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG:8015
+;-------------------------------------------------
+IF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:8015 == 0
+		PRINTFORMW 「んっ、やあっ、なにっ！？　なにか、のぼって、きますっ……うっ、ううううっ！！」
+		PRINTFORMW 「ふあ、ああ、あああっ……なんですかこれぇっ、白いの、いっぱい出たっ……」
+		CFLAG:8015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			IF RAND:5 == 0
+				PRINTFORMW 「あふああっ、びゅびゅってするの、いいよおぉ……！！」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「ううぅっ、女の子なのに、びゅるびゅる射精しちゃってるぅ……」
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「ふううっ、腰、止まんない……飲んで、飲んでくださいっ……！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あっ～～♪　はぁ、はぁ……%CALLNAME:PLAYER%のお口が気持ちいいから、また中に射精しちゃった…」
+			ELSE
+				PRINTFORMW 「はううっ、もう出しちゃう、しゃぶられるの中毒になっちゃうっ♪　あっ、あっ、びゅくびゅくびゅーってぇ……♪」
+			ENDIF
+			CFLAG:8015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、また出る、出る、出ますっ……ひゃあああっ！」
+			CFLAG:8015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_48_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG:8096
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8096 == 0
+	PRINTFORMW 「いたいよぉ……ひぐっ………」
+	CFLAG:8096 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG:8097
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8097 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1
+		PRINTFORMW 「あはっ、あはははっ……私、調教されるの大好きになりましたっ……♪」
+	ELSE
+		PRINTFORMW 「……なぁんだ、これ、気持ちいいことなんですね……あははっ……」
+	ENDIF
+	CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG:8098
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8098 == 0
+	;淫乱
+	IF TALENT:淫乱 == 1 || TALENT:恋慕 || TALENT:服従
+		PRINTFORMW 「ああ……もっと、私を滅茶苦茶にしてください……」
+	ELSE
+		PRINTFORMW （……）
+		PRINTFORMW （……もう、いいのかな……？）
+		PRINTFORMW （どうせ、助けなんて来ないし……）
+		PRINTFORMW （来たとしても、もう私はこんな体で……）
+		PRINTFORMW （もう、がんばらなくても、いいのかな……？）
+	ENDIF
+	CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG:8099
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8099 == 0
+	;淫乱か恋慕
+	IF TALENT:淫乱 == 1 || TALENT:恋慕 == 1 || TALENT:服従
+		PRINTFORMW 「……今のは流石に、少し傷つきました……」
+	ELSE
+		PRINTFORMW 「……この、鬼畜……！」
+		PRINTFORMW 阿求は%CALLNAME:MASTER%への明確な敵意を目に宿している…
+	ENDIF
+	CFLAG:8099 = 1
+ENDIF
+
+;-------------------------------------------------
+;イベント口上集 FLAG(TFLAG200の中身＋8100)
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_BEFORE
+;-------------------------------------------------
+;売却
+;この口上に限っては、恋慕口上を書くべきではないと思った。
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;淫乱+反発刻印Lv3未満
+	IF TALENT:淫乱 && MARK:9 < 3
+		PRINTFORMW 「……そうですか……」
+		PRINTFORMW 「ざ、残念なんかじゃありませんよ」
+		PRINTFORMW 「ただ、私を壊した責任、取って欲しかったなぁ、と……」
+		PRINTFORMW 阿求は心底残念そうに言いながら、扉の外へと歩いていった
+	;淫乱（＋反発刻印Lv3
+	ELSEIF TALENT:淫乱 && MARK:9 == 3
+		PRINTFORMW 「そうですか……」
+		PRINTFORMW 「まあ、おちんぽはあなただけにあるものではありませんよね」
+		PRINTFORMW 「あなたよりも気持ちよくしてくれる人を探しましょう……」
+;orz　となる人がいそうなので自重。
+;		PRINTFORMW 「あなたの粗チンよりも気持ちよくしてくれる人を探しましょう……」
+	;反発刻印Lv3
+	;どこかで見て「あ、上手い」とか思ったので拝借。うろ覚えですけど。
+	ELSEIF MARK:9 == 3
+		PRINTFORMW ……阿求は特に何も言わず出て行った。
+		PRINTFORMW 彼女がいなくなった後の部屋を掃除していると、日記を見つけた……
+		PRINTFORMW どこから持ってきたのか、と思いながら、それを開くと、日々の様々な愚痴などが書いてある。
+		PRINTFORMW 最後のページをめくった時、思わず%CALLNAME:MASTER%は膝をついた……
+		PRINTFORMW …………orz
+		PRINTFORMW 『下手糞』
+	;それ以外
+	ELSE
+		PRINTFORMW 「と、とうとう、私も売り物ですか……」
+		PRINTFORMW 「幻想郷の歴史上でも、こんなことをした人間はいませんでした」
+		PRINTFORMW 「早くこんなことは止めた方が……」
+		PRINTFORMW 睨みつけると、阿求は悲しげな顔をして出て行った……
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG:8240
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;淫乱
+	IF TALENT:淫乱 == 1
+		IF RAND:6 == 0
+			PRINTFORML 「んむんむ……あ、おふぁようございまふ」
+			PRINTFORMW 「このまま続けまふね……んふ、むぅ、ちゅる、んふ、ん～～♪」
+		ELSEIF RAND:5 == 0
+			PRINTFORML 「んはぁ……朝の臭いが、一番濃くて蕩けそうです、んっ……ちゅれる、ぬろ、ぬぷ、れろぉ」
+			PRINTFORMW 「ほら、垢がこんなにとれましたよ。ご覧になりますか、なんちゃって……」
+		ELSEIF RAND:4 == 0
+			PRINTFORML 「んむぅ、まだふにふにでふねぇ……ぺろ、んちゅう」
+			PRINTFORMW 「じゅちゅずじゅっ、ぬぷぷぅ……んはぁ。すっかり元気になりました」
+		ELSEIF RAND:3 == 0
+			PRINTFORML 「……あ、お目覚めですか？　勝手にやってますから、まだ寝ててもいいですよ」
+			PRINTFORMW 「ずっ、ずっ、ずちゅうう～っ、じゅろ、ぷはぁ……溢れてきて、きりがないです……」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「うわ、これが朝勃ち……本当におっきいです……。んっ、ふっ、ぴちゃ、ちゅ、ぺろぺろ、ちゅぴちゅぴっ」
+			PRINTFORMW 阿求は陰茎を横から笛のように咥え、舐め、啜っている…
+		ELSE
+			PRINTFORML 空気の抜ける音で目覚めると、阿求が口を尖らせてモノを咥える光景が飛び込んできた…
+			PRINTFORMW 「あっ……お邪魔してます。せっかくですから、すっきりするまでしちゃいますね……あむ、ちゅろれる、じゅぷぷっ」
+		ENDIF
+		CFLAG:8240 = 3
+	;奉仕精神Lv5以上
+	ELSEIF ABL:13 >= 5
+		IF RAND:2 == 0
+			PRINTFORML 「あ……失礼してます……。りゅぷ、ちゅぱ、るっぷるっぷ、んくっ」
+			PRINTFORMW 「ん～、ねもねも、ぢゅぴ、ちゅぷ、ちゅう……」
+		ELSE
+			PRINTFORML 「ふはぁ、朝から、大きい……はむっ、ん、ちゅる……」
+			PRINTFORMW 「んっ、んっ、しゅっ、ちゅる、んぶぅ」
+		ENDIF
+		CFLAG:8240 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「ん、ぢゅぷ、んぷ……あ、これは、その……」
+		PRINTFORMW 阿求は気まずそうに後れ毛を手でかきあげる…
+		CFLAG:8240 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG:8250
+;-------------------------------------------------
+;IF TFLAG:200 == 150
+;	;V感覚Lv4以上
+;	IF ABL:Ｖ感覚 >= 4
+;		PRINTFORMW 
+;		CFLAG:8250 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:8250 = 1
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;調教後自慰 CFLAG:8251
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;自慰中毒Lv3以上
+	IF ABL:30 >= 3
+		IF RAND:5 == 0
+			PRINTFORMW 「お豆、こんなに赤くなってる……ふぅんっ」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「はぁっ……指じゃ、もの足りません……」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「ん、くぅんっ！　……はぁ、またやっちゃった……」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「胸いじってたら、大きくならないかなぁ……はふ」
+		ELSE
+			PRINTFORMW 「く、ふぅんっ、あそこが、切ないですっ……」
+		ENDIF
+		CFLAG:8251 = 3
+	;屈伏刻印3
+	ELSEIF MARK:2 == 3
+		PRINTFORML 「あ……きもち、いい……」
+		PRINTFORMW 阿求はひたすら一人遊びに没頭している…
+		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「違います……これは生理的に仕方のないことで……んぅ……」
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG:8258
+;-------------------------------------------------
+;IF TFLAG:200 == 158
+;	;V感覚Lv5以上
+;	IF ABL:Ｖ感覚 >= 5
+;		PRINTFORMW 
+;		CFLAG:8258 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:8258 = 1
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+;IF TFLAG:200 == 200
+;	PRINTFORMW 
+;ENDIF
+
+;-------------------------------------------------
+;赤い首輪使用時
+;-------------------------------------------------
+;IF TFLAG:200 == 201
+;	PRINTFORMW 
+;ENDIF
+
+;-------------------------------------------------
+;@単体エンディング関係(48、48をキャラ番号に置換する)
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW  
+PRINTFORMW 稗田の当主が消息を絶ってから、長い月日が流れた
+PRINTFORMW 人間の里における重要人物の失踪は人々に大きな動揺を与えた
+PRINTFORMW 捜索隊が組織され山狩りも行われたが、死体はおろか痕跡一つ発見されず、
+PRINTFORMW 両親をはじめ彼女を知る者は皆嘆き悲しんだが、少女が帰ってくることはなかった……
+PRINTFORMW 　・
+PRINTFORMW 　・
+PRINTFORMW 　・
+PRINTFORMW 阿求はふと手を止めた
+PRINTFORMW 手元にあるのは筆と紙、窓から差し込む月明かりがそれを照らす
+PRINTFORMW たまに過去の役目が懐かしくなり、%CALLNAME:MASTER%が来ない間の暇潰しも兼ねて所望したものだ
+PRINTFORMW しかし、筆は一文字も進んではいなかった
+PRINTFORMW 代わりに頭を支配するのは、%CALLNAME:MASTER%との情交の記憶
+PRINTFORMW 見た物を忘れない求聞持の能力は、昼夜を問わず阿求を発情させた
+PRINTFORMW 既に今日も何度も己を慰めているが、身体の火照りが治まることはない
+PRINTFORMW 筆を置き、おもむろに秘所に手を伸ばしたところで、扉の開く気配がした
+PRINTFORMW 阿求はその方向へ向き直り、三つ指を突いて頭を下げる
+PRINTFORMW ……ふと、家族の顔が脳裏によぎった
+PRINTFORMW しかし、阿求は二、三度首を振ってそれを追いやる
+PRINTFORMW もう、どうでもいい
+PRINTW どうせ儚い露の身ならば、
+PRINTFORMW 肉欲の夢に溺れ続けるのも良い――
+PRINTFORMW  
+PRINTFORMW  
+PRINTFORMW 「いらっしゃいませご主人様。今日も、阿求を慰めてくださいませ」
+PRINTFORMW  
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンド)
+PRINTFORMW  
+RETURN 0
+
+;-------------------------------------------------
+;@奴隷エンディング関係
+;-------------------------------------------------
+;@KOJO_48_MESSAGE_SLAVE_ENDING
+;DRAWLINE
+;PRINTFORMW ―――単体エンド条件達成―――
+;PRINTFORMW …………
+;PRINTFORMW ………
+;PRINTFORMW ……
+;PRINTFORMW 
+
+;PRINTFORMW 
+;PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+
+;RETURN 0
+
+
+;-------------------------------------------------
+;フェラチオの共通部分を関数化
+;今までのバージョンだとRANDが偏る場合があったのを修正するため。
+;-------------------------------------------------
+@K48_FELLATIO
+
+IF RAND:12 == 0
+	PRINTFORML 「御阿礼の子におしゃぶりしてもらえるなんて光栄ですよ？　その辺りの男性では一生体験できないんですから、くすくす」
+	PRINTFORML 阿求は悪戯に笑みを浮かべ、裏筋をねっとりと舐め上げた後口一杯に肉棒を頬張る…
+	PRINTFORMW 「どうでふか、巧くなってまふか？　このおひんひんで沢山練習しましたもんね…♪　んふ、むむぅ……」	
+ELSEIF RAND:11 == 0
+	PRINTFORML 「えー、思いっきり吸われるのがいいんですか？　しょうがないですねぇ」
+	PRINTFORML 「ぱくんっ……ん、ちゅ、はぷ、ちゅるりゅる、ん……ちゅ、ずじゅっ！」
+	PRINTFORML 阿求はペニスにちょんと口をつけ、溢れる先走りを美味しそうに啜りあげた…
+	PRINTFORMW 「じゅば、んぐ、ちゅうううっ……ぢゅーるぢゅーる、ずちゅ、ぢゅぢゅーーっ」	
+ELSEIF RAND:10 == 0
+	PRINTFORML 「この前考えたワザ、試してみますね……。こう、上あごと舌でおちんちんを包んででふね…」
+	PRINTFORML 「思いっふぃり、息を吸いこむんでふ……ず、じゅるるるるるるっ……！」
+	PRINTFORMW 「れろれろ、ずじゅううーーーっ、ちゅぱちゅぱ、ちゅううううっ……！　ふあ、おふぃんふぃん、ぶるぶるしてぅ……」	
+ELSEIF RAND:9 == 0
+	PRINTFORML 「まだ柔らかいですね。……えい」
+	PRINTFORML 「やりました、お尻の穴に突っ込んだらおちんぽ大復活です。阿求は確実に上達しています」
+	PRINTFORMW 「それでは、いただきます……んむ、ん、ふむう、ん、んくっ、じゅぱじゅぱ、ちゅぷる……」	
+ELSEIF RAND:8 == 0
+	PRINTFORML 「ちろちろ、ちろちろ、れるっ、ぺろぺろ……え？　気持ち良いですか？」
+	PRINTFORML 「舌の表と裏側両方使って舐め回すの、好きなんですよね？　表情見てたら分かりますよ」
+	PRINTFORMW 「くすくす、はい……ちう、ぺろ、ぴちゃ、すす、ちろちろちろちろ～～っ……」	
+ELSEIF RAND:7 == 0
+	PRINTFORML 「これが一番大好きです……ふふっ……」
+	PRINTFORML 阿求は焦点の合わない瞳で%CALLNAME:PLAYER%のモノを見つめながらひたすら奉仕に従事している…
+	PRINTFORMW 「んんっ、ぢゅっぷ、ちゅう……ちゅる、ぺちゃ、ぬるんっ……ぷぁ、んふふ……」	
+ELSEIF RAND:6 == 0
+	PRINTFORML 「ふむぅ……変な味、臭いもすごいし……ちゃんと洗ってますか？　ほら、お掃除してあげますからじっとしてて…」
+	PRINTFORML 「んーむ、ちゅぐ、りゅっぷりゅっぷ、りゅるるん……しこしこ、じゅるん」
+	PRINTFORMW 「あは、びくびくして可愛い……♪　ねもねも、ぬりゅぬりゅ、ちゅぷぅ…………あれれ？　せっかく綺麗にしてあげたのに、またお汁が出てきちゃいましたよ？」	
+ELSEIF RAND:5 == 0
+	PRINTFORML 阿求の口内は温かい唾液に満たされており、浸かると脳まで蕩かされそうな感覚に陥る…
+	PRINTFORML 「…きっと変な顔になってるから、あまり見ないでくださいね……。んっ……くぷ……」
+	PRINTFORMW 「ずじゅ、ちゅぷ、じゅる……ちゅぱ、んぷ、れるぅ……」	
+ELSEIF RAND:4 == 0
+	PRINTFORML 「んふふ～……先っぽ、ふるふるしてますよ……にゅるんっ」
+	PRINTFORML 阿求の粘っこい唾液が陰茎に絡みつき、極上の快感を与える…
+	PRINTFORMW 「もう、正直なんですから……ふむっ、じゅる、ん～、ちろちろ、ちろちろ～♪」	
+ELSEIF RAND:3 == 0
+	PRINTFORML 「%CALLNAME:PLAYER%のおちんぽ、先走りが溢れて、とても切なそうです……。奉仕させてもらって、よろしいですか……？」
+	PRINTFORML 「あ、ありがとうございます……ん、ぷぅ……ふぐぅ、んるぅ……ちゅる、ちゅく、ぴちゃ、ぺろぺろ……ぷぁ、いくら舐めても染み出してきまふ…」
+	PRINTFORMW 「んっ、ふうっ、んっぽ、んっぽ、くぽっ、じゅびじゅぴちゅうっ……じゅぱっ、じゅぱっ、ずちゅうううっ」	
+ELSEIF RAND:2 == 0
+	PRINTFORML 「ぺろ、ちゅぱ、んく……ふぐ、んん～う……ちゅぱ、れろ、ちゅううっ……ぷぁっ」
+	PRINTFORML 「こんなか弱い女の子におしゃぶりさせて、だらしなくおつゆ垂らして……これって犯罪ですよ？　分かってるんですか？」
+	PRINTFORML 「ほらっ、じゅる、ふむぅ、ほらぁっ、んく、ちゅるうぅ、ぺろぉ～っ……何とか言ったらどうですか、じゅぱっ、じゅぷぅ、ねりゅねりゅ」
+	PRINTFORML 「こども舌に尿道口舐めさせて、罪悪感とかないんですか？　口が利けないんですか？　いい加減自分がどのつく変態って認めたらどうですか？ こんなにおちんぽボッキさせて恥ずかしくないんですか？」
+	PRINTFORML 「……うわ、更におっきくしてるし……ほんっと、信じられない……♪　じゅぷっ、ちゅぴ、ぢゅるぢゅる、ちうちう…」
+	PRINTFORMW 「ほーら、こどもふぇらでさっさとせーし出しちゃえっ……♪　ぬるるっ、りゅっぷ、りゅっぷ、ずるぅっ！　ねもねも、ずちゅう～～～っ！！」
+ELSE
+	PRINTFORML 「くぷ、ちゅう……えーと、ここがぁ、カリ裏。じゅ、れる、れる……ここがぁ、鈴口……じゅ、ぷちゅう……」
+	PRINTFORML 「裏すじを、上下に、ぺろぺろ……ん、ちゅくっ、ここが、たまたま、じゅくじゅるっ。で……ありの、とわたり……ちゅぷ、ぴちゅ、ちゅっ、んふんふ♪」
+	PRINTFORMW 「れーろ、れーろ、れろぉっ……あ、もう我慢むりそうですか？　じゃあ、おくひに全部、そそいでくだはいね……あむっ、じゅっ、じゅるじゅる、ぬりゅっ、じゅくくぅっ…！」	
+ENDIF
+

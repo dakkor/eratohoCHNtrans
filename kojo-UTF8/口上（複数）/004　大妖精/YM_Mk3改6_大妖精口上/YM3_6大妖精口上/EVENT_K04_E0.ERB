@@ -1,0 +1,3220 @@
+
+;サブイベント用@DISPLAY_KOJO_MESSAGE_SUB_EVENT, ARG, ARG:1, ARG:2
+;ARGはTARGET番号 ARG:1はイベント番号 ARG:2はイベントごとの分岐用の値
+;	ARGは関数呼び出しでNO:TARGETとして使用
+;	ARG:2の中身はTFLAG:99に代入済み
+;地の文SYSTXT_MESSAGE_SUB_EVENT_SCENE{ARG:1}
+;専用KOJO_{NO:TARGET}_MESSAGE_SUB_EVENT_SCENE{ARG:1}
+;ARG:1がどこにも保存されてないとかイベントごとに全部番号手で変えないとダメじゃないですかやだー
+
+
+;コマンド用と同様に地の文の表示も専用口上内でやるので
+;専用口上の呼び出し自体がスルーされると困る。
+;でも眠っている時とかは黙ってろ、をやるための関数
+@KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+;眠っている
+SIF EQUIP:14
+	RETURN 1
+;調教中で口枷あり
+SIF TFLAG:999 && TEQUIP:42
+	RETURN 1
+;調教中で失神中・失神回復
+SIF TFLAG:999 && (TFLAG:899 >= 1 || TFLAG:898 == 1)
+	RETURN 1
+;精神崩壊
+SIF TALENT:167
+	RETURN 1
+
+;========================================================
+;イベント口上前の共通関数
+;特定の条件下でイベント口上を表示させないようにする場合はRETURN 1を返す
+;========================================================
+@KOJO_4_MESSAGE_SUB_EVENT_BEFORE
+;眠ってる場合は表示しない
+;SIF EQUIP:14
+;	RETURN 1
+;調教中かつ口枷がある場合は表示しない
+;SIF TFLAG:999 && TEQUIP:42
+;	RETURN 1
+;調教中かつ失神中・失神回復時は表示しない
+;SIF TFLAG:999 && (TFLAG:899 >= 1 || TFLAG:898 == 1)
+;	RETURN 1
+;精神崩壊の場合は表示しない
+;SIF TALENT:167
+;	RETURN 1
+
+;========================================================
+;イベント口上
+;調教中、調教外問わず様々な状況で呼ばれる
+;========================================================
+;-------------------------------------------------
+;強精神薬の反動(調教中)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE2
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE2
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬の反動(調教終了後)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE3
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE3
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;道具装着中に毎ターン表示するメッセージ
+;TFLAG:99=0:浣腸プラグ
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE4
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE4
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蟲風呂イベント口上
+;TFLAG:99=0:[狂気]取得、1:反発低下、2:体力気力消耗、3:[幼児退行]取得、4:[臆病]取得
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE6
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE6
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鈴蘭の毒イベント口上
+;TFLAG:99=0:[臆病]取得、1:[感情乏しい]取得、2:気力消耗、3:[悲観的]取得、4:[楽観的]取得、5:[目立ちたがり]取得、6:[抑圧]取得、7:[汚臭敏感]取得、8:[汚臭鈍感]取得、9:Ｃ感度アップ、10:Ｃ感度ダウン
+;11:Ｖ感度アップ、12:Ｖ感度ダウン、13:Ａ感度アップ、14:Ａ感度ダウン、15:Ｂ感度アップ、16:Ｂ感度ダウン、17:回復力ダウン、18:体力気力最大値ダウン、19:毒に耐性がついた
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE7
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE7
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手催眠中
+;TFLAG:99=0:やすらぎ、1:レズ、2:デート、3:反発低下、4:異常なプレイ、5:淫らな自分を見せられる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE8
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE8
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手として調教対象に射精した
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE10
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE10
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;奴隷の失神状態継続
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE11
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE11
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;失神状態から回復
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE12
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE12
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＣ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE13
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE13
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＶ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE14
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE14
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＡ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE15
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE15
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手鈴蘭媚薬によるＢ感覚鋭敏化
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE16
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE16
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;精愛味覚取得
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE17
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE17
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;精飲絶頂取得で弱みを握られた時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE18
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE18
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;開発度関連をフォローするイベント
+;Ｃ敏感を取得するイベントなどの兆候をわかりやすくするため使う？
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE19
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE19
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;SIF CFLAG:60 >= 1000 && TALENT:100 == 0
+	;PRINTFORMW 
+;SIF CFLAG:61 >= 2000 && TALENT:102 == 0
+	;PRINTFORMW 
+;SIF CFLAG:62 >= 2500 && TALENT:104 == 0
+	;PRINTFORMW 
+;SIF CFLAG:63 >= 5000 && TALENT:106 == 0
+	;PRINTFORMW 
+;IF CFLAG:64 >= 10000 && TALENT:66 == 0
+	;PRINTFORMW 
+;ENDIF
+
+;-------------------------------------------------
+;射精渇望中
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE20
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE20
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;噴乳渇望中
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE21
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE21
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;放尿渇望中
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE22
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE22
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;貞操を守れるなら後ろを攻められてもよいと思った
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE30
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE30
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教防衛用狂気の目発動時
+;基本的に鈴仙イナバ専用じゃないかこれ
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE31
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE31
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教時の結果により母乳が出るようになった
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE33
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE33
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象が酔いのために調教終了になった
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE34
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE34
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手時に調教道具を購入した
+;現状購入したアイテムを判別できない
+;TFLAG:99を立てないでおくと後で奴隷側の口上が呼ばれる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE35
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE35
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象時に調教道具を購入した時の口上
+;現状購入したアイテムを判別できない
+;助手側でTFLAG:99を立てられたときは呼ばれない
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE36
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE36
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;体内に放尿された助手のイベント口上
+;TFLAG:99にTARGETを入れてある
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE37
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE37
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手の体内に放尿した対象のイベント口上
+;TFLAG:99が0なら助手調教、1なら主人調教
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE38
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE38
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でヴァギナから卵を放出するイベント口上
+;TEQUIP:93で放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE39
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE39
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でアナルから卵を放出するイベント口上
+;TEQUIP:94で放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE40
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE40
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手産卵でＶとＡの両方から卵を放出するイベント口上
+;TEQUIP:93と94でそれぞれＶとＡから放出される卵の数を見れる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE41
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE41
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;[妖狐]の効果で媚薬を入手できた
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE47
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE47
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;[化け狸]の効果で媚薬を入手できた
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE48
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE48
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝を迎える奴隷のイベント口上
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE49
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE49
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;従順上昇による反抗的消滅＆素直取得イベント(ツンデレイベント)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE50
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE50
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;従順下降による素直消滅＆反抗的取得イベント(ツンデレイベント)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE51
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE51
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抵抗消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE52
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE52
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抑圧消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE53
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE53
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;無関心消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE54
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE54
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;反抗的消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE55
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE55
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;生意気消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE56
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE56
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;男嫌い消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE57
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE57
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;好感度、愛情経験、快楽刻印が条件ってことは恋慕持ってないこともありうるよね。
+	PRINTFORMW （男の人…ずっと苦手だった…。
+	PRINTFORMW 　声や、体が大きい所がすごくこわかった…
+	PRINTFORMW 　でも…今は…
+	PRINTFORMW 　あの人の…声…大きな体に身を預ける安心感…
+	PRINTFORMW 　すごく落ち着く…あの人となら…ずっと、一緒にいたいと思える…）
+
+;-------------------------------------------------
+;女嫌い消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE58
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE58
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;快感の否定消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE59
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE59
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;一線越えない消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE60
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE60
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;素直取得イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE61
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE61
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;嫉妬消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE67
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE67
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;狂気消滅イベント(純愛モード)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE68
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE68
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;欲望上昇による抑圧または抵抗消滅イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE69
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE69
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;抑圧と抵抗の両方が消滅
+IF TALENT:32 && TALENT:34
+	;PRINTFORMW 
+;抵抗だけ消滅
+ELSEIF TALENT:34
+	;PRINTFORMW 
+;抑圧だけ消滅
+ELSEIF TALENT:32
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;恋慕取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE70
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE70
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+	PRINTFORMW （…………あの声、しぐさが…どうしてか愛らしい気持ちになる。）
+	PRINTFORMW （そばにいて…安心する。）
+	PRINTFORMW （でも、私は妖精…………）
+	PRINTFORMW （きっと、いつかは…）
+	PRINTFORMW （お互いに苦しい思いを……）
+	PRINTFORMW （だから、本当は願わない方がいいのかも、でも…）
+	PRINTFORMW （%CALLNAME:MASTER%といたいって願ってしまう…）
+;CALLだと警告がでるので
+TRYCALL K4_GET_KOIBITO
+
+;-------------------------------------------------
+;妄信取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE71
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE71
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;親愛取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE72
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE72
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+	PRINTFORMW （あぁ……ずっと、側にいたい）
+	PRINTFORMW （他の男の人と違う…）
+	PRINTFORMW （もう、%CALLNAME:MASTER%の事が……）
+	PRINTFORMW （こんなに幸せな気持ちになるなんて…）
+	PRINTFORMW （……もう、あなたのそばから離れたくない…ずっと一緒に…）
+	PRINTFORMW （愛しています……%CALLNAME:MASTER%……）
+TRYCALL K4_GET_RENBO
+
+;-------------------------------------------------
+;依存イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE73
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE73
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;服従取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE74
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE74
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫乱取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE75
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE75
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+TRYCALL K4_GET_GOUI
+
+;-------------------------------------------------
+;淫乱系全素質取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE80
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE80
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫核／淫茎取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE81
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE81
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;ペニスあり
+IF TALENT:オトコ || TALENT:ふたなり
+	;PRINTFORMW 
+;その他
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;淫壷取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE82
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE82
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫尻取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE83
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE83
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;淫乳取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE84
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE84
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道狂取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE85
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE85
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キス魔取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE86
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE86
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ドＳ取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE87
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE87
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ドＭ取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE88
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE88
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF CFLAG:7802 == 1
+		PRINTFORML 「痛いの、嫌なのに……気持ちいいって、思っちゃうの……
+		PRINTFORMW 「はぅぅ…もっと苛めてぇぇぇ…感じるのぉ…」
+ENDIF
+
+;-------------------------------------------------
+;淫魔取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE89
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE89
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;薬毒耐性を薬物と快楽により消滅させるイベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE90
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE90
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ルーチンワークな調教に不満
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE97
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE97
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キャラ死亡時口上
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE98
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE98
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教前おねだり口上
+;ランダムで表示されるようにすると鬱陶しくないかも
+;表示の関係で1行に収めることを推奨
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE99
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE99
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+SIF TFLAG:224 == 555 || ASSIPLAY != 0
+	RETURN 0
+IF RAND:20 < 0
+	;PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;ふたなり取得(不思議な根or具現)時の口上
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE101
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE101
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;おねしょイベント(おもらし癖取得)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE102
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE102
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の幼児退行取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE103
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE103
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ビデオによる人気取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE104
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE104
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;媚薬中毒取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE105
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE105
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の精神崩壊取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE107
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE107
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教終了時の傀儡取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE108
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE108
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;両刀取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE109
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE109
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手時に雑事を手伝わせた
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE110
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE110
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ストレスの影響表示
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE111
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE111
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;体力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE120
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE120
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;気力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE121
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE121
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売却可能になった
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE122
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE122
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手可能になった
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE123
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE123
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象に選抜された
+;TFLAG:99で前の調教対象番号を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE124
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE124
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;肥大陰核取得
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE125
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE125
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核肥大化完了(異様な大きさ)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE126
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE126
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象から外されそうになった
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE127
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE127
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教対象から外された
+;TFLAG:99で新たな調教対象番号を取得可能
+;いない場合-1が入る
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE128
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE128
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE130
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE130
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+IF CFLAG:7802 == 1
+		PRINTFORMW 「い、いや！そんなこといわないで！！」
+		PRINTFORMW 「私は貴方と…！」
+ENDIF
+
+IF CFLAG:7801 == 1
+		PRINTFORMW 「そんな…嘘でしょう？」
+		PRINTFORMW 「やだよ、お願い…何でもするから・・おねがい…」
+ENDIF
+
+PRINTFORMW 「そう…ですか。判りました」
+
+
+;-------------------------------------------------
+;ビデオ売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE131
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE131
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;写真売却
+;金額はTFLAG:124で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE132
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE132
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;母乳売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE133
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE133
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;聖水売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE134
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE134
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;卵売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE135
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE135
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛お守り作成
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE136
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE136
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛お守り売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE137
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE137
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液売却
+;金額はTFLAG:99で参照可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE138
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE138
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝フェラ
+;TFLAG:99でフェラ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE140
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE140
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF CFLAG:7802 == 1
+		PRINTFORMW 「ちゅ…おはよう。」
+		PRINTFORMW 大妖精は亀頭にたっぷりと唾液をまぶし、飴玉のようにしゃぶりついている…
+ELSEIF ABL:奉仕精神 >= 5
+		PRINTFORMW 「んちゅ、ちゅる、ちゅる、ちゅぷ、ちゅぷ…」
+		PRINTFORMW こちらが起きた事にも気付いていないかように、一心不乱に舐め続けている…
+ELSE
+		PRINTFORMW 「あ…その、おはようございます…」
+		PRINTFORMW 大妖精は硬く張った肉棒を愛おしげに頬擦りしている…
+ENDIF
+;-------------------------------------------------
+;朝パイズリ
+;TFLAG:99で精液経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE141
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE141
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝騎乗位
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE142
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE142
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝キス
+;TFLAG:99で増加する愛情経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE143
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE143
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+	 PRINTFORMW 「ちゅ♪ん…」
+	 PRINTFORMW 唇に柔らかい感触に気付き目が覚めると…
+	 PRINTFORMW 「あ、おはようございます。ん…」
+	 PRINTFORMW 大妖精は、ソフトキスを%CALLNAME:MASTER%にした。
+
+;-------------------------------------------------
+;朝の搾乳
+;TFLAG:99で噴乳経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE144
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE144
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の新妻プレイ
+;TFLAG:99で絶頂経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE145
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE145
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝騎乗位＋胸揉み
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE146
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE146
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 「朝騎乗位＋胸揉みの時の口上です」
+
+;-------------------------------------------------
+;朝騎乗位アナル
+;TFLAG:99でＡ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE147
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE147
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の足コキ
+;TFLAG:99で増加する精液経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE148
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE148
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後セックス
+;TFLAG:99=1 主人棒あり＞相手Ｖあり
+;TFLAG:99=2 主人棒あり＞相手Ｖなし
+;TFLAG:99=3 主人棒なしＶあり＞相手棒あり
+;TFLAG:99=4 主人棒なしＶあり＞相手棒なしＶあり
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE150
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE150
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF TFLAG:99 == 1
+	IF ABL:Ｖ感覚 >= 4
+		PRINTFORMW 「だめぇぇぇ、体が…熱くて…切ないのぉ…」
+		PRINTFORMW 疼く体…押え切れずに大妖精はさらなる刺激を求めた。
+		PRINTFORMW 「ああぁぁ…いいのぉ…もっと…触って…」
+		PRINTFORMW そして、営みは…
+		PRINTFORML 
+		PRINTFORMW 「あっ、あひっ、あっ、もっと！ひぃん、突いてえぇぇ!!」
+	ELSE
+		PRINTFORMW 「あん、あん…気持ち、いい」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE151
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE151
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+	IF CFLAG:7802 == 1
+		PRINTFORMW 「はっ…あっ！…ひぁっ、んんっ……いじって、もっといじってぇぇ」
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 「ふうっ！あひぁ！またっイクっ！またいっちゃうぅ！」
+	ELSE
+		PRINTFORMW 「やだ…んっ…私、どうして…」
+	ENDIF
+
+;-------------------------------------------------
+;調教後アナニー
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE152
+;PRINTFORMW 
+CALL KOJO_4_MESSAGE_SUB_EVENT_SCENE151
+;-------------------------------------------------
+;調教後自慰搾乳
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE153
+;PRINTFORMW 
+CALL KOJO_4_MESSAGE_SUB_EVENT_SCENE151
+
+;-------------------------------------------------
+;調教後レズプレイ
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE154
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE154
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF CFLAG:7802 == 1
+		PRINTFORMW 「ふぅっ、はっ、はあぁっ、いっちゃう…いっちゃうのぉ…」
+ELSEIF ABL:レズ中毒 >= 3
+		PRINTFORMW 「おまんこ…いいよぉぉ…」
+		PRINTFORMW 大妖精はだらしない顔つきで腰を振っている…
+ELSEIF ABL:レズっ気 >= 3
+		PRINTFORMW 「ん、ね、もっとしよ…?」
+ELSE
+		PRINTFORMW 「ん…はっ、これもいいかもぉ」
+ENDIF
+
+;-------------------------------------------------
+;調教後レズプレイ(69)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE155
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE155
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後ＢＬプレイ
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE156
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE156
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後ＢＬプレイ(69)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE157
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE157
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後夜這い
+;TFLAG:99=2:主人が女性で調教対象が男性のとき
+;TFLAG:99=1:それ以外
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE158
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE158
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF TFLAG:99 == 1
+	IF ABL:Ｖ感覚 >= 5
+		PRINTFORMW 「疼いちゃって…とまらないのぉ」
+		PRINTFORMW 大妖精は服の裾をたくし上げると、%CALLNAME:MASTER%に見せ付けるように自らを慰め始めた
+		PRINTFORMW 「ね、抱いてください…」
+		PRINTFORMW 優しく抱かれると大妖精は、甘い吐息をもらした
+		PRINTFORMW 「あ…あぁぁ…わ、私…うぅぅん…」
+		PRINTFORMW 「す、あ…ん…幸せ…ん…です。」
+	ELSE
+		PRINTFORMW 「物足りないの、切なくて…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後の自慰ができない時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE160
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE160
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE161
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE161
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;睡眠もしくは失神状態で調教後に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE162
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE162
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE163
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE163
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ助手側
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE164
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE164
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;妊娠時
+;誰によって妊娠させられたかをTFLAG:99で分岐可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE170
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE170
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;主人による
+IF TFLAG:99 == MASTER
+	;PRINTFORMW 
+;本当はレンボ条件のもあったんだけど、異変解決がなんたらかんたら書いてあるので使えなかた
+;すげー軽い感じになったが仕方ない。
+
+	IF CFLAG:7801 == 1
+			PRINTFORMW 「最近、なんか体の調子がおかしい気がする…」
+			PRINTFORMW 「そ～いえば…最近、生理も来ていないよね…」
+			PRINTFORMW 「ま、まさか…妊娠したのかな…」
+	ELSEIF MARK:反発刻印 >= 2
+			PRINTFORMW 「う…嘘・・」
+			PRINTFORMW 「こ、これって…夢ですよね…」
+			PRINTFORMW 「い…いやぁぁぁぁぁぁ」
+			PRINTFORMW 大妖精はそのまま座り込み…
+			PRINTFORMW 自ら運命に絶望してしまった…
+			PRINTFORMW 「………」
+			PRINTFORMW 目から光が消え…もはや、誰の声も聞こえなくなった。
+			;精神崩壊とか付けたい。
+			;てか幼児退行くらいならこの辺で付いてるかも。
+	ELSE
+			PRINTFORMW 「ま、まさか…そ、そんな…」
+			PRINTFORMW 「ど、どうしたらいいの…」
+	ENDIF
+;主人以外
+ELSE
+		PRINTFORMW 大妖精は予期せぬ妊娠に涙した。
+ENDIF
+
+;-------------------------------------------------
+;出産時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE171
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE171
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+IF CFLAG:7802 == 1 && CFLAG:70 == 1
+		PRINTFORMW 「あ…あぅ・・・お、お腹が…」
+		PRINTFORMW 大妖精は、急な腹痛で目が覚めた…臨月を迎えていた大妖精はすぐにその理由を理解した。
+		PRINTFORMW 「あ、赤ちゃんが…%CALLNAME:MASTER%さん…%CALLNAME:MASTER%さん…」
+		PRINTFORMW その話を聞いた%CALLNAME:MASTER%は飛び起きて、産婆のところに行こうとしたが、ドアに激突した…
+		PRINTFORMW 「%CALLNAME:MASTER%さん…落ち着いて…まだ、始まった…ばかりだから…」
+		PRINTFORMW 「もし、%CALLNAME:MASTER%さんが怪我したら…この子が可愛そう…」
+		PRINTFORMW %CALLNAME:MASTER%は深呼吸をして…産婆の元に向かった、嬉しさを心に秘めながら…
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW …
+		PRINTFORMW 大妖精の産みの苦しみの声を聞きながら%CALLNAME:MASTER%は、無動と言えるような時間を過ごした。
+		PRINTFORMW いつもの1分が10分に…1時間が数時間のような感覚であった…
+		PRINTFORMW そして…隣の部屋から、新たな命の声が聞こえた…
+		PRINTFORMW %CALLNAME:MASTER%は、その声を聞くと部屋に飛んで入った。そこには赤ん坊の頭を優しく撫でている大妖精の姿があった。
+		PRINTFORMW 「%CALLNAME:MASTER%さん…見てください。私と%CALLNAME:MASTER%さんの子です。」
+		PRINTFORMW 「わ、私…すごく幸せです。こ、こんなに幸せでいいのかな…」
+		PRINTFORMW	%CALLNAME:MASTER%は、優しくうなずいた。
+		CFLAG:7810 += 1
+		WAIT
+		WAIT
+		PRINTFORMW 幻想郷に新しい命が生まれました。
+		PRINTFORMW 大妖精と%CALLNAME:MASTER%の{CFLAG:7810}番目の娘が生まれました！
+ENDIF
+
+;-------------------------------------------------
+;子供が親離れ
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE172
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE172
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;育児部屋入り
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE173
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE173
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+;レンボで主人が親
+IF CFLAG:7802 == 1 && CFLAG:70 == 1
+		PRINTFORMW 「は、はい。私、元気な赤ちゃんを産みますね。せっかく、%CALLNAME:MASTER%さんとの間にできた子供ですから…」
+		PRINTFORMW 大妖精は、お腹の子供を慈しむかのように、お腹をなでた。そして、産まれるその日まで、大妖精は大事をとることになった。
+ENDIF
+
+;-------------------------------------------------
+;乳母になる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE174
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE174
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;抱卵取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE175
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE175
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;孵化イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE176
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE176
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;孵化イベント後の母性本能取得イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE177
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE177
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵
+;TFLAG:99で産んだ卵の個数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE179
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE179
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;狂気持ちキャラ売却脱走時
+;TFLAG:99で売却額を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE180
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE180
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人を刺殺した奴隷(そしてバッドエンド直行)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE182
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE182
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放消失イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE183
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE183
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵で発狂するイベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE184
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE184
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、友人を連れて戻ってきた奴隷
+;TFLAG:99で誰をつれてきたかを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE190
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE190
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、資金調達して戻ってきた奴隷
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE191
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE191
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、戻ってきた反発奴隷
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE192
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE192
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放時、ただ戻ってきた奴隷
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE193
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE193
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売られそうになって狼狽しているヤンデレ奴隷
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE194
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE194
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放(これでこのキャラはこの周回からは消えていく)
+;TFLAG部分のIF分岐は変更しないこと
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE195
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE195
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;売却時
+IF TFLAG:99 == 130
+	;PRINTFORMW 
+;狂気脱走した売却時
+ELSEIF TFLAG:99 == 180
+	;PRINTFORMW 
+;解放されて去った時
+ELSEIF TFLAG:99 == 196
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;解放され立ち去る奴隷(解放直後)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE196
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE196
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;発狂した口上呼び出し(地下牢に閉じ込められ続けて)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE197
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE197
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キャラ購入直後
+;TFLAG:208を立てることで購入後のSPキャラ化の選択肢を表示しないようにできる
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE198
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE198
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;解放した奴隷に連れてこられた時
+;TFLAG:99で誰につれてこられたかを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE199
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE199
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE200
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE200
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+	PRINTFORMW 「え…あの、これって、もしかして」
+	PRINTFORMW 大妖精は羽をぴんと立たせてリングと%CALLNAME:MASTER%の顔を交互に見ている。
+	PRINTFORMW 　
+	PRINTFORMW 大妖精はしばらく呆然としていたが、突然堰を切ったようにぼろぼろと涙を流し始める。
+	PRINTFORMW 喜びに震える細い肩を抱き寄せ、静かに泣き続ける彼女の髪をゆっくり撫でてやった。
+	PRINTFORMW …後で人里で大きさを合わせに行こうと囁くと、大妖精は胸の中で小さく頷いた。
+	PRINTFORMW 　
+TRYCALL K4_GET_SHINAI
+;あ、恋慕とかもそうだけどこのイベントの時に寝てたりするとコマンド口上が困ったことになるな。
+;まあいいや。そんな調教をする方が悪い。失神だけりどみで注意しておいてやるか…。
+
+;-------------------------------------------------
+;赤い首輪使用時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE201
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE201
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;烙印を押されたとき(隷属の証)
+;TFLAG:99でどの選択肢を選んだかを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE202
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE202
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;使い魔イベント(契約締結)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE203
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE203
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;使い魔イベント(契約破棄)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE204
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE204
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;青珊瑚の指輪使用時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE205
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE205
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+;あ、これでも相愛つくんだった。
+;まあいいや。エンゲージリングしか認めねぇ。
+
+;-------------------------------------------------
+;空晶石の首輪使用時
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE206
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE206
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻子玉入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE210
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE210
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黄金水入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE211
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE211
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE212
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE212
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;血液入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE213
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE213
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;破瓜血入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE214
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE214
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パンティー入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE215
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE215
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;母乳入手イベント(搾乳コマンド)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE216
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE216
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;母乳入手イベント(調教後搾乳)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE217
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE217
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰毛入手イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE218
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE218
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;クリトリスリング装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE230
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE230
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;奴隷管理用貞操帯装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE231
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE231
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ベリージュエル装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE232
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE232
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ボンデージ装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE233
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE233
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ラビアピアス装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE234
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE234
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ニプルピアス装着イベント
+;意味無いけどTFLAG:99で値段を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE235
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE235
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;家屋敷を購入したとき
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE239
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE239
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(開始時)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE250
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE250
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(凌辱中)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE251
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE251
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手漬けイベント(事後)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE252
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE252
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(開始時)
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE253
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE253
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(事後)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE254
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE254
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手幽閉イベント(凌辱中)
+;TFLAG:99でインプラントされた箇所を取得可能
+;0でインプラント箇所無し
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE255
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE255
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手同化イベント(旧261を含む)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE256
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE256
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手生贄イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE257
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE257
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手種付イベント
+;TFLAG:99で何故か否定の珠入手量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE258
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE258
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手懐卵イベント
+;TFLAG:99で消費する触手エネルギーを取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE259
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE259
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手出産イベント
+;TFLAG:99で何故か否定の珠入手量を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE260
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE260
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;不死刻印取得 
+;TFLAG:99で取得したLv、TFLAG:201で消費する触手の本数を取得可能
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE270
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE270
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;種族改造イベント
+;TFLAG:99で改造先の種族を取得可能、資料を参考
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE280
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE280
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢収監イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE290
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE290
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢解放イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE291
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE291
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;地下牢での拷問イベント
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE292
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE292
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鎮静茶使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE309
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE309
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;栄養剤使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE310
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE310
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ふたなり薬使用(TFLAG:99=1:消去時, 2:付加時)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE311
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE311
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;消去時
+IF TFLAG:99 == 1
+	;PRINTFORMW 
+;付加時
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ふたたま薬使用(TALENT:121=2:消去時, 1:付加時)
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE312
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE312
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;消去時
+IF TALENT:121 == 2
+	;PRINTFORMW 
+;付加時
+ELSEIF TALENT:121 == 1
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;性露錠使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE313
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE313
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;根素勃乳使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE314
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE314
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;睡眠薬使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE315
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE315
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豊胸剤使用
+;素質分岐は薬使用前の素質で行うこと
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE320
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE320
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;縮胸剤使用
+;素質分岐は薬使用前の素質で行うこと
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE321
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE321
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;止乳剤使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE322
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE322
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿漏れ改善薬使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE323
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE323
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;記憶消去薬使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE324
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE324
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;赤の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE330
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE330
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;青の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE331
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE331
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黄の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE332
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE332
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緑の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE333
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE333
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;白の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE334
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE334
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;黒の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE335
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE335
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;灰の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE336
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE336
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;金の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE337
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE337
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;銀の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE338
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE338
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;虹の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE339
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE339
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;翠の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE340
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE340
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;紺の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE341
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE341
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;桃の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE342
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE342
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鈍の飴玉使用
+;-------------------------------------------------
+@KOJO_4_MESSAGE_SUB_EVENT_SCENE343
+IF CFLAG:7820 == 1 && CFLAG:7821 == 0
+	TRYCALLFORM SYSTXT_MESSAGE_SUB_EVENT_SCENE343
+ENDIF
+
+CALL KOJO_4_MESSAGE_SUB_EVENT_BEFORE2
+SIF RESULT
+	RETURN 0
+
+;PRINTFORMW 
+

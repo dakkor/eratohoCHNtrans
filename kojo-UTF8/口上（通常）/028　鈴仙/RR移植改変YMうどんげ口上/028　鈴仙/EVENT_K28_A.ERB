@@ -1,0 +1,120 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;28をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは助手調教が関係する口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;鈴仙口上
+;==============================================================
+;==================================================
+;@KOJO_28_MESSAGE_PLAYERCHANGE関係
+;助手切り替え時に出力されます。
+;助手に交代した時、助手調教から戻したときに
+;助手としてしゃべる為の機能
+
+;※ここでのTARGETはあくまで調教対象、助手にあらず
+;==================================================
+@KOJO_28_MESSAGE_PLAYERCHANGE
+;主人→鈴仙
+IF ASSIPLAY == 0
+	;えーりん
+	IF NO:TARGET == 29
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『さぁ……一緒にご主人様に愉しませてもらいましょう、師匠……？』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『うふふ、ご主人様に従わない奴隷には躾が必要ですよね……師匠？』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『この様子なら別に、私が何かしなくてもいいんじゃ……い、いえ、なんでもないです！』
+		ELSE
+			PRINTFORMW 『師匠……申し訳ありません……』
+		ENDIF
+	;ひめさま
+	ELSEIF NO:TARGET == 30
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『さぁ……一緒にご主人様に愉しませてもらいましょう、姫様……？』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『姫様、だめですよ……ちゃんとご主人様に従わないと』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『この様子なら別に、私が何かしなくてもいいんじゃ……い、いえ、なんでもないです！』
+		ELSE
+			PRINTFORMW 『姫様が私になんか従うかなぁ……』
+		ENDIF
+	;てゐ
+	ELSEIF NO:TARGET == 27
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『貴方のその態度が詐欺じゃないか、確かめないとね……』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『ご主人様を騙そうとしないよう、ちゃんと躾けないと……』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『……まあ、あの態度も実は私達を騙しているのかもしれませんしね』
+		ELSE
+			PRINTFORMW 『あ、てゐ、今「鈴仙ならちょろい」とか思ったでしょう！？』
+		ENDIF
+	ELSE
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『一緒にご主人様を愉しませましょうね……』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『ご主人様の素晴らしさを……教えてあげます』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『この様子なら別に、私が何かしなくてもいいんじゃ……い、いえ、なんでもないです！』
+		ELSE
+			PRINTFORMW 『ごめんね、でもこうしないと私の立場が悪くなるの』
+		ENDIF
+	ENDIF
+;鈴仙→主人
+ELSE
+	;えーりん
+	IF NO:TARGET == 29
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『あ、終わりですか……後でまたしましょうね、師匠』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『私の役割は終わりですが……ご主人様のいうこと、ちゃんと聞いて下さいね？』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『やっぱり、私の仕事はいらなかったんじゃないかなぁ……』
+		ELSE
+			PRINTFORMW 『……ほっ』
+		ENDIF
+	;ひめさま
+	ELSEIF NO:TARGET == 30
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『ふふ……ほんと姫様って綺麗で、そんな姫様に慕われるご主人様が羨ましいです』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『私の役割は終わりですが……ご主人様のいうこと、ちゃんと聞いて下さいね？』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『やっぱり、私の仕事はいらなかったんじゃないかなぁ……』
+		ELSE
+			PRINTFORMW 『……ほっ』
+		ENDIF
+	;てゐ
+	ELSEIF NO:TARGET == 27
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『ご主人様のこと、ちゃんと愛してね』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『ご主人様に従う気になった？』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『たぶん本気だと思います……たぶん』
+		ELSE
+			PRINTFORMW 『ちゃんと調教できてるのかなぁ……？』
+		ENDIF
+	ELSE
+		IF TALENT:ASSI:恋慕 && (TALENT:恋慕 || TALENT:服従)
+			PRINTFORMW 『ご主人様、私にもして下さいね』
+		ELSEIF TALENT:ASSI:恋慕
+			PRINTFORMW 『私の役割は終わりですが……ご主人様のいうこと、ちゃんと聞いて下さいね？』
+		ELSEIF TALENT:恋慕 || TALENT:服従
+			PRINTFORMW 『やっぱり、私の仕事はいらなかったんじゃないかなぁ……』
+		ELSE
+			PRINTFORMW 『……ふぅ』
+		ENDIF
+	ENDIF
+ENDIF
+
+;==================================================
+;@KOJO_28_MESSAGE_CHANGEASSI関係
+;調教対象で助手切り替え時に出力されます。
+;助手に交代した時、助手調教から戻したときに
+;対象としてしゃべる為の機能
+;==================================================
+@KOJO_28_MESSAGE_CHANGEASSI
+;PRINTFORMW 

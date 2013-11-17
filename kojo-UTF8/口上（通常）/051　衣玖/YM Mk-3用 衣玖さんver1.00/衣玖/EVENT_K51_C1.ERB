@@ -1,0 +1,1014 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは100～199番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;初回かどうかは最初に@COM_FLAGを呼び出した上で
+;RESULT:1が1かどうかで判別できる
+;========================================================
+;-------------------------------------------------
+;ビデオ撮影 CFLAG:8282
+;TEQUIP:50 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_100
+;コマンド選択での撮影終了時
+IF TEQUIP:50 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		PRINTFORMW 「もうやめるのですか？まだテープが残っていたのに勿体無いですよ」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「ああ…あああ……」
+	ENDIF
+;撮影開始時
+ELSE
+	;初めて
+	IF CFLAG:8282 == 0
+		PRINTFORML 「ビデオカメラ…あの～それで何を？」
+		PRINTFORMW 「売る!?　私のしている所を!!　やめて、撮らないでください!!」
+		CFLAG:8282= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8282 <= 2)
+			PRINTFORMW 「%CALLNAME:MASTER%様と愛し合っている所を見ず知らずの人に見られるのですね」
+			CFLAG:8282 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうせ撮るのでしたらエッチじゃなく踊りを撮ってほしいです」
+			CFLAG:8282 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ鑑賞 CFLAG:8283
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_101
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_101
+	;エキストラモード選択コマンド[0]選択
+	IF CFLAG:8001 == 1
+		;無関心である
+		IF TALENT:無関心 == 1
+			;乱数分岐:5
+			IF RAND:5 == 0
+				PRINTFORML 「やぁ…なんて破廉恥で激しいのかしら」
+				PRINTFORML %CALLNAME:TARGET%は手で目を覆いながらも指の隙間から覗いている
+				PRINTFORML 「はぁ…はぁ…そんな気持ちよさそうに……」
+				PRINTFORML %CALLNAME:TARGET%の顔はもう林檎の様に真っ赤だ
+				PRINTFORML しかしそんなにエッチなのかと%CALLNAME:MASTER%はビデオのパッケージを見て思っていた…
+				PRINTFORMW 
+				PRINTFORMW [神秘の深海魚　リュウグウノツカイの貴重な産卵シーン]
+				PRINTFORMW 
+				PRINTFORMW ---[無関心]を失いました---
+				TALENT:無関心 = 0
+			;乱数分岐:4
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「ふ～ん、自分だけ見てくださいね」
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「興味はありませんね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「自分の部屋で見られては？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「楽が出来ていいですけれど」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORML 「またあのビデオを見るのですか？」
+			PRINTFORMW %CALLNAME:TARGET%が顔を真っ赤にしている…どうやら気に入ってしまったようだ
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;乱数分岐:4
+		IF RAND:4 == 0
+			PRINTFORMW 「ふ～ん、自分だけ見てくださいね」
+		;乱数分岐:3
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「興味はありませんね」
+		;乱数分岐:2
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「自分の部屋で見られては？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「楽が出来ていいですけれど」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;写真撮影 CFLAG:8284
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_102
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_102
+	;初めて
+	IF CFLAG:8284 == 0
+		PRINTFORML 「っ!?」
+		PRINTFORML 急に焚かれるフラッシュに目が霞む
+		PRINTFORMW 「何？カメラ!?ま、まさか今のを……」
+		CFLAG:8284= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8284 <= 2)
+			PRINTFORML 「そのカメラは天狗のみたいに弾幕を消せるのかしら？」
+			PRINTFORMW 「あ、もしかして幽霊を除霊できる機能が付いているのですか」
+			CFLAG:8284 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやですよ、そんなに撮らないでください」
+			CFLAG:8284 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG:8285
+;TEQUIP:56 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_103
+;終了時
+IF TEQUIP:56 == 0
+	;露出癖Lv3
+	IF ABL:露出癖 >= 3
+		PRINTFORMW 「恥かしかったです」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「早くその鏡をどけてください」
+	ENDIF
+;開始時
+ELSE
+	;初めて
+	IF CFLAG:8285 == 0
+		;露出癖Lv3
+		IF ABL:露出癖 >= 3
+			PRINTFORML 「…鏡の中の私は凄くエッチでした」
+			PRINTFORMW 「また見るのですねエッチな私…」
+		;その他の場合
+		ELSE
+			PRINTFORML 「大きい鏡ですね…踊りの練習でもするのですか？」
+			PRINTFORMW 「違うのですか残念です」
+		ENDIF
+		CFLAG:8285= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;露出癖Lv3
+		IF ABL:露出癖 >= 3 && (CFLAG:8285 <= 2)
+			PRINTFORMW 「見えちゃう、見られちゃう…私の恥ずかしい所が全部」
+			CFLAG:8285 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またその鏡ですか」
+			CFLAG:8285 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG:8286
+;TEQUIP:52 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_104
+;終了時
+IF TEQUIP:52 == 0
+	;露出癖Lv3
+	IF ABL:露出癖 >= 3
+		PRINTFORMW 「ちょっとドキドキしてしまいました」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「う、うぅ…もう二度とこんな真似をしないでください」
+	ENDIF
+;開始時
+ELSE
+	;初めて
+	IF CFLAG:8286 == 0
+		PRINTFORMW 「首輪なんて私は犬じゃないのですよ」
+		CFLAG:8303= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;露出癖Lv3
+		IF ABL:露出癖 >= 3 && (CFLAG:8286 <= 2)
+			PRINTFORMW 「%CALLNAME:MASTER%様、今日は何処を散歩しますか」
+			CFLAG:8286 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「誰かに見られたらどうするのですか」
+			CFLAG:8286 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ベビープレイ CFLAG:8287
+;TEQUIP:58 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_108
+;終了時
+IF TEQUIP:58 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;秘貝開帳 CFLAG:8288
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_110
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_110
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;膣内射精フラグ
+		IF TFLAG:103 > 0
+			;効果[排卵誘発剤]
+			IF TEQUIP:16 == 1
+				PRINTFORMW 「ああっ、折角出して貰えたのにこんなに溢れて…早く%CALLNAME:MASTER%様ので塞いでください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「%CALLNAME:MASTER%様、私の膣内にこんなに出したのですよ」
+			ENDIF
+		;再生処女
+		ELSEIF TALENT:処女 == 2
+			PRINTFORML %CALLNAME:TARGET%は秘部を広げ%CALLNAME:MASTER%に見せている
+			PRINTFORML 「んっ…んんっ、ちゃんと処女膜が再生されているのが分かりますか…？」
+			PRINTFORMW その奥は再生した薄い膜に包み隠されていた
+		;効果[排卵誘発剤]
+		ELSEIF TEQUIP:16 == 1
+			PRINTFORMW 「はぁっ…はぁっ…準備はできています、子作りしましょう」
+		;その他の場合
+		ELSE
+			PRINTFORML 「こんなに愛液が溢れて……%CALLNAME:MASTER%様ぁ」
+			PRINTFORMW %CALLNAME:TARGET%は潤んだ瞳で見つめている
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;膣内射精フラグ
+		IF TFLAG:103 > 0
+			PRINTFORMW 「こんなに精子が…あ、赤ちゃんができちゃう」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いや、見ないでそんな所…」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:8289
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_111
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_111
+	;初めて
+	IF CFLAG:8289 == 0
+		PRINTFORML 「あのトイレに…そんなお願いしますトイレに行かせてください」
+		PRINTFORML 　
+		PRINTFORML 　
+		PRINTFORMW 「もう…限界っ……ああ…いやぁぁぁぁ！」
+		CFLAG:8289= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8289 <= 4)
+			;おもらし癖である
+			IF TALENT:おもらし癖 == 1
+				;効果[野外プレイ]
+				IF TEQUIP:52 == 1
+					PRINTFORMW 「もう！こんな所でしろって%CALLNAME:MASTER%様も物好きですね」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「%CALLNAME:MASTER%様のせいですっかりおもらしの癖が付いてしまいました」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「は、恥ずかしいですけれど%CALLNAME:MASTER%様の為ですから」
+			ENDIF
+			CFLAG:8289 = 5
+		;露出癖Lv5
+		ELSEIF ABL:露出癖 >= 5 && (CFLAG:8289 <= 3)
+			PRINTFORMW 「出しますよ、しっかり見ててくださいね」
+			CFLAG:8289 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8289 <= 2)
+			PRINTFORMW 「し、しますよ……」
+			CFLAG:8289 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あのトイレに…あぁもう我慢が!!」
+			CFLAG:8289 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;剃毛 CFLAG:8290
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_112
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_112
+	;初めて
+	IF CFLAG:8290 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「毛がない方がお好きなのですか？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「酷いです！なんて事してくれるのですか」
+		ENDIF
+		CFLAG:8290= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8290 <= 2)
+			PRINTFORMW 「ツルツルになりましたよ」
+			CFLAG:8290 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ああ、は、恥ずかしい……」
+			CFLAG:8290 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;毛抜き CFLAG:8291
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_113
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_113
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毛を抜かせる CFLAG:8292
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_114
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_114
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰見せつけ CFLAG:8293
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_115
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_115
+	;初めて
+	IF CFLAG:8293 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「ああ、そんなに扱いて…」
+			PRINTFORMW 「我慢が出来ないのでしたら仰ってくれればしてあげますのに」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、いきなり何をしているのですか！」
+		ENDIF
+		CFLAG:8293= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8293 <= 2)
+			PRINTFORMW 「%CALLNAME:MASTER%様、射精したいのでしたら私を使ってくださいまし」
+			CFLAG:8293 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「一人でやるのでしたら自分の部屋でしてくださいよ」
+			CFLAG:8293 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;二人自慰見せつけ CFLAG:8294
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_116
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_116
+;PRINTFORMW 
+
+;-------------------------------------------------
+;秘貝開帳見せつけ CFLAG:8295
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_117
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_117
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人秘貝見せつけ CFLAG:8296
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_118
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_118
+;PRINTFORMW 
+
+;-------------------------------------------------
+;焦らしプレイ CFLAG:8297
+;TEQUIP:68 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_120
+;終了時
+IF TEQUIP:68 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;射精止め（リボン巻き） CFLAG:8298
+;TEQUIP:69 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_121
+;終了時
+IF TEQUIP:69 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;豆責め CFLAG:8299
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_122
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_122
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豆絞り CFLAG:8300
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_123
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_123
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローター自慰 CFLAG:8301
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_124
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_124
+;PRINTFORMW 
+
+;-------------------------------------------------
+;電マ自慰 CFLAG:8302
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_125
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_125
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔面騎乗 CFLAG:8303
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_126
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_126
+;PRINTFORMW 
+
+;-------------------------------------------------
+;亀頭責め CFLAG:8304
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_128
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_128
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核クリップ CFLAG:8305
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_130
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;陰核電極 CFLAG:8306
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_131
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ペニスローター CFLAG:8307
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_132
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_132
+;PRINTFORMW 
+
+;-------------------------------------------------
+;電マペニス責め CFLAG:8308
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_133
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_133
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核測定 CFLAG:8309
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_135
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_135
+;PRINTFORMW 
+
+;-------------------------------------------------
+;割礼 CFLAG:8310
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_136
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_136
+;PRINTFORMW 
+
+;-------------------------------------------------
+;射精機能開発 CFLAG:8311
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_137
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_137
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道綿棒 CFLAG:8312
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_140
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_140
+;PRINTFORMW 
+
+;-------------------------------------------------
+;カテーテル CFLAG:8313
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_141
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;採尿器 CFLAG:8314
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_142
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;バルーンカテーテル CFLAG:8315
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_143
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極カテーテル CFLAG:8316
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_144
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;飲尿する CFLAG:8317
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_145
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_145
+	;初めて
+	IF CFLAG:8317 == 0
+		PRINTFORML 「………」
+		PRINTFORML 尿を飲ませろと言う%CALLNAME:MASTER%の命令に呆然としている
+		PRINTFORML 「へ、変態という事は分かってはいましたがまさかここまでとは…」
+		PRINTFORML 呆れつつも%CALLNAME:MASTER%の口の前に股を広げる
+		PRINTFORMW 「良いでしょう、飲みたいのでしたら飲ませてあげましょう」
+		CFLAG:8317= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8317 <= 3)
+			;おもらし癖である
+			IF TALENT:おもらし癖 == 1
+				PRINTFORMW 「駄目です、いっぱい出ちゃいます！%CALLNAME:MASTER%様、飲みきれますか？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「何か%CALLNAME:MASTER%様がトイレみたいですね」
+			ENDIF
+			CFLAG:8317 = 4
+		;露出癖Lv3
+		ELSEIF ABL:露出癖 >= 3 && (CFLAG:8317 <= 2)
+			PRINTFORMW 「全部飲んでくださいね」
+			CFLAG:8317 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「以前はノリでやってしまいましたが今やるとこれは恥ずかしいです」
+			CFLAG:8317 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;尿道挿入 CFLAG:8318
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_146
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_146
+;PRINTFORMW 
+
+;-------------------------------------------------
+;クスコ CFLAG:8319
+;TEQUIP:21 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_150
+;解除時
+IF TEQUIP:21 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ローター挿入 CFLAG:8320
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_151
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;小陰唇指愛撫 CFLAG:8321
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_152
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液採集器 CFLAG:8322
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_153
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナ電極 CFLAG:8323
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_155
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナバーベル CFLAG:8324
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_156
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナバルーン CFLAG:8325
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_157
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ローターＡ挿入 CFLAG:8326
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_170
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナル電極 CFLAG:8327
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_171
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ CFLAG:8328
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_172
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;拡張バルーン CFLAG:8329
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_173
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;浣腸プレイ CFLAG:8330
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_174
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;空気浣腸 CFLAG:8331
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_175
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルバーベル CFLAG:8332
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_176
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め CFLAG:8333
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_180
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_180
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル綿棒 CFLAG:8334
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_181
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_181
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナニー CFLAG:8335
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_182
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_182
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻素股 CFLAG:8336
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_183
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_183
+;PRINTFORMW 
+
+;-------------------------------------------------
+;フリスク挿入 CFLAG:8337
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_184
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_184
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻愛撫 CFLAG:8338
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_186
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_186
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔面騎乗アナル CFLAG:8339
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_187
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_187
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルの皺数え CFLAG:8340
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_188
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_188
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳首ローター CFLAG:8341
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_190
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_190
+;PRINTFORMW 
+
+;-------------------------------------------------
+;搾乳機 CFLAG:8342
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_191
+;解除時
+IF TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「高く売れるといいですね」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「凄く複雑な気分です…」
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8342 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「母乳を売るのですか」
+			PRINTFORMW 「ちょうどいいですねおっぱいが張って大変だったので」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「母乳を売るですって？家畜じゃないのですよ私は!!」
+		ENDIF
+		CFLAG:8342= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8342 <= 2)
+			PRINTFORMW 「何か牛になった気分ですね」
+			CFLAG:8342 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こんな物欲しがる人なんているのでしょうか…」
+			CFLAG:8342 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳腺開発 CFLAG:8343
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_192
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_192
+	PRINTFORMW 「痛ッ！いったい何をするのですか」
+
+;-------------------------------------------------
+;乳房電極 CFLAG:8344
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_193
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;サラシ CFLAG:8345
+;TEQUIP:36 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_194
+;解除時
+IF TEQUIP:36 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;乳首クリップ CFLAG:8346
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_195
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

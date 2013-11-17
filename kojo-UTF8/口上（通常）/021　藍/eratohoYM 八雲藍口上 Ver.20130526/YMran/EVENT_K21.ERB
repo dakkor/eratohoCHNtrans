@@ -1,0 +1,1997 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;21をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは調教開始時・終了時・調教中イベント・エンディング口上用関数などが置いてあります。
+;このファイル内で他の関数を呼び出す処理のある関数は、削除せず残すことを推奨します。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;藍口上
+;ひとつぶで二度おいしい！
+;==============================================================
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_21
+RETURN 1
+
+;========================================================
+;専用口上表示の固定化判定
+;========================================================
+;口上表示の専用口上使用設定において、選択肢を専用口上のみに固定化させたい場合は2を、専用口上＋地の文のみに固定化させたい場合は3を返すようにしてください
+;なお、1を返した(またはこの関数をコメントアウト等で使用できないようにした)場合は両方の選択肢が出るように、1・2・3以外の数値を返した時はエラー回避のため専用口上を使用できないようになっています
+;@KOJO_21_DISPLAY_SETTINGS
+;RETURN 1
+
+;========================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;========================================================
+@KOJO_21_EXTRA_INITIALIZATION
+PRINTW 口上のエキストラモードを呼び出します
+PRINTW あなたは藍より上の立場？　下の立場？
+PRINTL [0] 上の立場（紫並の立場、基本下から目線になります）
+PRINTL [1] 下の立場（橙並の立場、基本上から目線になります）
+
+$INPUT_LOOP
+INPUT
+
+;上の立場（紫並の立場、基本下から目線になります）
+IF RESULT == 0
+	PRINTW 世界で一番ご主人様モード。
+	RAN = 1
+	ABL:従順 = 2
+	ABL:奉仕精神 = 2
+	ABL:マゾっ気 = 1
+
+	PRINTL 素質を変更しますか？
+	PRINTL [0] はい（素直、抑圧追加。プライド高いが消失します）
+	PRINTL [1] いいえ
+
+	$INPUT_LOOP1
+	INPUT
+
+	;はい（素直、抑圧追加。プライド高いが消失します）
+	IF RESULT == 0
+		TALENT:素直 = 1
+		TALENT:抑圧 = 1
+		TALENT:プライド高い = 0
+		PRINTL 素質を変更しました
+		PRINTW それでは引き続きeratohoYMをお楽しみください
+		RETURN 1
+	;いいえ
+	ELSEIF RESULT == 1
+		PRINTL 素質を変更しませんでした
+		PRINTW それでは引き続きeratohoYMをお楽しみください
+		RETURN 1
+	ELSE
+		GOTO INPUT_LOOP1
+	ENDIF
+
+;下の立場（橙並の立場、基本上から目線になります）
+ELSEIF RESULT == 1
+	PRINTW サディスティックインディゴモード。
+	RAN = 2
+	ABL:欲望 = 2
+	ABL:サドっ気 = 1
+
+	PRINTL 素質を変更しますか？
+	PRINTL [0] はい（気丈追加。自制心が消失します）
+	PRINTL [1] いいえ
+
+	$INPUT_LOOP2
+	INPUT
+
+	;はい（気丈追加。自制心が消失します）
+	IF RESULT == 0
+		TALENT:気丈 = 1
+		TALENT:自制心 = 0
+		PRINTL 素質を変更しました
+		PRINTW それでは引き続きeratohoYMをお楽しみください
+		RETURN 1
+	;いいえ
+	ELSEIF RESULT == 1
+		PRINTL 素質を変更しませんでした
+		PRINTW それでは引き続きeratohoYMをお楽しみください
+		RETURN 1
+	ELSE
+		GOTO INPUT_LOOP2
+	ENDIF
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_21_SLAVE_MESSAGE_TRAIN_START
+
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+DRAWLINE
+
+;調教開始口上分岐
+IF CFLAG:5201 == 0
+	TRYCALL K21_MESSAGE_START_1
+ELSE
+	TRYCALL K21_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時
+;-------------------------------------------------
+@K21_MESSAGE_START_1
+IF RAN == 1
+	PRINTW 藍はあなたの式（という設定です）
+	PRINTW 調教師となったあなたは、自らの式の八雲藍にまで手を出してしまう。
+	PRINTW 
+	PRINTW 藍が眠りから覚め、うとうとした様子でこちらを見ている
+	PRINTW 「ご主人様……？
+	PRINTW 「あの…ご主人様…ここは…」
+	PRINTW ベッドと、その他数少ない家具だけが置いてある殺風景な部屋。
+	PRINTW 「家は…橙は…」
+	PRINTW 戸惑う藍に、あなたはこれからの事、調教の事を告げる。
+	PRINTW 「調教…ですか…」
+	PRINTW 一見理解できたようにも見えるが、まだ焦りが見て取れる。
+	PRINTW 主人が自分を調教しようと言うのだ。普通ではまず、ありえない。
+	PRINTW だが、調教師に「普通」など無い。あなたは言葉より、行動で教えることにした。
+	PRINTW 「あ…ご主人様…」
+	PRINTW あなたが藍の腕を掴み、前に押し倒そうとすると、藍は若干抵抗があるもの、促されるように、ベッドへと仰向けに倒れた。
+ELSEIF RAN == 2
+	PRINTW あなたは藍の式（という設定です）
+	PRINTW 調教師となったあなたは、自らの主である、八雲藍にまで手を出してしまう。
+	PRINTW 
+	PRINTW 「で、なんなんだ？　ここは？」
+	PRINTW ベッドと、その他数少ない家具が置いてある、殺風景な部屋。
+	PRINTW 藍は、その狭い部屋を見渡しながら、あなたを一瞥する。
+	PRINTW 「急にこんな場所に呼び出して…用があるのなら早く済ませたいのだが」
+	PRINTW これほど気丈で冷静な人間でも、一人の女なら、当然僅かな恐怖感も感じるだろう。
+	PRINTW だが、今彼女の目の前に居るのは、自らの「式」。
+	PRINTW 恐れる必要も無く、ただ主の為に動く、「式」である。
+	PRINTW 主が「式」に調教されることを知ったら、どうなるだろうか。
+	PRINTW あなたは藍に、これから調教する、という事を告げた。
+	PRINTW 「調教…？」
+	PRINTW 「馬鹿馬鹿しい。お前は私の式だろう。変な気を起こすな」
+	PRINTW 説明を聞いた藍は、冷静に切り返そうとするも、心成しか顔が赤くなってるような気がする。
+	PRINTW 「と、取りあえず、私は帰るぞ」
+	PRINTW 扉へ向かおうとする藍の腕を、あなたは軽く掴む。
+	PRINTW 「…っ」
+	PRINTW 顔をしかめる藍を、あなたはベッドまで持って行く。
+	PRINTW 「やめろ…」
+	PRINTW 力無く抵抗する姿は、もう主ではなく、一人の女だった。
+ENDIF
+CFLAG:5201 = 1
+RETURN 1
+
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K21_MESSAGE_START_2
+IF RAN == 1
+	IF DAY:5 == 1 && DAY:6 == 1 && TALENT:恋慕
+		PRINTW 「ご、ご主人様……」
+		PRINTW 「元旦だし、私、ちょっとかわいい着物を着つけてみました♪」
+		PRINTW 「その……似合ってますか？」
+		PRINTW いつもの白と藍の装束とは違い、華やかな桜色の着物を身にまとった藍
+		PRINTL 
+		PRINTW なんだか、直視できないくらい……とても、可愛くて……
+		PRINTW 従順な藍の健気な心を満たしてやりたいと思うほどに、褒美や見返りを与えたいくらいの
+		PRINTW 可愛くて美しくて、愛しくて
+		PRINTW あなたは優しく藍を抱き寄せ……そっとキスをした
+		PRINTL
+		PRINTW 「……………………」
+		PRINTL
+		PRINTW どのくらい長い間口づけあっただろう
+		PRINTW 藍の獣とシャンプーが入り混じったような髪のニオイを鼻孔に感じながら、ただ愛情だけのキス
+		PRINTW 艶のある髪を撫で、意外と小さいその背中に手を回し、何も考えられずにベッドになだれこむ
+		PRINTW 着物をわずかにずらすと、着物の模様より綺麗な、勃起した乳首があらわになる
+		PRINTW 「ご主人様……私、こうなること、期待してて……」
+		PRINTW あなたは優しく着物を脱がしながら、段々と露出していく藍の肌に勃起していた
+		PRINTL
+		PRINTL
+		PRINTW 「ご主人様……」
+		PRINTL
+		PRINTL
+		PRINTW 「愛……してます……」
+		IF TALENT:抑圧 == 1
+			TALENT:抑圧 = 0
+			RAN:2 = 1
+		ENDIF
+		IF TALENT:快感に素直 == 0
+			TALENT:快感に素直 = 1
+			RAN:3 = 1
+		ENDIF
+		RAN:1 = 1
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTW 「ご主人様……あ、あの……」
+				PRINTW 「私、巧くできてますか？　ご主人様のこと、気持よくできていますか？」
+				PRINTW 「そうですか……えへへ、私、もっと頑張ります」
+			CASE 1
+				PRINTW 「ご主人様ぁ…」
+				PRINTW 藍は蕩けたような目でこちらを見つめている。既に体は準備ができているようだった。
+			CASE 2
+				PRINTW ベッドで抱き合いながら、あなたは藍の尻尾を撫でる。
+				PRINTW 「ふわぁ…ご主人様、私もう…」
+				PRINTW 目の前にある藍の顔は、すっかり紅く、欲情している顔になっていた。
+			CASEELSE
+				PRINTW 「ご主人様…ご主人様ぁ…」
+				PRINTW 部屋に入ると、藍があなたを想いながら自慰をしていたようだ。
+				PRINTW 息を荒げ、声すらも殺さずに、ただ自らの秘部で指を動かしていた。
+				PRINTW 「はぁ、はぁ、ご主人様ぁ…来てくれたんですね…」
+				PRINTW 藍はあなたを見据えながら、そう小さく呟く。
+				PRINTW 「さぁ、今日も…始めましょうか…ご主人様…」
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 3
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTW 「私なんかで……いいんですか？」
+				PRINTW 「ご主人様には見合わない体かもしれませんが……」
+				PRINTW 「そんな私でも、愛してくれますか？」
+			CASE 1
+				PRINTW 「ええと、ご主人様」
+				PRINTW 「今日も気持ち良くしてあげますから」
+				PRINTW 「よろしくお願いします」
+			CASE 2
+				PRINTW 「あぁ…ご主人様…」
+				PRINTW 「私、もしかしたら…ずっとこんなことを望んでいたのかもしれません…」
+			CASEELSE
+				PRINTW 「私、ご主人様の式として…役に立ってますか？」
+				PRINTW 「式でも性奴隷でも…私はご主人様の女ですから…」
+		ENDSELECT
+	ELSEIF MARK:反発刻印 == 3
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「い、いくらご主人様でも……許さない……」
+				PRINTW 「と思います……」
+			CASE 1
+				PRINTW 「なんでこんな仕打ちを受けないといけないんですか……」
+				PRINTW 「家に帰ったらご主人様のプリン食べちゃいますからね……」
+			CASEELSE
+				PRINTW 「ひどいですよ……」
+				PRINTW 「でもまぁここまでは冗談ですよね？」
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 2
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「いやですよぉ、もうやめてください……」
+				PRINTW 「私、淫乱になっちゃいますよぉ……」
+			CASE 1
+				PRINTW 「ぐすん……」
+				PRINTW 「私、どうしたらいいのか……ご主人様に対してどんな反応したらいいのか」
+				PRINTW 「分からないんです」
+			CASEELSE
+				PRINTW 「快楽に溺れるのが怖くて……」
+				PRINTW 「自分の意思に相反して、嫌なのにご主人様に体を捧げることを考えると……」
+				PRINTW 「複雑で……怖くて……」
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 1
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「ご主人様は楽しいんですか？　こんなことして」
+				PRINTW 「私は……私は……」
+			CASE 1
+				PRINTW 「ご主人様、もうやめましょうよ、こんなこと」
+				PRINTW 「家に帰って……また普通に暮らしましょう？」
+			CASEELSE
+				PRINTW 「前はご主人様と暮らせて楽しかったのに……」
+				PRINTW 「今は、あまり楽しくないです」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「ご主人様…いつまで続けるんですか…？」
+			CASE 1
+				PRINTW 「…………」
+			CASEELSE
+				PRINTW 「なんで、こんなことをするんですか？」
+		ENDSELECT
+	ENDIF
+	RETURN 1
+ENDIF
+IF RAN == 2
+	IF DAY:5 == 1 && DAY:6 == 1 && TALENT:恋慕
+		PRINTW 「ああ、お前か」
+		PRINTW 部屋に入るといつもの光景で、いつも通りの藍がいた
+		PRINTW 「あけましておめでとう」
+		PRINTW 「今年は二人で去年よりも、もっともっと、いい年にしような」
+		PRINTW 「……な？」
+		PRINTL
+		PRINTL
+		PRINTW 「二人で……」
+		IF TALENT:快感に素直 == 0
+			TALENT:快感に素直 = 1
+			RAN:2 = 1
+		ENDIF
+		RAN:1 = 1
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「…来てくれたんだな」
+				PRINTW 藍は笑顔で、あなたを出迎える。
+				PRINTW 「式なら式なりに、ご奉仕してもらおうか」
+				PRINTW 「私のこと……気持よくして？」
+			CASE 1
+				PRINTW 部屋に入ると、既に藍は服を脱いであなたを誘うようにベッドに横になっている。
+				PRINTW 「待ってた……」
+			CASEELSE
+				PRINTW 「さ、今日も特別に調教されてやろう」
+				PRINTW 「上手くやってくれるな？」
+				PRINTW …何か腑に落ちない。
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 3
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「調教師か…式よりも有意義か…」
+				PRINTW 「ん…なんでもない。始めるぞ」
+			CASE 1
+				PRINTW 「べ、別に待っていたわけじゃ…」
+				PRINTW 「ないん…だからな…」
+			CASEELSE
+				PRINTW 「主である以上、自制くらいは…」
+				PRINTW ぶつぶつと呟く藍に声をかけると、藍は複雑な表情でこっちを向いた。
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 2
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「うん……？」
+				PRINTW 「んむぅ……」
+			CASE 1
+				PRINTW 「なぁ、もうやめにしないか？」
+				PRINTW 「お互い何も利益は無いだろう」
+			CASEELSE
+				PRINTW 「せめてやるなら……」
+				PRINTW 「気持よくしてくれないか？」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「いつまで続けるつもりだ…」
+				PRINTW 「今ならまだ間に合うぞ？」
+			CASE 1
+				PRINTW 「私も不覚だな…飼い犬に手を噛まれるとはこの事か」
+				PRINTW 「複雑な心境だな…色々と」
+			CASEELSE
+				PRINTW （式を統一できないとは…情か…）
+				PRINTW 「はぁ…今日もか…」
+		ENDSELECT
+	ENDIF
+ENDIF
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_21_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中も戻る
+;SIF TFLAG:899 >= 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+DRAWLINE
+TRYCALL K21_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K21_MESSAGE_END
+IF RAN:1 == 1
+	IF RAN == 1
+		PRINTW 「あぅ、ご主人様……」
+		PRINTW 「あの……その……」
+		PRINTW 「今年もたくさん、私を愛してくださいね？」
+		IF RAN:2
+			TALENT:抑圧 = 1
+			RAN:2 = 0
+		ENDIF
+		IF RAN:3
+			TALENT:快感に素直 = 0
+			RAN:3 = 0
+		ENDIF
+	ELSEIF RAN == 2
+		PRINTW 「ふふ、お前がいればいい年になりそうだな……」
+		PRINTW 「今年もよろしくな」
+		IF RAN:2
+			TALENT:快感に素直 = 0
+			RAN:2 = 0
+		ENDIF
+	ENDIF
+	RAN:1 = 0
+	RETURN 1
+ENDIF
+
+IF RAN == 1
+	IF TALENT:恋慕
+		IF BASE:0 < 500
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「はぁ…ん、はぁ…」
+					PRINTW 「私は…まだ大丈夫ですから…」
+					PRINTW そう言う藍をなだめながら、あなたは調教を終了した。
+				CASEELSE
+					PRINTW 「ご主っ…人様…」
+					PRINTW 「行っちゃダメ…私、もっとご主人様と居たいです…淫らなこと、したいです…」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「あぁ…ご主人様ぁ…」
+					PRINTW 「また…来てくださいね」
+				CASE 1
+					PRINTW 「ご主人様……もう終わっちゃうんですか……？」
+					PRINTW 「じゃ、じゃあ…その……」
+					PRINTW 「一人で…しますね…ご主人様のこと想いながら……」
+					PRINTW 「ご主人様も、私の痴態を想って…一人でしてくれますか……？」
+				CASEELSE
+					PRINTW 「えへへ…気持ちよかったですか？」
+					PRINTW 「私、ご主人様にもっと気持ちよくなってもらえるように頑張ります」
+			ENDSELECT
+		ENDIF
+	ELSEIF MARK:屈服刻印 == 3
+		SELECTCASE RAND:3
+			CASE 0
+				IF BASE:0 < 500
+					PRINTW 「激しすぎますよ…ご主人様…」
+					PRINTW 「はぁ…これが…式の務めでもありますけど…」
+				ELSE
+					PRINTW 「あふぅ……」
+					PRINTW 「私……上手にできましたか？」
+				ENDIF
+			CASE 1
+				PRINTW 「ん…ご主人様…」
+				PRINTW 「満足いただけましたか？」
+			CASEELSE
+				PRINTW 「はぁ…はぅ……」
+				PRINTW 「切ないよぉ……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				IF BASE:0 < 500
+					PRINTW 「激しすぎますよ…ご主人様…」
+					PRINTW 「はぁ…これが…式の務めでもありますけど…」
+				ELSE
+					PRINTW 「ぅん…」
+					PRINTW 「あ、終わりですか…」
+				ENDIF
+			CASEELSE
+				PRINTW 「こんなの…あんまりです……」
+				PRINTW 「ぐすん……」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		IF BASE:0 < 500
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「うぅ…こら」
+					PRINTW 「いくら私相手だからって…やり過ぎだと…」
+					PRINTW 「まぁ、意識が無くなるくらい激しいのも…」
+				CASEELSE
+					PRINTW 「ふぁー……」
+					PRINTW 「うにゃ……ごめん……私疲れたよ」
+					PRINTW 「ああ、また今度、来てくれ……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「なんだ、もうへばったのか？」
+					PRINTW 「また相手してやろう…いつでもな」
+				CASE 1
+					PRINTW 「ふふふ……私はまだできるぞ？」
+					PRINTW 「だからな……あとは察してくれないか？」
+				CASEELSE
+					PRINTW 「んっ…もう少し…触って欲しい……なんてな」
+					PRINTW 「ほら、さっさと行け。また…明日、その…来てくれ……」
+			ENDSELECT
+		ENDIF
+	ELSEIF MARK:屈服刻印 == 3
+		IF BASE:0 < 500
+			PRINTW 「はぁー、はぁー…」
+			PRINTW 「私に何か…恨みでもあるのか？」
+		ELSEIF RAND:2 == 0
+			PRINTW 「ん、ああ、終わりか…」
+			PRINTW 「…な、なんだ、いいから出て行け！」
+		ELSE
+			PRINTW 「ふん…」
+			PRINTW 「やるのなら気持ち良くやってもらいたいものだ」
+		ENDIF
+	ELSE
+		IF BASE:0 < 500
+			PRINTW 「はぁー、はぁー…」
+			PRINTW 「私に何か…恨みでもあるのか？」
+		ELSEIF RAND:2 == 0
+			PRINTW 「くぅ…まさか、こんなこと…」
+			PRINTW 「私の力不足か…？」
+		ELSE
+			PRINTW 「まったく、私を監禁するとは」
+			PRINTW 「おかしな趣味をしているんだな」
+		ENDIF
+	ENDIF
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_21_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中・失神回復時も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+
+;処女喪失時のメッセージ呼び出し
+SIF TFLAG:0
+	TRYCALL K21_MESSAGE_LOST_VIRGIN
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K21_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K21_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K21_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+
+;-------------------------------------------------
+;処女喪失
+;-------------------------------------------------
+@K21_MESSAGE_LOST_VIRGIN
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_21_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K21_MESSAGE_OVERLV2_10
+IF CFLAG:5330 == 0
+	IF RAN == 1
+		PRINTW 「あ……濡れて……」
+	ELSEIF RAN == 2
+		PRINTW 「ぬ、濡れてなんて……」
+	ENDIF
+	CFLAG:5330 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K21_MESSAGE_OVERLV2_13
+IF CFLAG:5335 == 0
+	IF RAN == 1
+		PRINTW （胸が……鼓動が……抑えられない……！）
+	ELSEIF RAN == 2
+		PRINTW 「ふぅー……ふぅー……」
+		PRINTW 「ふしゃぁ……」
+	ENDIF
+	CFLAG:5333 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K21_MESSAGE_OVERLV2_15
+IF CFLAG:5335 == 0
+	IF RAN == 1
+		PRINTW 「あまり……私の体を見ないでくださいっ……」
+		PRINTW 「は、は……は……恥ず……恥ずかしいです……」
+	ELSEIF RAN == 2
+		PRINTW 「そんな……じろじろと見ないでくれ……」
+	ENDIF
+	CFLAG:5335 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;-------------------------------------------------
+@K21_MESSAGE_OVERLV2_17
+;PRINTW 
+;CFLAG:5337 = 1
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5300～を使用
+;@KOJO_21_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_0
+IF RAN == 1
+	IF CFLAG:5300 == 0
+		PRINTW 「はぁぅ……な、なんか……きちゃう……！」
+		PRINTW 「うぐっ……あぅ……！」
+		CFLAG:5300 = 1
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「声出ちゃう……抑えられないよぉ……」
+				PRINTW 「あうっ、んくぅ……！」
+			CASE 1
+				PRINTW 「あぁ…………ご主人様……気持ち良くて……私、おかしくなっちゃいそうだよぉ……」
+				PRINTW 「私が……藍が絶頂するところ、見てください……っ！」
+			CASEELSE
+				PRINTW 「あう……そろそろ、イッちゃうかも……」
+				PRINTW 「ふぅ、ん……んっ……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「そ、それ以上、さっ、触ら……くっ……」
+				PRINTW 藍は絶頂に達したのか、唇を噛み締めながら震えた
+			CASE 1
+				PRINTW 「はっ、はっ、頭の中、蕩けちゃいそう……」
+				PRINTW 心なしか藍の頬は紅潮している
+			CASEELSE
+				PRINT 「ひゃぁぁ……
+				IF PENIS(TARGET)
+					PRINTW 私のおちんちん、びくびくしてる……」
+				ELSE
+					PRINTW お豆さん、じんじんすりゅ……」
+				ENDIF
+				PRINTW 「そっ、そんなに触らないでくだ……しあっ！」
+				PRINTW 「っっ、くっ、～～～～～～～～！！！」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF CFLAG:5300 == 0
+		PRINTW 「や、やめっ……それ以上触っ……」
+		PRINTW 「だめ……見ないで……っ」
+		CFLAG:5300 = 1
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「もっと……もっとぉ……」
+				PRINTW 「はぁはぁ………………溢れちゃう」
+				PRINTW 
+			CASE 1
+				PRINTW 「んっ、……」
+				IF PENIS(TARGET)
+					PRINTW 「我慢汁っ、くぅん、止まらないよぉ……」
+				ELSE
+					PRINTW 「愛液っ、くぅん、止まらないよぉ……」
+				ENDIF
+			CASEELSE
+				PRINTW 「なんか、もう……あたま真っ白で……気持ちいいっていうのだけ」
+				PRINTW 「ばかになっちゃいそう……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「はっ、はぅぅ……だめぇ……」
+				PRINTW 「そ、そ、そん……いぅっ、っっ！」
+			CASE 2
+				PRINTW 「やだっ……こんな、気持良くなんて……」
+				PRINTW 「な、ないぃ……のに、ぃっ……！」
+			CASEELSE
+				PRINTW 「だめ、だめ、だめぇ……」
+				PRINTW 「見ないでよぉ……そんな私の痴態なんて……」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_1
+;何を挿れられて絶頂したかの変数
+;TFLAG:9 = 今回実行したコマンドの種類(1=Ｖセックス系,2=Ａセックス系,5=フェラチオ系,10=素股系,19=調教者のＶで逆レイプ系,20=調教者のＡで逆レイプ系)
+;獣姦
+SIF (SELECTCOM:381 || SELECTCOM:383 || SELECTCOM:386)
+	Z = 1
+
+IF RAN == 1
+	IF TFLAG:9 == 1
+		IF TALENT:恋慕
+			SELECTCASE RAND:4
+				CASE 0
+					IF SELECTCOM:20 || SELECTCOM:22 || SELECTCOM:28
+						PRINTW 「ご主人様……ご主人様……！」
+						PRINTW 藍はあなたを強く抱きしめ、背中に爪を立てる
+						PRINTW 「大好き……大好き……っ！　ご主人様……っ！」
+						PRINTW 「っっ……！！」
+						PRINTW 「う……ふぁ……はぁ、はぁ……」
+						PRINTW 「私、もっと……ご主人様が……欲しいです……」
+					ELSE
+						PRINTW 「おまんこ、気持よくて……イッちゃいそう……！」
+						PRINTW 藍の膣内はきゅんと締まり、藍は声を抑えながら絶頂に達した
+						PRINTW 「いっ……ぐぅ………………！」
+						PRINTW 「…………にゃぅ……ご主人様…………」
+						PRINTW 「……………………えへへ」
+					ENDIF
+				CASE 1
+					PRINTW 「はぁ、はぁ……ああ、ダメ……」
+					PRINTW 「私、そろそろ……イッちゃうかも……」
+					PRINTW 「だから……ぎゅっと……してください……」
+					PRINTW 「んっ……っ……」
+					PRINTW 「ふぅ……ふっ……ぅ……」
+					PRINTW 「ご主人様……はぁ、はぁ……」
+				CASE 2
+					PRINTW 「イッちゃう……よぉ……！」
+					PRINTW 藍は体を震わせ、あなたのペニスを膣で咥え込みながら快楽に達した
+					PRINTW 「はぁ………………はぁ………………」
+					PRINTW 藍の目元に滲む涙を、あなたは指で軽く拭ってやると藍は優しい笑顔を見せた
+				CASEELSE
+					PRINTW 藍はあなたの指に自らの指を絡ませ、ぎゅっと握った
+					PRINTW 膣内はびくびくと震え、あなたのペニスに絡みついている
+					PRINTW 口元から漏れる声が、部屋に小さく響いていた
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「いやっ……嫌なのに……なんで……！」
+					PRINTW 「うぅぅ……イキたくない……」
+					PRINTW 「ひぐっ……うぐぅ……」
+				CASE 1
+					PRINTW 「んっ……」
+					PRINTW 「だめ……です……っ……ご主人様……」
+					PRINTW 「私は……私は、気持よくなんて……」
+				CASEELSE
+					PRINTW 「はぁ、はぁ……」
+					PRINTW 「イッちゃう……っ！」
+			ENDSELECT
+		ENDIF
+	;バイブで絶頂
+	ELSEIF TEQUIP:20 == 1
+		IF TALENT:恋慕
+			PRINTW 「あぁ……ばうぶれーしょん、すごいブルブル震えてて……もう……っ！」
+			PRINTW 「ぃ……っっ！　～～～～～～～～～～！！！」
+			PRINTW 「っ、ふ……はぁ、はぁ……」
+		ELSE
+			PRINTW 「わたし、そんなおもちゃで気持よくなるような……痴女じゃないのに……」
+			PRINTW 「あぁぅ……っっ～～～！」
+		ENDIF
+	;獣姦で絶頂
+	ELSEIF Z == 1
+		IF TALENT:恋慕
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「ご主人様以外のおちんちんで……おまんこ気持よくなっちゃ……っ！」
+					PRINTW 「あひっ……！　いっ……うくっ……っっ！」
+					PRINTW 「ぅ……はぁ、はぁ、ごめんなさい……ご主人様」
+				CASEELSE
+					PRINTW 「や、やぁ……！　私、もう昔のようなキツネじゃないのに……！」
+					PRINTW 「動物に犯されて……気持ちよくなってるなんて……っっっ！」
+					PRINTW 「あふっ、ぃにゃ……はふっっ！」
+			ENDSELECT
+		ELSE
+			PRINTW 「気持ちっ……悪いよぉ……」
+			PRINTW 「私はもうそんなケダモノじゃないのに……」
+			PRINTW 「あぁっ……くぅぅぅん…………」
+		ENDIF
+	ENDIF
+ELSEIF RAN == 2
+	IF TFLAG:9 == 1
+		IF TALENT:恋慕
+			SELECTCASE RAND:4
+				CASE 0
+					IF TFLAG:11 == 1
+						PRINTW 「イキそう……？　精子出そう……？」
+						PRINTW 「イこ？　一緒にイこう？」
+						PRINTW 「私は……出されても大丈夫だから」
+						PRINTW 「一緒に……ひゃぅ……出てる……ぅ」
+					ELSE
+						PRINTW 「私、も、もう……っ！」
+						PRINTW 藍がそう言った直後、膣がきゅぅと締り、膣内が痙攣していた
+					ENDIF
+				CASE 1
+					PRINTW 「こんなに……こんなに……気持ちよくなれるなんて……！」
+					PRINTW 「もっと……私を愛して……」
+					PRINTW 「はっ……ふっ……ぐぅっ、っっ！」
+					PRINTW 絶頂の余韻に浸りながら、藍はあなたの手をそっと握る
+					PRINTW 「私を………………感じて？」
+				CASE 2
+					PRINTW 「あっ、くぅん…………」
+					PRINTW 「……っ、はぁ、はぁ……ごめん、一人でイッちゃった……」
+					PRINTW 「一緒に……もっとたくさん気持ち良くなろう……？」
+				CASEELSE
+					PRINTW 「私は大丈夫っ、だから……もっと腰、振っ……」
+					PRINTW 「んんっ……んっ……はぅっ……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「くっ……式に……こんな辱めを……」
+					PRINTW 「やっ、なんで……あっ、あっ、～～～～っ！！」
+				CASE 1
+					PRINTW 「ぅゅ……体の中……ぐりぐりされて……うぅぅ……」
+					PRINTW 「イっ……やぁ、やだぁ……っっ……！！」
+				CASEELSE
+					PRINTW 「お前なんかで……絶、っ頂……ぐぅ」
+					PRINTW 「はぁ……か、勘違い……するんじゃないぞ……」
+					PRINTW 「私だって……こんなことされたら……」
+			ENDSELECT
+		ENDIF
+	;バイブで絶頂
+	ELSEIF TEQUIP:20 == 1
+		IF TALENT:恋慕
+			PRINTW 「あひぃぃぃ！イッちゃう！バイブでイッちゃう！ぶるぶるおもちゃで気持よくなっておまんこきゅうきゅうしちゃってるぅ！」
+			PRINTW 「ばいびゅ、ばいびゅきもちいよぉぉ！からだのそこから揺さぶられておかしくなっちゃうぅ！」
+		ELSE
+			PRINTW 「あぁぅ……らめぇ……もう、頭おかしくなっちゃ……」
+			PRINTW 「ばいぶ……こんなの反則……っ！」
+		ENDIF
+	ELSEIF Z
+		IF TALENT:恋慕
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「はぁぅ……ケダモノに犯されて……」
+					PRINTW 「私、なんで悦んで……っ！」
+				CASEELSE
+					PRINTW 「はっ、ぅぅ、っ～～～～！」
+					PRINTW 「……はぁ、これで……子供なんてできちゃったらどうしよう……」
+			ENDSELECT
+		ELSE
+			PRINTW 「やめろぉ……低俗なケモノなんかと交わって……そんなところ、傍観しやがって……」
+			PRINTW 「っ、おか、……おかしいよ、こんなの……」
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_2
+IF RAN == 1
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「もっと根本まで……一番ぶっといところまで突っ込んで……」
+				PRINTW 「そう、あっ……自分でも締め付けてるの……分かる……」
+			CASE 1
+				PRINTW 「ご主人様……おしりの穴で気持良くなってイッちゃって……前もぐっしょり濡れてるの分かりますか？」
+				PRINTW 「ほら……ね？気持よくて、こんなぐちょぐちょになってます……」
+			CASEELSE
+				PRINTW 「私のおしり……気持ちいいですか？」
+				PRINTW 「おしりなんて使うのご主人様だけだし……もっと乱暴に扱ってもいいですよ……」
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 3
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「はぁっ、はぁっ、お尻の穴で…」
+				PRINTW 「イクぅ……っ！　イっちゃうっ！」
+			CASE 1
+				PRINTW 「あぁ……気持ちいいよぉ……」
+				PRINTW 「おしりの穴で気持ちよくなるなんて……私やっぱり……」
+				PRINTW 「変態……なのかな……」
+			CASEELSE
+				PRINTW 「ご主人様……私の手……握って……？」
+				PRINTW 「んっ……これで、安心して……気持よくなれます……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「こんなところ……本当は気持よくなんてならないはずなのにぃ……」
+				PRINTW 「私……肉便器になっちゃうよぉ……」
+			CASEELSE
+				PRINTW 「こんなところでばっかり気持ちよくなってたら……」
+				PRINTW 「普通に生活できなくなっちゃいそう……」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「尻穴が好きなんだろう……？」
+				PRINTW 「なら搾り取って、私の尻じゃないと、出ないように……してっ……」
+				PRINTW 「んぐっ……ふ、ふふ、し、してやろう……」
+			CASE 1
+				PRINTW 「膣とどっちが気持ちいい？」
+				PRINTW 「どちらにせよ……私はどっちも気持ちいいよ……」
+			CASEELSE
+				PRINTW 「もうちょっと内側……あっ、そこ……あっ、う……！！」
+				PRINTW 「あ、良い……ぐぅ……あっ、ぐ……」
+				PRINTW 「あぁ……はぁ、はぁ……」
+		ENDSELECT
+	ELSEIF MARK:屈服刻印 == 3
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「うぅ……妊娠しないからまだマシだが……」
+				PRINTW （私も……こいつの子供を産みたいと思う時がくるのか……？）
+			CASEELSE
+				PRINTW 「あっ、くううぅうぅぅ……っ！」
+				PRINTW 藍はくぐもった声をあげると、尻穴の異物を強く締め付けながら絶頂を迎えた
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「こんな……ありえない、気持よくなんて……」
+			CASEELSE
+				PRINTW 「んっ……はぅっ！」
+				PRINTW 「あっ……いや、そんな……」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_3
+IF RAN == 1
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「乳首、熱くなって……」
+				PRINTW 「おっぱい溶けちゃいそう……」
+			CASE 1
+				PRINTW 「切ないよぉ……乳首、じんじんする……」
+				PRINTW 「お母さんになったときに……ちゃんとおっぱいあげられるかな……」
+			CASEELSE
+				PRINTW 「ご主人様ぁ……もっと、おっぱい触ってください……」
+				PRINTW 「あぁ、もっと、もっとぉ……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「おっぱいで……イッちゃう、なんて……」
+				PRINTW 「ふぁ……前は一人でやっててもこんな気持ちよくはなかったんだけどなぁ……」
+			CASE 1
+				PRINTW 「なんかどんどん気持ち良くなって……あぁ、なにこれぇ……」
+				PRINTW 「おっぱいだけじゃなくて……体中ひくひくするよぉ……」
+			CASEELSE
+				PRINTW 「あひっ……いやっ、ぁん、ちょっ……」
+				PRINTW 「あぅっ、ち……くぅぅん……」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「ねぇ……もっと激しくして……」
+				PRINTW 「うん……私、もうそろそろ……げん、かい……」
+				PRINTW 「っ……見て…………っっ！」
+			CASE 1
+				PRINTW 「乳首ぃ……乳首良いよぉ……」
+				PRINTW 「ほら……もっと触って……」
+				PRINTW 「私も触ってあげるから……」
+			CASEELSE
+				PRINTW 「はっ、はぅ、おっぱいしゅごい……」
+				PRINTW 「いろいろ……出ちゃいそう……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「はぁ、胸、しびれてきて…っ」
+				PRINTW 「んっ、んぁぁぁぁん！」
+			CASE 1
+				PRINTW 「くっ…………」
+				PRINTW 「…………イってなんて……いない……」
+			CASEELSE
+				PRINTW 「そんな……触らないでくれぇ……」
+				PRINTW 「悔しくて……気持よくて……おかしくなる……」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5304
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_10
+;初めて
+IF CFLAG:5304 == 0
+	;PRINTW 
+	;CFLAG:5304 = 1
+;２回目以降
+ELSE
+	;PRINTW 
+ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:5305
+;IF TFLAG:9 == 6で逆奉仕系コマンドで手に射精した場合を参照
+;IF TFLAG:9 == 7で逆奉仕系コマンドで口に射精した場合を参照
+;IF TFLAG:9 == 8で獣姦系コマンドで動物に中出しした場合を参照
+;IF TFLAG:9 == 19でＶで逆レイプされて射精した場合を参照可
+;IF TFLAG:9 == 20でＡで逆レイプされて射精した場合を参照可
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_11
+;どこに射精したかの判定
+IF (SELECTCOM == 321 || SELECTCOM == 329)
+	TFLAG:9 = 6
+ELSEIF (SELECTCOM == 5 || SELECTCOM == 330 || SELECTCOM == 331 || SELECTCOM == 335 || SELECTCOM == 602 || SELECTCOM == 603)
+	TFLAG:9 = 7
+ELSEIF (SELECTCOM == 382 || SELECTCOM == 384)
+	TFLAG:9 = 8
+ENDIF
+IF CFLAG:5305 == 0
+	IF RAN == 1
+		PRINTW 「やぁ…っ！　何…これ！」
+		PRINTW 「おちんちん、びくっ、て…！　腰、浮いちゃいそう…！」
+		PRINTW 「で、出るん……ですか……？　私……射精する……んっ……！」
+		PRINTW 震える藍のペニスは、一瞬少量の精液を吐き出したかと思うと
+		PRINTW すぐさま大量の白い液体を何度も飛ばした
+		PRINTW 「あうっ……んっ……やだ……止まらない……」
+		PRINTW ぶるっ、ぶるっ、と震えながら、断続的に精液を放つ藍のペニスは
+		PRINTW 萎えることを知らず鈴口から大量の子種を噴き出していた
+		PRINTW 「あん……私の、せいし……？」
+		PRINTW 「すごい……たくさん……」
+		PRINTW 「ご……ご主人様……」
+		PRINTW 「私、おとこのこになっちゃったの……かな？」
+	ELSEIF RAN == 2
+		PRINTW 「あっ…ぐっ…そ、それ以上は……！」
+		PRINTW 「み、み…見るなっ…いやっ…はっ…ぅんっ…！」
+		PRINTW 「………………で、出ちゃ……っ！」
+		PRINTW 藍は体を震わせ、その勃起したペニスから大量の精液を吐き出した
+		PRINTW 「やっ、だめ……見なっ…止まらない……」
+		PRINTW 「はうっ……こんなの……」
+		PRINTW 「この……ばか……」
+	ENDIF
+	CFLAG:5305 = 1
+	RETURN 1
+ENDIF
+
+IF RAN == 1
+	IF TALENT:恋慕
+		S = RAND:7
+	ELSE
+		S = RAND:3
+	ENDIF
+	SELECTCASE S
+		CASE 0
+			PRINTW 「やぁぁ……出ちゃうよぉ……男の子みたいに、白いのぴゅっぴゅしちゃう……」
+			PRINTW 顔を紅くする藍のペニスをさらに激しく弄ると、藍のペニスがびくんと跳ね、何かが決壊したように精液が溢れだした
+			PRINTW 「あっ……んっ、やっ……んんんっ……」
+		CASE 1
+			PRINTW 「なんか……いつもと違ってどろって出てるような……」
+			PRINTW 藍は自分のペニスからほとばしる精液を指に絡め、それを舐めとった
+			PRINTW 「ちゅぱ……いつもより苦いかも……」
+			PRINTW 「ご主人様も舐めてみます？」
+		CASE 2
+			PRINTW 「あっ……」
+			PRINTW 藍は力のない声を上げると、その可愛い顔に似合わぬ巨根から大量の精液を垂れ流した
+			PRINTW 「えへへ……出ちゃいました」
+			PRINTW 「………………私、まだまだ出せますよ？」
+			PRINTW 
+		CASE 3
+			PRINTW 「ご主人様…おちんちん、気持ちいいです……」
+			PRINTW 「出そう……もっと激しくして……」
+			PRINTW 「んっ…………ん……」
+			PRINTW 藍のペニスから白い精液が溢れ、藍は口元から小さな声を漏らしていた
+			PRINTW 「あぅ……しゃせー、気持ちいい……」
+			PRINTW 「ご主人様にも種付けしたいなぁ……」
+		CASE 4
+			PRINTW 「あっ……」
+			PRINTW なんの前触れもなく藍の股間から白い液体がこぼれだし、藍は目を潤せながらこちらを見つめていた
+			PRINTW 「ごめんなさい……我慢できなくて、出ちゃいました……」
+		CASE 5
+			PRINTW 「はっ、はっ、止まらない、せーえき、きもちいいの……止まらないよぉ……」
+			PRINTW 「あぅ……私の精液って、やっぱりすごく多いですよね……」
+			PRINTW 「こんなのご主人様に出したら……ご主人様妊娠しちゃうかも……」
+		CASEELSE
+			PRINTW 「んっ……あっ……」
+			PRINTW 「まだ出てる……止まらない……」
+			PRINTW 「……何、見てるんですか？私がせーえきぴゅーぴゅーするの、そんなにえっちですか……？」
+	ENDSELECT
+ELSEIF RAN == 2
+	;調教者の腸内に射精
+	IF TFLAG:9 == 20
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「くっ……ほら、どうだ……私の精液は……」
+				PRINTW 「お前の中にたくさん注いで……まだ足りないのか、淫乱め」
+				PRINTW 「私も……お前の中が気持ちいいよ……」
+			CASEELSE
+				PRINTW 「あぁ……私がびゅっ、びゅっ、って出すごとに、お前のペニスも震えて……」
+				PRINTW 「ふふふ、我慢しなくてもいいぞ……」
+				PRINTW 「私と一緒に、たくさん、いくらでも出して気持ちよくなろう……」
+		ENDSELECT
+	ELSE
+		IF TALENT:恋慕
+			S = RAND:5
+		ELSE
+			S = RAND:3
+		ENDIF
+		SELECTCASE S
+			CASE 0
+				PRINTW 「んっ……私から白いのたくさん出てる……」
+				PRINTW 「あぁ……いろんなところ汚れちゃう……」
+			CASE 1
+				PRINTW 「すごい量……しかも、濃い……」
+				PRINTW （一人でやったときはこんなに出なかったんだけどなぁ……）
+			CASE 2
+				PRINTW 「ほぅら、私の精液で染めてやる……」
+				PRINTW 藍は震えるペニスをあなたにあてがい、そのまま射精した
+				PRINTW 「お前に……マーキングしてる……精液びゅーしてる……」
+				PRINTW 「一緒に……私の精液でもっとどろどろになろう♪」
+			CASE 3
+				PRINTW 「ふ、ふふ……んっ、ほら……たくさん出てるよ……」
+				PRINTW 「お前の中にも注いでやりたいな♪」
+				PRINTW 「きっと……気持ちいいよ……お互いに」
+			CASEELSE
+				PRINTW 「はぅぁ……まだ止まらない……どくどく噴き出してるよぉ……」
+				PRINTW 「おちんぽ気持ちいい……私、男になったほうがいいのかな……」
+				PRINTW 藍は自分から溢れ出る精液を手に絡ませ、艶のある表情で舐めとりながらあなたに熱い視線を送っていた
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:5306
+;放尿または強制放尿コマンド時は呼び出さない（排除）
+;主藍は現在未対応。これからにご期待ください
+;-------------------------------------------------
+@K21_MESSAGE_ORGASM_12
+IF RAN == 1
+	;強制放尿
+	IF SELECTCOM == 620
+		IF TALENT:恋慕
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「んっ……え、えへへ……おしっこ出そうなの、分かります？」
+					PRINTW 「うん………………見て…………」
+					PRINTW 「ご主人様になら…………見せてあげる♪」
+					PRINTW 藍はあなたを見て頬を染めながら、股間に指を添えて放尿した
+				CASE 1
+					PRINTW 「…………おしっこ出そう、かも」
+					PRINTW もじもじと太ももを擦り合わせる藍に、あなたは我慢は体に悪いと言った
+					PRINTW 「ん、ありがとうございます……じゃ、じゃあ……我慢せずに……」
+					PRINTW そう言うと、藍は何の躊躇いもなくその場で尿を漏らした
+				CASEELSE
+					PRINTW 「も、もう……出していいですか？」
+					PRINTW 「ていうか……もう我慢出来ないです……」
+					PRINTW 「ぅん………………気持ちいいよぉ……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「いやっ……だめ……おしっこ、出ちゃう……」
+					PRINTW 「み、見ちゃだめぇ……」
+					PRINTW 藍は手のひらで顔を覆い隠しながら、尿道からちょろちょろとこがね色の液体を垂れ流した
+					PRINTW 「もうやだ……こんなの……恥ずかしくて死にたい……」
+				CASEELSE
+					PRINTW 「だっ、だめっ……おしっこの穴いじっちゃ……だめぇ……」
+					PRINTW 藍は尿道から溢れ出る聖水を指で必死にどうにかしようとするが、指の間から全部漏れだしてしまっている
+					PRINTW 「ああぁ……止まらないよぅ……」
+			ENDSELECT
+		ENDIF
+	;自主的な放尿
+	ELSEIF SELECTCOM == 111
+		IF TALENT:恋慕
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 藍はしゃがんで脚をＭ字にして、目を閉じて放尿した
+					PRINTW 尿道から放物線を描いて流れ出る聖水は、床に水たまりを作って広がっていく
+					PRINTW 錯乱しそうな甘い香りと、性欲を刺激するような獣の香りが辺りに漂っていた
+				CASE 1
+					PRINTW 「…………かけていい？ご主人様？」
+					PRINTW 「えへへ、ありがとうございます……」
+					PRINTW 藍はあなたに抱きついて股を擦り付けると、そこから生暖かい液体を出した
+					PRINTW 「ご主人様は私のものだっていうマーキングです♪」
+				CASEELSE
+					PRINTW 「ご主人様……おしっこ……」
+					PRINTW そう言って藍はあなたの目の前で放尿した
+					PRINTW 「藍の恥ずかしい姿……たくさん見て……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 0
+					IF PENIS(TARGET)
+						PRINTW 藍は勃起したペニスを片手で摘みながら、力を入れている
+						PRINTW 勃起しているせいか、うまく出ないようだ
+						PRINTW その場にしゃがんで、脚をＭ字に開けてくぐもった声を出している
+						PRINTW やっと出たと思いきや、予想以上に勢いがあったのか、驚いてすぐに止まってしまった
+						PRINTW 「もう嫌ですよこんなの……女の子なのに……おちんちんからおしっこなんて……」
+					ELSE
+						PRINTW 「あぅ……我慢、できない……」
+						PRINTW 「はぁ、はぁ……私のおしっこなんて、そんなに見ないで……」
+					ENDIF
+				CASEELSE
+					PRINTW 「トイレ行きたいよぉ……こんなところで、不潔です……」
+					PRINTW そう言いながらも、藍は諦めたように尿を漏らしている
+			ENDSELECT
+		ENDIF
+	;飲尿。ちんこ付いてる場合は調教者の口に突っ込んで放尿する
+	ELSEIF SELECTCOM == 145
+		IF TALENT:恋慕
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「はぅ……おしっこ………………気持ちいい…………」
+					PRINTW 「飲んでもらうのも……ご主人様の顔……す、すごく、えっちです……」
+				CASE 1
+					PRINTW 「ご主人様の口元、おしっこでびしょびしょです……」
+					PRINTW 「おいしかったですか？」
+				CASEELSE
+					PRINTW 「私のおしっこ、全部飲んで……ご主人様……」
+					PRINTW 「はぁ、はぁ、私、ご主人様のお口、便器にしてる……」
+					PRINTW 「全部……私の、全部あげる……ご主人様……ご主人様……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「うぅ……ご主人様の口におしっこしてる……」
+					PRINTW 「汚いですよぉ……」
+				CASEELSE
+					PRINTW 「ご主人様……やっぱり、口に出さないと、だめです……よね」
+					PRINTW 「んっ……飲むのは……勝手ですから……」
+			ENDSELECT
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;膣内に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_11
+IF TFLAG:35 == 1
+	IF RAN == 1
+		IF TALENT:恋慕
+			SELECTCASE RAND:5
+				CASE 0
+					PRINTW 「はっ……はっ……」
+					PRINTW 「そろそろ、出そう、ですよね……？」
+					PRINTW 「……いいですよ、私の中に、ご主人様の精子、いっぱい……お願いします」
+					PRINTW 「はぅぅ……おなか、あったかい……」
+					PRINTW 「子宮、ご主人様でいっぱいだよぉ……」
+				CASE 1
+					PRINTW 「種付けっ、種付けっ、せーしいっぱいっ！」
+					PRINTW 「きつねのこうびっ！　私の中にせいしどくどくしてるぅっ！」
+					PRINTW 「……おなかほわほわしてるよぉ……」
+					PRINTW 「赤ちゃんできちゃう……かな……？」
+				CASE 2
+					PRINTW 「出してっ！　中に出してっ！」
+					PRINTW 「ご主人様の……ご主人様の赤ちゃんの素……いっぱい注いでぇ……！」
+					PRINTW 「私のおまんこで、ご主人様のおちんちん暴れて……しゅごい……」
+				CASE 3
+					PRINTW 「ご主人様……私、赤ちゃん、欲しいな……」
+					PRINTW 「んっ、えへへ……たくさん出てますね……」
+					PRINTW 「ありがとうございます……大好きです」
+				CASEELSE
+					PRINTW 「ご主人様……子宮こつこつしてぇ……」
+					PRINTW 「出して……子宮に直接、全部出して……」
+					PRINTW 「あぅ……子宮、精液でいっぱいだよぉ……」
+					PRINTW 「幸せ……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「だ、だめぇ……」
+					PRINTW 「赤ちゃん、できちゃうよぉ……」
+				CASE 1
+					PRINTW 「うぅ……」
+					PRINTW 「嫌です、膣内射精なんて……」
+					PRINTW 「抜いてください……」
+				CASEELSE
+					PRINTW 「やっ、やめっ……」
+					PRINTW 「んむぅ……だめですよぉ……」
+			ENDSELECT
+		ENDIF
+	ELSEIF RAN == 2
+		IF TALENT:恋慕
+			SELECTCASE RAND:5
+				CASE 0
+					PRINTW 「中に、出したいんだろう？」
+					PRINTW 「……いいよ……いっぱい出して」
+					PRINTW 「んっ……精子……あったかくて、お腹気持ちいい……」
+					PRINTW 「もっと出して……」
+				CASE 1
+					PRINTW 「おちんちん、びくんびくんって……」
+					PRINTW 「あぅ……出てる……私の膣内で、びゅっびゅっ、て出てる……」
+					PRINTW 「ふふふ、気持よかったんだな」
+					PRINTW 「いいよ……好きなだけ出せば。私は受け止めてやるから……」
+				CASE 2
+					PRINTW 「はふっ……はふっ……」
+					PRINTW 藍の中に子種を放つと、藍は体を震わせながら蕩けた目でこちらを見つめてくる
+					PRINTW 「…………………………もっと」
+					PRINTW あなたは藍の体を抱きしめ、最後の一滴まで注ぎ込んだ
+				CASE 3
+					PRINTW 「出そう……？　震えてるぞ……？」
+					PRINTW 「いつでも出していいからな……」
+					PRINTW 「…………大好き」
+					PRINTW その一言で、あなたは我慢できずに射精してしまった
+					PRINTW 「んっ……ふふ……かわいいよ……とっても……」
+				CASEELSE
+					PRINTW 「気持ちいい……？　私の中、気持ちいいか？」
+					PRINTW 「うん……ありがとう……」
+					PRINTW 「たくさん、出してくれ……一緒に気持ちよくなろう？」
+					PRINTW 「んっ……たくさん、出てるよぉ……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTW 「あああっ、中は……中はだめだ……っ！」
+					PRINTW 「やだ……いやだ……」
+					PRINTW 「くっ……」
+				CASE 1
+					PRINTW 「やだ……やめてくれっ……！」
+					PRINTW 「妊娠したら……どうするんだ……」
+				CASEELSE
+					PRINTW 「いい加減に……」
+					PRINTW 「くそ……嫌なのに……」
+			ENDSELECT
+		ENDIF
+	ENDIF
+ELSE
+	IF RAN == 1
+		IF TALENT:恋慕
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「だ、だめだよぉ……」
+					PRINTW 「ご主人様だけの、おまんこなのに……」
+				CASEELSE
+					PRINTW 「うぅぅ……」
+					PRINTW 「ご主人様以外のせいし、出されるなんて……」
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 0
+					PRINTW 「やっ、ダメ……」
+					PRINTW 「中は、だめです……」
+				CASEELSE
+					PRINTW 「ひどいよぉ……」
+					PRINTW 「ぬるぬるして、気持ち悪いです……
+			ENDSELECT
+		ENDIF
+	ELSEIF RAN == 2
+		IF TALENT:恋慕
+			PRINTW 「くぅ……どうしても、中に出すのか……？」
+			PRINTW 「うぅ…………仕方なっ……あぁ……出てるよぉ……」
+			PRINTW 「複雑な気分……」
+		ELSE
+			PRINTW 「なんで……………………」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルに射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_12
+
+;-------------------------------------------------
+;髪に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_13
+IF RAN == 1
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「あぅ……頭に出しちゃって……」
+				PRINTW 「んっ……べとべとです」
+				PRINTW 藍は髪に放たれた精液を指で掬うと、音を立てていやらしく舐めとった
+			CASE 1
+				PRINTW 「で、出ちゃいましたね……えへへ」
+				PRINTW 「耳……ぽかぽかする……」
+			CASEELSE
+				PRINTW 「ひゃぅ……す、すごい量……」
+				PRINTW 「私の髪……精液でまっしろになっちゃいそうです」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「きゃっ……」
+				PRINTW 「うぅ……なんか、洗うのが大変そう……」
+			CASEELSE
+				PRINTW 「わ……たくさん……」
+				PRINTW 「そんなに髪の毛にかけたいんですか……？」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「うんっ……たくさん出たな……気持ちよかったか……？」
+				PRINTW 「もっと……出していいんだぞ？　髪でも、どこでも」
+				PRINTW 「ふふ……」
+			CASEELSE
+				PRINTW 「……こんなところに出して……」
+				PRINTW 「こういうの、興奮するのか……？」
+				PRINTW 「ん、いいよ……ほら、ちゃんと全部出そう」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「なんか……嫌だな……」
+				PRINTW 「変な感じ……」
+			CASEELSE
+				PRINTW 「私なんかの髪に出して何が良いのだか……」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;顔に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_14
+IF RAN == 1
+	PRINTW 「たくさん……出ましたね……」
+	PRINTW 「な、な、なんか……その……」
+	PRINTW 「えっちなビデオみたいです……」
+ELSEIF RAN == 2
+	PRINTW 「わ……顔がべとべと……」
+	PRINTW 「ん、何……見てるんだ？」
+ENDIF
+
+;-------------------------------------------------
+;口に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_15
+IF RAN == 1
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「んんっ…」
+				PRINTW 「たくさん出ましたね。全部飲んであげます」
+				PRINTW 藍は口の中に溜まった精液を喉を鳴らして飲み干し
+				PRINTW 口元からこぼれ落ちる精液を舌で舐めとった
+			CASE 1
+				PRINTW 藍の口内に射精すると、その小さな口には収まりきらず
+				PRINTW あなたのペニスを伝って精液が流れ落ちていった……
+				PRINTW 「あ……ごめんなさい……」
+				PRINTW 「全部、舐めとってあげますね」
+				PRINTW そう言って藍は、果てずに勃起するあなたのペニスに舌を這わせ始めた
+				PRINTW あなたはまた腹の奥から射精感がこみ上げるのを感じた
+			CASEELSE
+				PRINTW 「はぁ……はぁ……
+				PRINTW 藍は飲みきれなかった精液を自分の手に吐き出し、それを蕩けた目で見つめていた
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「んんっ…」
+				PRINTW 「たくさん出ましたね。全部飲んであげますね」
+			CASEELSE
+				PRINTW 「出し過ぎですよぉ……ご主人様……」
+				PRINTW 「私の口、せーえきでどろどろ……」
+		ENDSELECT
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTW 「んんっ…」
+				PRINTW 「たくさん出たな。全部飲んでやろう」
+			CASE 1
+				PRINTW 「じゅる……んっ、こくっ……」
+				PRINTW 「ははは……随分とたくさん出たな？」
+				PRINTW 「もっと出してもいいんだぞ……いくらでも搾り取ってやる」
+			CASEELSE
+				PRINTW 「あっ……げほっ、げほっ……」
+				PRINTW 「す、すまない……ちょっと急だったから……」
+				PRINTW むせて咳をする藍の頭をそっと撫でると、藍は少し苦しそうな顔をしながらも笑顔を見せた
+				PRINTW 「ごめんな……もう一回、いいか？」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTW 「んんっ！っ……」
+				PRINTW 藍は無理やり精液を飲ませられ、表情に嫌悪感を浮かばせている……
+				PRINTW 「あぁぁっ、くそ……汚らわしい」
+			CASEELSE
+				PRINTW 「ぺっ……」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_16
+
+;-------------------------------------------------
+;腹に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_17
+
+;-------------------------------------------------
+;腋に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_18
+
+;-------------------------------------------------
+;手に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_19
+
+;-------------------------------------------------
+;秘裂に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_20
+
+;-------------------------------------------------
+;竿に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_21
+
+;-------------------------------------------------
+;尻に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_22
+
+;-------------------------------------------------
+;太腿に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_23
+
+;-------------------------------------------------
+;足に射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_24
+
+;-------------------------------------------------
+;調教者がキスで射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_26
+IF RAN == 1
+	IF TALENT:恋慕
+		PRINTW 「ん……」
+		PRINTW 「キスしただけで出しちゃうなんて、いけませんね♪」
+		PRINTW 「でも、嬉しい……私も気持ちいいですよ……」
+	ELSE
+		PRINTW 「ひぇっ……なんか出てる……」
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		PRINTW 「あ……せーし、出てる……」
+		PRINTW 「私とのキス……そんなに気持ちいいのか……？」
+	ELSE
+		PRINTW 「な、なんだこれは……」
+		PRINTW 「キスで射精するとか、どんな早漏だ……」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_27
+IF RAN == 1
+	IF TALENT:恋慕
+		PRINTW 「ご主人様ぁ……」
+		PRINTW 「私の中にも出して……？」
+	ELSE
+		PRINTW 「ひゃぁぁ……な、中に出してる……」
+		PRINTW 「なんか……すごい……」
+	ENDIF
+ELSEIF RAN == 2
+	IF TALENT:恋慕
+		PRINTW 「わ、私以外の人に……中出しするなんて……」
+		PRINTW 「ちょっと悔しい……」
+	ELSE
+		PRINTW （二人共、そんなに気持ちいいのかな……）
+	ENDIF
+ENDIF 
+
+;-------------------------------------------------
+;調教者がコンドームに射精
+;-------------------------------------------------
+@K21_MESSAGE_EJAC_PLAYER_28
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_21_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RETURN 0
+;口枷がある場合も戻る
+;SIF TEQUIP:42
+;	RETURN 0
+;失神中・失神回復時も戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K21_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+@K21_MESSAGE_MARK0_1
+IF CFLAG:5310 == 0
+	IF RAN == 1
+		PRINTW 「ひぎっ！　痛っ、痛っイイ！」
+		CFLAG:5310 = 1
+	ELSEIF RAN == 2
+		PRINTW 「ぐっ……この程度の痛み……！」
+		CFLAG:5310 =1
+	ENDIF
+ENDIF
+@K21_MESSAGE_MARK0_2
+IF CFLAG:5310 <= 1
+	IF RAN == 1
+		PRINTW 「痛い！　痛いっ！　やめてください！　死んでしまいます！」
+		CFLAG:5310 = 2
+	ELSEIF RAN == 2
+		PRINTW 「ぐっ……わ、わ、私はこのくらい……」
+		PRINTW 口では強気だが、藍の目尻には確かに涙が浮かんでいた
+		CFLAG:5310 = 2
+	ENDIF
+ENDIF
+@K21_MESSAGE_MARK0_3
+IF CFLAG:5310 <= 2
+	IF RAN == 1
+		PRINTW 「痛すぎて悟りを開いた気がする」
+		CFLAG:5310 = 3
+	ELSEIF RAN == 2
+		PRINTW 「いぐっ……くぅ……そんなに痛くしないでくれ……」
+		CFLAG:5310 = 3
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;-------------------------------------------------
+@K21_MESSAGE_MARK1_1
+IF CFLAG:5311 == 0
+	IF CFLAG;8001 == 1
+		PRINTW 「あ……」
+		PRINTW 「ちょっと気持ちいいかも……」
+		CFLAG:5311 = 1
+	ELSEIF RAN == 2
+		PRINTW 「うぅん……なんか体が……熱くなってきたような……」
+		CFLAG:5311 = 1
+	ENDIF
+ENDIF
+@K21_MESSAGE_MARK1_2
+IF CFLAG:5311 <= 1
+	IF RAN == 1
+		PRINTW 「はぅ……気持ちいよぉ……」
+		PRINTW 「もっと……シて……？」
+		CFLAG:5311 = 2
+	ELSEIF RAN == 2
+		PRINTW 「……………………いいかもしれない」
+		CFLAG:5311 = 2
+	ENDIF
+ENDIF
+@K21_MESSAGE_MARK1_3
+IF CFLAG:5311 <= 2
+	IF RAN == 1
+		PRINTW 「あぁん……えっち気持よすぎてやめらんないよぉ……」
+		CFLAG:5311 = 3
+	ELSEIF RAN == 2
+		PRINTW 「式とまぐわってるだけなのにぃ……」
+		PRINTW 「気持ちよくて……頭おかしくなっちゃいそう……」
+		CFLAG:5311 = 3
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+@K21_MESSAGE_MARK2_1
+;CFLAG:5312 = 1
+
+@K21_MESSAGE_MARK2_2
+;CFLAG:5312 = 2
+
+@K21_MESSAGE_MARK2_3
+;CFLAG:5312 = 3
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+@K21_MESSAGE_MARK3_1
+;CFLAG:5313 = 1
+
+@K21_MESSAGE_MARK3_2
+;CFLAG:5313 = 2
+
+@K21_MESSAGE_MARK3_3
+;CFLAG:5313 = 3
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+@K21_MESSAGE_MARK4_1
+;CFLAG:5314 = 1
+
+@K21_MESSAGE_MARK4_2
+;CFLAG:5314 = 2
+
+@K21_MESSAGE_MARK4_3
+;CFLAG:5314 = 3
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+@K21_MESSAGE_MARK6_1
+;CFLAG:5316 = 1
+
+@K21_MESSAGE_MARK6_2
+;CFLAG:5316 = 2
+
+@K21_MESSAGE_MARK6_3
+;CFLAG:5316 = 3
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_21_MESSAGE_LOOK_VIDEO
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_21_MESSAGE_IMPRESSION
+;PRINTFORML 　　　「」
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_21_MESSAGE_SINGLE_ENDING
+PRINTW ―――単体エンド条件達成―――
+PRINTW …………
+PRINTW ………
+PRINTW ……
+PRINTW 
+;エキストラモード選択コマンド[0]選択
+IF RAN == 1
+	PRINTW 私は、自分の主の相手をしてきた。
+	PRINTW 過去形。
+	PRINTW ご主人様が亡くなったのはいつだったか。
+	PRINTW 数百年前の9月12日。「調教師の呪い」というものに蝕まれてのことだった。
+	PRINTW 私は泣いた。
+	PRINTW そう、ご主人様を愛していたから。
+	PRINTW 心から。
+	PRINTW 
+	PRINTW 今日は命日。私はご主人様の墓の前に来ていた。
+	PRINTW 崖の上にぽつんとあるその墓。秋の夕暮れに照らされて、その全体が見える。
+	PRINTW 苔むして風化した墓。名前も掠れて読み取れない。だが読み取れなくても、ずっと私の頭から消えることはないだろう。
+	PRINTW そして、来ているのは私だけではなかった。
+	PRINTW 「紫様……」
+	PRINTW 私のもう一人のご主人様、八雲紫。
+	PRINTW 「……来てたのね、藍」
+	PRINTW 「はい」
+	PRINTW 紫様はぽつりと聞く。それに私は小さく答えた。
+	PRINTW 「今日は命日ですから」
+	PRINTW そう言うと、少し間を置いて紫様が口を開いた。
+	PRINTW 「初めては、あの人に捧げたかった？」
+	PRINTW 「……はい」
+	PRINTW その質問に答えたあと、涙が溢れてきた。
+	PRINTW 私は妖狐として、そして紫様の式として、ご主人様が調教師として目覚める前から様々な男に体を委ねていた。
+	PRINTW でも、そこに愛は無く、ただ功利だけを求めての、風俗みたいなものだった。
+	PRINTW ご主人様が調教師に目覚めてから、私がご主人様に恋をしてから、そのことを後悔した。
+	PRINTW 私の処女はご主人様に捧げたかった。
+	PRINTW 「あなた、藍（あい）の花言葉、知ってる？」
+	PRINTW 「え？　いえ……」
+	PRINTW 「じゃあ教えてあげるわ」
+	PRINTW 
+	PRINTW 「美しい装い」
+	PRINTW 
+	PRINTW 「美しい…装い…」
+	PRINTW 私はつられて口を開いた。その言葉を。
+	PRINTW 「美しく、可愛らしい女であることをあの人は望んだのかもしれないわね」
+	PRINTW 「そう…ですか…」
+	PRINTW 「だからもう泣くのはやめなさい。墓の前で泣いたって意味なんてないわよ？」
+	PRINTW 私は袖で涙を拭う。
+	PRINTW 「分かりました」
+	PRINTW 「じゃ、帰りましょ。うちの猫も待ってるだろうし」
+	PRINTW 「…そうですね、ふふっ」
+	PRINTW 「何かおかしいこと言った？」
+	PRINTW 「いえ、嬉しかっただけですよ」
+	PRINTW ご主人様が望んだ美しさ。
+	PRINTW なら、この美しさを、これからも大切に守っていこう。
+	PRINTW ご主人様が転生する、その時まで。
+	PRINTW そして私たちはその場を去った。
+	PRINTW 
+	PRINTW 藍が咲き誇るその崖を――
+ELSEIF RAN == 2
+	PRINTW あなたが家に帰ると、そこには藍の姿はなかった。
+	PRINTW 今日も仕事は決まらなかった。調教師から足を洗ったあなたは、新しい人生の第一歩として、今仕事を探している。
+	PRINTW だが、現実は厳しく、なかなか見つからないのが現状だ。
+	PRINTW 台所の椅子に座ると、テーブルの上に置いてある一枚の書き置き。そこには藍の字で、こう書かれてあった。
+	PRINTW 『おかえり。今日もお疲れ様。仕事決まるといいな。』
+	PRINTW 『お前だけでは家計もつらいだろうから、私も何か紫様を頼って仕事を探すことにするよ』
+	PRINTW 『いつもいつも大変だけど、私はそんなお前に本当に感謝している』
+	PRINTW 『たとえ仕事が決まらなかったとしても、また一緒に食卓を囲もうな』
+	PRINTW 『お前の妻　藍より』
+	PRINTW 
+	PRINTW あなたの目から涙が零れた。
+ENDIF
+
+PRINTW 
+PRINTW 　　　　　　　　―― Ending No.1021 (藍エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_21_MESSAGE_SINGLE_ENDING_AFTER
+;PRINTW 
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_21_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTW ―――奴隷エンド条件達成―――
+PRINTW …………
+PRINTW ………
+PRINTW ……
+;PRINTW 
+PRINTW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_21_MESSAGE_SLAVE_ENDING_AFTER
+;PRINTW 
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_21_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K21, ARG, ARG:1
+;DRAWLINE
+;PRINTW 　%CSVCALLNAME(21,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.21 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.21の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_21
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.21の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_21
+PRINTL [21] プロローグNo.21 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.21 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_21
+PRINTW 　　　　　　　　―― Prologue No.21 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.21に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.21に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_21
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.21に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_21
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.21 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.21の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_21
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.21 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_21
+
+;………………………………………………
+;キャラ追加イベントを盛り込む場合
+;………………………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;………………………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.21 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

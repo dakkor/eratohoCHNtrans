@@ -1,0 +1,2400 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-2 rev.6用 分割型口上テンプレート
+;13をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==================================================
+;橙口上
+;==================================================
+;==================================================
+;コマンド口上
+;初回判定にCFLAG:9000～9099までの100個を使用する
+;初回かどうかはRESULT:1が1かどうかで判別
+;==================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_13_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_13_TRAIN_MESSAGE_S_COM_0
+;初回のみ
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「にゃ！何！？…これ、変…だよぉ」
+		PRINTFORMW 橙はもたらされる快感に戸惑っている。
+	;それ以外
+	ELSE
+		PRINTFORMW 「にゃっ！」
+		PRINTFORMW 橙は体をこわばらせ、抵抗している。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕+屈服刻印Lv3
+	IF TALENT:恋慕 == 1 && MARK:屈服刻印 == 3
+		PRINTFORMW 「ふにゃぁ…気持ちいいよぁ…」
+		PRINTFORMW 橙は快楽に身をゆだねながら、%CALLNAME:MASTER%にもたれかかっている。
+	;服従+屈服刻印Lv3
+	ELSEIF TALENT:服従 == 1 && MARK:屈服刻印 == 3
+		PRINTFORMW 「はぁ…きもちいぃっ…ですっ」
+		PRINTFORMW 橙はリラックスして、愛撫されている。
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「はぁぁ…」
+		PRINTFORMW 橙は愛撫を受け入れ、感じている
+	;屈服刻印Lv2
+	ELSEIF MARK:屈服刻印 == 2
+		PRINTFORMW 「あっ……ん…」
+		PRINTFORMW 橙は、身をよじって、%CALLNAME:MASTER%からもたらされる快感を否定している。
+	;それ以外
+	ELSEIF MARK:屈服刻印 <= 1
+		PRINTFORMW 「いやぁ……ダメぇ…」
+		PRINTFORMW 橙は必死に抵抗している。
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_1
+;初回のみ
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「あっ…そこっ…きたな…あっ」
+		PRINTFORMW 橙は感じながらも、嫌がっているようだ。
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめてぇ！」
+		PRINTFORMW 橙は足を閉じようと必死だ。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋処女
+	IF TALENT:恋慕 == 1 && TALENT:処女 == 1
+		PRINTFORMW 「舌も…いいけど…これだけ濡れてれば…その…入れれるから……」
+		PRINTFORMW 橙は物足りなさそうだ。
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「%CALLNAME:MASTER%に、なめてもらうの…すきぃ…」
+		PRINTFORMW 橙は気持ちよさそうだ。
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 「%CALLNAME:MASTER%のを、受け入れられるように、いっぱい濡らしてください」
+		PRINTFORMW 橙は気持ちよさそうだ。
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「ふぅ……んっ…」
+		PRINTFORMW 橙は素直に受け入れている。
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめてぇ！」
+		PRINTFORMW 橙は足を閉じようと必死だ。
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_2
+;初回のみ
+IF TFLAG:95 == 1
+	PRINTFORMW 「えっ何！？そこ…違…」
+	PRINTFORMW 橙は驚きが隠せないようだ。
+;２回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 「いい…気持ちいいのぉ……すきぃ」
+		PRINTFORMW 橙は、%CALLNAME:MASTER%の指に手を重ねて、さらに求めている。
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 「もっと、やさしく…してぇ…」
+		PRINTFORMW 橙のアナルは、まだ、硬く閉じている。
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 「いい…気持ちいいっですぅ…」
+		PRINTFORMW 橙は、%CALLNAME:MASTER%の指に手を重ねて、さらに求めている。
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 「いっ痛い…です。もっと…優しく、してっください……」
+		PRINTFORMW 橙のアナルは、まだ、硬く閉じている。
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 「いい…きもちいいのぉ…」
+		PRINTFORMW 橙は、%CALLNAME:MASTER%の指に手を重ねて、さらに求めている。
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやぁ、痛いの……やめてぇ！」
+		PRINTFORMW 橙は泣きながら抵抗している
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_3
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「はぁ…おっぱい、気持ちいいよぉ…もっとぉ」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;3Lv3以上
+	ELSEIF ABL:3 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_4
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「あぁ…気持ちいけど……足りないのぉ…」
+		PRINTFORMW 「%CALLNAME:MASTER%の…いれてぇ…」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_5
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上
+	IF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		IF RAND:3 == 0
+			PRINTFORMW 「んっ…ぺろぺろぺろ……えへへ…気持ちいい？」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「んっ…%CALLNAME:MASTER%の…おいしい……」
+		ELSE
+			PRINTFORMW 「お口の中…%CALLNAME:MASTER%のがいっぱい…」
+			PRINTFORMW 橙は嬉しそうだ
+		ENDIF
+	;服従＋奉仕精神Lv5
+	ELSEIF TALENT:服従 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_6
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「んっ…やっぱり恥ずかしいけど…それ以上に、うれしいな」
+		PRINTFORMW 橙は満面の笑顔を浮かべた
+	;恋慕なし＋反発刻印LV3
+	ELSEIF TALENT:恋慕 == 0 && MARK:反発刻印 == 3
+		PRINTFORMW キスをしようとすると唇をかまれた。
+		PRINTFORMW 仕方がないのでそのまま唇を押し付けた
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっ…何するの！キスは好きな人とって…藍しゃまが」
+		PRINTFORMW 橙は顔を背け、恐怖で目を硬く瞑っている。
+		PRINTFORMW 抵抗する橙を押さえつけキスするとチェンは泣き出した。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ん……あん…ぁ…」
+		PRINTFORMW 橙に深く口づけると積極的に舌を絡めてきた
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;3Lv3以上
+	ELSEIF ABL:3 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_7
+;初めて
+IF TFLAG:95 == 1
+	PRINTFORMW 「えっ自分で？…こんなの…おかしいよぉ」
+	PRINTFORMW 橙は恐る恐る、いじっている。
+;二回目以降
+ELSE
+	;恋慕＋自慰中毒Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+		PRINTFORMW 「気持ちいいの…好きぃ、いじるの…すきぃ…」
+		PRINTFORMW 「でも、一番好きなのは……%CALLNAME:MASTER%にしてもらうこと。」
+		PRINTFORMW 橙は自慰に夢中になっている。
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「こんなの、チェン…切ないよぅ……」
+		PRINTFORMW 「ねぇ……してっ」
+		PRINTFORMW 橙は頬を上気させながら、おねだりしている。
+	;服従＋自慰中毒Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:自慰中毒 >= 3
+		PRINTFORMW 「気持ちいいの…好き…ですぅ…いじるの…すき、なんですぅ…」
+		PRINTFORMW 橙は自慰に夢中になっている。
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 「んっ……はぁぁぁん……あっ…気持ちいい…です」
+	;自慰中毒Lv3以上
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 「気持ちいいの…好きぃ、いじるの…すきぃ…」
+		PRINTFORMW 橙は自慰に夢中になっている。
+	;それ以外
+	ELSE
+		PRINTFORMW 「やぁ……こんなのダメ…」
+		PRINTFORMW 橙は嫌々、自慰をしている。
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_9
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「何も…しないの？……イジワル」
+		PRINTFORMW 「チェンは、%CALLNAME:MASTER%に……してほしいのにぃ…」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 「なにも…されないんですか？……そうですか…」
+		PRINTFORMW 何もしないことを改めて言うとチェンは落胆した表情を浮かべた。
+	;それ以外
+	ELSE
+		PRINTFORMW （ほっ…やっと終わったのかなぁ……）
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「うぅ…焦らさないでぇ……」
+		PRINTFORMW 橙は甘えた目で%CALLNAME:MASTER%をにらんでいる。
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;欲望Lv3以上
+	ELSEIF ABL:欲望 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 「何もしないなら、早く放して！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_10
+;初回のとき
+IF TFLAG:95 == 1
+	;屈服刻印Lv3+恋慕
+	IF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1
+		PRINTFORMW 「ろーたー？　よくわかんないけど…でも、%CALLNAME:MASTER%がしてくれることなら、なんでもうれしいよ…」
+	;屈服刻印Lv3+服従
+	ELSEIF MARK:屈服刻印 == 3 && TALENT:服従 == 1
+		PRINTFORMW 
+	;恋慕なし＋反発刻印LV3
+	ELSEIF TALENT:恋慕 == 0 && MARK:反発刻印 == 3
+		PRINTFORMW 「それの変なので橙をどうするつもり！？」
+		PRINTFORMW 「橙は何されても、耐え抜くし、いつか絶対仕返ししてやるんだからぁ！」
+		PRINTFORMW 橙はローターを見るといつも以上に敵対心を見せた。
+	;それ以外
+	ELSE
+		PRINTFORMW 「それ、何のおもちゃ？　橙に変なこと…するための物じゃ、ない…よね？」
+		PRINTFORMW 橙は知らないが故に、未知の恐怖に襲われている。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「それも気持ちいいけど…%CALLNAME:MASTER%に直接してもらいたいな…」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;屈服刻印LV3以上
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_11
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「チェンのこと、マッサージしてくれるの？」
+		PRINTFORMW 「えっちょっと！そこ違う…使い方……おかしいよぅ」
+	;それ以外
+	ELSE
+		PRINTFORMW 「マッサージ器？ さすがに、それでチェンに何かしようって言うんじゃないよね？」
+		PRINTFORMW 橙は警戒している。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋C調律経験300以上or恋慕＋淫乱
+	IF (TALENT:150 == 1 && EXP:41 >= 300) || (TALENT:150 == 1 && TALENT:170 == 1)
+		PRINTFORMW 「あぁぁ…気持ちいいのぉ…もっとっもっとぉ」
+		PRINTFORMW 橙は電気按摩の強烈な快楽が気に入ったようだ
+	;恋慕＋Ｃ調律経験300未満
+	ELSEIF TALENT:恋慕 == 1 && EXP:41 < 300
+		PRINTFORMW 「それ…気持ち良すぎて怖いの……やめてぇ」
+		PRINTFORMW 橙は電気按摩の強烈な快感におびえている
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_12
+;外したとき
+IF TEQUIP:20 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;初めて
+ELSEIF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_13
+;外したとき
+IF TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ELSEIF TFLAG:95 == 1
+	;処女（処女でないキャラの場合は無記入でよい）
+	IF TALENT:処女 == 1
+		;恋慕+従順Lv5
+		IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;服従+従順Lv5
+		ELSEIF TALENT:服従 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			 PRINTFORMW
+		ENDIF
+	;非処女
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;2Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;2Lv3以上
+	ELSEIF ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クリキャップ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_14
+;外したとき
+IF TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ELSEIF TFLAG:95 == 1
+	;処女（処女でないキャラの場合は無記入でよい）
+	IF TALENT:処女 == 1
+		;恋慕+従順Lv5
+		IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;服従+従順Lv5
+		ELSEIF TALENT:服従 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			 PRINTFORMW
+		ENDIF
+	;非処女
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;0Lv3以上
+		ELSEIF ABL:0 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;0Lv3以上
+	ELSEIF ABL:0 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_15
+;外したとき
+IF TEQUIP:35 == 0
+		;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ELSEIF TFLAG:95 == 1
+	;処女（処女でないキャラの場合は無記入でよい）
+	IF TALENT:処女 == 1
+		;恋慕+従順Lv5
+		IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;服従+従順Lv5
+		ELSEIF TALENT:服従 == 1 && ABL:従順 >= 5
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			 PRINTFORMW
+		ENDIF
+	;非処女
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;3Lv3以上
+		ELSEIF ABL:3 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;3Lv3以上
+	ELSEIF ABL:3 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_16
+;外したとき
+IF TEQUIP:30 == 0
+	;PRINTFORMW 「オナホール解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用オナホール口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「オナホール口上です」
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_17
+;外したとき
+IF TEQUIP:30 == 0
+	;PRINTFORMW 「電極オナホール解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用電極オナホール口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「電極オナホール口上です」
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_20
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_21
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「こんな格好でするの…？チェンは化け猫だけど、これじゃ本当に、ただのネコさんだよぉ」
+		IF EXP:0 == 1 
+			PRINTFORMW 「これっ…痛いけど…痛いけど……気持ちいいのぉ」
+		ELSE
+			PRINTFORMW 「んぁっ！いつもと違うとこ当たって…変になっちゃうよぉ」
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_22
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「んっ…深いよぉ……奥までっ気持ちいいのぉ」
+		PRINTFORMW 「キスっ…ねぇ…キスしてっ」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_23
+;初回のみ
+IF TFLAG:95 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW
+	ENDIF
+ENDIF 
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_24
+;初回のとき
+;初回のみ
+IF TFLAG:95 == 1
+	IF TALENT:150 == 1 && TALENT:0 == 1
+		PRINTFORMW 「%CALLNAME:MASTER%…チェンの初めて…あげるね」
+		PRINTFORMW 極端に狭い中が一物を包んでいく感覚に酔いしれていると、何かを引きはがすような感覚を感じた
+		PRINTFORMW 「んっ……痛っ…くない…よ」
+		PRINTFORMW 橙の両目からは涙がにじんでいるが橙はそれさえ悟られまいと、必死で笑顔を作っている
+		PRINTFORMW 「全部…入ったよ」
+		PRINTFORMW 「………動くね」
+		PRINTFORMW 橙が腰を引くと%CALLNAME:MASTER%の一物には橙の純潔を奪った証がついていた
+		PRINTFORMW 「ん……あっ………くぅ……はぁ」
+		PRINTFORMW 橙の声に僅かだが悦びの色が混じってきた
+		PRINTFORMW 「はぁ…あっ…んぅ……あぁぁ」
+		PRINTFORMW 橙の緩慢な動きに合わせ%CALLNAME:MASTER%も少しずつ腰を前後させると橙の声ははっきりと快楽を感じるものになっていた
+		PRINTFORMW 　
+		PRINTFORMW 「んっ…あぁ…」
+		PRINTFORMW 行為を終え%CALLNAME:MASTER%の一物を抜き去ると
+		SIF TFLAG:103
+		PRINT 精液とまじりあった
+		PRINTFORM 破瓜の血がこぼれていた
+		PRINTFORMW 「その…あんまり痛くなかったよ……%CALLNAME:MASTER%がやさしくしてくれたから…」
+		PRINTFORMW そういうと橙は恥ずかしさからか顔を伏せてしまった
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_25
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_26
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「うぅ…そんなに見せつけて……チェンより%CALLNAME:ASSI%の方がいいの……？」
+		PRINTFORMW 橙は目に大粒の涙を浮かべて%CALLNAME:ASSI%を犯す%CALLNAME:MASTER%を見ている
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 「いくら%CALLNAME:MASTER%の命令でも、見ているだけというのは……」
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「うぅ…そんなに見せつけて……チェンより%CALLNAME:ASSI%の方がいいの……？」
+		PRINTFORMW 橙は目に大粒の涙を浮かべて%CALLNAME:ASSI%を犯す%CALLNAME:MASTER%を見ている
+		IF PREVCOM == 26 && RAND:20 == 0
+			PRINTFORMW 「ねぇ……答えてよ……」
+			PRINTFORMW 橙は底冷えするような声で%CALLNAME:MASTER%に問いかけた
+			PRINTFORMW [0]あたりまえだ 
+			PRINTFORML [1]橙の方がいい
+			PRINTFORMW [2]無視
+			$ZYOSYUWOOKASU
+			INPUT
+				IF RESULT != 0 && RESULT != 1 && RESULT != 2
+					GOTO ZYOSYUWOOKASU
+				ELSEIF RESULT == 0 
+					PRINTFORMW 「……………」
+					PRINTFORMW 　
+					PRINTFORMW 　
+					PRINTFORMW 　
+					PRINTFORMW 「そう………」
+					PRINTFORMW それだけ言うと橙は黙ってしまった。
+					PRINTFORMW 　
+					PRINTFORMW 橙は%CALLNAME:MASTER%を完全に嫌いになったようだ
+					SIF TALENT:152 == 1 || TALENT:153 == 1
+						PRINTFORMW 愛されていると思っていた橙は裏切られた衝撃で心が壊れたようだ
+					SIF TALENT:152 == 1 || TALENT:153 == 1
+						TALENT:167 = 1
+					TALENT:150 = 0
+					TALENT:152 = 0
+					TALENT:153 = 0
+					TALENT:160 = 0
+					TALENT:11 = 1
+					TALENT:21 = 1
+					TALENT:32 = 1
+					TALENT:43 = 1
+					TALENT:138 = 1
+					BASE:0 = 1
+					BASE:1 = 0
+					BASE:8 = 0
+					CFLAG:2 = 0
+				ELSEIF RESULT == 1 
+					PRINTFORMW 「なら……それを証明して！%CALLNAME:ASSI%じゃなくてチェンが好きなら…」
+					PRINTFORMW 「今すぐに、チェンだけを愛して…嫌なこと全部忘れられるくらいメチャクチャにして！！」
+					PRINTFORMW 「それでもう…他の娘となんかとは…別れてよぉ……その分も橙がいっぱいいっぱい相手するから…だから……おねがい…」
+						PRINTFORML [0]わかった
+						PRINTFORML [1]すまないが仕事として続ける
+						PRINTFORMW [2]他の娘も愛す
+						$ZYOSYUWOOKASU_2
+						INPUT
+						IF RESULT != 0 && RESULT != 1 && RESULT != 2
+							GOTO ZYOSYUWOOKASU_2
+						ELSEIF RESULT == 0 
+							PRINTFORMW 「ほんと…？」
+							PRINTFORMW 「ありがとう！これからもチェンを…チェンだけをいっぱい…いっぱい愛して」
+							PRINTFORMW %CALLNAME:MASTER%がうなずくと橙は泣きながら抱きついてきた
+							PRINTFORMW 橙は%CALLNAME:MASTER%に今までとは比べ物にならない愛情を覚えた
+							CFLAG:2 = CFLAG:2*2
+							TALENT:19 = 1
+							TALENT:63 = 1
+							TALENT:70 = 1
+								;CVABの中で最も経験が多いもの（CVは調律ABは快楽）を敏感にする
+								IF EXP:41 > EXP:42 && EXP:43 && EXP:44
+									TALENT:100 = 1
+								ELSEIF EXP:42 > EXP:41 && EXP:43 && EXP:44
+									TALENT:102 = 1
+								ELSEIF EXP:43 > EXP:41 && EXP:42 && EXP:44
+									TALENT:104 = 1
+								ELSEIF EXP:44 > EXP:41 && EXP:42 && EXP:43
+									TALENT:106 = 1
+								ENDIF
+							CFLAG:7010 = 1
+						ELSEIF RESULT == 1 
+							PRINTFORMW 「………」
+							PRINTFORMW 　
+							PRINTFORMW 　
+							PRINTFORMW 　
+							PRINTFORMW 「仕方がないか…」
+							PRINTFORMW しばらくの沈黙の後、橙はつぶやく様にそういった
+							PRINTFORMW 「お仕事…だもんね……いいよ」
+							PRINTFORMW 「それでもね…チェンのこと好きだって…チェンの方がいいって言ってくれて嬉しかったよ…ありがとう…」
+							PRINTFORMW 　
+							PRINTFORMW 「あっ……なんか変な感じになっちゃったね…そのごめんねっ続けて続けてっ」
+							PRINTFORMW 橙は顔を真っ赤にしながら慌てて取り繕い、続けるように促した。
+						ELSEIF RESULT == 2
+							PRINTFORMW 「なんで………」
+							PRINTFORMW 「チェンの方がいいって……言ってくれたのに……」
+							PRINTFORMW 「チェン…すっごく……嬉しかったのに……」
+							PRINTFORMW 「他の娘の方がホントはいいんでしょ……いいよ。嘘…つかなくて…」
+							PRINTFORMW 「チェンが…勝手に好きになっただけで…%CALLNAME:MASTER%にとっては…チェンなんてどうでもいいんだもんね……」
+							PRINTFORMW 橙はあなたに騙されていたのだと思ったようだ
+								SIF TALENT:152 == 1 || TALENT:153 == 1
+									TALENT:167 = 1
+							TALENT:150 = 0
+							TALENT:152 = 0
+							TALENT:153 = 0
+							TALENT:21 = 1
+							CFLAG:2 = 100
+							BASE:0 = 1
+							BASE:1 = 0
+						ENDIF
+				ELSEIF RESULT == 2
+					PRINTFORMW 「そう……だよね…%CALLNAME:MASTER%にとって…これは仕事…だもんね…」
+					PRINTFORMW 「変なこと聞いて…ごめん……もう、かまわないから……続けて…」
+					PRINTFORMW 早口にそれだけ言うと橙はうつむいてしまった
+					PRINTFORMW 顔を伏せているので表情はわからないが、床は涙で次第に濡れていった。
+					PRINTFORMW 　
+					PRINTFORMW 橙はあなたへの愛情が無駄だと知った
+					TALENT:152 = 0
+					TALENT:153 = 0
+					CFLAG:2 = 1000
+					BASE:0 = 1
+					BASE:1 = 0
+				ENDIF
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_27
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_28
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「この格好…いやだ……」
+		PRINTFORMW 「…ちゃんと%CALLNAME:MASTER%の顔見ながらしたい…」
+		PRINTFORMW 橙は不満そうにそういうと顔をそむけた
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;1Lv3以上
+	ELSEIF ABL:1 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_30
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_31
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_32
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_33
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_34
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_35
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用逆アナルレイプ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「逆アナルレイプ口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_36
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手のＡを犯す口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手のＡを犯す口上です」
+ENDIF
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_37
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 = 1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_38
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF CFLAG:7014 == 0
+			PRINTFORMW 「ねぇ…入れて……えっそっち…冗談だよね…？」
+			PRINTFORMW 「うっうそっ！そんなの入るわけないよ」
+			PRINTFORMW 「…ん……痛っ………もう、やめて…」
+			PRINTFORMW [0]無理やり入れる
+			PRINTFORMW [1]やさしく入れる
+			PRINTFORMW [2]やめる
+			INPUT
+			IF RESULT == 0
+				PRINTFORMW 「痛いっ痛いの！お願いヤメテェェ」
+				PRINTFORMW 橙が泣きながらやめるよう、懇願するが無視して根元まで突きこんだ
+				PRINTFORMW 「うっ…うう…痛い……早く…抜いてよぉ…ばかぁ」
+				SOURCE:20 += 2000
+				SOURCE:32 += 800
+				EXP:33 += 1
+			ELSEIF RESULT == 1
+				PRINTFORMW 「痛い…けど……%CALLNAME:MASTER%がどうしてもって言うなら…チェン…頑張るから…」
+				PRINTFORMW 「優しく…してね…」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				SOURCE:2 += 10
+			ELSE
+				PRINTFORMW 「やめて…くれるの……」
+				PRINTFORMW 「ありがと…」
+				PRINTFORMW 「でも…その……あの…%CALLNAME:MASTER%がしたいなら…その……いいよ…」
+				PRINTFORMW 「チェン…%CALLNAME:MASTER%のためなら……頑張れるから…ね」
+				PRINTFORMW 「はあぁぁぁぁぁ…だんだん…入ってきてるぅ…」
+				PRINTFORMW 橙が少しでも痛くないよう、息をゆっくり吐くよう言うと、橙のアナルは少しづつ一物を受け入れていった
+				CFLAG:2 += 5
+			ENDIF
+			CFLAG:7014 =1
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	;それ以外
+	ELSE
+		IF CFLAG:7014 == 0
+			CFLAG:7014 = 1
+		ENDIF
+	ENDIF
+;二回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2以上
+	ELSEIF TALENT:服従 == 1 && P >= PALAMLV:2
+		PRINTFORMW 
+	;服従+潤滑Lv2未満
+	ELSEIF TALENT:服従 == 1 && P < PALAMLV:2
+		PRINTFORMW 
+	;潤滑Lv2以上＋2Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_40
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上
+	IF ABL:奉仕精神 >= 3
+		PRINTFORMW 「しこしこしこ…えと、こんな感じ…？」
+	;それ以外
+	ELSE
+		PRINTFORMW 「うぅなんでチェンがこんな事…」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;服従＋奉仕精神Lv5
+	ELSEIF TALENT:服従 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_41
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv4以上
+	IF ABL:奉仕精神 >= 4
+		PRINTFORMW 「あ～ん…ぺろぺろ…チェン上手に出来てる？痛くない？」
+		PRINTFORMW 「いっぱい気持ちよくしてあげる…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あ～ん…ぺろぺろ…チェン上手に出来てる？痛くない？」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 「ぺろぺろぺろ……熱いよ…チェンがいっぱい気持ちよくしてあげるね」
+		IF RAND:5 == 0 
+			PRINTFORMW チェンのフェラが弱まったので橙を見ると、橙は肉棒を咥えたまま自慰していた。
+			PRINTFORMW 「その…ごめん。こんなことしてたら、我慢できなくなっちゃって………」
+			PRINTFORML 　
+			PRINTFORMW 自慰経験+1
+			EXP:10 += 1
+			PALAM:0 += 200
+			PALAM:1 += 100
+			PALAM:10 += 200
+			PALAM:13 += 300
+			PALAM:15 += 50
+		ENDIF
+	;服従＋奉仕精神Lv5
+	ELSEIF TALENT:服従 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_42
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上
+	IF ABL:奉仕精神 >= 3
+		PRINTFORMW 「えっ…胸で？チェン…胸ないよ」
+		PRINTFORMW 「それでも？…わかった」
+	;それ以外
+	ELSE
+		PRINTFORMW 「チェンが…胸で？そんなの無理だよぉ…」
+		PRINTFORMW 「うぅ……こんなの……グス」
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;服従＋奉仕精神Lv5
+	ELSEIF TALENT:服従 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_43
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕＋処女
+	IF TALENT:150 == 1 && TALENT:0 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「こんなことしたら…%CALLNAME:MASTER%のが欲しくなっちゃうよぉ」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「うぅ…入れてくれるんじゃないんだ…」
+		ELSE
+			PRINTFORMW 「うぅ…焦らさないでぇ……早く入れてよぉ…」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「こんなことしたら…%CALLNAME:MASTER%のが欲しくなっちゃうよぉ」
+		ELSE
+			PRINTFORMW 「うぅ…焦らさないでぇ……早く入れてよぉ…」
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 「気持ち…いいですか？」
+	;それ以外
+	ELSE
+		PRINTFORMW 「もし入れたら……」
+		PRINTFORMW 橙は鋭い眼光で%CALLNAME:MASTER%を睨んだ
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「こんなことしたら…%CALLNAME:MASTER%のが欲しくなっちゃうよぉ」
+		ELSE
+			PRINTFORMW 「うぅ…焦らさないでぇ……早く入れてよぉ…」
+		ENDIF
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_44
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_45
+;初回のみ
+IF TFLAG:95 == 1
+	PRINTFORMW 「チ、チェンの…おしりを……犯して…ください…」
+	PRINTFORMW 「これでいいの？」
+	PRINTFORMW 橙は恥ずかしそうに言い切ると、%CALLNAME:MASTER%を睨みつけた
+;２回目以降
+ELSE
+	IF TALENT:150 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「チェンのおしり…%CALLNAME:MASTER%のが欲しくてこんなにひくついてるんだよ」
+			PRINTFORMW 「だから早く橙のおしりにちょうだいっ」
+		ELSE
+			PRINTFORMW 「ねぇもう我慢できないの…早くチェンのおしり犯してぇ」
+			PRINTFORMW 「お願い…焦らさないでぇ…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_46
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用足舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「足舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_47
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用足扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「足扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_48
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用髪扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「髪扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_49
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用腋扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「腋扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_50
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用全身扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「全身扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_51
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用尻扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「尻扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_52
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用竿扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「竿扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_53
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用玉揉み強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「玉揉み強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_54
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用玉舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「玉舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_55
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル愛撫強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル愛撫強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_60
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ひゃんっ…冷たっ……なんかネバネバで変なの…」
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_61
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 「なんか、ヌルヌルする…」
+		PRINTFORMW 「あれ？体が、熱い…」
+		PRINTFORMW 「何コレッ、全身がうずいちゃうよぉ」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「こんなのなくったって…その、%CALLNAME:MASTER%がしてくれればチェンは……気持ちいいよ…」
+		PRINTFORMW 橙は言い終わると、照れて顔を覆った。
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_62
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕+おもらし癖
+	IF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 
+	;服従+おもらし癖
+	ELSEIF TALENT:服従 && TALENT:おもらし癖
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従
+		PRINTFORMW 
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋おもらし癖＋野外プレイ
+	IF TALENT:150 == 1 && TALENT:45 == 1 && TEQUIP:52
+		PRINTFORMW 「こんなところで、チェンにおもらしさせたいの？」
+		PRINTFORMW 「もぉ～%CALLNAME:MASTER%のエッチ～」
+		PRINTFORMW 「えへへ…チェンもこういうの好きだけどね」
+		PRINTFORMW 橙は利尿剤を一気に飲み干すと、全身を振るわせた。
+	;恋慕+おもらし癖
+	ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 「はぁ…これ好きなの…いっぱい、出すのぉ…」
+		PRINTFORMW 橙は利尿剤を一気に飲み干すと、全身を振るわせた。
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「これ…飲むの？…チェン、おもらししちゃうよ…？」
+		PRINTFORMW まだ、橙には恥じらいのほうが大きいらしい。
+	;服従+おもらし癖
+	ELSEIF TALENT:服従 && TALENT:おもらし癖
+		PRINTFORMW 「これ飲んで…いっぱい、おもらししますね…」
+		PRINTFORMW 橙は利尿剤を一気に飲み干すと、全身を振るわせた。
+	;服従
+	ELSEIF TALENT:服従
+		PRINTFORMW 「これ…飲むんですかぁ？…その……おもらし…しちゃうとおもうけど……」
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「はい…飲みます……」
+		PRINTFORMW 橙は顔色を悪くしながらも、飲み干した。
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやっ！」
+		PRINTFORMW その一言と共に橙は口を閉じた。
+		PRINTFORMW 仕方が無いので橙の鼻をつまんで無理矢理に飲ませた。
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_63
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用座薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「座薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_64
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用座薬(膣)口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「座薬(膣)口上です」
+ENDIF
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_65
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用強精神薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「強精神薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_66
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用排卵誘発剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「排卵誘発剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_67
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用緊急避妊薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「緊急避妊薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_68
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用産卵促進剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「産卵促進剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_69
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用陰核成長剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「陰核成長剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_70
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用興奮剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「興奮剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_71
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手避妊薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手避妊薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_72
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用感覚増幅薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「感覚増幅薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_80
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用クリトリス注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「クリトリス注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_81
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ヴァギナ注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ヴァギナ注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_82
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_83
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用バスト注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「バスト注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_84
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用尿道注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「尿道注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_85
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用Ｃ肥大注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「Ｃ肥大注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_86
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用Ｃ強精神薬注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「Ｃ強精神薬注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_88
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用採血注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「採血注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_90
+;外す
+IF TEQUIP:59 == 0
+	;PRINTFORMW 「裸エプロン解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	IF TALENT:150 == 1
+		PRINTFORMW 「ご飯にする？お風呂にする？そ・れ・と・も・チェンにする？」
+		PRINTFORMW 「えへへ…一回言ってみたかったんだ」
+	ENDIF
+;２回目以降
+ELSE
+	;PRINTFORMW 「裸エプロン口上です」
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_91
+;外す
+IF TEQUIP:59 == 0
+	;PRINTFORMW 「スク水プレイ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「えへへ……その、似合ってる？」
+	ENDIF
+;２回目以降
+ELSE
+	IF TALENT:150 == 1
+		PRINTFORMW 「もぅ橙にこんなの着せたいなんて…%CALLNAME:MASTER%のエッチ」
+		PRINTFORMW 恥ずかしがってはいるが嫌がってはいないようだ
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お医者プレイ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_92
+;外す
+IF TEQUIP:57 == 0
+	;PRINTFORMW 「お医者プレイ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用お医者プレイ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「お医者プレイ口上です」
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_93
+;脱ぐ
+IF  TEQUIP:59 == 0
+	;PRINTFORMW 「コスプレ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用コスプレ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「コスプレ口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_94
+;外す
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 「助手コスプレ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手コスプレ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手コスプレ口上です」
+ENDIF

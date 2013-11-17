@@ -1,0 +1,779 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;14をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは200～299番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;アリス口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;胸揉み
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_200
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「揉みがい無いわよね、こんなちっさいおっぱい…」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「こんなちっさい胸揉んでも、楽しくないでしょ？」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「良いっ、もっと、もっと強く揉んでっ♪」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「男って、皆おっぱいが好きなのね…」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首責め
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_201
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「ひゃあっ！？ち、乳首はダメッ！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「んんっ！引っ張らないでよ！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「あんっ、あっ、声が出ちゃうっ！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「痛いってば…、乱暴しないで…！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首舐め
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_202
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「んんっ、舌、あったかい……」
+		ELSE
+			PRINTFORMW 「もう、くすぐったいよぉ♪」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「急に舐めないでよ！気持ち悪い！」
+		ELSE
+			PRINTFORMW 「この、ロリコン…！」
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「ひゃうっ！くすぐったい…」
+		ELSE
+			PRINTFORMW 「んっ、良い、もっと舐めて…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「誰が舐めて良いって言ったのよ…！」
+		ELSE
+			PRINTFORMW 「私の胸、汚さないでよ…！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首吸い
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_203
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「やあんっ！乳首、吸われたら、んああっ！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「赤ちゃんみたいな奴ね……」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「おっぱい、大好きなのよね…。ふふ、可愛い」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「気持ち悪いのよ！早く離れて！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;母乳飲み
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_204
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「甘えん坊の%MASTERNAME%、ミルクの時間だよ♪」
+		ELSE
+			PRINTFORMW 「もう、おっきい子供ができちゃったな…♪」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「やめっ…、吸わないで…ッ！」
+		ELSE
+			PRINTFORMW 「んっ、なんで私、ミルクなんか…」
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「良いわよ、私のおっぱい沢山飲んで♪」
+		ELSE
+			PRINTFORMW 「ミルクも全部、%MASTERNAME%のものだからね…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「ホントに恥ずかしい奴ね…」
+		ELSE
+			PRINTFORMW 「飲まないでっ…、気持ち悪い…！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸自慰
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_205
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「はぁっ、おっぱい気持ち良いっ！」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「自分の胸揉んでも楽しくないわよ…」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「ほら、やわらかそうでしょ？私のおっぱい…」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「自分で揉むのなら…、まぁ…」
+		ELSE
+			CALL K14_GASP
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳スパンキング
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_206
+IF CFLAG:7000 == 1
+	;マゾを付ける方法は今の所ない…よね？
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:3 == 0 && TALENT:恋慕 == 1
+			PRINTFORMW 「もっと、もっと叩いてっ！ああっ！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「何で、何で叩かれて感じてるの…？」
+		ELSE
+			PRINTFORMW 「痛い、のに、気持ち良い……？」
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「痛ッ、もう！いきなり叩かないでよ！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ねえ、私、何かした…？」
+		ELSE
+			PRINTFORMW 「お願い、もっと優しくして…」
+		ENDIF
+	ELSE
+		IF RAND:3 == 0
+			PRINTFORMW 「何するのよ！痛いじゃない！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「憶えてなさい、絶対やり返してあげる…！」
+		ELSE
+			PRINTFORMW 「うぐッ…、も、もうやめて……」
+		ENDIF
+	ENDIF
+ELSE
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:3 == 0 && TALENT:恋慕 == 1
+			PRINTFORMW 「ご、ごめんなさいっ！アリスは、叩かれて感じる、変態ですっ――！！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「あは、叩かれるの、好きぃ…♪」
+		ELSE
+			PRINTFORMW 「んんっ、あぁっ、ふぁあんっ！やっ――ッ！」
+			PRINTFORMW 苦痛を与えているはずなのに、アリスの口からは媚声が漏れている…
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「痛いのは、嫌よ…」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「手形が、付いちゃうわ…」
+		ELSE
+			PRINTFORMW 「ひっ、ごめんなさい、ごめんなさい……！」
+		ENDIF
+	ELSE
+		IF RAND:3 == 0
+			PRINTFORMW 「本当、ゲス野郎ね、あなた」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「痛みなんかで、私は屈しないわ…」
+		ELSE
+			PRINTFORMW 「精々好き勝手してなさい、いつか倍返しにするから」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳ファック
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_207
+IF CFLAG:7000 == 1
+	IF ABL:マゾっ気 >= 3
+		IF RAND:2 == 0 && TALENT:恋慕 == 1
+			PRINTFORMW 「もっと、乱暴にして良いよ…♪」
+		ELSE
+			PRINTFORMW 「んんっ、無理矢理されて、気持ち良い…？」
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「ちょっと、押しつけないで…」
+		ELSE
+			PRINTFORMW 「できるなら、私も気持ち良くさせてほしいな…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「やだっ、そんなもの擦りつけないでっ！」
+		ELSE
+			PRINTFORMW 「痛いッ…、この、外道…！」
+		ENDIF
+	ENDIF
+ELSE
+	IF ABL:マゾっ気 >= 3
+		IF RAND:2 == 0 && TALENT:恋慕 == 1
+			PRINTFORMW 「急かさないで、ちゃんとシてあげるから…」
+		ELSE
+			PRINTFORMW （なんで、乱暴にされて、気持ち良くなってるの…？）
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「いっ、痛い…、もっと優しくして…」
+		ELSE
+			PRINTFORMW 「落ち着いて、せっかちな人は嫌われるわよ…？」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「人の胸を、なんだと思ってるの…！」
+		ELSE
+			PRINTFORMW 「離れてっ…！痛いっ、こ、この…！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縦パイズリ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_208
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「やっぱり、おっきいおっぱいが好きだったのね…」
+	ELSE
+		PRINTFORMW 「はいはい、挟めば良いんでしょ？」
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ほら、はやく出しちゃいなさい」
+	ELSE
+		PRINTFORMW 「こんなことなら、もっと貧乳に生まれればよかった…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリフェラ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_209
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「これ、難しいわ…、ホントに気持ち良いの…？」
+		ELSE
+			PRINTFORMW 「んんっ、れろれろ…、どうかしら？」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「分かったわよ、言うとおりにするから…」
+		ELSE
+			PRINTFORMW 「れろれろ…、これで良いんでしょ？」
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「んむぐ…、むぐっ、じゅるっ…」
+		ELSE
+			PRINTFORMW 「おっぱいに挟まれた上に、舐めて貰うなんて」
+			PRINTFORMW 「さぞかし気持ち良いんでしょうね」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「私、なにやってんだろ…」
+		ELSE
+			PRINTFORMW 「もう！さっさと出して、終わらせてよ！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳合わせ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_210
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳合わせ見せつけ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_211
+;PRINTFORMW 
+
+;-------------------------------------------------
+;スパンキング
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_220
+CALL KOJO_14_TRAIN_MESSAGE_S_COM_206
+
+;-------------------------------------------------
+;鞭
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_221
+IF CFLAG:7000 == 1
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「えへへ、もっと痛めつけて…」
+			PRINTFORMW 「私の身体、痣だらけにしてぇ…♪」
+		ELSE
+			PRINTFORMW 「き、気持ち良い…、何でぇ…？」
+		ENDIF
+	ELSEIF MARK:恐怖刻印 >= 1 || MARK:苦痛刻印 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「い、痛い痛い痛い！やめて！おねがいだから！」
+		ELSE
+			PRINTFORMW 「痛い…、痛いよぅ…、お母さぁん…」
+			;助手が神綺で文追加　親の前で児童虐待とかおにちく過ぎだろ…
+			IF NO:ASSI == 119
+				PRINTFORMW 『お願いします…、私が代わりになるので、この子は許してあげて下さい…』
+			ENDIF
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「それは、動物の調教よ…、相手が違うわ…」
+		ELSE
+			PRINTFORMW 「ひっ！痕が残ったらどうするのよ…」
+		ENDIF
+	ENDIF
+ELSE
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「あはは、痛いの気持ち良い…」
+		ELSE
+			PRINTFORMW 「ひゃあん！もっと、もっと痛めつけてっ！」
+		ENDIF
+	ELSEIF MARK:恐怖刻印 >= 1 || MARK:苦痛刻印 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「ごめんなさい、ごめんなさい、ごめんなさい…」
+		ELSE
+			PRINTFORMW 「許して、お願い…、何でも言う事聞くから…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「何するのよ！痛いじゃない！」
+		ELSE
+			PRINTFORMW 「絶対、絶対に復讐してやるんだから…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_222
+IF CFLAG:7000 == 1
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「んっ、死なない程度に、激しくね…？」
+		ELSE
+			PRINTFORMW 「私、針で感じる変態になっちゃった…」
+		ENDIF
+	ELSEIF MARK:恐怖刻印 >= 1 || MARK:苦痛刻印 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「こんなこと、もうやめて…、お願い…」
+		ELSE
+			PRINTFORMW 「誰か…、誰か助けて…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「痛くない痛くない痛くない…！」
+		ELSE
+			PRINTFORMW 「がぁっ…、あっ、ひぎいっ…！」
+		ENDIF
+	ENDIF
+ELSE
+	IF ABL:マゾっ気 >= 3 || TALENT:ドＭ == 1 || TALENT:マゾ == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「やぁんっ、針、刺さってる…♪」
+		ELSE
+			PRINTFORMW 「痛い…、あははっ、痛い……」
+		ENDIF
+	ELSEIF MARK:恐怖刻印 >= 1 || MARK:苦痛刻印 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「痛い、本当に痛いの…、見て、痕がのこってるでしょう…？」
+		ELSE
+			PRINTFORMW 「何でもする、何でもするから、もうやめて…！」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「わ、私は人形じゃないわよ！」
+		ELSE
+			PRINTFORMW 「ひぎっ…、あんたも縫合してやろうかしら…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;蝋燭
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_223
+;PRINTFORMW 
+
+;-------------------------------------------------
+;縄
+;TEQUIP:40 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_224
+;解除時
+IF TEQUIP:40 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アイマスク
+;TEQUIP:41 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_225
+;解除時
+IF TEQUIP:41 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ
+;TEQUIP:42 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_226
+;解除時
+IF TEQUIP:42 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;罵倒
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_227
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鼻フック
+;TEQUIP:44 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_228
+;解除時
+IF TEQUIP:44 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;強制開口器
+;TEQUIP:42 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_229
+;解除時
+IF TEQUIP:42 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_230
+;PRINTFORMW
+
+;-------------------------------------------------
+;フィストファック
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_231
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルフィスト
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_232
+;PRINTFORMW 
+
+;-------------------------------------------------
+;両穴フィスト
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_233
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナダイビング
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_234
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルダイビング
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_235
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ツボを突く
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_236
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鼻クリップ
+;TEQUIP:44 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_237
+;解除時
+IF TEQUIP:44 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;スタンガン
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_238
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足で踏む
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_240
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腹パン
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_241
+;PRINTFORMW 
+
+;-------------------------------------------------
+;三角木馬
+;TEQUIP:43 == 0で解除口上
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_242
+;解除時
+IF TEQUIP:44 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;杭
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_243
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイフ
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_244
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鉈
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_245
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ビンタを張る
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_251
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アイアンメイデン
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_252
+;PRINTFORMW 
+
+;-------------------------------------------------
+;水を飲ませる
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_253
+;PRINTFORMW 
+
+;-------------------------------------------------
+;罵ってもらう
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_270
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足を舐める
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_271
+;PRINTFORMW 
+
+;-------------------------------------------------
+;叩いてもらう
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_272
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鞭で打ってもらう
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_273
+;PRINTFORMW 
+
+;-------------------------------------------------
+;コンドーム
+;TEQUIP:31 == 0で解除口上
+;TFLAG:99により着脱者と状況が分岐
+;0=調教者奴隷双方が選択できるかつ調教者が着脱
+;1=調教者奴隷双方が選択できるかつ奴隷が着脱
+;2=調教者しか着脱できない
+;3=奴隷しか着脱できない
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_290
+SELECTCASE TFLAG:99
+	CASE 0
+		;解除
+		IF TEQUIP:PLAYER:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 1
+		;解除
+		IF TEQUIP:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 2
+		;解除
+		IF TEQUIP:PLAYER:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 3
+		;解除
+		IF TEQUIP:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+ENDSELECT
+
+;-------------------------------------------------
+;コンドーム精飲(奴)
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_291
+;PRINTFORMW 
+
+;-------------------------------------------------
+;コンドーム精飲(助)
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_292
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ザーメンキス
+;-------------------------------------------------
+@KOJO_14_TRAIN_MESSAGE_S_COM_293
+;PRINTFORMW 
+

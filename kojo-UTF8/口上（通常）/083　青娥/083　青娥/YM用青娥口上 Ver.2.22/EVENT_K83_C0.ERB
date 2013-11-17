@@ -1,0 +1,2516 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;霍青娥（青娥娘々）口上
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_83_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 1
+;口枷がある場合は戻る
+SIF TEQUIP:42
+	RETURN 1
+;失神回復時は戻る
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_0
+;初回実行時
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「や、そこ触っちゃ…んっ」
+	;その他
+	ELSE
+		PRINTFORMW 「気安く触らないで下さるかしら。汚らしい」
+	ENDIF
+
+;2回目以降
+ELSE
+	;恋慕+C感覚Lv3以上+B感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3 && ABL:Ｂ感覚 >= 3
+		IF RAND:4 == 0
+			PRINTFORMW 「んっ、もっと触って…ふぁぁ、たまらない…」
+			PRINTFORMW 「私の体、好きなだけ撫で回して、もっと感じさせてぇ…っ！」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「どっちも気持ちいい…おっぱいも、陰核も…っ」
+			PRINTFORMW 「あ、あんっ、んはぁ…♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「自分で触っても、あうっ、ここまでには、ならないのにぃ…」
+			PRINTFORMW 「どうして%CALLNAME:MASTER%が触ると、こんなに気持ちいいのぉ…っ！？」
+		ELSE
+			PRINTFORMW 「はぅん、ひゃああ♪ 陰核も、乳首も尖って、おツユもダラダラ垂れて…」
+			PRINTFORMW 「こんなの続けられたら、いやらしい事言っちゃうっ。もっとおねだりしちゃうのぉ♪」
+		ENDIF
+	;恋慕+C感覚Lv3以上
+	ELSEIF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「あぁん…♪ そ、そこぉ…」
+		PRINTFORMW 「その先っぽ弄られると、何も考えられなく…ふあぁっ」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「あなたに少し触れられるだけで、すぐに反応してしまう…」
+		PRINTFORMW 「体が覚えてしまったのね。私の中の"オンナ"を呼び覚ます人の手を」
+	;屈服刻印Lv3+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「駄目、触れないでっ…あなたの手は私を狂わせてしまう…」
+			PRINTFORMW 「やめ、きゃっ、ふぁぁん…」
+		ELSE
+			PRINTFORMW 「はぁ…嫌ぁ…♪ 駄目、駄目よぉ…。そんなに撫でたら、体、飛んじゃう…♪」
+		ENDIF
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「さすがに本業ね…。あら、褒めてないわよ？」
+		PRINTFORMW （これが仕事と言い切る辺り、相応の技術は持っているのね）
+		PRINTFORMW （気持ちでなんとか持ちこたえてるけど、このままではいつか…）
+	;その他
+	ELSE
+		PRINTFORMW 「よく飽きもせず、そんなことを…」
+		PRINTFORMW 「もういいでしょう？ 下手過ぎて少しも盛り上がらないんだもの」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_1
+;初回実行時
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「嫌じゃないの？ そんなところ舐めて…」
+		PRINTFORMW 「そう、今時の交わりではこれが普通なのね」
+	;その他
+	ELSE
+		PRINTFORMW 「あらあら、私の犬になるという意思表示かしら？」
+		PRINTFORMW 「ええ、分かってるわよ。あなたの目はそんな気配すら感じさせない」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		IF RAND:3 == 0
+			PRINTFORMW 「そこ、ぁ…♪ いい…」
+			PRINTFORMW 「舌で押しつぶして、もっと強く、お願いっ…！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「そんなに舐めちゃ…とまらな、んっ」
+			PRINTFORMW 「来ちゃうっ、ぺろぺろされて、私、もうっ…」
+		ELSE
+			PRINTFORMW 「見て…。してもらう前なのに、もうこんなにビンビンになってる…」
+			PRINTFORMW 「私の陰核、%CALLNAME:MASTER%の視線を感じるだけでいやらしくなっちゃうの…」
+			PRINTFORMW 「あぁン…、視姦だけじゃもどかしい…。舐められて、吸われたくて、疼くのぉ…」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「出来ればキスは上の口でして欲しい、かな」
+		PRINTFORMW 「その…そこは見つめられると、少し恥ずかしいから…」
+	;屈服刻印Lv3+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「んふっ、ぅん…そ、そこは弱い、のに…」
+		PRINTFORMW 「舌が当たって…やっ、押し付けちゃ…」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「あなたは私を堕としたいの？ 尽くしたいの？」
+		PRINTFORMW 「普通に考えれば、あなたは屈辱を感じてもいいはずなのに」
+		PRINTFORMW 「…何でも無いわ。気が済むまでお続けになって」
+	;その他
+	ELSE
+		PRINTFORMW 「感心するわ。畜生の真似事は本当に上手いのね」
+		PRINTFORMW 「とても私には出来そうにありませんわ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_2
+;初回実行時
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「そこは用途が違う気がするんだけど…」
+		PRINTFORMW 「どうしても触りたいの？ そ、そう…」
+	;その他
+	ELSE
+		PRINTFORMW 「ひっ、ど、どこ触ってるの！」
+		PRINTFORMW 「やめて、そこは不浄の…ん、くぅ！」
+	ENDIF
+;2回目以降
+ELSE
+	LOCAL = PALAM:10 + UP:10
+	;恋慕+A感覚Lv3以上+潤滑Lv2以上
+	IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「お尻がね、さっきから欲しがってしょうがないの…」
+			PRINTFORMW 「グチャグチャにかき混ぜて、中を埋めてってうるさいのよ」
+			PRINTFORMW 「この猛り、鎮めて下さるかしら…？」
+		ELSE
+			PRINTFORMW 「ん、ひぃっ…っ！ 入って、くるっ」
+			PRINTFORMW 「もっと、もっと深くまで…！」
+			PRINTFORMW 「私のお尻、メチャクチャに壊してぇ！」
+		ENDIF
+	;恋慕+A感覚Lv3以上+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「もう、せっかちなんだから…。体は『まだ』だと言っておりますのに」
+		PRINTFORMW 「大丈夫です。続けていればじきにっ、ぅ、んっ」
+	;恋慕+潤滑Lv2以上
+	ELSEIF TALENT:恋慕 && LOCAL >= PALAMLV:2
+		PRINTFORMW 「ちゃんと濡らしてくれたのね。ふふっ、お心遣いに感謝を」
+		PRINTFORMW 「はい、どうぞ。私も早くここで良くなりたいから…」
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+		PRINTFORMW 「優しく頼むわね。そこは不慣れだから…」
+		PRINTFORMW 「んっ、んんぅっ…！」
+		PRINTFORMW （うぅ…痛い。でも、我慢しないと…っ）
+	;屈服刻印Lv3+A感覚Lv3以上+潤滑Lv2以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3 && LOCAL >= PALAMLV:2
+		PRINTFORMW 「はぁ…ぅ、んはぁ…」
+		PRINTFORMW 「汚いところなのに…、どうして…体がっ」
+		PRINTFORMW （もう、戻れなくなっちゃう…ああ…）
+	;屈服刻印Lv3+A感覚Lv3以上+潤滑Lv2未満
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3 && LOCAL < PALAMLV:2
+		PRINTFORMW 「待って、そこはまだ準備が…あくっ！」
+		PRINTFORMW 「体が追い付いてないからぁっ、せめて、濡らしてっ…」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「くっ、ん、うぅっ…」
+		PRINTFORMW （こんな辱め…もう、死んでしまいたい…っ）
+	;その他
+	ELSE
+		PRINTFORMW 「やめてって言ってるでしょう！？ 後でヒリヒリして痛いのよ！」
+		PRINTFORMW 「おかしいわよ…こんなの、絶対」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_3
+;初回実行時
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「これが気になってたんでしょう？ ずっと」
+		PRINTFORMW 「女が相手を惹きつける最大の武器。あなたにも効果はあるようね」
+	ELSE
+		PRINTFORMW 「まったく、どいつもこいつもこればかり…」
+		PRINTFORMW 「ここを弄れば女が必ず喘ぐと思っている。男中心の浅はかな思い上がりね」
+	ENDIF
+;2回目以降
+ELSE
+	;素質が[巨乳]または[爆乳]
+	IF (TALENT:巨乳 || TALENT:爆乳)
+		;恋慕+B感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｂ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「ふぁぁ…ん。たぷたぷのおっぱい、こね回されてる…♪」
+				PRINTFORMW 「これだけじゃ切ないわ…っ。もっと強く、弄って！」
+			ELSE
+				PRINTFORMW 「温かいわ…あなたの手。優しいのに、とても力強い」
+				PRINTFORMW 「私の弱い所を知り尽くして、イジメ抜いた手なのに…っ」
+				PRINTFORMW 「たまらないの…。あなたに触られると、体の深い所が、もっと欲しいって叫ぶのぉ…っ！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「これだけ大きいと、顔がうずめられるわね」
+				PRINTFORMW 「こーらっ。がっつかないの。おっぱいはどこにも逃げないわよ」
+				PRINTFORMW 「んっ、そう。優しくね…。いい子いい子」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「窒息しそう？ んもぅ、あなたがこんなにしたくせに…」
+				PRINTFORMW 「そんな事言う子は、こうしてあげるわっ」
+				PRINTFORMW 「うふふっ、幸せでしょう？ 大好きなおっぱいの重みを感じられて」
+			ELSE 
+				PRINTFORMW 「あなた好みの大きさになれたのは嬉しいわ」
+				PRINTFORMW 「でもちょっと、刺激が緩慢に感じるわね。手の温もりも」
+				PRINTFORMW 「前は神経に直接響いてるんじゃないかってぐらい、気持ち良かったんだけど…」
+			ENDIF
+		;屈服刻印Lv3+B感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「あっ、揺れてる…。無理やり大きくされたおっぱい、ぷるぷる揺れてるのぉ…」
+			PRINTFORMW （これじゃ足りない…っ、もっと、強い刺激を…）
+			PRINTFORMW （ダメ…！ そんな事、私の口から言えるわけが…っ！）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >=2
+			PRINTFORMW 「触り心地は良いでしょうね。私本来の姿ではないけれど」
+			PRINTFORMW 「心なしか感度が鈍った気がしないでも、って、何を言わせるの…」
+		;その他
+		ELSE
+			PRINTFORMW 「人の体を勝手に変えたと思えば、こんなことに使うためなんて…」
+			PRINTFORMW 「本当に欲望の捌け口としか思っていないのね、女を」
+		ENDIF		
+	;その他
+	ELSE
+		;恋慕+B感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｂ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あっ、いい…！ おっぱい気持ちいいの…っ！」
+				PRINTFORMW 「触るだけじゃ、いや…っ。気持ちいいこと、いっぱいして…！」
+			ELSE
+				PRINTFORMW 「撫でてるだけなんて、ひどいわ…っ！」
+				PRINTFORMW 「もう、それじゃ満足できないのぉ！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「ほら、来て。甘えさせてあげる」
+				PRINTFORMW 「よしよし。ふふっ、可愛い…♪」
+			ELSE
+				PRINTFORMW 「あなたが望むなら、薬に頼ったっていいのよ？」
+				PRINTFORMW 「この胸じゃ、あなたの全部を包んであげられそうにないから…」
+			ENDIF
+		;屈服刻印Lv3+B感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「あん…っ、胸ばっか、いやっ…」
+			PRINTFORMW 「そんなにされたら…感じて、しまうっ…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >=2
+			PRINTFORMW 「好きに触れば良いわ。このぐらいは想定していたから」
+			PRINTFORMW 「でも痛くしたら怒るわよ」
+		;その他
+		ELSE
+			PRINTFORMW 「さぞあなたは心地良いんでしょうね。女の柔肌を弄ぶことが出来て」
+			PRINTFORMW 「そう、私はちっとも楽しくないわ」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_4
+;初回実行時
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「そこは、出来るだけ丁寧に扱って…」
+		PRINTFORMW 「あなたも分かってるでしょう？ ここが女にとってどれだけ大事な部位かは」
+	ELSE
+		PRINTFORMW 「く、ぁ…っ！ やめてっ、大切な所に傷が付くでしょう！？」
+		PRINTFORMW 「生娘じゃなくったって、そこは気を許した人にしか触らせたくない所なのよ！」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+V感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「あなたに弄られるって思った瞬間に、もうこんなにトロトロに…」
+			PRINTFORMW 「もう、何本だって入るわ…。その指で、いじ繰り回してっ！」
+		ELSE
+			PRINTFORMW 「指じゃもう、やっ、ぁあ…！」
+			PRINTFORMW 「もっと、太いのが欲しい！ 固くて、大きいのがっ！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「気兼ねはしなくていいわ。全てはあなたの思うがままに、ね」
+		PRINTFORMW 「体が芯から燃え盛るあの感覚、思い出させてくれる…？」
+	;屈服刻印Lv3+V感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「指だけ、なのに…っ！ こんなの、いけないわっ…！」
+		PRINTFORMW （頭が、回らなく…なって。だめぇっ、蕩けちゃう！）
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「もうそこは、触らない、で…っ！」
+		PRINTFORMW 「女の一番大切な所、そんなにしないでよぉ！」
+	;その他
+	ELSE
+		PRINTFORMW 「くぅっ！ いっ、た…！」
+		PRINTFORMW 「殺す…っ！ 絶対殺してやるんだか、らっ…！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_5
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「こんなに気持ちいいこと、私に隠してたなんて…」
+		PRINTFORMW 「いいわ、あなたの口マ〇コ、嫌ってほど犯してあげるっ…」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「ん…やぁ…っ、やめてっ…！」
+		PRINTFORMW 「これは、違うのっ！ 私のじゃないのぉ！」
+	ELSE
+		PRINTFORMW 「そ、そんな趣味があるのなら、男を探せば良いでしょう！？」
+		PRINTFORMW 「どうして…どうしてこんなものが、私に…」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「もっと、もっと舐めしゃぶって…！」
+			PRINTFORML 「普通の女では得られないこの快楽…。
+			PRINTFORMW  あぁっ、とても異常で…耽美で…、興奮しちゃう…っ♪」
+		ELSE
+			PRINTFORMW 「いい…？ いいわよね…？ あなたにぶっかけても、いいのよね…！？」
+			PRINTFORMW 「ふぁぁぁ…っ！ イくっ、精液いっぱい出るのぉ！」
+		ENDIF
+	;屈服刻印Lv3+欲望Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:欲望 >= 3
+		PRINTFORMW 「こんなの違うのに、んっ…それ、気持ち、いい…」
+		PRINTFORMW 「で、出そう…っ！ アレが出ちゃいそう…！」
+		PRINTFORMW （オチ〇チンって、こんなに気持ち良くなれるものだったのね…）
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「は…ん、んは…ぁ…」
+		PRINTFORMW （これダメェ…、一旦勃つと、制御が効かな、んんっ！）
+	;その他
+	ELSE
+		PRINTFORMW 「いい加減にして…、もう私の体で遊ぶのはやめてよぉ…！」
+		PRINTFORMW （こんな体じゃ、霊廟にも帰れない…。皆に会わせられる姿じゃないわ…）
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_6
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:屈服刻印 >= 2
+		PRINTFORMW 「ん…ちゅ…あむっ、ん」
+		PRINTFORMW （これが今時の口付け…。ぁあ…なんだか全部絡め取られてしまいそう…）
+	ELSE
+		PRINTFORMW 「嫌っ、それは絶対嫌！」
+		PRINTFORMW 「ん、ぐっ…むぅぅぅ…！」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:4 == 0
+			PRINTFORMW 「んっ…ふ、む…、頭が、ボーッとしてきたわ…」
+			PRINTFORMW 「あなたの唇は魔性ね。重ねるだけで、心がどこかに飛んで行ってしまう…」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「んーっ、ちゅ、じゅるっ…んふぅ…！」
+			PRINTFORMW 「ぷ、はぁ…。止めないで、もっと、んぅ…！」
+			PRINTFORMW 「やぁ…逃げちゃ、嫌ぁ…。はむっ、んんっ！」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ちゅ、ぢゅうぅぅ…！ んはぁっ、れろ、んむ…っ！」
+			PRINTFORMW 「はぁ…ふぅ…私の唾液、美味しかったかしら…？」
+			PRINTFORMW 「それじゃあもっと、ずっと…んちゅぅ…、はふっ、む、れろぉっ…！」
+		ELSE
+			PRINTFORMW 「普通にイチャ付くのも、たまにはいいわね…」
+			PRINTFORMW 「ちゅぅ…っ、んんっ…大好き、愛してるの…%CALLNAME:MASTER%っ…！」
+		ENDIF
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「あっ、はむっ、れるぅっ…」
+		PRINTFORMW （悔しいけど、とってもお上手…これだけで溶けてしまいそう…）
+	;屈服刻印Lv2
+	ELSEIF MARK:屈服刻印 == 2
+		PRINTFORMW 「あ、ふっ…ふぁ、ん…、んちゅっ」
+		PRINTFORMW （ぁ…っ、舌まで…。口付けって、こういうものだったのね…）
+	;その他
+	ELSE
+		PRINTFORMW 「う、くっ、ぷぁ…放して！ これはあなたとすることじゃないわ！」
+		PRINTFORMW （う、ぅっ…。その舌を切り落としてやりたい…っ！）
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 (公開、バイブ、アナルバイブ、二穴バイブを含む)
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_7
+;公開オナニー
+IF SELECTCOM == 7 && TEQUIP:50
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 「この作品の視聴者様方、今宵あなたの手慰みに一助を付す、霍青娥と申します…」
+			PRINTFORMW 「どうぞ緩りとご観覧の上、熟れた未亡人のはしたない痴態を、脳裏に焼き付けて下さいませ」
+			PRINTFORMW 「それでは…始めます。んっ、ぁ…」
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「私はあなたに相応しい妻であろうと、日々研鑽を積んでいるつもりです」
+			PRINTFORMW 「これもあなたが与えた試練…。出来る限りのことはして、お役に立ちたいとは思います」
+			PRINTFORMW 「でも少し、少しだけ残念に思うのは、何故なのでしょう…？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「幻想郷の人の少なさを考えれば、一度出回ったものが流布する早さも推し量れる」
+			PRINTFORMW 「ましてこうした事に関する殿方の結束は固いと聞き及んでおります」
+			PRINTFORMW 「それを分かった上で、このようなことをさせるのですね…」
+		;その他
+		ELSE
+			PRINTFORMW 「あなたにとって私は商品。その価値を高めるならどんな手でも使う」
+			PRINTFORMW 「私の本質が淫らがましいものだと思わせれば、きっと人気も上がるのでしょう」
+			PRINTFORMW 「そうすれば、後でそれだけ高く売れる。そういう魂胆ね、なるほど」
+			PRINTFORMW 「感心してるんじゃないわよ。下劣の度が過ぎていて嫌悪しているだけ」
+		ENDIF
+	;２回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:自慰中毒 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「これが私の乳首…。ピンと立っていて、とってもいやらしいでしょう…？」
+				PRINTFORMW 「そこからおへそを通って、ぁ…んっ。ここが陰核です」
+				PRINTFORMW 「これを剥いて、こう…っ、あぁ！ 触って、クニクニすると…っ！」
+				PRINTFORMW 「…ぃ、んはっ、はぁ…っ、感じて、しまうんです…っ」
+			ELSE
+				PRINTFORMW 「ほら、ご覧になって…。これが女の膣ですわ…」
+				PRINTFORMW 「お汁がこぼれて、ヒクヒクと脈打って、何かで埋めて欲しくて仕方がない場所…」
+				PRINTFORMW 「想像して下さい…。ここがあなたの剛直でかき乱されている所を…」
+				PRINTFORMW 「はっぅぅん…っ！ 少し思ってみるだけで、私の方が、我慢できなくっ…ぁあ！」
+			ENDIF
+		;恋慕+露出癖Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:露出癖 >= 3
+				PRINTFORMW 「これが世に出れば、いずれ不特定多数の欲望の矛先として、視線が注がれるでしょう」
+				PRINTFORMW 「それを想像するだけで、体の芯から熱く、何かが燃え上がってくるのです」
+				PRINTFORMW 「つたない部分もありますが…この霍青娥、皆様の歓楽のため、精一杯力を尽くします」
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「もし外でこれに影響された男に襲われたら、もうあなたに姿を見せられません…」
+				PRINTFORMW 「だってそうじゃないですか…。これを観た方は間違いなく私の淫らな本能を嗅ぎ取ってしまう」
+				PRINTFORMW 「そうならぬよう、私をここに縛り付けて下さい。あなた以外の誰にも会わずに済むように」
+			ELSE
+				PRINTFORMW 「私は……あなたが望むなら、何だってするわ」
+				PRINTFORMW 「でも、あなたは嫌じゃないの…？ 私の秘め事が衆目に晒されるなんて…」
+			ENDIF
+		;屈服刻印Lv3+露出癖Lv3以上+自慰中毒Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:露出癖 >= 3 && ABL:自慰中毒 >= 3
+			PRINTFORMW （幻想郷中で淫売だと噂されるかもしれない…でも、でもそれがっ…！）
+			PRINTFORMW 「ふぁ…ぅ、あぁ…！」
+		;屈服刻印Lv3+露出癖Lv3以上
+		ELSEIF MARK:屈服刻印 == 2 && ABL:露出癖 >= 3
+			PRINTFORMW 「見知らぬ殿方が私を見て、劣情を掻き立てておられるのですね…」
+			PRINTFORMW 「そう思うだけで…、もう、こんなにっ。あぁんっ！」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「こうやって少しずつ、外も歩けないように追い込むのね…本当に酷い人」
+		;その他
+		ELSE
+			PRINTFORMW （間違っても霊廟の皆には、こんな姿を知られませんように…）
+		ENDIF
+	ENDIF
+;二穴バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「片方だけでも、あなたのそれで埋めて下さらないかしら…？」
+			PRINTFORMW 「張り型は冷たいし無機的で、なんだか虚しいんですもの…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「こんなの、大きすぎて…っ！ 無理よぉ…っ！」
+			PRINTFORMW 「ま、待って…。せめて落ち着くまで、ね？」
+		;その他
+		ELSE
+			PRINTFORMW 「乱暴なばかりのあなたに比べれば、これのほうが幾分マシなのは確かよ」
+			PRINTFORMW 「でもだからって、両方なんて…っ」
+		ENDIF
+	;２回目以降
+	ELSE
+		;恋慕+V感覚Lv3以上+A感覚Lv3以上+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >=3 && ABL:自慰中毒 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あなたにだけ見せる、私の下品で淫靡な舞台…」
+				PRINTFORMW 「出来ればあなたに埋めて欲しい、貪欲な2つの穴…」
+				PRINTFORMW 「でもこうやって、自分でするのも…っ！ あぁ…っ、いい！」
+			ELSE
+				PRINTFORMW 「ふぁぁ、んっ！ これ、これがいいの…っ！」
+				PRINTFORMW 「自分の好きな時に動かせるのも、たまらないのぉ！」
+				PRINTFORMW 「聞こえる…？ ジュブジュブって汚い音がしてるのっ。ぶっといのがきてるのぉ！」
+				PRINTFORMW 「オマ〇コもぉ、おひりもぉ、もう、らめ…っ！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「いい、気持ちいいけど…」
+			PRINTFORMW 「あなたのオチ〇チンじゃないと…やっぱり寂しい…っ！ あぁ…っ！」
+		;屈服刻印Lv3+V感覚Lv3以上+A感覚Lv3以上+自慰中毒Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >=3 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「お、大きい…っ。こんなの、ただの道具なのに…！」
+			PRINTFORMW 「息が出来な、はっ、ふぅ、ん…！」
+			PRINTFORMW （どうして、どうして私は止めようとしないの…っ！）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「入ってぇ…、う、動かしちゃ、だめなのに…！ あ、ぁぅっ…！」
+			PRINTFORMW （せめて頃合いをずらさないと…、このままじゃ、溺れてしまうっ）
+		;その他
+		ELSE
+			PRINTFORMW 「くぅぅ…こんなの、一気には…」
+			PRINTFORMW 「ギチギチと詰まって…、苦しいっ」
+		ENDIF
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「結局、これでは私の意思でしか動かせない」
+			PRINTFORMW 「もっと不規則な動きが欲しいのよ…。私が予想し得ない、不揃いな脈動が…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「少しは待ってよ…。こんなに太いの、それなりの覚悟が要るんだから…」
+			PRINTFORMW 「それじゃあ、動かすわよ…。ぅ…ん…っ」
+		;その他
+		ELSE
+			PRINTFORMW 「異物感が凄まじいわ…。正直言って不快よ」
+			PRINTFORMW 「でも、あなたにいいようにされるよりは、まだマシかもしれないわね」
+		ENDIF
+	;２回目以降
+	ELSE
+		;恋慕+V感覚Lv3以上+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3 && ABL:自慰中毒 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「見て…私のオマ〇コが、どんどん張り型を呑み込んでいく…」
+				PRINTFORMW 「あなたの前で、こんなっ…あっ♪ でも、凄いぃぃ…」
+			ELSE
+				PRINTFORMW 「この粘着質な音、私が奏でているのね…」
+				PRINTFORMW 「気持ちいい…中がずぷずぷって、いやらしい音立ててるのぉ…！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「こんなのは1人が寂しい時に、気休めにすること」
+			PRINTFORMW 「折角そこにオチ〇チンがあるのに、敢えて道具を使えなんて、やり切れないわ…」
+			PRINTFORMW 「気持ち良いのは確かなんだけどね…。は…っぁう…」
+		;屈服刻印Lv3+V感覚Lv3以上+自慰中毒Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「はぁぁぅん…っ、太い！ 太くて、我慢できない…っ」
+			PRINTFORMW （私、自分に犯されてる…。張り型を名目に、貫かれる想像をして、自分を虐めてるっ…）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW （ゆっくり、なるべくゆっくりと…）
+			PRINTFORMW 「な、何を期待してるのよ…。あぅ…っ、大きい…！」
+			PRINTFORMW 「そんなに見つめたって、これ以上は…きつ、いぃっ！？」
+		;その他
+		ELSE
+			PRINTFORMW 「何よ。あなたがしろって言うから従ってるんでしょう？」
+			PRINTFORMW 「こんなもの、私の体には馴染まないわ…」
+		ENDIF
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「お、お尻で？ ええ、頑張ってみるわ…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「これは相当な覚悟が必要ね…」
+			PRINTFORMW 「だって、こんな事したら恐らくもう、戻れないから…」
+		;その他
+		ELSE
+			PRINTFORMW 「そんな事、出来ないっ…！ いくら命令だからって」
+			PRINTFORMW （うぅっ…不浄よっ！ こんな汚らわしい事…っ！）
+		ENDIF
+	;２回目以降
+	ELSE
+		;恋慕+A感覚Lv3以上+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:自慰中毒 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あなたがしてくれないからぁ…ん、ひっ…ぁっ」
+				PRINTFORMW 「こうやっ、てっ…自分でほじくるしか、ないのよぉ…」
+			ELSE
+				PRINTFORMW 「ごめんなさい、あなたというものがありながら…こんな道具で…っ」
+				PRINTFORMW 「ふ、うぅ…っ、でも、止まらない、ぁん…っ！ お尻いじめるの、止められ、ないっ」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ここに自分で入れるのは、やっぱり少し怖い…」
+			PRINTFORMW 「万一のことがあったら、処置はお願いね？ 不慣れだから傷付けちゃいそうなのよ…」
+		;屈服刻印Lv3+A感覚Lv3以上+自慰中毒Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「イケナイ事なのに、んあぁ…お尻、おしりがぁ……」
+			PRINTFORMW 「極太の張り型で…、自分でっ…！」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「象徴的よね…っ！ 自ら背徳を負わせる、の、はっ…っ！」
+			PRINTFORMW 「折りたくて、しょうがないのね…。私の心を…」
+			PRINTFORMW （もしかしたら、もう既に…）
+		;その他
+		ELSE
+			PRINTFORMW （もう、嫌ぁ…。こんな事、させられたくない…っ）
+		ENDIF
+	ENDIF
+;自慰
+ELSE
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「したことがないと言えば嘘になるけれど、見られながらというのは初めてね」
+			PRINTFORMW 「嫌じゃないけど、緊張するわ…。上手く出来るかしら」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「仕方ないわね…。見たいんでしょう？」
+			PRINTFORMW 「恥なんてとうの昔にかき捨てたもの。今更このくらい…」
+		;その他
+		ELSE
+			PRINTFORMW 「私の体は私自身が一番よく分かっているわ」
+			PRINTFORMW 「あなたに無理やり酷い事されるよりも、まだこのほうが全然良いって事もね」
+		ENDIF
+	;２回目以降
+	ELSE
+		;恋慕+自慰中毒Lv3以上
+		IF TALENT:恋慕 && ABL:自慰中毒 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「はぁ…ぅ、んぁ…っ！ やめ、て…。あぁ…っ、でも、やめないで…っ」
+				PRINTFORMW 「いつも、こうやってっ、想像しながら、シてるの…っ」
+				PRINTFORMW 「初めて、あなたの手に掛かった時のこと、思い出すだけでっ、あ、あぁんっ！」
+			ELSE
+				PRINTFORMW 「ここを、こうするのよ。胸と乳首、こね回しながら…ふあ、ぃ…んっ！」
+				PRINTFORMW 「膣内のぐじゅぐじゅも、いっぱい絡めて…。ちゅ、れろっ」
+				PRINTFORMW 「あぁ…自分のお汁なのに、美味しい…」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「ただ傍観するのも、退屈だと思うの」
+				PRINTFORMW 「私が折角、こんなあさましい姿を晒しているのだから…」
+				PRINTFORMW 「あなたも一緒に、自分を慰めましょう？」
+			ELSE
+				PRINTFORMW 「あなたは私の気持ちいい場所、熟知してるものね。説明しながらシようと思ったのだけど…」
+				PRINTFORMW 「でも敢えてしてほしいの？ わ、分かったわ…」
+				PRINTFORMW 「そんなに私の口からいやらしい言葉が聞きたいのね。ふふっ、仰せのままに」
+			ENDIF
+		;屈服刻印Lv3+自慰中毒Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:自慰中毒 >= 3
+				PRINTFORMW 「どうしようもないわね、人前でこんな…」
+				PRINTFORMW 「ふぁっ、ぁ、あっ…んぅ、ん…」
+				PRINTFORMW （もう、気持ち良ければ、何でもいい…）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「そんなにまじまじと見つめないで…」
+			PRINTFORMW 「ぁあ…ぅっ。気になって、思うように動けないのよ…」
+		;その他
+		ELSE
+			PRINTFORMW 「せめて1人にして。あなたの視線が邪魔で入り込めないから」
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_9
+;器具(両バイブ、アナルビーズ、アナル電極)を装着している
+IF TEQUIP:20 == 1 || TEQUIP:25 ==1 || TEQUIP:25 ==4 || TEQUIP:25 ==5
+	;恋慕+欲情Lv3以上
+	IF TALENT:恋慕 && PALAM:欲情 >= PALAMLV:3
+		PRINTFORMW 「動かしたくてたまらないのに、何もしちゃいけないの…？」
+		PRINTFORMW 「ふう、ぅ…っ、だめ、治まりが効かない…っ」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「体を気遣ってくれるのは嬉しいけど、これのせいで気が張ったままなの」
+		PRINTFORMW 「抜いてから、ゆっくり休まない？」
+	;欲情Lv3以上
+	ELSEIF PALAM:欲情 >= PALAMLV:3
+		PRINTFORMW 「はぁ…ん、はぁ……」
+		PRINTFORMW （手が勝手に、張り型のほうへ…。私は何をしようとしてるの…？）
+	;その他
+	ELSE
+		PRINTFORMW 「こんなものが入ってちゃ、休みようが無いじゃないの…」
+	ENDIF
+;浣腸液+プラグ
+ELSEIF TEQUIP:25 == 7
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ぅ…あ…っ、お腹が、ぁう…っ！」
+		PRINTFORMW 「じっとしてると、中がギュルギュルしてるのがっ、よく分かるわ…はぁ…っ」
+	;その他
+	ELSE
+		PRINTFORMW 「く、ぁっ、ぅう…何もしないのなら、厠に、厠にいかせてっ…！」
+	ENDIF
+;アイマスク
+ELSEIF TEQUIP:41 == 1
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「視界が隔絶されてるおかげで、嗅覚が研ぎ澄まされてるわ」
+			PRINTFORMW 「すんすん…。あなたは―――こっちね？」
+		ELSE
+			PRINTFORMW 「休憩中も外しちゃだめ？ あなたの顔が見れないじゃない」
+			PRINTFORMW 「もぅ、いじわるねぇ…」
+		ENDIF
+	;その他
+	ELSE
+		PRINTFORMW 「何もせず、視界も隠されている。これは眠っているのと何が違うのかしら？」
+		PRINTFORMW 「出来れば本当に寝てしまいたいわ。悪い現実から逃げだすために」
+	ENDIF
+;縄
+ELSEIF TEQUIP:40
+	;恋慕+マゾっ気Lv3以上
+	IF TALENT:恋慕 && ABL:マゾっ気 >= 3
+		PRINTFORMW 「何もされてないのに、体ばかり熱くなって…」
+		PRINTFORMW 「ねぇ、早く続きをしましょう？ もっと私をいじめて…」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「縛られてる時の感想？ うぅん、そうねぇ…」
+		PRINTFORMW 「ギュッと抱きしめられてるような感覚よ。とても強く、痛いほどに」
+		PRINTFORMW 「でも、あなたの腕には敵わない」
+	;マゾっ気Lv3以上
+		PRINTFORMW （縄が食い込んでるのがよく分かる…。荒くて、キツくて、痛いのが…）
+		PRINTFORMW 「ん、ぁっ…。こすれて…」
+	;その他
+	ELSE
+		PRINTFORMW 「ほどかないと休憩も何も無いでしょう？ ほんと、何を考えてるのよ」
+	ENDIF
+;その他
+ELSE
+	;恋慕+欲情Lv3以上
+	IF TALENT:恋慕 && PALAM:欲情 >= PALAMLV:3
+		IF RAND:2 == 0
+			PRINTFORMW 「…っはぁっ、軽く触れていただくだけでも、いけません？」
+			PRINTFORMW 「体が求めて、やり場が…。どうかお慈悲を…」
+		ELSE
+			PRINTFORMW 「興奮し過ぎて、このままじゃ休憩の意味が無いわ…」
+			PRINTFORMW 「お願い、一度治めてからにしましょう？ このままでは、あなたの命令を破ってしまう…」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		IF RAND:5 == 0
+			PRINTFORMW 「小休止ね。分かったわ」
+			PRINTFORMW 「ひょっとして、お疲れではない？ お薬が欲しかったらいつでも言ってね？」
+			PRINTFORMW 「邪仙とはいえ仙人に変わりはないもの。薬師としてもそれなりの腕はあるつもりよ」
+		ELSEIF RAND:4 == 0
+			PRINTFORMW 「たまにはこうして、のんびりと過ごすのも悪くないわね」
+			PRINTFORMW 「ね、肩を貸していただけない？ 私の夫婦ごっこにも付き合って下さいな」
+			PRINTFORMW 「何をするつもりって…、んもぅ、色には聡くても恋には疎いんですから…」
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「お茶でも淹れましょうか。2人でほっこりしましょう」
+			PRINTFORMW 「そんなに見張らなくてもいいのよ？ 私はどこにも逃げないから」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「お隣、よろしいかしら？ それでは失礼して…」
+			PRINTFORMW 「綺麗でしょ、私の髪。でも結うのが意外と難しくてね…」
+			PRINTFORMW 「触りたいの？ ええ、どうぞ。この髪もあなたのものなんだから、遠慮なんて要らないのよ？」
+		ELSE
+			PRINTFORMW 「おいでになって…膝が空いております。ふふっ、よしよし」
+			PRINTFORMW 「本当に愛しいお顔…。もうこのまま全部食べてしまいたい…」
+			PRINTFORMW 「ご安心を。ちゃんと立場はわきまえております。私はあくまで食べられる側ですから」
+		ENDIF
+	;欲情Lv3以上
+	ELSEIF PALAM:欲情 >= PALAMLV:3
+		PRINTFORMW 「私の我慢を試しているのね…。あれだけ弄んだ後に、よくそんな酷いことが出来るわ…」
+		PRINTFORMW （言えない…。私が今一番して欲しいことなんて、言えるはずがない…）
+	;その他
+	ELSE
+		PRINTFORMW 「そう、それじゃおやすみなさい」
+		PRINTFORMW 「なぁに？ あなたの相手は本当に疲れるんだから、これぐらい構わないでしょう？」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_10
+;初めて
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「これが今時の淫具なの？ 小刻みに揺れて…」
+		PRINTFORMW 「へぇ。そうやって使うものなのね、って、きゃっ、くすぐったいっ！」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「妙な物を持ちだしてきたわね…。一体何に使うのよ」
+		PRINTFORMW 「あら、震えてる。…なるほど、そういうことね」
+	;その他
+	ELSE
+		PRINTFORMW 「何よそれ。どうせまた下らないもの…」
+		PRINTFORMW 「ひゃっ、ちょ、ちょっと…そんなの押し付けないでっ！」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「んんっ…そこ、先っぽが、刺激がぁ…」
+			PRINTFORMW 「もうこれ、ずっと張り付けてて欲しい…♪ ぁ、あっ…ふぁっ」
+		ELSE
+			PRINTFORMW 「ふぁぁ…っ、それ、すご…いっ」
+			PRINTFORMW 「いいわ、もっと、強くても…ぁ…ぁん♪」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「はぁ、あっ…これも、悪くはないけど…」
+		PRINTFORMW 「やっぱり、あなたに触られたいの…っ」
+	;屈服刻印Lv3+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「それ当てられると、頭がよく回らなくなるのよねぇ」
+			PRINTFORMW 「何ていうのかしら…、うっとりしちゃうというか…」
+			PRINTFORMW 「だから、せめて、その……優しくしていただける？」
+		ELSE
+			PRINTFORMW 「ぅん、はぁ…くぅぅん…」
+			PRINTFORMW 「そう、そのぐらいが丁度いい…わ」
+		ENDIF
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「あぁ…ん、く、ふゃぁ…ぅ…」
+		PRINTFORMW 「なに、よ…っ、そういう場所なのよ、仕方ない…じゃない。んぁっ！」
+	;その他
+	ELSE
+		PRINTFORMW 「…ぅっ、ん、こそばゆいだけよ…」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電気按摩(旧・Ｅマッサージャ)
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_11
+;初めて
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「うわぁ、凄い…。こんなものがあるのね…」
+		PRINTFORMW 「それを、ここに？ それは刺激的な使い方ね」
+	;その他
+	ELSE
+		PRINTFORMW 「コリをほぐす道具？ 私はまだそんなものが必要なほど衰えていませんわ」
+		PRINTFORMW 「えっ…？ 嘘、どこに当てて…、やめ…っ、く、ぁああっ！」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「んやっ、ひゃうぅぅぅ！」
+		PRINTFORMW 「ひょれ、やっ、わかんなふ、なっひゃう…っ！ らめ、ひ、いぃぃぃぃんっ！」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「それ、気持ちいいのは確かなんだけどね」
+		PRINTFORMW 「心も体もどこかに飛んでいってしまいそうで、ちょっと怖い、かな」
+		PRINTFORMW 「しっかり捕まえていて下さるかしら…？ どこにもいかないように」
+	;C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「ひゃ、駄目、強すぎて…っ！ それはダっ、ん、ひぃぃぃ！」
+		PRINTFORMW 「ひんりゃう、わらひ、ひんりゃう！ んあぁぁぁっ！」
+	;その他
+	ELSE
+		PRINTFORMW 「大事なとこ、ちぎれちゃ、もぅ、やめなさっ、や、ぁぁぁっ…！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;デフォで非処女
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ、ふぅ…ぅ、ふぅ…っ。凄かったわ…」
+			PRINTFORMW 「ねぇ、1つだけでいいから置いてってくれないかしら」
+			PRINTFORMW 「だって…あなたが来てくれない時、寂しくて…」
+			PRINTFORMW 「こんな物でも無いと、紛らわせそうにないのよ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「あ……くっ、ふぅっ。ん…」
+			PRINTFORMW （あの暴力的な性能…。もしまた使われたら、もう…）
+		;その他
+		ELSE
+			PRINTFORMW 「はぁ…ぁ、はぁっ…。こんなことで屈すると思ったら、大間違いよ…」
+		ENDIF
+	;2回目以降
+	ELSE
+		;恋慕+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「ぁん…。抜けちゃったぁ…」
+				PRINTFORMW 「それ、ちょっとこちらに寄こしてもらえる？ いいからいいから」
+				PRINTFORMW 「あんなに良くしてくれたんだから、この子にもお礼くらいはね♪（ちゅっ）」
+			ELSE
+				PRINTFORMW 「ぁ…、抜ける時まで、いやらしい音が…」
+				PRINTFORMW 「今ので興奮しちゃったかしら…？ それじゃ、次はあなたの番ね。はい、どうぞ…」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「…ぃ、ん、ふあぁ…」
+			PRINTFORMW 「やっと、してくれる気になった…？」
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んっ……くっ、ふぅっ」
+			PRINTFORMW （あんな物でも、入ってないと…。心細い…）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「ひっ、ん、うあぁ…」
+			PRINTFORMW 「え、ええ…。悪くは…なかったわ…」
+		;その他
+		ELSE
+			PRINTFORMW 「これで終わりでいいでしょ？ もう疲れちゃったわ」
+		ENDIF
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「張り型も随分と進歩したものねぇ」
+			PRINTFORMW 「大きさも申し分無いようだけど、ちゃんと入るかしら…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「へ～ぇ、思ったより精巧に出来てるのね」
+			PRINTFORMW 「昔の張り型とはまた違うのかしら…えっ？ きゃっ、う、動いたわよっ！？」
+		;その他
+		ELSE
+			PRINTFORMW 「見るからに凶悪な形ね…。醜悪と言い換えても良いわ」
+			PRINTFORMW 「さすがにこれぐらいは言われなくても分かるわよ。まったく、誰がこんなものを作るんだか…」
+		ENDIF
+	;2回目以降
+	ELSE
+		;恋慕+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「んん…ふ、ああっ…！ き、たぁ…っ」
+				PRINTFORMW 「動いてる…っ。。うねうねして、ひゃぁんっ、そこは…」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「まるで私の為にあつらえたよう…。ほんとにぴったりハマっていく…」
+				PRINTFORMW 「膣内で、押し広げようとして…っ、もっと入りたいって、そう言ってくるの…っ」
+				PRINTFORMW 「はぁ…はぁ、んっ。全部、入ったわね…。もうこれだけで、果ててしまいそう…っ」
+			ELSE
+ 				PRINTFORMW 「これ、気に入っちゃったわ。今は素敵な物があるわねぇ」
+				PRINTFORMW 「もしかして妬いてる？ あらあら、どうしましょう。三角関係ね」
+				PRINTFORMW （玩具相手にムキになっちゃって…。でもそれだけ想ってくれてるって事かしら）
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「これに溺れてしまいたくはないわね。確かに気持ちいいけど」
+				PRINTFORMW 「何故って…もう、ニブチンなのは相変わらずね」
+			ELSEIF RAND:2 ==0
+				PRINTFORMW 「後であなたのをくれるなら、今はこれで我慢するわ」
+			ELSE
+				PRINTFORMW 「これもいいのはいいんだけどねぇ…」
+				PRINTFORMW 「そのうちこの子に私を寝取られても知らないわよ？」
+				PRINTFORMW 「その時はもう一度しつけ直すだけ？ あら、期待しちゃおうかしら」
+			ENDIF
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ぁ…ああっ、入って、くる…っ！」
+			PRINTFORMW （いい…悔しいけど、気持ちいい…）
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「んっ、こんな道具で…」
+		;その他
+		ELSE
+			PRINTFORMW 「乱暴者のあなたより、これのほうがよっぽど優しそうね」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んぅっ！ はぁ…ふぅ、ふぅ…。ぬ、抜けた…？」
+			PRINTFORMW 「ちょっと凄すぎて、危険だわ…。それ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「うぅ…。日常生活に支障が出そう…。」
+		;その他
+		ELSE
+			PRINTFORMW 「もうこんな事、やめて…。お願いだから」
+			PRINTFORMW 「…ぐすっ。あんまりよぉ…」
+		ENDIF
+	;2回目以降
+	ELSE
+		;恋慕+A感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「は、ひぃ…。ふひぃ…。おひり、しあわへぇ…♪」
+			PRINTFORMW 「もっろ、もっろおひり、欲ひぃ…」
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「これであなた好みのお尻になれたのかしら…」
+		;屈服刻印Lv3+A感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「やぁ、抜いちゃ…。い、いえ、なんでもないわっ！」
+			PRINTFORMW 「なんでも…ない、はずよ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「お尻、また広がっちゃった…」
+			PRINTFORMW 「これが、あなたの望む奴隷のお尻なの…？ そう…」
+		;その他
+		ELSE
+			PRINTFORMW 「痛くて、苦しくて。そのうえ辱められて…。もう、限界…」
+			PRINTFORMW （今までの罰…？ それにしたって、この仕打ちはあまりに重い…）
+		ENDIF
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF TFLAG:95 == 1
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「とても太くて、大きい…。これをお尻になんて、怖いわ…」
+			PRINTFORMW 「うぅ…っ。あなたに逆らう気が無いの、分かってて言ってるでしょ…？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「ここ、本当は物を入れる場所じゃないのよ…？ 分かってるの？」
+			PRINTFORMW 「と言っても、あなたは止めてくれないんでしょうね…。ん、はい…」
+		;その他
+		ELSE
+			PRINTFORMW 「な、なんて事考えてるの！？ 嫌、無理よっ！」
+			PRINTFORMW 「放してっ！ 入らない、絶対っ、ひぃっ…っ！？」
+		ENDIF
+	;2回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+A感覚Lv3以上+潤滑Lv2以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && LOCAL >= PALAMLV:2
+			IF RAND:2 == 0
+				PRINTFORMW 「すっかりお尻で感じる淫売になってしまったわね。あなたのおかげで」
+				PRINTFORMW 「ほら、その証拠に、これを…。あなたがそれを出した瞬間、ヒクヒクして、欲しがっちゃって…」
+				PRINTFORMW 「準備なんかとうに出来てるわ…。では、お願いします…。私が壊れていく様子、しかと御覧下さい…」
+			ELSE
+				PRINTFORMW 「待ってたわ…それを突っ込んでくれるの」
+				PRINTFORMW 「ん、ふぁ、ぁぁぁあああっ！ は、はひっ！ いひぃ、いいのぉ…っ！」
+				PRINTFORMW 「苦しいけど、それがいいっ！ おしり、おひりぃ…♪」
+			ENDIF
+		;恋慕+A感覚Lv3以上+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && LOCAL < PALAMLV:2
+			PRINTFORMW 「まだ少しぬめりが足りないけど…んっ、入ってしまうのが怖いところね」
+			PRINTFORMW 「こうしてれば勝手に濡れちゃうから、遠慮しなくていいわ…」
+		;恋慕+潤滑Lv2以上
+		ELSEIF TALENT:恋慕 && LOCAL >= PALAMLV:2
+			PRINTFORMW 「まだ慣れてないお尻で良ければ…うん、大丈夫。痛くはないはずだから」
+			PRINTFORMW 「…はぁ、ぅ。それにしても、おっきい…んんっ！」
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「ん、くぅ…っ！ 痛っ、もうちょっと、優しく…」
+			PRINTFORMW 「いえ、なんでもないわ…。続けて…ぅう…っ！」
+		;屈服刻印Lv3+A感覚Lv3以上+潤滑Lv2以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3 && LOCAL >= PALAMLV:2
+			PRINTFORMW 「はふっ…ひゃ、ぁああ…。ぅん…」
+			PRINTFORMW 「太くて、すごっ…あぁん！ ふゃぁぁぁ…♪」
+		;屈服刻印Lv3+A感覚Lv3以上+潤滑Lv2未満
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ａ感覚 >= 3 && LOCAL < PALAMLV:2
+			PRINTFORMW 「もうちょっと待っててよ…。気短なんだから…」
+			PRINTFORMW 「はぅ、んっ…。湿らないと、あんまり良くなっ、ぅん…！」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「これはちょっと、慣れられそうに、ない、わっ…」
+			PRINTFORMW 「んくっ、苦しい…。ぁぁう…」
+		;その他
+		ELSE
+			PRINTFORMW 「ん、ぃ、ぎぃぃぃっ！ おねが、や、めっ…、くぁぁぁぁ！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;恋慕+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「ぁぁう、ふぅ、ふぅ…。もう、お豆は…だめぇ…♪」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「はぁ、ふぅ…。まだこれは、私には早いかもね…」
+	;屈服刻印Lv3+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「…ぁ…んっ、ふぁ…。それは、強すぎる、わ…」
+	;その他
+	ELSE
+		PRINTFORMW 「んっ、やっと外れた…。なんて乱暴な器具なの」
+	ENDIF
+;装着時
+ELSE	;恋慕+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｃ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「ふ、ぅ…んんっ！ 吸われ、あぁっ…！」
+		ELSE
+			PRINTFORMW 「んぁあ…♪ 締め付けられるぅ…っ！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「直接して欲しいんだけど、駄目？ そう…」
+	;屈服刻印Lv3+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「いやっ、やめてっ…！ それつけたら、もう…っ！ ひぐ、ぅ…っ！」
+	;その他
+	ELSE
+		PRINTFORMW 「ん、くっ…。こんな、もの…っ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;恋慕+B感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｂ感覚 >= 3
+		PRINTFORMW 「外したのに、まだ疼いてるわ…。ねぇ、今度はあなたがして…？」
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「乳首、こんなになってる…。触ってみて…」
+	;屈服刻印Lv3+B感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｂ感覚 >= 3
+		PRINTFORMW 「あ…っ、終わ、り…？」
+	;その他
+	ELSE
+		PRINTFORMW 「…うっ、もう少しそっと取ってよ」
+	ENDIF
+;装着時
+ELSE	;恋慕+B感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｂ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「あ、ぁん…。好きぃ、これ好きなのぉ…」
+		ELSE
+			PRINTFORMW 「は…ぁ、乳首がジンジンして、いい…」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「これ付けてれば、いつかあなた好みの胸になれるのかしら…」
+	;屈服刻印Lv3+B感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｂ感覚 >= 3
+		PRINTFORMW 「あん……くふ、んっ。キュッと、締まって…」
+	;その他
+	ELSE
+		PRINTFORMW 「つぅ…！ 外し、なさい…っ！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_20
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「あぁっ…。やっと来て下さるのね。嬉しい…っ！」
+		PRINTFORMW 「こうしてあなたを受け入れられる日を、ずっと待ち望んでおりました」
+		PRINTFORMW 「ただ相手が名家という理由で嫁がされ、愛してもいない男に抱かれたあの夜…」
+		PRINTFORMW 「あの忌まわしい記憶を、やっと過去のものに出来るのですね」
+		PRINTFORMW 「さぁ、おいで下さい。これで名実共に、初めて愛する人の女になれます…」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「今更このぐらい、何とも思わないわ。むしろ遅いくらいよ」
+		PRINTFORMW 「貪りたいんでしょう？ 私が欲しいんでしょう？」
+		PRINTFORMW 「なら、刻み付けなさい。本気で堕としにかかってみなさいよ」
+	;その他
+	ELSE
+		PRINTFORMW 「何？ もしかして他の子みたいに慌てふためくと思った？」
+		PRINTFORMW 「お生憎様。他の子ならいざ知らず、私にはかつて夫がいたんですもの」
+		PRINTFORMW 「守るべき貞操など既に無い。この程度のことも予想済み。どう？ 残念でしょ？」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+V感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+		IF RAND:3 == 0
+			PRINTFORMW 「ふぁぁぁああっ♪ オチ○ポ、激しい、ズンズン来てるぅ…っ！」
+			PRINTFORMW 「突かれるの、いいっ、最高っ♪ 全身痺れて、おかしくなりそぉっ♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「あんぅ！……くふっ……んんっ！ふぁ、ひぅう…！」
+			PRINTFORMW 「オマ〇コ広がってぇ…っ、いいの、気持ちいい…っ！ んはぁぁぅ…っ！」
+		ELSE
+			PRINTFORMW 「もっとぉ、もっと深く…んぁっ！ 来て、奥まできてぇっ！」
+			PRINTFORMW 「はぁっ、あくっ、んんん……っ、大きいぃ、凄いのぉ…っ！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「はっ…ん、くぅ、んんっ、んはぁ…っ」
+		PRINTFORMW 「か、感じる…っ！ あなたと一つになれてるって、感じるのぉ！」
+	;屈服刻印Lv3+V感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁ…はぁ…あぁんっ！ 突いて、もっと、んぁぁ！」
+		PRINTFORMW 「昔の事も、はぁ、ぅっ！ 道教も、霊廟のこともっ…！」
+		PRINTFORMW 「何もかもっ、忘れさせてっ！ ふぁんっ！」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「…ひっ、く、ぁぁあっ！ は、ぅうん…っ」
+		PRINTFORMW 「いいように、犯されて…っ」
+		PRINTFORMW 「ザマないわっ、ほんとにっ…、んあぁっ」
+	;その他
+	ELSE
+		PRINTFORMW 「ぐ…ぅう…ん、かふっ……お、あ……あっく」
+		PRINTFORMW 「もう、いいで、しょ…？ はっ、はぁ…っ、さっさと、飽きてよ…っ」
+		PRINTFORMW 「全然、良くっ、ないのよっ…！ 下手糞っ！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;[倒錯的]な人妻の犯され願望発揮
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_21
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「いいけど、ちょっとその前に…お顔をよく見せて下さらないかしら」
+		PRINTFORMW 「何故って…。今からしばらく、顔が見えないまま"致す"わけでしょう？」
+		PRINTFORMW 「しっかり焼き付けておかないと、途中で誰にされてるのかと不安になりそうだから…」
+		PRINTFORMW 「この私が体を許すのは、あなただけよ」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「こ、こうで、いいの…？ 分かったわ…」
+		PRINTFORMW 「逆らっても無理やりさせられるんでしょう？ だったらもう、仕方ないじゃない」
+		PRINTFORMW 「でもこんな恰好、本心では嫌よ…。せめて普通に抱いてくれれば…」
+	;その他
+	ELSE
+		PRINTFORMW 「絶っっ対イヤ！ なんで私がそんな恰好…っ！」
+		PRINTFORMW 「こんな風にしたいなら、犬でも豚でも連れてくればいいでしょう？！」
+		PRINTFORMW 「あなたにはそのほうがお似合いよ！ 畜生同士で仲良くやってればいいんだわ」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+V感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「はへっ……んくぁっ、くひぃぃ……！」
+			PRINTFORMW 「ら、めっ…。いく、イグのぉ…！ 一番奥で、ぅ、ああっ！」
+		ELSE
+			PRINTFORMW 「はぐぃぃっ、んぁあぁぁっっっ！！」
+			PRINTFORMW 「は、はげひぃ…っ！！ お、おかひゃれ、ふあっ、もっろ、くひゃあっ！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「もっと動かないと、んふっ…、イけないっ！」
+		PRINTFORMW 「お願い、もっと来てっ、犯して下さいっ！ は、うぅぅん！」
+	;屈服刻印Lv3+V感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁっ……んぁ、ふぁぁっっ……！　う、くぁぁぁんっ！」
+		PRINTFORMW 「動物みたいに、犯されてぇ…っ！ 嫌なのにぃ、でも、たまらないのぉ！」
+		PRINTFORMW （私、獣だったのね…。道士でも仙人でもない、欲に溺れた、一匹の、ケダモノ…）
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「んひぃぃ…っ、ぅっ、うあ、くはぁ、かふっ…」
+		PRINTFORMW 「ふ、深すぎ、るぅ…！ やっ…もう、やめっ…！」
+	;その他
+	ELSE
+		PRINTFORMW 「あううっ、ん、んんんーっ！ くっ、ぅう…んっ、くふ、ぅんっ！」
+		PRINTFORMW （声を出したら、こいつの思うツボ…。こらえなきゃ、我慢、しなきゃ…！）
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_22
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「陽と陰の和合は、道教の中でも基本的な理念」
+		PRINTFORMW 「この体勢は、それを見事に表してるんじゃないかしら。いわゆる房中術ね」
+		PRINTFORMW 「陽であるあなたと、陰たる私。密着し、向き合い、一つに溶け合う…」
+		PRINTFORMW （本当は欲に溺れない節度も説いているけど、まぁ無理な話よね）
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「…んっ、くっ付き過ぎよ。そんなに私に触れていたい？」
+		PRINTFORMW 「思いのほか甘えたがりなのね、あなたって」
+	;その他
+	ELSE
+		PRINTFORMW 「意地でも私の視界に入ろうとするのね…」
+		PRINTFORMW 「あんまりベタベタひっ付かないで。本当は嫌なんだから」
+	ENDIF
+;2回目以降
+ELSE
+	;対面座位中のキス実行条件を満たす。
+	IF TFLAG:102 && PREVCOM == 22 && TEQUIP:42 == 0
+		;恋慕+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「ん、ちゅ…んむ…ぁ…っ」
+				PRINTFORMW 「気持ち良すぎて、そのうえ口付けまで…」
+				PRINTFORMW （もう頭なんか回らない…。このまま2人で溶けてしまいたい…）
+			ELSE
+				PRINTFORMW 「やぁ…抜いちゃ、嫌ぁ…」
+				PRINTFORMW 「もっと、もっとするの…っ。このまま、はむっ…ふっ、むちゅ」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「下で繋がって、上を重ね合わせて、体もピッタリくっ付いて」
+			PRINTFORMW 「この体勢、大好きよ。ずっとこのままで居ましょう…？」
+			PRINTFORMW 「ちゅ、はふ…れるぅっ。んん～っ♪」
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ん、ふ、ぅ…っ、ちゅ…はふ」
+			PRINTFORMW 「んっ、んううぅ…っ！？ ぷぁ、あ、ふぁぁっ！」
+			PRINTFORMW 「は…ぁぅ…。緩めないで、もっと、昂ぶらせて…っ。んちゅぅっ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「や、んっ…。このままもう一回？」
+			PRINTFORMW 「ん！？ っちゅ、はぁ…クチュ…んん」
+			PRINTFORMW 「はぁ…ふぁ…っ。今のは不意打ちよ…。いきなり唇を狙うなんて…」
+		;その他
+		ELSE
+			PRINTFORMW 「やむを得ない、か…。は、ふ…。ちゅぅ…」
+			PRINTFORMW （これが、この顔を拝まず済む方法。ただそれだけ。それだけのはず…）
+		ENDIF
+	;その他(キスをしない)
+	ELSE
+		;恋慕+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あなたが支えてくれるから、倒れそうになっても安心ね」
+				PRINTFORMW 「気持ち良くて、いつも力が入らなくなっちゃうんですもの。特に腰回りがね」
+				PRINTFORMW 「この体、預けるわ。それじゃ動いて…」
+			ELSE
+				PRINTFORMW 「んは、ひゃうっ！ いい顔してるわね、ぁ、あああっ…♪」
+				PRINTFORMW 「嬉しいのっ！ 私で気持ち良くなってくれて、凄く嬉しいっ！ んあっ！」
+				PRINTFORMW 「私も見てぇ…っ。欲に溺れたはしたない邪仙の顔、見てぇっ！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「胸を借りるとはこのことね。ふふっ、温かい」
+			PRINTFORMW 「…ええ、始めていいわよ。じっくり楽しみましょう」
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「やっ、反っちゃう！ ちゃんと、抱いててっ、はぁ、はんっ！」
+			PRINTFORMW 「んんっ、んくっ…ふあぁぁっ！」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2
+			PRINTFORMW 「そんなに強く抱きしめちゃって…。離したくないって意思表示？」
+			PRINTFORMW 「どうせならがんじがらめにするくらい、身動きが取れなくしてよ」
+			PRINTFORMW 「そうすればきっと、私も諦めが付くから。ん、そう、ギュッとね」
+		;その他
+		ELSE
+			PRINTFORMW 「数ある型の中でも、これは特に愛し合う者同士の体位ではなくて？」
+			PRINTFORMW 「すなわち私達には不適切。さっさと解放してくださいな」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_23
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「よいしょっと。あ、背中が温かい」
+		PRINTFORMW 「ねぇ、動かす前に抱きしめて？ 顔が見えなくて不安なの」
+		PRINTFORMW 「ぅ、ふ…っ。こうしてると、これから抱いて貰えるんだって思えて嬉しくなるわ」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「私もヤキが回ったかしら。こんな容易に背中をとられてしまうようでは、ね」
+		PRINTFORMW 「ん…、そうね。いっそあなたに任せてしまえれば楽なのかも」
+		PRINTFORMW 「壊して、みる…？ 心からそう思ってしまうくらい、私を」
+	;その他
+	ELSE
+		PRINTFORMW 「鼻息が荒い。脈拍も上がっているようね。『仕事』中の調教師が何たるザマよ」
+		PRINTFORMW 「己の欲を制御出来ない二流に私の相手は務まらない。所詮あなたはその程度」
+		PRINTFORMW 「私ならもっと上手くやってみせますわ」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+V感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+		IF RAND:2 == 0
+			PRINTFORMW 「んっ、くふぅん。は、ひぁ…ああっ！ 響くぅ！」
+			PRINTFORMW 「頭の中までぇ、ズンズン来るぅ…ッ！ もうダメぇ…♪ イく、このままイくのぉ！」
+		ELSE
+			PRINTFORMW 「ふぅ、あああっ！ いきなり、奥にぃ！ ひ、ぐぅ！」
+			PRINTFORMW 「イかせてぇ…、%CALLNAME:MASTER%の極太チ○ポで、イかせて下さいぃぃ…っ！！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「んはああ…っ♪ ふぁ、あんっ！」
+			PRINTFORMW 「突き上げられてぇ…！ いい、気持ちいい！」
+		ELSE
+			;あなたが男性
+			IF TALENT:PLAYER:120
+				PRINTFORMW 「背中でも、あなたのたくましい胸板が感じられるわ…」
+				PRINTFORMW 「この体勢気に入っちゃったかも。あ、ああンっ…！」
+			;あなたが女性
+			ELSE
+				PRINTFORMW 「あなたのおっぱいしっとりしてて、背中で触れても気持ちいい…」
+				PRINTFORMW 「乳首も硬くなってて、鼓動まで聞こえる気がするわ」
+				PRINTFORMW 「目一杯堪能しましょう？ 人倫に悖った陰なるまぐわいを…」
+			ENDIF
+		ENDIF
+	;屈服刻印Lv3+V感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「ひ、あん、んふぁあ…っ！ 凄い、たまらないのぉ！」
+		PRINTFORMW 「オマ○コ、覚えちゃう！ あなたのぉ…っ、あなたのチ○ポ専用にされちゃうのぉ！」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「う、あっ…、はううぅぅ…っ！」
+		PRINTFORMW 「深くまで、奥まで来てる…！ こんな、おっきいなんてぇっ…！」
+	;その他
+	ELSE
+		PRINTFORMW 「ひ、うぅ…。あ、かふ、ぅう…！ こ、この程度…っ！」
+		PRINTFORMW 「ひゃ、嫌っ、耳噛まないでっ。ふあぁぁ…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_24
+;初回実行時
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「う、ふふふっ…。やっと上手(うわて)を取れたわ」
+		PRINTFORMW 「ビンビンにそそり立って、なんて美味しそうなオチ○チンなの。惚れ惚れしちゃう」
+		PRINTFORMW 「じっくり食べてあげる…。ん、はふ…っ、ん、んんんっ…！」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「…どうしたの？ もう奥まで入ってるのに」
+		PRINTFORMW 「そんな微妙な動きじゃ、ん、ぅう…。全然、来なくて…」
+		PRINTFORMW 「刺激が欲しければ自分で動けってこと…？ そんなこと、でき、あ、うんん…！」
+	;その他
+	ELSE
+		PRINTFORMW 「この状態の危険性が理解できているの？ 首を絞めるくらい容易いのよ？」
+		PRINTFORMW 「反撃しようにも、その体勢では腰も入らない。大した攻撃は出来ないでしょうね」
+		PRINTFORMW 「それを分かっててさせるってことは、余程自信がおありのようで…。舐めてんの？」
+	ENDIF
+;2回目以降
+ELSE
+	;恋慕+V感覚Lv3以上
+	IF TALENT:恋慕 && ABL:Ｖ感覚 >= 3
+		IF RAND:3 == 0
+			PRINTFORMW 「えへ、また私が上になっていいのね。嬉しい♪」
+			PRINTFORMW 「一度こうなっちゃったら、もう中に出して貰うまで解放しないからね」
+			PRINTFORMW 「んっ…あ、はぁんっ！ 全部、ぜぇーんぶ呑み込んであげるわぁ…」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「上になるの大好きよ。気持ち良くよがる%CALLNAME:MASTER%が見れるもの」
+			PRINTFORMW 「今日も、ふ、んんっ…。可愛い顔、ぁあ、あっ…！ 見せて、ねっ」
+			PRINTFORMW 「いっぱい動いて、ん゛ぉお゛…♪ あ、ひぃ…っ。いっぱい絞っちゃう、からぁ…っ」
+		ELSE
+			PRINTFORMW 「あぁ…っ、ん、ふぁ…！ だめ、突き上げちゃ、だめぇ！」
+			PRINTFORMW 「すぐイっちゃう、私だけ、勝手にイッちゃうからぁ…っ」
+			PRINTFORMW 「一緒に、一緒にイきたいのぉ…！ お願い待って、一緒じゃなきゃ、やだぁっ！」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「まだ動かないでね…。うん、しょ。あ、んっ…」
+			PRINTFORMW 「とっても熱い…。オマ○コ火傷しちゃいそうよ」
+		ELSE
+			PRINTFORMW 「私の膣内はどう？ あなたのに負けないくらい温かいでしょ？」
+			PRINTFORMW 「恍惚って感じね…。気持ち良さそうな顔しちゃって」
+			PRINTFORMW 「それじゃ、動くわよ…。あなたも合わせてね」
+		ENDIF
+	;屈服刻印Lv3+V感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「んぁっ、ああ…やだ、これ以上は、イッちゃ、だめぇ…っ！」
+		PRINTFORMW 「こんな味覚えちゃったら、もう戻れないっ、刻み付けられちゃうのぉっ」
+		PRINTFORMW 「ひゃぁぁ、だめっ。イく、腰動いちゃ、止まらなくて…もう、らめぇっ！」
+	;屈服刻印Lv2以上
+	ELSEIF MARK:屈服刻印 >= 2
+		PRINTFORMW 「うん…っ、ふ、ぐ。おっき、すぎぃ…」
+		PRINTFORMW 「ひぁぁ！？ や、突き上げないでっ。せめて、自分のペースで、あぐぅ…っ！」
+		PRINTFORMW 「あなたが悪い、のよぉ！ こんな、おっき、ぃ…チ○ポがぁ、悪いのぉっ！」
+	;その他
+	ELSE
+		PRINTFORMW 「んぅ、あ…ああぁ。また、入れてしまった…。自分で…」
+		PRINTFORMW 「め、命令はこなしたはずよ。もう、終わって…はぐぅぅ！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_25
+;調教者が処女
+IF TALENT:PLAYER:0 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「本当に私が貰っちゃって良いの？ 大切な初めてなのよ？」
+		PRINTFORMW 「…そう、光栄だわ。敢えて私を選んでくれたのね」
+		PRINTFORMW 「安心して。出来るだけ優しくするから…。私もかつて通った道だしね」
+		PRINTFORMW 「本当は少し怖いんでしょう？ 大丈夫、大丈夫だからね (ニコッ」
+		PRINTFORMW 「よしよし。私に任せて。全てを委ねてちょうだい…」
+		PRINTFORML 
+		PRINTFORMW 「それじゃあ…、挿れるわよ。あまり力まないほうが良いわ。呼吸を整えて…」
+		PRINTFORMW 「ん、んんっ！ き、つ…。は、ぁ…ぁあんっ。入っ、たぁ…」
+		PRINTFORMW 「はぁ…んぅ、はぁ…。いい子、ほんとにいい子ね。よく頑張ったわ」
+		PRINTFORMW 「(ぎゅっ) しばらく、このままでいましょうか…」
+	;その他
+	ELSE
+		PRINTFORMW 「え、あ…ええっ！？ は、初めて、だったの？」
+		PRINTFORMW 「はぁ…っ。まったくもう、こんなことのために純潔を…」
+		PRINTFORMW 「あなたって、ほんとに底抜けの馬鹿なのね。自分を犠牲にしてまで、何が欲しいの？」
+		PRINTFORMW 「さすがに今のあなたを責め立てる気にはならないわ。ほら、息を整えなさい」
+	ENDIF
+;調教者が非処女
+ELSE
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:3 == 0
+			PRINTFORMW 「%CALLNAME:MASTER%のおま〇こ、ギュッギュってぇ…っ！」
+			PRINTFORMW 「ね、ねぇ…っ！ いい、でしょ。中に出しても、いいでしょうっ！？」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「…ぁ…んふ、はっ♪ %CALLNAME:MASTER%の中、あったかい…」
+			PRINTFORMW 「ウネウネって、絡みついて…くぁんっ！ オチ〇ポ、喜んでるわぁ…♪」
+		ELSE
+ 			PRINTFORMW 「そんな可愛い声で、喘がないでぇ…っ！」
+			PRINTFORMW 「出ちゃう、興奮し過ぎて、白いのビュルビュル出しちゃうのぉっ！」
+		ENDIF
+	;その他
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「ふ、はぁ…、はぁああっ！ あん、んんっ…！」
+			PRINTFORMW 「腰、止まんな、や、こんなの、おかし、ふひゃああっ！」
+		ELSE
+			PRINTFORMW 「犯したいのか、犯されたいのか…。あなたって人がよく分からない…」
+			PRINTFORMW 「ただ1つ言えるのは、とんでもない変態ってことだけ」
+			PRINTFORMW 「でないと、女同士でこんな異常なこと、させるはずないわ」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_31
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_40
+;初めて
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「旦那様の一物を愛でるのも、妻としての努め。頑張ってみるわ」
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「手でいいの？ 他の所じゃなくて。って、あっ…」
+		PRINTFORMW 「いえ、その、ぇぇと…。私も楽でいいって意味…よ」
+		PRINTFORMW 「もう、ニヤニヤしないでっ！」
+	;その他
+	ELSE
+		PRINTFORMW 「自分でシゴいてれば？ 獣臭いあなたにはお似合いじゃない」
+		PRINTFORMW 「わ、分かったわよ…。そんなに睨むことないでしょう」
+	ENDIF
+;その他
+ELSE
+	;恋慕+奉仕精神Lv3以上+精液中毒Lv2以上
+	IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 2
+		IF RAND:3 == 0
+			PRINTFORMW 「んふ、う…（くんくん）。あぁ…この匂い、たまらない…」
+			PRINTFORMW 「この奥に、たんまりと溜まってるんでしょう？」
+			PRINTFORMW 「白くて、苦くて、とっても濃くて、素敵なアレが…」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「こんなに熱くして…いけないオチ〇チンだわ」
+			PRINTFORMW 「それにいつも、溺れちゃうほどたくさん出して、顔中があなたのお汁でヌルヌルに…」
+			PRINTFORMW 「ん…っ、思い出しただけで、胸が高鳴ってくる…」
+		ELSE
+			PRINTFORMW 「ここは姉さん女房の腕の見せ所。さぁ、私に身を委ねて」
+			PRINTFORMW 「あなたの精も、快楽も、全部私の動き次第。ほら、これはどう？」
+			PRINTFORMW 「あぁ…よがっちゃって、可愛いお顔…♪ これが気持ちいいのね」
+			PRINTFORMW 「ここからは追い込みよ。我慢しないで、いつでも好きな時に出して良いから…」
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「雄々しくそそり立って、猛々しくて…ちょっと乱暴なところもあるけれど」
+			PRINTFORMW 「こうして触ってると、凄く安心するのよね…」
+		ELSE
+			PRINTFORMW 「今日はこうやって、顔ごと近づけて…。頬と手で一緒にシゴいてあげる」
+			PRINTFORMW 「ん、温かい…。頬ズリしてると、あなたの体温が凄く身近に感じられるわ…」
+			PRINTFORMW 「ここはとりわけ熱いみたいだけど…。ふふっ」
+			PRINTFORMW 「あなたにとっても私にとっても、とても大切な宝物…。存分に愛でてあげなくちゃね…」
+		ENDIF
+	;奉仕精神Lv3以上+精液中毒Lv2以上
+	ELSEIF ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 2
+		PRINTFORMW 「ぁ…ピクピク跳ねて…。相変わらず暴れん坊なんだから」
+		PRINTFORMW 「鎮めてあげないと、言う事聞いてくれそうにないわね。ほら、力を抜いて…」
+		PRINTFORMW （凄く荒ぶってる…。竿がこの状態じゃ、アレが出る勢いはもっと凄そう…）
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「本当にこれで良くなれているの？ 手だけで」
+		PRINTFORMW 「ふぅん…。え～と、確かこの辺りだったかしら…？」
+		PRINTFORMW 「あら、良い反応ね。あなたの弱い所、段々覚えてきたわ」
+	;その他
+	ELSE
+		PRINTFORMW 「少しでも変な動きしたら、捻り潰すわよ」
+		PRINTFORMW （まったく…、私の手はこんなものを握るためにあるんじゃないのに）
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_41
+;初めて
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「口で？ へぇ～、現代にも伝わってるのね」
+		PRINTFORMW 「私があの国にいた頃から既にあったわ。当時は憚られる行為だったけど」
+		PRINTFORMW 「大らかな時代で良かったわね♪ うふふっ」
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「そんなに目の前でブラブラさせなくたって…」
+		PRINTFORMW 「あなたが思ってるほど上手くはないわよ？ それでもいいなら…」
+	;その他
+	ELSE
+		PRINTFORMW 「噛み千切られるとは考えないのかしら…？」
+		PRINTFORMW 「そう出来ないように手は打ってある、と。まぁそうでしょうね」
+	ENDIF
+;その他
+ELSE
+	;恋慕+奉仕精神Lv3以上+精液中毒Lv2以上
+	IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 2
+		IF RAND:3 == 0
+			PRINTFORMW 「ちゅぱっ、ちゅる、ふぅんっ……んんっ……」
+			PRINTFORMW 「ふぅ、んふぅんっ……じゅるるる……っ！」
+			PRINTFORMW （あぁぅ…♪ チ〇ポぉ、オチ〇ポ汁ぅ、早く欲しい…）
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「は、ぁむ…ん、ふむぅ。ぢゅる…♪」
+			PRINTFORMW 「んんっ……んむぅっ！？ ふぁ…っ！ 嫌っ、なんで離すのぉ！？」
+			PRINTFORMW 「んもぅ…馬鹿。いじわる。人が気分良くおしゃぶりしてるのにぃ…」
+			PRINTFORMW 「駄目。たくさん出してくれないと許してあげない。ほら、早くこっちに…」
+			PRINTFORMW 「あむぅっ…んふぅ…♪ ずずずっ……じゅる、ちゃぷ……ぢゅぢゅぅっ…！」
+		ELSE
+			PRINTFORMW 「んむぅっ、あむぅ、ちゅぱ、ちゅううぅーっ…、じゅ、ぢゅるるぅぅぅ！」
+			PRINTFORMW 「はぁっ、はぁ……ちゅっ……ちぅぅぅぅっ……！」
+			PRINTFORMW （全部、全部搾り取らないと…。他の子にあげる分が無くなるぐらいっ…！）
+			PRINTFORMW （私の…。この人の精は私だけの物なんだから…っ！）
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「（ふぅ～…っ） あら、今ゾクッとしたわね？」
+			PRINTFORMW 「いつも振り回してる割には敏感よねぇ。そこが可愛いんだけど」
+			PRINTFORMW 「でも手加減はしてあげないから。あむ、ちゅうう…んずっ、ぢゅる…」
+		ELSE
+			PRINTFORMW 「れるっ、れろぉっ…ちぅちぅ、ちゅぴ」
+			PRINTFORMW 「ふふ、切なそうな顔して…。先っぽばっかりじゃ嫌？」
+			PRINTFORMW 「あんまりイジメちゃ怒られそうね。それじゃ、本気で行くわよ」
+			PRINTFORMW 「くちゅ、はむ……んっ、むっ、ぢゅるるっ」
+		ENDIF
+	;奉仕精神Lv3以上+精液中毒Lv2以上
+	ELSEIF ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 2
+			PRINTFORMW 「くちゅ、んっ…ぢゅちゅっ、れろ、れろ…、ふはぁ…はぁ…」
+			PRINTFORMW 「どう？ そろそろ限界でしょ？ はむっ、ん、んんっ…、ずじゅる…」
+			PRINTFORMW （体が飲みたがってる…。このまま出されて、口の中いっぱいにしてくれって…）
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「くちゅ…ちゅ、れる…ぢゅっ！ んふぅ……ちゅる、ちゅぱぁ…」
+		PRINTFORMW （私は何故、こんな事に一生懸命になってるの…？）
+		PRINTFORMW （でも、良さそうにしてる。少しは上達した、のかな…）
+	;その他
+	ELSE
+		PRINTFORMW 「チロ…チロチロ…ぺろっ」
+		PRINTFORMW 「下手で悪かったわね…。やる気も向上心も無いんだから当然でしょ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;[絶壁]の場合は実行自体が不可能
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_42
+;初めて
+IF TFLAG:95 == 1
+	;[巨乳]または[爆乳]
+	IF (TALENT:爆乳 || TALENT:巨乳)
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「くすっ、どう？ この熟れた肉体でご奉仕される気分は」
+			PRINTFORMW 「大きい方が、うん、しょ…、挟みやすいし、全体を包めるもんねぇ」
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 >= 2
+			PRINTFORMW 「観賞用で済ませるなんて思わないけど、挟みたいぐらい魅力的なのかしら」
+			PRINTFORMW 「……随分と正直ね。まぁこのままだと宝の持ち腐れだし、いいわ。してあげる」
+		;その他
+		ELSE
+			PRINTFORMW 「胸を大きくするっていうからそういう目的だとは分かってたけど」
+			PRINTFORMW 「なんか元の胸じゃ不満だって言われてるようで癪に障るわ」
+		ENDIF
+	;[貧乳]
+	ELSEIF TALENT:貧乳
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「私を試してるのね？ 忠誠心が本物なら、その胸でも出来るはずだ、と」
+			PRINTFORMW 「もちろん受けて立つわ。その代わり、ちゃんとやり遂げたらご褒美ね♪」
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 >= 2
+			PRINTFORMW 「もう、難しいことばっかり要求しちゃって」
+			PRINTFORMW 「んんんっ…！ な、なんとか、ギリギリ挟めそうだけど…っ。キツいわ」
+		;その他
+		ELSE
+			PRINTFORMW 「出来そうに無い胸なんだけど、どうしろっての？ 考えるのも馬鹿馬鹿しい」
+			PRINTFORMW 「きゃ、嫌ぁっ！ そんな、無理矢理…。い、痛いっ！」
+		ENDIF
+	;普通乳 (青娥のデフォルト乳)
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「前に一度聞いたわね。他ならぬあなたから。そういう奉仕もあるって」
+			PRINTFORMW 「上手くできるか分からないけど、可能な限り力を尽くすわ」
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 >= 2
+			PRINTFORMW 「なんか、どんどん要求レベルが上がってない？ やり方がよく分からないんだけど」
+			PRINTFORMW 「こ、こう…？ なかなか難しいわね…。人によっては絶対出来なさそう」
+		;その他
+		ELSE
+			PRINTFORMW 「その醜悪で臭気に満ちた塊を、私の柔肌に挟む？ 馬鹿も休み休み言うことね」
+			PRINTFORMW 「……何よその手は。無理矢理させようっての？ ほんと女の敵ね…」
+			PRINTFORMW 「分かったわよ！ するから触らないで！」
+		ENDIF
+	ENDIF
+;2回目以降
+ELSE
+	;[巨乳]または[爆乳]
+	IF (TALENT:爆乳 || TALENT:巨乳)
+		;恋慕+奉仕精神Lv3以上+B感覚Lv3以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「おっぱい、オマ○コになっちゃったみたい…。擦れた所が痺れて、んっ、凄い…」
+				PRINTFORMW 「ふ、ふぁ、んぃぃん！ お、おっぱいでハメられてるぅ…♪ じゅぼじゅぼってぇっ！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ねぇ、勝負しない？ 私がイくのが先か、%CALLNAME:MASTER%が腰を抜かすのが先か」
+				PRINTFORMW 「私だって相当な実力を付けたわ。見てなさい、全部搾り取ってあげ、んやぁぁんっ！」
+				PRINTFORMW 「んっ、はぁ、はぁぁ…っ、ズ、ズルいわよぉ、いきなり、そんな…あふっ、んっ！」
+			ELSE
+				PRINTFORMW 「んっ、クンクン…。ふぁぁぁ…♪ オチ○チンの、%CALLNAME:MASTER%の匂い…」
+				PRINTFORMW 「この匂いだけで、何も考えられなくなっちゃう…。男の、牡の匂いぃぃ♪」
+				PRINTFORMW 「ああん…竿が、おっぱいに押し付けられてる…。乳圧に負けないぐらい、強いのぉ…！」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「摩擦が強くて、う、ん…。上手く擦れない…、うぅ、もどかしい…」
+				PRINTFORMW 「唾液で滑らせれば、スムーズに動かせるかしら。んっ、んれろぉ…」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「谷間から亀頭が出たり入ったり。なんだか小動物みたいね。可愛い♪」
+				PRINTFORMW 「そのくせ竿のほうはこんなに熱を帯びて…。しかも長くて、固くて、たくましいわ」
+			ELSE
+				PRINTFORMW 「またあの感触が恋しくなったの？ ふふっ、あなたも好きねぇ」
+				PRINTFORMW 「ほら、遠慮なんて要らないわ。どうぞおいで下さいまし…」
+			ENDIF
+		;奉仕精神Lv3以上+B感覚Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ…、熱いわ。胸の中で凄く脈打ってる…凄い」
+				PRINTFORMW 「もっと、強く押し付けて…。ふぁ…、ん、くぅぅん…」
+			ELSE
+				PRINTFORMW 「くふぅ、うん、うぅん…。人の胸でこんなに暴れて、いけない子ね…」
+				PRINTFORMW 「悪い子には、あ、ふっ…、お仕置きしなきゃ、ふ、うぅぅん、はぁ、はぁ…」
+			ENDIF
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 > 2
+			IF RAND:2 == 0
+				PRINTFORMW 「何度も見てもご立派だこと。この大きさで挟まれて、まだ亀頭が飛び出るなんて」
+				PRINTFORMW 「先走りが谷間に垂れて、ぐちゅぐちゅいってるわ…。いやらしい音ね」
+			ELSE
+				PRINTFORMW 「嫌がったって、無理矢理されるから…。だったら自分からするわ…」
+				PRINTFORMW 「んぅん…、先っぽだけしか見えないけど、おっきい…。興奮、してるの…？」
+			ENDIF
+		;その他
+		ELSE
+			PRINTFORMW 「あーあ…。早く終わらないかしら」
+			PRINTFORMW 「重たくて、動かすだけでも疲れるのよ。いっそ勝手に使って一人で果ててくれない？」
+		ENDIF
+	;[貧乳]
+	ELSEIF TALENT:貧乳
+		;恋慕+奉仕精神Lv3以上+B感覚Lv3以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「ひぅぅん、はく、んあぁぁ…♪ ぁ…ごめんなさい、私ばかり良くなって…」
+				PRINTFORMW 「私がご奉仕しなきゃいけないのに、でも、擦られるのが凄くて…んんんっ」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「気持ちいい…、オチ○チンで乳輪なぞられるの、ゾクゾクしちゃう…っ」
+				PRINTFORMW 「でも足りないの…、もっと触って欲しそうな所、あるでしょう…？ そこに当てて…」
+			ELSE
+				PRINTFORMW 「もっと、もっと乳首突っついて…。挟みにくいから、乳首でコいてあげるから…♪」
+				PRINTFORMW 「もうおっぱい、先走り汁でベトベトよぉ…♪ はふぁぁ、んっ…」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「今なら、胸を縮められたことも受け入れられる。大事な所が心に近い気がするの」
+				PRINTFORMW 「感じてくれてるのがはっきり分かる…。こんなに脈打って、ビクビク動いて…」
+			ELSE
+				PRINTFORMW 「ふぁぁ…っ。オチ○チンでおっぱい撫でられてる…」
+				PRINTFORMW 「火傷しちゃいそうなぐらい熱いわ…。胸の奥がキュンとしちゃう…」
+			ENDIF
+		;奉仕精神Lv3以上+B感覚Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「剥き出しに近いけど、満足出来てるの…？ 挟むだけでも精一杯よ」
+				PRINTFORMW 「私は、ぅ、ん…っ、擦られるのも…。もう、何を言わせたいの？」
+			ELSE
+				PRINTFORMW 「やっ、乳首に当てないでぇ…。ジンジンして、良くなっちゃう…」
+				PRINTFORMW 「んもう…。人がせっかくやる気になってあげたのに…。私を虐めて楽しんでるの？」
+			ENDIF
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 > 2
+			IF RAND:2 == 0
+				PRINTFORMW 「胸が小さいからかしら。対比であなたのそれが余計に大きく見えるわ」
+				PRINTFORMW 「触感も研ぎ澄まされて…。これがあなたの狙い？」
+			ELSE
+				PRINTFORMW 「こんな幼い胸を蹂躙しようだなんて、良い趣味してるわ。悪い意味だけど」
+				PRINTFORMW 「でも、それの力強さに免じて許してあげる…。ほんとにそれだけは一級品ね」
+			ENDIF
+		;その他
+		ELSE
+			PRINTFORMW 「はぁ…。やってらんない。胸がどうとか言う以前に面倒だわ」
+		ENDIF
+	;普通乳 (青娥のデフォルト乳)
+	ELSE
+		;恋慕+奉仕精神Lv3以上+B感覚Lv3以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「この熱さも、固さも、胸の高鳴りも、全部あなたが教えてくれたもの…」
+				PRINTFORMW 「だから今度は、私がお返しする番…。2人で感じ合いましょう、時など忘れ、渺茫たる喜悦を…」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「おっぱいで大事な所を包まれる感触、もうやみつきかしら？」
+				PRINTFORMW 「ん、あ…っ。私もこれ大好きよ。止めろって言われたって、止められないぐらい…」
+			ELSE
+				PRINTFORMW 「んっ…ふ、ん…。はぁ…、熱くて、固い…」
+				PRINTFORMW 「私まで熱くなっちゃう…。素敵、このオチ○ポ、ほんとに素敵ぃ…♪」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「私も上手くなったものでしょう？」
+				PRINTFORMW 「実はこっそり練習してたの。棒状のものなんて、探せばいくらでもあるしね」
+			ELSE
+				PRINTFORMW 「我慢しなくていいからね。いつでも出して」
+			ENDIF
+		;奉仕精神Lv3以上+B感覚Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && ABL:Ｂ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「そう。最初からこういうことだけ要求してれば私も暴れなくて済むの」
+				PRINTFORMW 「んっ…。お互い気持ち良くなれるし、これは嫌いじゃないわよ」
+			ELSE
+				PRINTFORMW 「ふぅ…あ、んっ…。熱いのが、胸の間で暴れてる…」
+				PRINTFORMW 「ふゃあんっ！ ら、乱暴に動かさないで、刺激しちゃ、だめぇっ」
+			ENDIF
+		;奉仕精神Lv2以上
+		ELSEIF ABL:奉仕精神 > 2
+			IF RAND:2 == 0
+				PRINTFORMW 「んぅっ、そんなに擦っちゃ痛いわよ…」
+				PRINTFORMW 「おとなしくしてればシてあげるんだから、下手に暴れないの」
+			ELSE
+				PRINTFORMW 「先走りが溢れてきてるわよ？ もう出しちゃうの？」
+					;あなたが男性
+					IF TALENT:PLAYER:120
+						PRINTFORMW 「男だったらその辺は我慢なさい。ましてあなたにとっては仕事でしょ？」
+					ENDIF
+			ENDIF
+		;その他
+		ELSE
+			PRINTFORMW 「その辺の娼婦の方が上手いでしょうに。なんでわざわざ私なんだか」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_43
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;主人の下の毛がツルッツルな場合(あるのか？)は想定していません。
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_54
+;初めて
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「あら、ごめんなさい。毛を巻き込んじゃった」
+		PRINTFORMW 「痛くなかった？ 次からは気を付けるわね」
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「綺麗にはしてきたんでしょうね。それが最低限の作法よ」
+		PRINTFORMW 「毛も剃ってくれるとありがたいんだけど…チクチクしそうだし」
+	;その他
+	ELSE
+		PRINTFORMW 「い、嫌…っ！ どうせ毛ジラミまみれなんでしょう！？」
+		PRINTFORMW 「そんな汚いもの、よりによって口になんて…やっ、近づかないで…っ！」
+	ENDIF
+;その他
+ELSE
+	;恋慕+奉仕精神Lv3以上+精液中毒Lv3以上
+	IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+		PRINTFORMW 「ふぁ…あ、む…」
+		PRINTFORMW 「むはっ…、はぁ…はぁ…、れるっ、ちゅっ…」
+		PRINTFORMW （あぁ…金玉美味しい…。汗と色んなのがない交ぜになって、いい匂いぃ…♪）
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「んむっ、れるっ…んっ…」
+		PRINTFORMW 「ふぅ…ふぅ…っ。あ、竿が勃ってきた…」
+		PRINTFORMW （ここも意外と感じるのね…）
+	;奉仕精神Lv3以上+精液中毒Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+		PRINTFORMW 「ただ舐めてるよりも、口に含んだほうが効率良さそうね…」
+		PRINTFORMW 「ちょっと失礼するわよ。はむっ、んぅ…」
+		PRINTFORMW （やっぱりこのほうが、反応が芳しいわ。もう出そうなのかしら…）
+	;奉仕精神Lv2以上
+	ELSEIF ABL:奉仕精神 >= 2
+		PRINTFORMW 「待ちきれないのか知らないけど、にじり寄らないで。自分から出来るわ」
+		PRINTFORMW 「ち、違うわよ。無理矢理させられるのが嫌なだけ…」
+		PRINTFORMW （うぅ…こんな行為にも嫌悪感が無くなっていく自分が、怖い）
+	;その他
+	ELSE
+		PRINTFORMW 「う、ぷっ…んぅぅ～～っっ！？」
+		PRINTFORMW （こんなの、こんなの嫌ぁ…）
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;賢者の血 (旧・強精神薬)
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_66
+;恋慕
+IF TALENT:恋慕
+	IF RAND:2 == 0
+		PRINTFORMW 「これを飲めば、子を授かれるかもしれないのね…」
+		PRINTFORMW 「それを私に下さるということは、あなたもそれを望んでくれている、と」
+		PRINTFORMW 「ならためらう事なんて何も無い。それをずっと期待してたんだから…(コクッ)」
+	ELSE
+		PRINTFORMW 「薬の事ならある程度の知識はあるけれど…。本当に効くのかしら？」
+		PRINTFORMW 「んっ…。でも座して只待つよりは、よっぽど良いわね」
+		PRINTFORMW 「早く出来ると良いわねぇ。私達の愛しい子供…」
+		PRINTFORMW 「でもそのためには、大元になる子種が必要。どういう意味かは、分かるわよね？」
+	ENDIF
+;その他
+ELSE
+	PRINTFORMW 「んぶぅ…！？ んくっ、な、何を飲ませたのっ！？」
+	PRINTFORMW 「え、えっ…？ そんな、それじゃ…私…」
+	PRINTFORMW 「やめてっ、こっちへ来ないでっ！ 今されたら、私は…っ！」
+ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;相愛
+	IF TALENT:相愛
+		IF RAND:2 == 0
+			PRINTFORMW 「これも結婚生活の醍醐味よねぇ。ふふっ、楽しかったわ」
+			PRINTFORMW 「こういうことの積み重ねが、新婚気分を忘れない秘訣なのかしら」
+			PRINTFORMW （私が自分から%CALLNAME:MASTER%の元を離れることなんて、あり得ないんだけどね…）
+		ELSE
+			PRINTFORMW 「あ、それは後でまとめて洗うから、そこに置いといて、って…」
+			PRINTFORMW 「もぉ、くちゃくちゃにしないのっ。後で伸ばすのが大変なんだから」
+			PRINTFORMW （あら…？ なんだか会話が所帯じみて…しかも熟年っぽい…！？）
+		ENDIF
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「あっ…もう終わっちゃうの？」
+		PRINTFORMW 「楽しかったんだけどなぁ…。またお願いね？」
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「あなたはこういうのが好み、なの…？」
+		PRINTFORMW 「そう…。その、どうしてもと言うのなら、また付けてあげなくはないから…」
+	;その他
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「ふん、馬鹿馬鹿しい…」
+		ELSE
+			PRINTFORMW 「私はあなたの遊び道具ではないわ」
+			PRINTFORMW 「おままごとなら他の子に付き合ってもらいなさい」
+		ENDIF
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF TFLAG:95 == 1
+		;相愛
+		IF TALENT:相愛
+			PRINTFORMW 「そういえば定番をこなしてなかったわねぇ。聞きかじったことがある程度だけど」
+			PRINTFORMW 「よい、しょっと。これを着ると、なんだか新妻に戻れた気分になるわね」
+			PRINTFORMW （初めての結婚があんなだったから、無理もないけどね…）
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「ど、どう？ 似合うかしら？」
+			PRINTFORMW 「良かったぁ…。あなたならきっとそう言ってくれると思ってたわ」
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「うぅ～っ。なんか、素っ裸でいるより恥ずかしいわ…」
+			PRINTFORMW （見られて恥ずかしいなんて、まるで生娘みたい…。どうしてこんな気持ちに…）
+		;その他
+		ELSE
+			PRINTFORMW 「仰せの通り着たわよ。それが何か？」
+		ENDIF
+	;2回目以降
+	ELSE
+		;相愛
+		IF TALENT:相愛
+			IF RAND:3 == 0
+				PRINTFORMW 「ほんとに好きねぇ。私も気に入ってるけど」
+				PRINTFORMW 「ふふっ、それで今日は何が食べたいの？ といっても、選択肢は1つしかないわよ？」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「さすがにちゃんと料理をする時は、こんな恰好しないわよ？」
+				PRINTFORMW 「だって、あなたの収まりが付かなくなるじゃない。料理どころじゃなくなっちゃうわ」
+				PRINTFORMW 「でも、今は別。何にも気兼ねする必要の無い、夫婦水入らずの時間…。ねぇ、来て…」
+			ELSE
+				PRINTFORMW 「普段から家事の時に着てるものだから、新鮮味に欠けるわねぇ」
+				PRINTFORMW 「%CALLNAME:MASTER%は飽きてない？ そう、それなら問題無いわ」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW （いつか本当に、妻としてこれを着れてあげられたら…）
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「今日もまた夫婦ごっこ、するの…？」
+			PRINTFORMW （結婚…か。経験があるとはいえ、まともな夫婦生活なんてほとんどしてなかったわね…）
+			PRINTFORMW 「え、演技よ？ あくまで演じてあげるだけだから…、その気になっちゃ、困るわよ…？」
+		;その他
+		ELSE
+			PRINTFORMW 「物を着せられど、する事は変わらず。何が狙いなの？」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;恋慕
+	IF TALENT:恋慕
+		IF RAND:2 == 0
+			PRINTFORMW 「やっぱり大人には少しキツいものがある、かな…？」
+			PRINTFORMW 「でも大好きなんでしょ？ だったら嫌じゃないわ」
+		ELSE
+			PRINTFORMW 「水着越しより、直接触ってもらうほうが断然良いけど」
+			PRINTFORMW 「なんだか並々ならぬこだわりがあるようだし、ご用命とあらば、また着てあげるわね」
+		ENDIF
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「あなたはこれを着た私を見て、どう思ったの…？」
+		PRINTFORMW 「んな…っ。こ、興奮するって…。少しは言葉を選びなさいよ、もう」
+		PRINTFORMW （こういうのが好きなのね…。馬鹿馬鹿しいけど、それなら…）
+	;その他
+	ELSE
+		PRINTFORMW 「着せたり脱がしたり、お忙しいことで………(ポイッ」
+	ENDIF
+;装着時
+ELSE
+	;素質が[巨乳]または[爆乳]
+	IF (TALENT:巨乳 || TALENT:爆乳)
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「あ…見て。生地で覆われてるのに、乳首の場所が分かるわ。ピンと勃っちゃってる…」
+				PRINTFORMW 「おっぱいもギュッと締め付けられて…形もくっきりと…」
+				PRINTFORMW 「これは総じてやらしいわね…。あなたの好みなら嫌じゃないけど」
+			ELSE
+				PRINTFORMW 「この体に、そんなピチピチの水着を着せようなんて、もう、助兵衛なんだから」
+				PRINTFORMW 「第一、裸なんていつも見てるのに。生地越しだとまた違う？ そういうものなの…？」
+				PRINTFORMW 「…でも、分からないでもないわね。体の線がはっきりして、強調されてる感じ」
+			ENDIF
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ぅ、う～んっ！ こ、これ、着辛いんだけど…」
+			PRINTFORMW 「こんなにキツくて動きにくいものが、本当に水着なのかしら？」
+		;その他
+		ELSE
+			PRINTFORMW 「この体じゃ着れないわ。もっとゆったりしたものにして頂戴」
+			PRINTFORMW 「や、ちょっ…目が怖いってば。分かったわよ…。着るから離れてっ！」
+		ENDIF
+	;その他
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:2 == 0
+				PRINTFORMW 「体の形がはっきりして…恥ずかしい恰好なのに、なんだか熱く…」
+				PRINTFORMW 「ほら、下が染みて、肌に張りついて…。スジが浮いちゃってる…」
+			ELSE
+				PRINTFORMW 「薄い生地ねぇ。なのにそれなりの耐久力があって、伸縮して」
+				PRINTFORMW 「一体何で出来てるのかしら…って、そんな事、今は些末な問題ね」
+			ENDIF
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「肌にピッタリくっ付いて…。体型がそのまま出ちゃうわね」
+			PRINTFORMW 「好きな人は本当に好きなんでしょうね。で、あなたもその1人、と…」
+		;その他
+		ELSE
+			PRINTFORMW 「いやらしい服…。いかにもあなたが好みそうな外形ね」
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_83_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

@@ -1,0 +1,1091 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-2 rev.6用 分割型口上テンプレート
+;13をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは200～299番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==================================================
+;橙口上
+;==================================================
+;==================================================
+;コマンド口上
+;初回判定にCFLAG:9000～9099までの100個を使用する
+;初回かどうかはRESULT:1が1かどうかで判別
+;==================================================
+;-------------------------------------------------
+;胸揉み
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_200
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:150
+		PRINTFORMW 「チェン…胸、ないよ？」
+		PRINTFORMW 「大きさじゃなくて、チェンのだから？」
+		PRINTFORMW 「…………その……ありがと」
+		PRINTFORMW 橙は顔を赤らめた。
+	;反発刻印LV3
+		ELSEIF MARK:9 == 3
+		PRINTFORMW 「触らないで！気持ち悪い！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめてぇ！」
+	ENDIF
+;２回目以降
+ELSE
+	IF TALENT:150 == 1
+		PRINTFORMW 「はぁ…おっぱい……気持ちいいよぉ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首責め
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_201
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳首責め口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳首責め口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳首舐め
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_202
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳首舐め口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳首舐め口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳首吸い
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_203
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳首吸い口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳首吸い口上です」
+ENDIF
+
+;-------------------------------------------------
+;母乳飲み
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_204
+;初回のみ
+IF TFLAG:95 == 1
+	IF TALENT:150 == 1
+		PRINTFORMW 「えへへ…%CALLNAME:MASTER%赤ちゃんみたい……」
+		PRINTFORMW 「んっ…あぁぁ……はぁ………あんっ」
+		PRINTFORMW 母乳が出始めると橙はより一層喘ぎだした
+	ENDIF
+;２回目以降
+ELSE
+	;PRINTFORMW 「母乳飲み口上です」
+ENDIF
+
+;-------------------------------------------------
+;胸自慰
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_205
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用胸自慰口上です」
+;２回目以降でその他
+ELSE
+	;PRINTFORMW 「胸自慰口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳スパンキング
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_206
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳スパンキング口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳スパンキング口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳ファック
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_207
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳ファック口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳ファック口上です」
+ENDIF
+
+;-------------------------------------------------
+;縦パイズリ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_208
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用縦パイズリ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「縦パイズリ口上です」
+ENDIF
+
+;-------------------------------------------------
+;パイズリフェラ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_209
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用パイズリフェラ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「パイズリフェラ口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳合わせ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_210
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳合わせ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳合わせ口上です」
+ENDIF
+
+;-------------------------------------------------
+;乳合わせ見せつけ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_211
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用乳合わせ見せつけ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「乳合わせ見せつけ口上です」
+ENDIF
+
+;-------------------------------------------------
+;スパンキング
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_220
+;初回のみ
+IF TFLAG:95 == 1
+	PRINTFORMW 「痛い！痛いよぉ！やめてぇぇぇ！」
+;二回目以降
+ELSE
+	;恋慕＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;恋慕＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 「痛い……けど、なんか暖かい…」
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 「チェンを…たたいてくれて…ありがとうございましゅぅ……」
+		PRINTFORMW 「チェンは痛いの…大好きなんですぅ……」
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 「痛い！…でも……気持ちいいよぉぉ…」
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;鞭
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_221
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;恋慕＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;針
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_222
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;恋慕＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+
+;-------------------------------------------------
+;蝋燭
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_223
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;恋慕＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;恋慕＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;恋慕
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;縄
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_224
+;外したとき
+IF TEQUIP:40 == 0
+	;初回のみ
+	IF TFLAG:95 == 1
+		;150
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;二回目以降
+	ELSE
+		;150＋マゾっ気Lv5以上
+		IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;150＋マゾっ気Lv3以上
+		ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;150
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 
+		;服従＋マゾっ気Lv5以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;服従＋マゾっ気Lv3以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;150
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;150＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;150＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;150
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;アイマスク
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_225
+;外す
+IF TEQUIP:41 == 0
+	;初回のみ
+	IF TFLAG:95 == 1
+		;150
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;二回目以降
+	ELSE
+		;150＋マゾっ気Lv5以上
+		IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;150＋マゾっ気Lv3以上
+		ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;150
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 
+		;服従＋マゾっ気Lv5以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;服従＋マゾっ気Lv3以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;150
+	IF TALENT:150 == 1
+		PRINTFORMW 「…ねぇ……%CALLNAME:MASTER%…いるん…だよね…」」
+			PRINTFORMW 「へっ…返事してよぉ……今橙に触れてるのは%CALLNAME:MASTER%……なんだよね」
+			PRINTFORMW 黙って橙の体を弄っていると、橙はしだいに恐怖の色を見せてきた
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;150＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;150＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;150
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_226
+;外したとき
+IF TEQUIP:42 == 0
+	;初回のみ
+	IF TFLAG:95 == 1
+		;150
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;二回目以降
+	ELSE
+		;150＋マゾっ気Lv5以上
+		IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;150＋マゾっ気Lv3以上
+		ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;150
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 
+		;服従＋マゾっ気Lv5以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;服従＋マゾっ気Lv3以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;150
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;150＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;150＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;150
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+
+	ENDIF	
+ENDIF
+;-------------------------------------------------
+;罵倒
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_227
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用罵倒口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「罵倒口上です」
+ENDIF
+
+;-------------------------------------------------
+;鼻フック
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_228
+;外す
+IF TEQUIP:44 == 0
+	;PRINTFORMW 「鼻フック解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用鼻フック口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「鼻フック口上です」
+ENDIF
+
+;-------------------------------------------------
+;強制開口器
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_229
+;外したとき
+IF TEQUIP:42 == 0
+	;PRINTFORMW 「強制開口器解除口上です」
+;初回のとき
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用強制開口器口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「強制開口器口上です」
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_230
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上
+	IF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 「むぐっ……ゲホッゲホッ……」
+		PRINTFORMW 「むぐぅぅ…うっ…ゲホッ…」
+		PRINTFORMW （苦しい…息、できない……）
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:150 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;服従＋奉仕精神Lv5
+	ELSEIF TALENT:服従 == 1 && ABL:奉仕精神 >= 5
+		PRINTFORMW 
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF	
+ENDIF
+
+;-------------------------------------------------
+;フィストファック
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_231
+;初回のみ
+IF TFLAG:95 == 1
+		;150
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5352 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;150＋マゾっ気Lv5以上
+		IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;150＋マゾっ気Lv3以上
+		ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;150
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 
+		;服従＋マゾっ気Lv5以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+		;服従＋マゾっ気Lv3以上
+		ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;服従
+		ELSEIF TALENT:服従 == 1
+			PRINTFORMW 
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルフィスト
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_232
+;初回のみ
+IF TFLAG:95 == 1
+	;150
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;150＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;150＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;150
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;両穴フィスト
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_233
+;初回のみ
+IF TFLAG:95 == 1
+	;150
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+;二回目以降
+ELSE
+	;150＋マゾっ気Lv5以上
+	IF TALENT:150 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;150＋マゾっ気Lv3以上
+	ELSEIF TALENT:150 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;150
+	ELSEIF TALENT:150 == 1
+		PRINTFORMW 
+	;服従＋マゾっ気Lv5以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 5
+		PRINTFORMW 
+	;服従＋マゾっ気Lv3以上
+	ELSEIF TALENT:服従 == 1 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;服従
+	ELSEIF TALENT:服従 == 1
+		PRINTFORMW 
+	;マゾっ気Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナダイビング
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_234
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ヴァギナダイビング口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ヴァギナダイビング口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナルダイビング
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_235
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナルダイビング口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナルダイビング口上です」
+ENDIF
+
+;-------------------------------------------------
+;ツボを突く
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_236
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ツボを突く口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ツボを突く口上です」
+ENDIF
+
+;-------------------------------------------------
+;鼻クリップ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_237
+;終了
+IF TEQUIP:44 == 0
+	;PRINTFORMW 「鼻クリップ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用鼻クリップ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「鼻クリップ口上です」
+ENDIF
+
+;-------------------------------------------------
+;スタンガン
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_238
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用スタンガン口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「スタンガン口上です」
+ENDIF
+
+;-------------------------------------------------
+;腹パン
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_241
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用腹パン口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「腹パン口上です」
+ENDIF
+
+;-------------------------------------------------
+;三角木馬
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_242
+;外す
+IF TEQUIP:43 == 0
+	;PRINTFORMW 「三角木馬解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用三角木馬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「三角木馬口上です」
+ENDIF
+
+;-------------------------------------------------
+;杭
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_243
+;初回
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用杭口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「杭口上です」
+ENDIF
+
+;-------------------------------------------------
+;ナイフ
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_244
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ナイフ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ナイフ口上です」
+ENDIF
+
+;-------------------------------------------------
+;鉈
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_245
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用鉈口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「鉈口上です」
+ENDIF
+
+;-------------------------------------------------
+;ビンタを張る
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_251
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ビンタを張る口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ビンタを張る口上です」
+ENDIF
+
+;-------------------------------------------------
+;アイアンメイデン
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_252
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アイアンメイデン口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アイアンメイデン口上です」
+ENDIF
+
+;-------------------------------------------------
+;罵ってもらう
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_270
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用罵ってもらう口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「罵ってもらう口上です」
+ENDIF
+
+;-------------------------------------------------
+;足を舐める
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_271
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用足を舐める口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「足を舐める口上です」
+ENDIF
+
+;-------------------------------------------------
+;叩いてもらう
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_272
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用叩いてもらう口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「叩いてもらう口上です」
+ENDIF
+
+;-------------------------------------------------
+;鞭で打ってもらう
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_273
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用鞭で打ってもらう口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「鞭で打ってもらう口上です」
+ENDIF
+
+;-------------------------------------------------
+;コンドーム
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_290
+SELECTCASE TFLAG:99
+	;両者装着可能で調教者が着脱
+	CASE 0
+		$COM290_K13_0
+		IF TEQUIP:PLAYER:31 == 0
+			;PRINTFORMW 「調教者コンドーム解除時の口上です」
+		ELSE
+			;PRINTFORMW 「調教者コンドーム装着時の口上です」
+		ENDIF
+	;両者装着可能で奴隷が着脱
+	CASE 1
+		$COM290_K13_1
+		IF TEQUIP:31 == 0
+			;PRINTFORMW 「奴隷コンドーム解除時の口上です」
+		ELSE
+			;PRINTFORMW 「奴隷コンドーム装着時の口上です」
+		ENDIF
+	;調教者のみ着脱可または奴隷のみ着脱可の場合
+	CASE 2
+		;調教者が着脱
+		IF TALENT:PLAYER:120 || TALENT:PLAYER:121
+			GOTO COM290_K13_0
+		;奴隷が着脱
+		ELSE
+			GOTO COM290_K13_1
+		ENDIF
+ENDSELECT
+;-------------------------------------------------
+;コンドーム精飲(奴)
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_291
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用コンドーム精飲(奴)口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「コンドーム精飲(奴)口上です」
+ENDIF
+
+;-------------------------------------------------
+;コンドーム精飲(助)
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_292
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用コンドーム精飲(助)口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「コンドーム精飲(助)口上です」
+ENDIF
+
+;-------------------------------------------------
+;ザーメンキス
+;-------------------------------------------------
+@KOJO_13_TRAIN_MESSAGE_S_COM_293
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ザーメンキス口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ザーメンキス口上です」
+ENDIF
+

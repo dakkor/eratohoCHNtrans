@@ -1,0 +1,6498 @@
+;==============================================================
+;にとり口上
+;関数置き場
+;==============================================================
+;========================================================
+;ランダム口上用関数
+;試作中　入手ソース関係は調整する可能性あり
+;ソースメモ
+;SOURCE:0 = 快Ｃ (快Ｃ,潤滑,習得,欲情,抑鬱)
+;SOURCE:1 = 快Ｖ (快Ｖ,潤滑,恭順,欲情,恥情,抑鬱)
+;SOURCE:2 = 快Ａ (快Ａ,欲情,屈服,恐怖,不快,抑鬱)
+;SOURCE:3 = 快Ｂ (快Ｂ,恭順,欲情,抑鬱)
+;
+;SOURCE:10 = 接触 (恭順,欲情,反感,不快)
+;SOURCE:11 = 情愛 (恭順,欲情)
+;SOURCE:12 = 露出 (欲情,恥情,反感)
+;SOURCE:14 = 主導権 (習得,欲情,屈服,先導)
+;SOURCE:15 = 性行動 (習得,抑鬱)
+;SOURCE:16 = 達成感 (恭順)
+;SOURCE:17 = 恭順追加 (恭順)
+;SOURCE:18 = 欲情追加 (欲情)
+;SOURCE:19 = 液体追加 (潤滑)
+;
+;SOURCE:20 = 痛み (欲情,苦痛,恐怖,反感)
+;SOURCE:21 = 痒み (欲情,屈服,苦痛,反感,不快)
+;SOURCE:22 = 屈従 (屈服,抑鬱)
+;SOURCE:23 = 支配 (欲情,屈服,恐怖,反感,抑鬱)
+;SOURCE:24 = 中毒充足 (恭順,欲情)
+;SOURCE:25 = トラウマ (屈服,恐怖,不快)
+;SOURCE:26 = 薬物浸潤 (欲情,不快,薬毒)
+;SOURCE:27 = 触手汚染 (屈服,不快,侵蝕)
+;SOURCE:28 = 羞恥扇情 (屈服,恥情,抑鬱)
+;SOURCE:29 = 性技学習 (習得,屈服,抑鬱)
+;
+;SOURCE:30 = 不潔 (反感,不快)
+;SOURCE:31 = 逸脱 (反感)
+;SOURCE:32 = 反感追加 (反感)
+;
+;SOURCE:40 = 酒酔い (欲情,不快)
+;SOURCE:41 = 鬼殺し (欲情,不快,薬毒)
+;SOURCE:42 = 媚薬浸潤 (恭順,欲情,屈服,媚薬中毒レベル)
+;========================================================
+@K40_SPEAK
+;整合性のとれないコマンドを弾く（予定）
+;
+;SIF 
+;	RETURN 0
+;
+;
+;
+;ソース取得
+;LOCAL:1は最も快の高い部位が入る
+;０＝無し、１＝Ｃ、２＝Ｖ、３＝Ａ、４＝Ｂ
+;念のため優先順位変更　ＡＶＣＢの順に優先
+MAX SOURCE:0, SOURCE:1, SOURCE:2, SOURCE:3
+IF RESULT:0 == 0
+	LOCAL:1 = 0
+ELSEIF RESULT:0 == SOURCE:2
+	LOCAL:1 = 3
+ELSEIF RESULT:0 == SOURCE:1
+	LOCAL:1 = 2
+ELSEIF RESULT:0 == SOURCE:0
+	LOCAL:1 = 1
+ELSE
+	LOCAL:1 = 4
+ENDIF
+;LOCAL:2は最も高いポジティブソースが入る
+;０＝無し、１＝接触、２＝情愛、３＝露出、４＝主導、５＝性行動、６＝達成感
+;７＝恭順、８＝欲情、９＝苦痛、１０＝屈従、１１＝支配
+MAX SOURCE:10, SOURCE:11, SOURCE:12, SOURCE:14, SOURCE:15, SOURCE:16, SOURCE:17, SOURCE:18, SOURCE:20, SOURCE:22, SOURCE:23, SOURCE:29
+IF RESULT:0 == 0
+	LOCAL:2 = 0
+ELSEIF RESULT:0 == SOURCE:10
+	LOCAL:2 = 1
+ELSEIF RESULT:0 == SOURCE:11
+	LOCAL:2 = 2
+ELSEIF RESULT:0 == SOURCE:12
+	LOCAL:2 = 3
+ELSEIF RESULT:0 == SOURCE:14
+	LOCAL:2 = 4
+ELSEIF RESULT:0 == SOURCE:15
+	LOCAL:2 = 5
+ELSEIF RESULT:0 == SOURCE:16
+	LOCAL:2 = 6
+ELSEIF RESULT:0 == SOURCE:17
+	LOCAL:2 = 7
+ELSEIF RESULT:0 == SOURCE:18
+	LOCAL:2 = 8
+ELSEIF RESULT:0 == SOURCE:20
+	LOCAL:2 = 9
+ELSEIF RESULT:0 == SOURCE:22
+	LOCAL:2 = 10
+ELSEIF RESULT:0 == SOURCE:23
+	LOCAL:2 = 11
+ELSE
+	LOCAL:2 = 5
+ENDIF
+;LOCAL:3は特殊なソースが入る
+;０＝無し、１＝中毒充足、２＝トラウマ、３＝薬物、４＝触手、５＝羞恥
+MAX SOURCE:24, SOURCE:25, SOURCE:26, SOURCE:27, SOURCE:28, SOURCE:42
+IF RESULT:0 == 0
+	LOCAL:3 = 0
+ELSEIF RESULT:0 == SOURCE:24
+	LOCAL:3 = 1
+ELSEIF RESULT:0 == SOURCE:25
+	LOCAL:3 = 2
+ELSEIF RESULT:0 == SOURCE:26
+	LOCAL:3 = 3
+ELSEIF RESULT:0 == SOURCE:27
+	LOCAL:3 = 4
+ELSEIF RESULT:0 == SOURCE:28
+	LOCAL:3 = 5
+ELSE
+	LOCAL:3 = 3
+ENDIF
+;LOCAL:4はネガティブソースが入る
+;０＝無し、１＝不潔、２＝逸脱、３＝反感
+MAX SOURCE:30, SOURCE:31, SOURCE:32
+IF RESULT:0 == 0
+	LOCAL:4 = 0
+ELSEIF RESULT:0 == SOURCE:30
+	LOCAL:4 = 1
+ELSEIF RESULT:0 == SOURCE:31
+	LOCAL:4 = 2
+ELSE
+	LOCAL:4 = 3
+ENDIF
+;タイプ分け
+;愛情系　羞恥系　苦痛系　服従系　性行為　先導
+;特殊判断→各種タイプ判断→快楽部位
+;特殊　中毒系
+IF LOCAL:3 == 1
+	;タイプ判断　愛情系
+	IF LOCAL:2 == 1 || LOCAL:2 == 2 || LOCAL:2 == 7
+		CFLAG:8000 = 1
+	;タイプ判断　羞恥系
+	ELSEIF LOCAL:2 == 3
+		CFLAG:8000 = 2
+	;タイプ判断　苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 3
+	;タイプ判断　服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 4
+	;タイプ判断　性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8 || LOCAL:2 == 6
+		CFLAG:8000 = 5
+	;タイプ判断　先導系
+	ELSEIF LOCAL:2 == 4
+		CFLAG:8000 = 6
+	;その他　多分LOCAL:2が0になることはない
+	ELSE
+		RETURN 0
+	ENDIF
+;特殊　トラウマ系
+ELSEIF LOCAL:3 == 2
+	;羞恥系
+	IF LOCAL:2 == 3
+		CFLAG:8000 = 7
+	;苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 8
+	;服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 9
+	;性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8
+		CFLAG:8000 = 10
+	;テスト用に残しておく
+	ELSE
+		PRINTW トラウマ系　愛情？　先導？
+		RETURN 0
+	ENDIF
+;特殊　お薬系
+ELSEIF LOCAL:3 == 3
+	;タイプ判断　愛情系
+	IF LOCAL:2 == 1 || LOCAL:2 == 2 || LOCAL:2 == 7
+		CFLAG:8000 = 11
+	;タイプ判断　羞恥系
+	ELSEIF LOCAL:2 == 3
+		CFLAG:8000 = 12
+	;タイプ判断　苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 13
+	;タイプ判断　服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 14
+	;タイプ判断　性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8 || LOCAL:2 == 6
+		CFLAG:8000 = 15
+	;タイプ判断　先導系
+	ELSEIF LOCAL:2 == 4
+		CFLAG:8000 = 16
+	;その他　多分LOCAL:2が0になることはない
+	ELSE
+		RETURN 0
+	ENDIF
+;特殊　触手系
+ELSEIF LOCAL:3 == 4
+	;タイプ判断　愛情系
+	IF LOCAL:2 == 1 || LOCAL:2 == 2 || LOCAL:2 == 7
+		CFLAG:8000 = 17
+	;タイプ判断　羞恥系
+	ELSEIF LOCAL:2 == 3
+		CFLAG:8000 = 18
+	;タイプ判断　苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 19
+	;タイプ判断　服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 20
+	;タイプ判断　性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8 || LOCAL:2 == 6
+		CFLAG:8000 = 21
+	;タイプ判断　先導系
+	ELSEIF LOCAL:2 == 4
+		CFLAG:8000 = 22
+	;その他　多分LOCAL:2が0になることはない
+	ELSE
+		RETURN 0
+	ENDIF
+;特殊　露出系
+ELSEIF LOCAL:3 == 5
+	;タイプ判断　愛情系
+	IF LOCAL:2 == 1 || LOCAL:2 == 2 || LOCAL:2 == 7
+		CFLAG:8000 = 23
+	;タイプ判断　羞恥系
+	ELSEIF LOCAL:2 == 3
+		CFLAG:8000 = 24
+	;タイプ判断　苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 25
+	;タイプ判断　服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 26
+	;タイプ判断　性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8 || LOCAL:2 == 6
+		CFLAG:8000 = 27
+	;タイプ判断　先導系
+	ELSEIF LOCAL:2 == 4
+		CFLAG:8000 = 28
+	;その他　多分LOCAL:2が0になることはない
+	ELSE
+		RETURN 0
+	ENDIF
+ELSE
+	;タイプ判断　愛情系
+	IF LOCAL:2 == 1 || LOCAL:2 == 2 || LOCAL:2 == 7
+		CFLAG:8000 = 29
+	;タイプ判断　羞恥系
+	ELSEIF LOCAL:2 == 3
+		CFLAG:8000 = 30
+	;タイプ判断　苦痛系
+	ELSEIF LOCAL:2 == 9
+		CFLAG:8000 = 31
+	;タイプ判断　服従系
+	ELSEIF LOCAL:2 == 10 || LOCAL:2 == 11
+		CFLAG:8000 = 32
+	;タイプ判断　性行為
+	ELSEIF LOCAL:2 == 5 || LOCAL:2 == 8 || LOCAL:2 == 6
+		CFLAG:8000 = 33
+	;タイプ判断　先導系
+	ELSEIF LOCAL:2 == 4
+		CFLAG:8000 = 34
+	;その他
+	ELSE
+		RETURN 0
+	ENDIF
+ENDIF
+;陥落、屈服刻印によって分岐
+SELECTCASE CFLAG:7000
+	;屈服３
+	CASE 1
+		;快楽部位参照
+		SELECTCASE LOCAL:1
+			;無し
+			CASE 0
+				CALL K40_SPEAK_S
+			;Ｃ
+			CASE 1
+				CALL K40_SPEAK_SC
+			;Ｖ
+			CASE 2
+				CALL K40_SPEAK_SV
+			;Ａ
+			CASE 3
+				CALL K40_SPEAK_SA
+			;Ｂ
+			CASEELSE
+				CALL K40_SPEAK_SB
+		ENDSELECT
+	;恋慕
+	CASE 2
+		;快楽部位参照
+		SELECTCASE LOCAL:1
+			;無し
+			CASE 0
+				CALL K40_SPEAK_L
+			;Ｃ
+			CASE 1
+				CALL K40_SPEAK_LC
+			;Ｖ
+			CASE 2
+				CALL K40_SPEAK_LV
+			;Ａ
+			CASE 3
+				CALL K40_SPEAK_LA
+			;Ｂ
+			CASEELSE
+				CALL K40_SPEAK_LB
+		ENDSELECT
+	;淫乱
+	CASE 3
+		;快楽部位参照
+		SELECTCASE LOCAL:1
+			;無し
+			CASE 0
+				CALL K40_SPEAK_U
+			;Ｃ
+			CASE 1
+				CALL K40_SPEAK_UC
+			;Ｖ
+			CASE 2
+				CALL K40_SPEAK_UV
+			;Ａ
+			CASE 3
+				CALL K40_SPEAK_UA
+			;Ｂ
+			CASEELSE
+				CALL K40_SPEAK_UB
+		ENDSELECT
+	;服従
+	CASE 4
+		;快楽部位参照
+		SELECTCASE LOCAL:1
+			;無し
+			CASE 0
+				CALL K40_SPEAK_O
+			;Ｃ
+			CASE 1
+				CALL K40_SPEAK_OC
+			;Ｖ
+			CASE 2
+				CALL K40_SPEAK_OV
+			;Ａ
+			CASE 3
+				CALL K40_SPEAK_OA
+			;Ｂ
+			CASEELSE
+				CALL K40_SPEAK_OB
+		ENDSELECT
+	;その他
+	CASEELSE
+		;快楽部位参照
+		SELECTCASE LOCAL:1
+			;無し
+			CASE 0
+				CALL K40_SPEAK_N
+			;Ｃ
+			CASE 1
+				CALL K40_SPEAK_NC
+			;Ｖ
+			CASE 2
+				CALL K40_SPEAK_NV
+			;Ａ
+			CASE 3
+				CALL K40_SPEAK_NA
+			;Ｂ
+			CASEELSE
+				CALL K40_SPEAK_NB
+		ENDSELECT
+ENDSELECT
+;以下、口上
+;CFLAG:8000で分岐
+;１＝中毒愛情、２＝中毒羞恥、３＝中毒苦痛、４＝中毒服従、５＝中毒性交、６＝中毒先導
+;７＝トラウマ羞恥、８＝トラウマ苦痛、９＝トラウマ服従、１０＝トラウマ性交
+;１１＝薬物愛情、１２＝薬物羞恥、１３＝薬物苦痛、１４＝薬物服従、１５＝薬物性交、１６＝薬物先導
+;１７＝触手愛情、１８＝触手羞恥、１９＝触手苦痛、２０＝触手服従、２１＝触手性交、２２＝触手先導
+;２３＝露出愛情、２４＝露出羞恥、２５＝露出苦痛、２６＝露出服従、２７＝露出性交、２８＝露出先導
+;２９＝通常愛情、３０＝通常羞恥、３１＝通常苦痛、３２＝通常服従、３３＝通常性交、３４＝通常先導
+;
+;口上書く優先順位
+;恋慕→淫乱→服従→屈服３→未屈服
+;通常→中毒→露出→触手→薬物→トラウマ
+;
+;予定
+;獣姦
+;整合性のおかしいコマンドを探す
+;何もしない、罵倒、獣姦系（特にキス）
+;
+;
+;
+;メモ
+;快楽部位が正直あまり機能していないような気が
+;ネガティブソースの使い方について
+;
+
+@K40_SPEAK_S
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「……やだ、なんで、もう、そんなこと」
+			DATA 「ぅ、あのね、私なんかね……？」
+			DATA 「暖かい、の、もっと、してっ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「……見ないでっ、ちょっとっ……！」
+			DATA 「ぁ、っ、鼻息、あたってる、てばっ」
+			DATA 「ちがう、って、これは、違うのっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「あ、ぐぅ……っ！　苦しい、っ……」
+			DATA 「は、ぁ……もっと、して、っ……！」
+			DATA 「ひどい、よっ、こんなの……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「う……ん、居心地、悪くない、かもっ……」
+			DATA 「まあ、嫌いじゃない……と思う、よ」
+			DATA 「ず、っと、こんなこと、されてたいよ……っ」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「んっ……こっちのほうが良かった、かな」
+			DATA 「気持ちい？　そう言ってくれると、嬉しいな」
+			DATA 「何だか……好きな、匂い、だねえ」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「んふ、ぅ……ここ、どうかなっ……？」
+			DATA 「先っぽ、びくびく、してる……」
+			DATA 「あぁ……精液、欲しいよっ……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「くっ……なんか、おかしい、っ」
+			DATA 「何か、盛られたみたい……っ？」
+			DATA 「あぁ……どきどき、してるっ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「え、ええっ？　何でっ、そんな」
+			DATA 「ううぅ……見ないでっ」
+			DATA 「どうして、私っ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あ、ぐうっ！　どうして、そんなっ」
+			DATA 「痛いよ……逆らわないからっ」
+			DATA 「あ、あ……ごめんなさい、っ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「っ、わかりましたっ……」
+			DATA 「え、え……でも、私」
+			DATA 「……これで、どう、っ？」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「なんで、手、動いちゃうのっ」
+			DATA 「あぁ……近づけないで……」
+			DATA 「匂い、やだぁ……！」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「……下手かもしれないけど、いい？」
+			DATA 「う……わかったよ、しょうがないな、っ」
+			DATA 「ま、期待はしないでね？」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「やめてよ……っ、私、なんてっ」
+			DATA 「う……気持ち、悪い……」
+			DATA 「こんなの、もう、やだよ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「……っ、酷いよ……」
+			DATA 「あ……ぁっ、全部、見えちゃ、っ」
+			DATA 「う、ぅっ、もう、やめてよぉっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「っ、うっ……！　弱いものいじめ、たのしい？」
+			DATA 「はっ……もう、身体、むりっ……」
+			DATA 「痛い、それ、っ、痛いのっ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ぅ……私、何でこんな、どきどきするんだろ……」
+			DATA 「あ……こっち、来ないでっ……今、はっ」
+			DATA 「はい……酷いこと、しないでよ？」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「この、臭い……もうやだ……」
+			DATA 「う、動かないで……」
+			DATA 「ぬるぬるする……生温かいし、何だかねえ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「暴れないで……壊れちゃう、からっ……」
+			DATA 「ん……ちゅ、っ……酷い、味……っ」
+			DATA 「あぁ……っ、こんなの、入っちゃうんだねえ……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「……っ、こういうのが、好きなの？」
+			DATA 「はぁ……変態だったの、忘れてたのに」
+			DATA 「も少し、手心とか、さ」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「うぅ……あんまり、見ないで……」
+			DATA 「ちょっ、ととっ！　これ、やだっ……」
+			DATA 「もう、帰りたい……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「う、ぅぐっ……！　ひどい、よっ！」
+			DATA 「あ、ぁ……痛い、苦しいのっ……」
+			DATA 「た、楽しい……？　こんなこと、っ」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「はぁっ……もう、わたしっ……」
+			DATA 「こ、これは、違うの、っ」
+			DATA 「もう……しょうがない、なっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んっ……なんか、どきどきするっ……！」
+			DATA 「ぁ、はっ……こんな、震えちゃってるよ……」
+			DATA 「これ、っ……凄いね……？」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「あはは……凄いことに、なっちゃったっ……」
+			DATA 「ん……見えてる、かな？」
+			DATA 「あ……もう、私が、やってるのに」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「なんだよっ……にやにや、しないでよ……」
+			DATA 「う……もう、こっち、見ないでってば」
+			DATA 「……何でも、ないってば」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「ちょ、っと、待ってよ……」
+			DATA 「やだ、っ、見ないでっ……」
+			DATA 「恥ずかしい、ってばっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「ううっ……ひどいよっ……」
+			DATA 「あ、ぁっ！　痛い、やめてよ……！」
+			DATA 「こんなこと、して……楽しい？」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「うん、わかったよ……」
+			DATAFORM 「私ね、%MASTERNAME%のこと……」
+			DATA 「あぁ……もう、しょうがない、な」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「こんな……感じ？」
+			DATA 「うぅ……何か、ぬるぬるする」
+			DATA 「ねえ、痛かったり、しない？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「下手かもしれないけど、頑張るね？」
+			DATA 「……しょうがないじゃん、経験あんまりないし」
+			DATA 「気持ちいいとこ、教えてよ？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_SC
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「優しっ……の、やめて、よっ……」
+			DATA 「胸が、暖かくなって、抱きしめられたく、なっちゃっ……」
+			DATA 「あ、ぁ……もう、ずっと、こうしてたい……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「……っ！　強く、いじったら、出ちゃっ……！」
+			DATA 「う、ん……腰砕け、恥ずかしいな、もうっ」
+			DATA 「見てる、っ？　私の、恥ずかしい、とこっ」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「あっ……！　も、少し、優しく、っ」
+			DATA 「痛い、っ！　やだっ、それ、もう、や、ぁっ！」
+			DATA 「……っ、ここ、もう、だめに、なっちゃう、よ……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「強い、の、好きっ……もう、離さないでっ」
+			DATA 「私……いま、満たされてる、って、思えるの」
+			DATA 「いつでも、私っ……大丈夫、だから、ね？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「あ、ぁっ、ああっ！　擦って、るっ！」
+			DATA 「やだぁ、っ、気持ちよくって、こわい、っ……」
+			DATA 「はぁ、んっ、ぬるぬる、して、気持ち、い……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「見て、こんな、震えちゃってる、よ？」
+			DATA 「速くするのと、ゆっくり、っ、どっちが、いい？」
+			DATA 「ね……一杯、精液、くれるよね？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「くぅっ、何で、そんな的確に、っ」
+			DATA 「ああ……腰、溶けるっ」
+			DATA 「んう……優しくされたら、私っ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「ひ、いやぁっ……見られてる……」
+			DATA 「あぁ……恥ずかしいね、これ」
+			DATA 「じろじろ見られると、やりづらいんだけど、さ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ひぁ……っ！　取れちゃう、っ！」
+			DATA 「痛い、っ！　ごめんなさい……っ」
+			DATA 「ぅ……じんじんして、っ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「は、ひぃ……そんな、っ」
+			DATA 「うぁ……もっと、欲しい……っ」
+			DATA 「ふわふわして……何だかわかんないや……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「うぅ……ん、擦れて、っ……！」
+			DATA 「暖かい……ね、もっと、してよ」
+			DATA 「気持ちい……っ、何でっ……？」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「私、がっ……？　うぅ……」
+			DATA 「先っぽ、敏感すぎ、っ！」
+			DATA 「抑えられないの、これぇ……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「く、っ……気持ち良く、なんてっ……」
+			DATA 「ひっ……！　腰、もう、私っ」
+			DATA 「違う……っ、くすぐったい、だけっ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「あ……腫れちゃってる、っ……」
+			DATA 「見ないで、こんな、ところっ……！」
+			DATA 「やだっ……わたし、触手、にっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「あ、ぐぅ、っ！　そこ、はぁっ！」
+			DATA 「う、う……酷い、こんなこと、やだよっ……」
+			DATA 「どうして、っ……痛いの、にっ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「くぅっ、こんなので、私っ……」
+			DATA 「もう、いい、よねっ……気持ち良く、なっちゃってっ」
+			DATA 「あ、ぅっ、そんな、集中されたら……っ！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「あぁ……絡みついてくるっ……」
+			DATA 「全身、締め付けられるの、やだぁ……」
+			DATA 「ひっ……も、もう、ゆっくり、してっ……？」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「くぅ……っ、触手、震えてっ……！」
+			DATA 「あ、あっ……吸い付かない、でっ……！」
+			DATA 「ん……この感じ、慣れてきちゃった、嫌なのに……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「はぁっ……優しくされるの、好きっ……」
+			DATA 「んっ……！　音、聞かないでっ……」
+			DATA 「やぁ……そこ、擦られると、ふわふわ、して……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「っ……見られて、る、私の、身体……！」
+			DATA 「ああぁっ！　これ以上は、おかしくなっちゃうよっ……」
+			DATA 「ひ、ひどいっ……いくら、逆らえないからって……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「っ、あ、やだ、もう、やめてっ、壊れちゃうっ」
+			DATA 「私の……身体が、駄目、なのにっ……」
+			DATA 「ん……！　嫌、なのに、どうしてっ……？」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「やめてっ、これ以上されちゃうと、わたし……！」
+			DATA 「ん……何か、こういうの、良いかなって思っちゃったよ……」
+			DATA 「はぁ……んっ、そこ、良いよっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「……っ、熱いの、敏感に、なっちゃってっ！」
+			DATA 「ん……擦れて、びちょびちょ、だねえ……」
+			DATA 「どう、気持ちいい、かな……？」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「はっ……こんな感じで、どうかなっ……？」
+			DATA 「あぁ……腰、動いちゃう」
+			DATA 「ね……結構、恥ずかしいんだけど、さ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「ぁ……あんまり、いじらないでっ」
+			DATA 「ねぇ……そこ、何か、すごいっ……」
+			DATAFORM 「どうしてかな、%MASTERNAME%のこと……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「あぁあっ！　見ちゃ、だめだって……っ！」
+			DATA 「恥ずかしい、のに、っ、私……」
+			DATA 「こんなの、やめてよっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「ん、あっ……！　痛い、痛いよっ！」
+			DATA 「や、ぁああ……ちぎれちゃう、やめてっ……！」
+			DATA 「何で、こんなこと、するのさっ……？」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「ううぅ……んっ、ねぇ、もっと、して……？」
+			DATA 「やだな、もう……これ、癖に、なっちゃうよ……」
+			DATA 「どうしてだろう、何だかね……？」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「変、じゃない、かなっ……？」
+			DATA 「うぅっ……腰、抜けちゃいそうだぁ……」
+			DATA 「あ、ん……凄い、気持ちい……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「どう？　私のと、擦れてるの……」
+			DATA 「もうちょっと、上手くなる、かなっ……」
+			DATA 「教えて欲しいな、気持ちいい、ところ」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_SV
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「……っ！　もぉ、っ！　私、壊れちゃう、っ！」
+			DATA 「掴まえて、ずっと、んっ、私を、そばに……っ」
+			DATA 「やだぁ……擦られてるの、駄目に、なっちゃう……っ」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「ぅ、ううっ、音、立てないでよっ……」
+			DATA 「凄く、恥ずかしい、んだからっ、ね……？」
+			DATA 「しょうがない、なっ、今度、だけ、だよ？」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ぁ、がっ……お腹、苦しいよっ……」
+			DATA 「！　やだ、ぁ、痛いの、もう、やめてっ……」
+			DATA 「う、ぁ……何で、こんなこと、するのさっ」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATAFORM 「ぅ、ん、なる、なりたいよ、%MASTERNAME%のにっ！」
+			DATA 「あぁ……暖かいの、とろけそうな、程……」
+			DATA 「こういうのも、っ、私は、好き、だよっ……？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「ぅ、期待、しちゃってるのかも、私」
+			DATA 「……は、早く、もう、欲しいの……っ」
+			DATA 「どこでも、全部、使ってよっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「あ、はっ……私に、任せて、いいのっ？」
+			DATA 「んっ、こう、かなっ……大丈夫、だよね？」
+			DATA 「いつでも、出して、いいからっ……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「おく、やらぁ……っ」
+			DATA 「熱いのっ……気持ちよくて、大きくて、っ」
+			DATA 「くふっ、ふふふっ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「うぅん……ね、いじってっ」
+			DATA 「音、でちゃってるっ……！」
+			DATA 「言う通りにしたら、どうなるのかな……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あぐっ！　裂ける……っ」
+			DATA 「びりびり、するのが、なんかっ」
+			DATA 「うぅ……酷い」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「ふぅ、っ！　うっ、うううっ！！」
+			DATA 「あぁ……こんなの、違うっ」
+			DATA 「溶けちゃいそうなくらい、暖かい……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「う、ふ……奥まで、入ってるっ」
+			DATA 「中、変じゃない、かな」
+			DATA 「あ、あ……動かれたら、おかしく、っ」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ぼんやりする……けど、頑張るよ」
+			DATA 「あはは、これ、凄いっ……」
+			DATA 「負けないよ……？」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「あ、ひいっ……！　入り口、擦らないでっ……！」
+			DATA 「ち、違うっ……こんなの、私っ……！」
+			DATA 「きゃ、っ……やだ、精液、やだっ……！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「あ、あ……怖い、のにっ……」
+			DATA 「ひ……触手が、私のことっ……見てるっ」
+			DATA 「まとわりついて、っ、全部、見られちゃうっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「く、あっ、もう、無理、っ、壊れちゃうっ！」
+			DATA 「あ、あ……拡がって、戻らなく、なっちゃっ」
+			DATA 「こんなの、酷いよっ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ん、っ……やぁ……触手、奥にっ……」
+			DATA 「お腹、突かない、でっ……変に、なっちゃうっ」
+			DATA 「あ、あ……膨らんでる、精液、出されちゃうよ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「っ、奉仕、しちゃってる……触手なのにっ」
+			DATA 「きゃ……乱暴、だなあ、もう……っ」
+			DATA 「ひぅ……っ、これ以上は、私っ……」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ん……触手、喜んでるっ……」
+			DATA 「こんなので、身体が反応、しちゃってっ……！」
+			DATA 「あ、ぅ……っ、いきなり、激しく、っ！」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「んっ、動かないでっ、もう、わたしっ……」
+			DATA 「あ、はぁ……っ、やらしい音、響いちゃってるよ……」
+			DATA 「く……ぅっ、もっと、ぎゅって、してっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「いや……っ、近く、こないでっ……！」
+			DATA 「ちがうの、こんなに、やらしくなんてっ……」
+			DATA 「あ、ぁ……わたし、見られてるのに、こんな……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ん、ぅ……っ、拡がってっ、奥までっ！」
+			DATA 「やだ、っ、苦しいの、助けて……」
+			DATA 「ああっ……！　もう、無理、だってばっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATAFORM 「%MASTERNAME%、次は、どうしようか？」
+			DATA 「……っ、ねえ、何でも、言ってね？」
+			DATA 「う……ん、しょうがないなあ」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「こんなに、なっちゃったっ……見られちゃってるよ……」
+			DATA 「ん……満たされてる感じ、嫌いじゃない、かな」
+			DATA 「っ、ひっ……触られるたびに、身体、どきどきして……！」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「ねえ……もっと、強くしたほうがいい、かな？」
+			DATAFORM 「ぅ、恥ずかしいけど、%MASTERNAME%の、為なら」
+			DATA 「くぅ……何だか、嬉しく感じるの、おかしいかなっ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「駄目、だよっ……私……ん、ぁっ……」
+			DATA 「もう、優しくしない、で……勘違い、しちゃいそうだからっ……」
+			DATA 「あぁ……満たされて、駄目に、なっちゃう……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「恥ずかしい、からさ……あんま、見ないっ、で……？」
+			DATA 「う……ぁ、何で、こっち見てるのさ……」
+			DATA 「も、ぅ……音、立てないでよっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「……っ、深すぎっ……！」
+			DATA 「く、あっ……ちょっと、痛い、よっ」
+			DATA 「これ、無理、やだぁっ……！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「は、ぁ……私、女に、されちゃって、るっ……」
+			DATA 「っ、うっ！　強く、抱きしめて欲しい、な……」
+			DATA 「身体が、言うこときかないみたい……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「私、気持ち、いい……？」
+			DATA 「う、ぁんっ！　激し、すぎっ……」
+			DATA 「そこ、動かさないでっ……！」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「うぅ……おっきいね、これ……」
+			DATA 「それじゃ、っ、動く、ねっ？」
+			DATA 「やぁ……奥、深いよっ……」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_SA
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「あぁ……焦らさないでっ……もう、っ」
+			DATA 「お腹、奥まで、一杯だ……っ」
+			DATA 「気持ちよくって、っ、頭、わからないのっ……！」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「ぅ、うっ……匂わない？　深く、しないでっ……！」
+			DATA 「や、ぁ……出ちゃう、見ないでっ……」
+			DATA 「あ……あっ……顔、見ちゃやだっ……！」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「大きすぎ、てっ、壊れちゃう、私っ……」
+			DATA 「ゆっくり、ゆっくりっ、って、言った、のにっ！」
+			DATA 「あぁ……っ！　痛い、もう、無理だってっ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「ぁ、ぉっ……お尻、ほじられて、っ……」
+			DATA 「う、ぅ……今、きっと、凄い顔、しちゃってるっ……」
+			DATA 「ね……もう、深すぎ、てっ、おかしくなっちゃ、っ！」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「ん、ぅっ、はぁっ、は、ぁ……や、ぁ……」
+			DATA 「ぉ……っ、お尻、熱いの、敏感に、なっちゃってっ！」
+			DATA 「気持ちい……ふわふわ、する、お尻、いいよっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「あ、あぁ……全部、よくしたげる、からね……」
+			DATA 「ん、っ、もっと、近づいてよ……」
+			DATA 「出して、っ！　全部、私、にっ……！」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「うぅ、んっ！　虐めないでっ、壊れちゃうっ、からっ」
+			DATA 「そんなの、ずるい、よ、っ！」
+			DATA 「ぅ……うう……見ないでってば」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「あぁ……恥ずかしい、けど、気持ちい……」
+			DATA 「くらくらしてきた……お尻、おかしいよ……っ」
+			DATAFORM 「こんな姿、%MASTERNAME%だけに、っ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「拡がっちゃう、閉まらなく、なっちゃうよ……」
+			DATA 「ぐうぅ……っ！　ぅあ……や、ぁ」
+			DATA 「ちかちかする……っ、息、できないっ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「ぅ、くださいっ！　きもちいいの、くださいっ！！」
+			DATA 「ほ、ぉ……やぁ……」
+			DATA 「うぁ……っ、ひっ、ぅく……っ」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「奥っ、壊れちゃうっ……！」
+			DATA 「いや、ぁ……変な音、させないでよお……」
+			DATA 「こ、こんなの……我慢、できなっ」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「んぅ……これ、すごっ」
+			DATA 「動いてるっ、全部、わかるよ……」
+			DATA 「おぉ、っ、良すぎて、きついや……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ぉ、っ！　ほ、ぉっ！　中、いっぱい、でっ！」
+			DATA 「やぁ、っ……出ちゃう、っ、あああっ！」
+			DATA 「い、やぁ……もう、敏感に、なっちゃってる……っ」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「あ、あっ……変な音、させないでっ……」
+			DATAFORM 「ん、っ！　%MASTERNAME%の、前なのに……っ」
+			DATA 「漏れちゃう、っ、激しくされると、っ！」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぐ、っ……！　裂けちゃう、っ……！」
+			DATA 「もう、っ、入らなっ……それ以上は……っ」
+			DATA 「あぁ、っ、お尻、拡がって……っ」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「は、ぅっ！　あんっ！　や、ぁ……っ！」
+			DATA 「ほじらない、でっ……何も、考えられなく、なる……」
+			DATA 「あ、う……こんな、されちゃったら、私っ」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「ひんっ……中で、膨らんできたっ……」
+			DATA 「やだぁ……精液、浣腸されちゃう……っ」
+			DATA 「ぅ……気持ち良く、なんて、っ！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「全部……入っちゃった、っ……！」
+			DATA 「ぉ、う……お腹、いっぱいで、動けないや……」
+			DATA 「温かい、っ……嫌なのに、さ」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「く、ぉ……っ！　そこ、はぁっ！　強すぎてっ……」
+			DATA 「ああ……奥まで、見られちゃう、やだぁ……」
+			DATAFORM 「こんなところ、%MASTERNAME%、だけだよっ……？」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「ん、ぅ……臭い、かがないでっ……」
+			DATA 「やだぁ……顔、見られるの、恥ずかし……」
+			DATA 「ここ、いじられると、何にもわからなくなっちゃってっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「やめ……っ、もう、入らないっ……！」
+			DATA 「ぐぅっ！　あ、ああっ！　無理矢理、やだぁっ！」
+			DATA 「い、ぃ……恥ずかしくて、痛くて、最低、なのにっ」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「お尻、っ……気持ちよくって、何も、もうっ」
+			DATA 「あぁ……私の身体、好きにされちゃってるよ……っ」
+			DATA 「この状況も……っ、悪くないかも、って、あはは……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「ふ、ぅ……っ、触られると、それだけで、私っ」
+			DATA 「いっぱい、教えて……気持ちのいいこと」
+			DATA 「あ、ぉ……ぐりぐりされて、おかしく、なっちゃうっ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「ん……こんなところで、もう……」
+			DATA 「あ……凄く、今、反応したっ……」
+			DATA 「同じぐらい、っ、気持ちよくっ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「やだぁ……拡がっちゃ、うっ……！」
+			DATA 「お尻、熱いのっ……離さない、でっ……」
+			DATA 「う……もう、だめっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「あ、ぉ……っ、顔、見ちゃ、やだぁ……」
+			DATA 「お尻、やめて、よっ……」
+			DATA 「ん、んぁっ！　変な音、させないでっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「ちょ、っと……壊れちゃうよっ……」
+			DATA 「あぁぁあっ、痛い、痛いってば……！」
+			DATA 「く、ぅ……もう少し、優しくして……？」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「うぅうっ……奥、いじめないでっ……」
+			DATA 「出ちゃう、やだっ、ぁぁああっ……！」
+			DATA 「ほ、ぉぉっ……お尻、もう、やめてよっ……！」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「まだ、するのっ……？」
+			DATA 「んぅ……拡がっちゃってるよ……」
+			DATA 「あんまり、動かないでよっ……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「あぁ、っ、私、これ、だめっ……」
+			DATA 「くぅ……お尻、ひりひり、するよ」
+			DATA 「はう……っ、気持ち、いい、かな……？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_SB
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「おっぱい、いじらないでっ……もう、私っ」
+			DATA 「ん……手つき、やらしいな、もう……」
+			DATA 「えへへ、嫌いじゃ、ないよ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「あ……あんまり、見ないで……？」
+			DATA 「う、隠れたいな、もう……」
+			DATA 「あぁぁっ、ん……変な声、出ちゃう、じゃないか」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ん、ぅぐっ……ちぎれちゃう、よっ……」
+			DATA 「やぁ……赤く、なっちゃった、っ！」
+			DATA 「そんなに、いじめないでっ、私、もうっ」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「うぅぅっ……捏ねないで、もう、敏感なのっ……」
+			DATA 「ん、ちょっと、そっち、はぁ……っ！」
+			DATA 「凄く……駄目に、なっちゃいそうで、怖いよっ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「震えちゃって、良くなかったら、ごめんねっ……？」
+			DATA 「あぁ……もう、やだぁ……」
+			DATA 「こんなに、なっちゃったっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「ん……あんまり、大きくないけど……」
+			DATA 「ちょっと、っ、この臭い、反則だって……」
+			DATA 「いたずら、しちゃやだよ？　私が、するんだから……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「おっぱい、痺れてる……っ」
+			DATA 「あん……何で、何でこんな、気持ち、いいのっ」
+			DATA 「変だよ、っ……敏感に、なっちゃってる……！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「う……あんまり、見られたら……っ」
+			DATA 「わわわっ……！　これは、違うんだってっ」
+			DATA 「は、あ……っ、ね、もう、駄目っ……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「く、うううぅっ！　それ、やめ、ぇっ……！」
+			DATA 「痛くない、いたくない……っ」
+			DATA 「あ……なんか、ぼやけて、きたぁ……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「やだぁ……それ、もうやだぁ……」
+			DATA 「どうも、調子狂っちゃうな……っ」
+			DATA 「ぅ……じろじろ見られると、変な気分だ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「熱いっ……興奮、しちゃってる……っ？」
+			DATA 「んん……なんか、ぼーって、してきた……」
+			DATA 「これ、っ、凄いっ……！」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ぁ……っ、おかしく、ないかな？」
+			DATA 「先っぽ、っ、敏感すぎてっ！」
+			DATA 「もっと、っ、強く、いっぱいっ」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「あ……っ、おっぱい、揉まれ、っ！」
+			DATA 「食い込んでる……っ、乱暴、しないでよ……？」
+			DATAFORM 「%MASTERNAME%、これ、何か、ね……っ？」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「ぁ、あの、っ……何で、こんな、っ」
+			DATAFORM 「いや、っ……！　%MASTERNAME%、に、見られちゃっ……」
+			DATA 「触手、に……おっぱい、いじられちゃってるよ……っ」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぐ、ぅ……っ、締め付けないでっ……！」
+			DATA 「あ、ふっ……先っぽ、引っ張られると、っ！」
+			DATA 「ぁっ！　や、ぁっ！　痛いの、やだぁ……っ」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「これ……っ、悔しいけど、気持ちい……っ」
+			DATA 「ほら、こっち、もっと、近くに……」
+			DATA 「おっぱい、もっと、弄ってっ……！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「ぬるぬるするのが、っ、おっぱいにっ……！」
+			DATA 「ひ……っ、それ以上、揉まないでっ……？」
+			DATA 「あ、あ……乳首、気持ちいい、のっ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「何か、急に、動きがっ……」
+			DATA 「あ、熱いな、この触手……」
+			DATA 「うぅ……変な液、出てきた」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「あ、ふっ……そんなに、見せ付けないでよ……」
+			DATA 「もう、好きだねえ、ほんと……」
+			DATA 「私の胸……どきどき、しちゃってるっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「やぁ……もう、こんなの、やめてよっ……」
+			DATAFORM 「%MASTERNAME%……流石に、これはちょっとっ」
+			DATA 「く……わかった、からっ、いじるの、やぁ、っ！」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「いっ……！　引っ張らないでよっ……」
+			DATA 「あぁ……痛くて、やなの、にっ……」
+			DATA 「え、っ……まだ、続く、なんてっ！」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ひ、ぃっ……おっぱい、もうやだぁ……っ」
+			DATA 「言うこと、聞くから、っ、もう、やめてっ……」
+			DATA 「私っ……えっちなこと、されてるのにっ」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んっ……熱いの、擦れてっ……」
+			DATA 「はぁっ……！　気持ちよく、なっちゃってるよっ」
+			DATA 「あんまり、っ、見ないで、恥ずかしい、ところ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「んぅ……おっぱい、どうかなっ……」
+			DATA 「えへへっ……良く、したげるねっ？」
+			DATA 「そんなに、期待した顔で見られても……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「ちょっと、赤ちゃんじゃ、ないんだからさ……」
+			DATA 「う……くすぐったい、かな……」
+			DATA 「……意外と、紳士的だよね」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「や、ぁ……見せないで、よっ……」
+			DATA 「手つき、やらしいな、もう……！」
+			DATA 「はぁ……これで、終わりにしてよ？」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「あ、うっ！　やだ、痛いってばっ！」
+			DATA 「強すぎ、だよっ、ちょっと……！」
+			DATA 「もう、許して……」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「……うん、気持ち、いい……」
+			DATA 「ね、私、変じゃ、ないかな……っ？」
+			DATA 「はい、おっぱい、どうぞ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「んっ……どう、ですかっ……？」
+			DATA 「あは、何か、気持ちよく、なって……」
+			DATA 「これ、凄いね、どきどきするよ……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「ちょ、動かないで、擦れちゃう、からっ……」
+			DATA 「にゅるにゅる、だねえ……」
+			DATA 「どう？　柔らかい？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_L
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATAFORM 「えへへ……っ、ねえ、%MASTERNAME%……？」
+			DATA 「好き、抑えられない位、愛してるよ……」
+			DATA 「もっと、一緒に、いたいよ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「……っ！　見ないで、よっ……」
+			DATA 「うぅ……恥ずかしい、けど、ちょっとだけ……」
+			DATA 「何か、見られてるの、癖になるかもっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「あぅっ……痛い、っ……」
+			DATA 「やっ！　ぁ……まだ、だいじょう、ぶ……」
+			DATA 「きゃ……なんで、私、痛いのに……？」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「ご主人さま……なぁんて、ね？」
+			DATA 「ねえ、私、うまくやれてる、かなっ……」
+			DATAFORM 「何か、ね、%MASTERNAME%の為に、してあげたいな」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「何でも、言ってね？　好きでやってるんだから、さ」
+			DATA 「あは……今、震えた、でしょ？　嬉しいな」
+			DATAFORM 「ね、頂戴？　%MASTERNAME%の、精液……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「女の子に、こんな風にされちゃって、恥ずかしくない？」
+			DATAFORM 「気持ち、い？　%MASTERNAME%が、欲しいの、いくらでもしたげるよ……」
+			DATA 「まだ、かなっ、精液、早く、欲しいのっ……！」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「あは……何か、いい気持ちだよ……」
+			DATAFORM 「ん、っ、ねえ、もっと、%MASTERNAME%……？」
+			DATA 「身体、熱いの、っ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「うぅ……見られちゃってるよ」
+			DATA 「ね……顔、変じゃないかな、っ」
+			DATA 「こんな……っ、おかしいな、もう……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あ……っ！　肌に、しみこむのっ……！」
+			DATA 「ひ、ぃっ！　もう、痛いの、やだぁっ……！」
+			DATA 「あ、あ……こっち、見ないで……っ！」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「ん……っ、もっと、ちょうだい……？」
+			DATA 「はぁ、っ、身体、熱いよ……っ」
+			DATA 「早く、弄って、滅茶苦茶に、して……！」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「ん……おいしい、大好きっ……」
+			DATA 「これ……私に、ちょうだい……っ」
+			DATA 「あ、ぅ……気持ちいい？　気持ち、いいよね……？」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「びくびく、震えてる……もっと、したげる……っ」
+			DATA 「あ、ぁ……この臭い、おかしく、なっちゃうっ……」
+			DATA 「ん、うっ……全部、出して、気持ち良くなってっ……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「うぅ……これ、絡み付いてっ……」
+			DATA 「優しくされるのは、嫌いじゃないけどっ」
+			DATA 「あぁ、もう……何で、こっち来るかなあ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「っ！　……や、ぁっ……」
+			DATA 「何で、こんなこと、っ！」
+			DATA 「う、ぅ……恥ずかしい、ってばっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「何するのさ、っ！　痛い、じゃんかっ……！」
+			DATA 「くぅ……っ、こんな、触手にっ……」
+			DATA 「ああああっ！　やめてっ、許して、っ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ん……っ、どう、ですかっ……？」
+			DATA 「あ、あ……そんな、わたし、っ……」
+			DATAFORM 「いやぁ……っ、%MASTERNAME%以外、やなのにっ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「うぅ……酷い、臭い……っ」
+			DATA 「ぬめぬめして、難しいね、これは……」
+			DATA 「あは、はは……もう、やぁ……っ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ぅ……こんな、感じでどうかな……？」
+			DATA 「あ、今……動いて、まさか……っ」
+			DATA 「震えてるっ……全部、出すの……？」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「見られちゃう……けど、っ、いいよ……」
+			DATA 「う……えっち」
+			DATA 「あはは……なんか、すごいね……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「くぅ……何だか、ぞくぞく、してきた……」
+			DATA 「今、見られ、たっ……？」
+			DATA 「違うの、これはっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぐ、ぅ……何で、こんなところでっ……！」
+			DATAFORM 「ひどいよ、%MASTERNAME%っ……」
+			DATA 「あっ！　ん、うっ！　やだ、やめてっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「何だか、ペットになった、気分だ……」
+			DATA 「うん……わかった、よ……」
+			DATA 「あぁ……何でも、してね……？」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「ん、ぅ……視線が、気になる……」
+			DATA 「たまには、こういうのも、いいかもね？」
+			DATA 「はぁ……恥ずかしい、なっ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「しょうがないなあ、もう……」
+			DATA 「あんまり、暴れないでっ……」
+			DATA 「やぁ……何か、動き、がっ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATAFORM 「好きだよ、%MASTERNAME%……」
+			DATA 「ずっと一緒に、いて欲しいな……」
+			DATA 「こんな私だけど、そばに、いさせて？」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「……っ、見ないで、よっ……」
+			DATA 「わわっ！　こっち見ちゃ、だめだってばっ！」
+			DATA 「恥ずかしいなあ、もう……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「いたっ……！　なんでっ……？」
+			DATA 「ご、ごめんなさいっ……」
+			DATA 「あ、あっ！　やぁっ……！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATAFORM 「%MASTERNAME%の近く、凄く落ち着く……」
+			DATA 「何か、して欲しいことあったら言ってね？」
+			DATA 「ありがとう、ございます……っ」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「ね、気持ちい？　……よかった」
+			DATA 「上手く、できてるかなっ……？」
+			DATA 「大好き、どんどん、好きになっゃうっ……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「じゃ、私からやってみる、ねっ？」
+			DATA 「ここ、どう？　気持ちよかった？」
+			DATA 「……えっち」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_LC
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「そっち、もいいけど、こっちもっ……」
+			DATA 「離さないで、ずっと、ね？」
+			DATA 「んぅ……っ、頭、ふわふわするっ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「あぁ……見られ、ちゃったっ……」
+			DATA 「変態なんだ、私っ……」
+			DATA 「くすぐったくて、恥ずかしくて、気持ち、い……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ん、ぐっ！　あ……っ、はっ」
+			DATA 「まだ、っ、大丈夫、だよっ」
+			DATA 「あああっ！　今の、好き、っ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATAFORM 「はぁ……っ、%MASTERNAME%……」
+			DATA 「私、もう何もいらないくらい、幸せ」
+			DATA 「ずっと、一緒に、いてね？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「もっと、強く、しちゃって……っ！」
+			DATA 「擦れてる、っ！　それ以上は、ぁ……」
+			DATA 「もう、気持ちよくって、わかんないや……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「ぁ……くらくらするよ、この匂い……」
+			DATA 「音、やらしいな……」
+			DATA 「んふ……ね？　気持ち、いいでしょ？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ひゃ、っ……もっと、虐めて、っ……！」
+			DATA 「ああぁ、っ、そこ、擦られる、とっ」
+			DATA 「ぅっ……あ、あっ！　気持ちいい、よっ……！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「あ、ん……ねえ、恥ずかしい、よ……」
+			DATA 「やだっ、そこ、いじるの、やだぁ……」
+			DATA 「こんな、っ……頭、おかしくなっちゃいそ……っ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あ、がっ……そんな、っ、壊れちゃうっ！」
+			DATA 「私が、っ……わからなくなるっ……」
+			DATAFORM 「も、無理……っ！　痛いの、ごめんなさい、%MASTERNAME%っ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「もっと、一杯、ちょうだい、っ……」
+			DATA 「気持ちいいの、好きっ……！」
+			DATA 「あ、は……何でも、するから、っ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「んっ……擦れて、身体、溶ける、っ……！」
+			DATA 「あは、っ、こんなに、なっちゃってるよ……？」
+			DATA 「うう……違う、のに、私っ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「くぅっ！　腰、動いてっ……」
+			DATA 「全身、熱いの、っ、もう、私……」
+			DATA 「あ、あ……頂戴、っ、早くっ……！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「あ、ぁ……擦らないでっ、気持ち、良くなっちゃう……」
+			DATA 「ん、うっ！　ざらざらしてるの、っ、やめてぇ……」
+			DATA 「はぁっ、はっ、やだ、っ、きちゃう、っ」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「こんなのっ……吸われてっ……！　私っ」
+			DATAFORM 「ひっ……見ないでっ、%MASTERNAME%、こんな、所……」
+			DATA 「近く、来ないでよっ……ぃ、やっ……！」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「あっ……！　歯、立てちゃ、やだっ……」
+			DATA 「くっ……こんな、痛い、のにっ！」
+			DATA 「もう、やだっ……こんなこと、やめて……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「うあ……そこ、おかしく、なっちゃう……」
+			DATA 「は、あっ、もう、焦らすの、やめっ」
+			DATA 「ううっ、好きに、滅茶苦茶に、してくださいっ」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「んん、ぅっ！　擦られる、っ、取れちゃうっ……」
+			DATA 「は……むっ、ん、ちゅっ……」
+			DATA 「あ、ひゃ……っ、ぬるぬるしてるの、いやぁ……」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ううっ……この感触、くせに、なるっ……」
+			DATA 「やめっ、急に、うごかなっ……！」
+			DATA 「何か、先っぽから、出てきたっ……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん……っ！　そこ、もう、やぁっ！」
+			DATA 「近く、きてっ……恥ずかしいから、さ」
+			DATA 「何か、私、ねっ……？」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「……っ、隠して、いい……？」
+			DATA 「や、だぁっ……見ないでよっ……」
+			DATA 「ち、違うの、これは、ね……っ」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「あ、わわっ……！　そんなの、無理っ……！」
+			DATA 「痛い……っ、駄目だってば……」
+			DATA 「あ、ぁ……見られて、腫れちゃってるっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「強く、しないでっ、逆らわない、からっ！」
+			DATA 「私……もう、虜になっちゃった……っ」
+			DATA 「……撫でて、恥ずかしいの、忘れさせてっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んぅ……擦れて、音立てちゃってるよ……」
+			DATA 「……あんまり、見ないで？　照れちゃうから、さ……」
+			DATA 「私、そこ、くすぐったい、っ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「あ、は……どう、かな……ここ？」
+			DATA 「今、探してるのっ、気持ちいい、とこ……」
+			DATA 「えへへ……今、顔見てた、よね？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「あぁ、もう……優しいなあ、ほんと……」
+			DATA 「ちょっと……擦られる、とっ……！」
+			DATA 「やぁ……そこ、いじらない、でよぉ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「ひゃっ……！　恥ずかしい、な……」
+			DATA 「顔、見ないでっ……」
+			DATA 「気持ち、いい、けどっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「きゅ、ぅ……っ！　いた、いっ！」
+			DATA 「や、ぁ……取れちゃう、っ……」
+			DATA 「激しすぎ、だよっ……！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「ひゃ、んっ！　そこ、はぁ……っ！」
+			DATA 「やめ、てっ、言うこと、きくからっ……」
+			DATA 「うぅ……もう、だめ、だよ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「擦れて、私も、いいよっ……」
+			DATA 「ぎゅ、って、して……？」
+			DATA 「あは……身体、あったかいな……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「もっと、近くにおいでよ？」
+			DATA 「ねえ、これどうかな……？」
+			DATA 「やぁ……私が、良くしてあげたい、のに……っ」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_LV
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「深いっ……もっと、して……？」
+			DATA 「どうして、こんなに、気持ちいいの……？」
+			DATA 「ん、っ、もう、いじめないでよ？」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「あは……顔、近いってば……」
+			DATAFORM 「もう、恥ずかしくないよ、%MASTERNAME%の前なら」
+			DATA 「この感じ、癖になっちゃいそ……っ」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「あ、ぐぅ……っ、まだ、っ？」
+			DATA 「お……！　頭、ぼーって、してきた……」
+			DATA 「きゃ、ぁっ！　潰れちゃうっ、やぁっ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「うんっ、奥、いじめてっ、もっと……」
+			DATA 「もう、それ、弱いの知ってるのにっ！」
+			DATA 「いつでも、準備できてるから、ね？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「精液、早く、欲しいのっ……」
+			DATA 「中、全部、ちょうだい……っ」
+			DATA 「凄く、硬くて、大好き……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「まだかな、そろそろ、限界なんじゃ、ない……？」
+			DATA 「んっ！　腰、動かさないでって、言ってるのにっ」
+			DATA 「全部、出しちゃっても、大丈夫、だからっ……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「気持ち、いぃっ……！　もう、わたし、っ……」
+			DATA 「お、おっ！　奥、やだ、ぁっ！」
+			DATA 「あ、ひっ……ぐちゃぐちゃで、もうわかんない、や……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「んっ、音、っ！　恥ずかしい、よっ……」
+			DATA 「あ、あ……顔、今見ちゃ、やだぁ……」
+			DATA 「違うの、気持ちいいけど、っ、これは……っ！」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「くぅっ……大きすぎ、っ、もうっ……」
+			DATA 「ひゃ、っ、拡がるの、駄目、だよ……っ」
+			DATA 「ん、ぅ！　んっ！　突かない、でっ……！」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「はぁっ、あ……はやく、ちょうだい、っ……？」
+			DATA 「これ、私が、壊れてく、っ……！」
+			DATA 「く、あっ……！　身体、滅茶苦茶に、してっ……！」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あはは……っ、もう、気持ち良くって、私っ……」
+			DATA 「ん……凄く、くらくらする、この臭い……」
+			DATA 「はあっ……はっ……まだ、私は、大丈夫……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ん……っ、入ってるっ、動いて、いい……っ？」
+			DATA 「うぅ……おっきくて、一杯……」
+			DATA 「早く、頂戴、っ、全部、中に……！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATAFORM 「そこ、はぁ……っ、%MASTERNAME%、のっ……！」
+			DATA 「あ、う……こんなこと、続いたら、っ」
+			DATA 「ふ、あっ！　いい、よっ……触手、好きっ……！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「くぅ……こんな、格好、させてっ……」
+			DATA 「あっ、ああっ！　音、わざとっ、響かせてっ……！」
+			DATA 「やだぁ……こんなところ、見ないでよぉ……っ」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「……！　ぅ、あああっ、も、やだぁあああっ！」
+			DATA 「っ、苦しいのっ、もう、やめてっ……！」
+			DATA 「ぁ……っ、は、ぁ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ひ、あああっ……嫌な、はずなのにっ、こんな、ぁっ！」
+			DATA 「やあ……奥、突かれる、とっ、私っ……」
+			DATA 「はぁ、んっ！　い、ぃっ……好き、っ……！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「ぁ、あっ！　ぁ……精液、やだぁ……」
+			DATAFORM 「ちが、ぁ、違うのっ、%MASTERNAME%っ、これはっ……」
+			DATA 「ひぃっ……いい、のっ……お腹、気持ちよく、って……」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ん、ぅ……何で、こんな、ことっ」
+			DATA 「……どう、です、かっ……？」
+			DATA 「うぅ……震えてるっ……精液、出しちゃうんだっ……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん、ぅっ！　これ、好き、だよっ……」
+			DATA 「深くまで、きてっ……満たされてる……」
+			DATA 「わたし……っ、見られて、るのにっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「あぁっ、恥ずかしい、なっ、もう……」
+			DATA 「っ、はぁ、はっ……！　も、やめて、っ……」
+			DATA 「違う、っ……こんなの、違うのっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぅ……大きい、っ、お腹、一杯でっ……」
+			DATA 「やだっ……壊れちゃう、もう、むりっ……！」
+			DATA 「怖いよっ……どうして、こんなっ」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ん、ぅ……ずっと、こうしてたい、よ……」
+			DATA 「もっと、わたしに、教えてっ……」
+			DATA 「ぁっ……や、ぁ……恥ずかしくて、もう……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んんっ……なんだか、変な、感じっ……」
+			DATA 「ふぁ……私、ぼーって、してきちゃっ……」
+			DATA 「あ……もう、しかた、ないなあ」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「……私は、恥ずかしいんだけど、さ……どう？」
+			DATA 「びくびく、してるよ……すぐ、わかるくらい」
+			DATA 「熱い……全部、私に……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「はぅ……っ、赤ちゃん、できちゃう、よっ……？」
+			DATA 「っ、ぎゅーって、して？」
+			DATA 「……やらしいなあ、もうっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「手、掴まないでってば……」
+			DATA 「今、顔、やだ、っ……」
+			DATA 「幸せ、だけどっ、恥ずかしい、よっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「もう少し、優しく、してっ……」
+			DATA 「あ……ぅ、何でも、ないっ……」
+			DATA 「気持ち、いい……？」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATAFORM 「わ、わたし、%MASTERNAME%の、もの、だからっ……！」
+			DATA 「いつでも、大丈夫、だからねっ？」
+			DATA 「好きな風に、動いて、気持ちよくなってね？」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「中、ごりごり、されるとっ……！」
+			DATA 「熱い、よっ……」
+			DATA 「ひゃ、っ！　いきなり、動くの、やぁ……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「あぁ……奥まで、入ってるよ……」
+			DATA 「それじゃ、動く、よ……？」
+			DATA 「私の身体、気持ち、いい？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_LA
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「おしりっ、駄目になっちゃうよっ……」
+			DATA 「満足、させてあげたいなっ……」
+			DATA 「この匂い、好きだよ……？」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「やぁっ……音、出ちゃってる……っ」
+			DATA 「う……ちょっと、匂い気になる……？」
+			DATA 「ぁっ、もう、わかんないっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「く、ぁ……っ、お腹、もう入らないっ……」
+			DATA 「も、無理っ……そんなに大きいの、無理だってばっ！」
+			DATA 「あぁ……っ、何か、痛いのに、気持ちいいっ……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「くぅっ！　もっと、お尻、いじめてっ……！」
+			DATA 「ん、ぉっ！　ぉっ！　も、やぁ……」
+			DATA 「あぁ……お尻、精液欲しい、っ！」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「……ぁ、そこ、だめだよっ……」
+			DATA 「精液、出されちゃうっ、あは……」
+			DATA 「私のこと、思いっきり、っ、使って？」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「んっ、ふぅ……思い通り、したげる……」
+			DATA 「はぁ、は……こんなに、しちゃって……」
+			DATA 「どこでも、精液だしてっ……べとべとに、してっ……！」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「お尻……っ、もっと、壊れるまで、して……っ」
+			DATA 「あ、あ……出ちゃう、けど、気持ちいいっ……！」
+			DATA 「奥が、っ……頭、真っ白に、なっちゃう……っ！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「いや、っ……見ないで、多分、みっともない、から……っ」
+			DATA 「ふ、ぅっ！　んっ！　身体、力入らない、っ……」
+			DATA 「も、やめてっ……お尻、馬鹿に、なっちゃうっ……！」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「んう、っ……もっと、お尻拡げてっ……！」
+			DATA 「あ、あ……っ、そんなの、無理っ……！」
+			DATA 「ひ、ぃっ！　やぁっ！　お尻、壊れるっ！」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「んぅ……っ、お尻、ほじってっ……！」
+			DATA 「は、ぁっ……いいよ、っ、気持ちいい、のっ……」
+			DATA 「なんでもするから、全部、頂戴っ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「ぁ、あ……お尻、凄いっ……」
+			DATA 「何も、考えられないや……っ」
+			DATA 「お、お……っお腹、これ以上は、っ！」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「私の、身体……っ、気持ちい……？」
+			DATA 「お尻ほじられて、っ、私っ……！」
+			DATA 「も、頭の中、真っ白でっ……！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ひっ……お尻、ほじられてっ……あ、ぉあああっ！」
+			DATA 「く、あああっ……好きっ！　奥まで、きてっ……！」
+			DATA 「もう、っ、だめっ、お尻、敏感、なのにっ」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「お尻、吸われてっ……！ああ、汚い、のにっ……！」
+			DATA 「……っ、ああっ、止まって、っ、それ以上、はぁっ！」
+			DATA 「ほ、おぉおっ……やだぁ、顔、みちゃ、っ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぉ、大きい、っ、入らない、のにっ……！」
+			DATA 「無理矢理、犯さない、でっ……力、抜きます、からっ」
+			DATA 「強いの、っ……お尻、壊れちゃう、よっ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「あ……ぁ……私、使われてる、性欲処理にっ……」
+			DATA 「くう……っ、気持ち、よくなんて、っ……ぉ、ああっ！」
+			DATA 「あ、あああっ、なります、っ、触手専用の、精液便所に……っ！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「あぁ……気持ち、よさそうに、震えてっ」
+			DATA 「いやぁ……精液出されるの、やだぁ……」
+			DATA 「ふ、あっ、お尻、今、動かさないでっ……！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ふ、ふふっ……もう、何も、わかんないやっ」
+			DATA 「ん、ぁ……お尻の中、びくびく、って、してっ……」
+			DATA 「あ、はぁ……熱いの、出されたら、私っ……！」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ぉ、あっ……お尻、弱いんだから、ゆっくり……」
+			DATA 「はぁ、ん……私、何かっ、くらくら、するっ……！」
+			DATA 「……っ、見ちゃ、だめだよ？」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「……ぁあっ！　も、お尻、やめてよっ……！」
+			DATA 「音、聞かないでっ……！　恥ずかしいよ……」
+			DATA 「う……っ、望むのなら、そうする、けどっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「……ぐ、ぅっ、お腹、無理っ……！」
+			DATA 「あ、ぁっ！　痛い、痛いよ……」
+			DATA 「ひ、ぃっ……もう、何も、わからないよっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ん……躾けて、使いやすいように……」
+			DATA 「ふぁっ……奥、もう、だめっ……」
+			DATA 「く、ぅ……見られて、私……っ」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「あ、もう……こんなに、なっちゃってるよ……」
+			DATA 「ん、ぉっ！　やだ、こんな、ところでっ……！」
+			DATA 「ぬるぬるして……暖かいの、好き……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「あは……見えてる、かな……？　これから、っ、動くよ……」
+			DATA 「ぃ……凄いね、これ……どんどん、好きになるよ……」
+			DATA 「ぁ、痛く、ないっ……？　激しくて、大丈夫っ……？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「う……意地悪、っ……」
+			DATA 「私、そこ弱いの、知ってるくせにっ……」
+			DATA 「いじめないでよ、もう……っ」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「やぁ……見ないでっ……」
+			DATA 「うぅ……死んじゃいたい……」
+			DATA 「やだっ……臭い、嗅ぐのやだぁ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「あ、ぅ……大き、すぎっ……！」
+			DATA 「むり、入らなっ……」
+			DATA 「裂けちゃ、う、や、ぁあっ！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「お尻、も、っ……やぁ……」
+			DATA 「あぁ、あっ！　出ちゃう、っ……」
+			DATAFORM 「お尻、許して、%MASTERNAME%……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「ね、ぇ……おなか、もう、むりっ……」
+			DATA 「奥、深いっ……気持ち、いいよぉ……」
+			DATA 「入り口、擦らないで……っ」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「っ……痛く、ない？」
+			DATA 「えぇ、と……動いて、いい、かな」
+			DATA 「あぅ……っ！　腰、抜けちゃった、ぁ……」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_LB
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「おっぱい、暖かい……っ、もっと、欲しいよ……」
+			DATAFORM 「胸が、苦しいの、%MASTERNAME%……」
+			DATA 「そんな、優しくされるの、好きになっちゃう……っ」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「はう……あんまり、大きくなくて、ごめんね？」
+			DATA 「視線、やらし……っ、でも、嬉しいよ」
+			DATA 「んっ……見られてるっ、私の、身体っ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ああああっ！　もう、滅茶苦茶に、してっ！」
+			DATA 「やだぁ……乳首、壊れちゃう、気持ち、いいっ……」
+			DATAFORM 「ぐっ、ううっ……%MASTERNAME%、気持ち、いい？」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「やぁ……乳首、服従、しちゃうっ……！」
+			DATA 「もう、何でも、遠慮しちゃ、やだから……」
+			DATAFORM 「気持ちいいの、好き……%MASTERNAME%、好きだよ」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「あんまり、綺麗じゃなくて、っ、ごめんねっ」
+			DATA 「一杯、気持ちよくなって、精液、出してっ……！」
+			DATA 「今私、満たされてる、幸せ、だよっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「おっぱい、柔らかい……かなっ？」
+			DATA 「全部、搾れるように、がんばるよ」
+			DATA 「今、震えてたね、もう少しで、出ちゃうのかなっ？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「おっぱい、っ……好きに、触られてるっ……」
+			DATA 「もっと、こね回してっ……思いっきりっ……」
+			DATA 「ん……おっぱい、痺れてっ……！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「ああ……見られてる、私の、身体っ……」
+			DATA 「気持ちいいの、恥ずかしいのに、っ……！」
+			DATA 「ふぁ……っ、頭、ぼーって、してるよ……っ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「んぅ……っ！　力、入れすぎ、だってばっ」
+			DATA 「はう、っ！　身体、熱くて、動かないっ……！」
+			DATAFORM 「酷いよ、%MASTERNAME%っ……気持ち、良くなっちゃうっ……！」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「んっ……薬の、せい、だからっ……！」
+			DATA 「あは……もっと、ちょうだい、っ？」
+			DATA 「ねじ伏せて、力一杯、私を、滅茶苦茶に、してっ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あー……っ、は、あ……っ、あはは、っ……」
+			DATA 「気持ちい……っ、何もかも、どうでもいいや……っ」
+			DATA 「私、っ……流されちゃってる、なあ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「んっ……酷い、臭い、だけどっ……」
+			DATA 「あぁ……熱い、びくびく、震えてるの……っ」
+			DATA 「欲しいよ、早くっ……！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「おっぱい、やだぁ……何で、そんなっ……」
+			DATA 「う、もしかしてっ、吸われて……っ」
+			DATA 「はぁ、んっ……優しく、しないでよっ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「うぅ……っ、何か、強調、されてるみたいっ」
+			DATA 「先っぽ、噛まないでっ……」
+			DATA 「あ、ぁ、んっ！　ぬるぬるするの、やぁ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぃ、っ……！　こ、こっち、こないでよっ……」
+			DATA 「私の、おっぱい、が、ぁっ……！」
+			DATA 「あっ、ああっ！　今、噛んだっ、私、のっ！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ふ、ぅっ、あ、あ……もう、やめてっ……」
+			DATA 「おっぱい、触手に、いじられてっ……」
+			DATA 「このまま、私っ……ん、ああっ、ひゃ、あっ！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「んっ……そんなの、耐えられ、っ……！」
+			DATA 「こっち、来ないでっ……っ、ああっ！」
+			DATA 「な、何でっ……私、こんなのにっ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ひ、ぅっ……これ、私じゃ、ないみたいっ……」
+			DATA 「あ、ん……おっぱい、まとわりついてっ」
+			DATA 「ん……？　びくびくって、震えて、きたっ……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん……視線、やらしいなあ……」
+			DATA 「おっと、そこはっ……」
+			DATA 「いっ……子供、じゃないんだから、さ」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「わわ……っ、何か、恥ずかしいよっ……」
+			DATA 「ひ、ぁ……見ないで、自信、ないから……っ」
+			DATAFORM 「やだっ……！　%MASTERNAME%以外には、見せたくないっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「っ……優しく、してっ……？」
+			DATA 「痛い、おっぱい、やだっ……」
+			DATA 「ぅ……あっ、怖い、の、もう、助けてっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「んっ……ねぇ、私……っ、どうなるの、かな……」
+			DATA 「こんなこと、されちゃってるのに、っ、気持ちいい、よっ……」
+			DATA 「すき……っ、ずっと、こうしてたいぐらい……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「あっ……気持ちい……っ、一緒に、っ……」
+			DATA 「暖かい……恥ずかしいけど、悪くない、ね」
+			DATA 「もっと、近く来て、わたしの、傍に……っ」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「っ……どう、かなっ、気持ち、い？」
+			DATA 「色々、試してるんだけど、っ……うまく、いかないなあ」
+			DATA 「ぁ……私、先に……っ」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「……おっぱい、好き、なの？」
+			DATA 「甘えん坊だなあ、もう……」
+			DATA 「あはっ……くすぐったい、ってば」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「あんまり、自信、ないから……」
+			DATA 「うぅ……視線が、突き刺さるよ……」
+			DATA 「目が、やらしくない？」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「ちょっと、強すぎ、っ……」
+			DATA 「やぁ……っ、もう少し、優しく……」
+			DATA 「う……あんまり、大きくないからって……」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「乳首、やだぁっ……！」
+			DATAFORM 「あ、あ……もう、%MASTERNAME%のもの、なのに……」
+			DATA 「う、ぅんっ！　もっと、欲しい、っ！」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「やぁ……おっぱい、やだぁ……」
+			DATA 「胸が、あったかくて、ぼーって、なるんだ……」
+			DATAFORM 「だいすき、%MASTERNAME%……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「ふふっ……どう？　柔らかい？」
+			DATA 「何か、変な感じ……けど、気持ちい……」
+			DATA 「大分、上手くなったと思う……どうかな？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_U
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「もう……っ、女、たらしっ……！」
+			DATA 「どきどき、しちゃうじゃないか」
+			DATA 「あはは、本気に、しちゃうよ？」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「流石に、恥ずかしいね、まあ、いいけど」
+			DATA 「……視線が突き刺さる感じ、嫌いじゃない、よ」
+			DATA 「ね……これから、どうするの？」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「……っ、妖怪退治の時間、って訳かな……？」
+			DATA 「あっ、そこ、もっと、強くっ……！」
+			DATA 「痛めつける、技術……私で、磨いて？」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「ね……唾、ちょうだい、欲しいの……」
+			DATA 「こんなに、思うことが出来るのは、幸せなんだろうね」
+			DATA 「私と、一緒に……いてくれたら嬉しいな」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「ん、ぅ……どうかな、これ……？」
+			DATA 「ちょっと、自信あるよ、私……」
+			DATA 「滅茶苦茶に、して欲しいなっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「私に、任せて……全部、搾り取ったげるから」
+			DATA 「精液の、匂い……くらくら、する……」
+			DATA 「どんな風に責めたらいいか、もう覚えちゃったよ」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「は、はやく……っ、私を、捕まえてっ……」
+			DATA 「ん、ぅ……どきどき、止まらないよ……っ」
+			DATA 「はぁ、っ、はぁっ……欲しいの、わかってるくせにっ」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「こうすれば……いいかな？」
+			DATA 「ま、減るもんじゃない、けどね……」
+			DATA 「はう、ぅ……やっぱ、恥ずかしいや」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ん、ぐぅ、っ、身体、おかしくなる、っ！」
+			DATA 「あ、ぁ……やだ、もう、無理っ……」
+			DATA 「はぁ、っ、趣味、悪いな、もう……っ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「……っ、おねだり、すればいいの？」
+			DATA 「あはは……身体、言うこと聞かないや……」
+			DATA 「全く、っ、しょうがないな、もう……っ」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「は、ん……おいし、っ……」
+			DATA 「何か、いつもより……凄くっ」
+			DATA 「近くだと、どきどきするよ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「んっ……こんな風に、されたがってたから、さ」
+			DATA 「私……っ、何だか色々覚えてくよ」
+			DATA 「ふふ、っ……反応、すごいねえ」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ひゃ……んっ、触手、まとわりついてるっ……」
+			DATA 「ああっ、これに、ぐちゃぐちゃ、されちゃうんだっ……」
+			DATA 「どきどき、するよ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「……やらしいなあ、触手の、くせにっ」
+			DATA 「あは……見て、こんなになっちゃったっ……」
+			DATA 「う、何か、ぞくぞくする……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「くっ……力、強いっ……」
+			DATA 「ああっ！　壊れちゃうっ……！」
+			DATA 「や……！　やだっ……痛いのは、嫌っ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「くっ……こんな格好、させて……」
+			DATA 「何するのさ、もう……」
+			DATA 「その、逞しいので……私を、犯してっ……！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「ん……どこ感じるのか、ちょっとわかんないや」
+			DATA 「うぅ……掴みどころ、ないねえ……」
+			DATA 「あはは、これ、面白いね……っ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ふぅ……っ、欲しく、なってきたっ……」
+			DATA 「こっち、来てもいいよっ……？」
+			DATA 「ぬめぬめ、してるのが、好きっ……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「……どこも、おかしく、ないかな？」
+			DATA 「やらしいな、もう……」
+			DATA 「さあ、どうするのかな、これから……？」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「ぅ……む、慣れないなあ、流石に」
+			DATA 「まあ、減るもんじゃないけどね……」
+			DATA 「ほらほら、駄目だよ露骨に視線向けちゃあ」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぁ……っ、痕、残っちゃうよっ……」
+			DATA 「ん、ぅ……っ！　やだ、何で、こんなところっ……」
+			DATA 「ひゃっ、やだっ！　違うの、っ、これはっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「あはは……何だか、ペットみたい、だ……」
+			DATA 「何でも言ってよ、やったげるからさ」
+			DATA 「……もっと、見たい？」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「いやぁ、何だか、やらしいねえ」
+			DATA 「ん……私、欲しくなってきちゃいそうだ……」
+			DATA 「見られちゃう、よっ……？」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「おっと……！　逃がさないよ？」
+			DATA 「どうして欲しいの、言ってみてよ……？」
+			DATA 「こんな、なっちゃってるよ……？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「何さ？　情でも、移っちゃったかな？」
+			DATA 「えへへ……悪い気は、しないね」
+			DATA 「っ！　いきなり、何てこというのさ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「んっ……どう、かな？　私の身体……」
+			DATA 「じろじろ見られるのは、流石に恥ずかしい……かな」
+			DATA 「あぁ……もう、趣味悪いなあ」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「あぅっ！　いたっ、痛いって！」
+			DATA 「加減、してくれてもいいじゃない」
+			DATA 「んっ……あっ！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「これ以上、どうしようってのさ？」
+			DATAFORM 「もう、%MASTERNAME%以外は、考えられないや」
+			DATA 「好きだよ……いろんな意味で、ね」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「気持ちいい？　そりゃ良かった」
+			DATA 「次は、私の番かな？」
+			DATA 「う……ん、どう、かな……？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「あはははっ、びくびく動いてるよ、面白いねえ」
+			DATA 「全く堪え性のない人間だなあ」
+			DATA 「どう？　気持ちいい？　良いよね？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_UC
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「きゃっ……やだな、もう……」
+			DATA 「えへへ、気持ちいいよ、うん」
+			DATA 「……えっち、だなあ」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「代金は、体でっ、払ってね？」
+			DATA 「見てる……やらしい、とこ……！」
+			DATA 「クリトリス、硬くなってる、っ、わかる……？」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ん……っ！　もう、そこ、は、ぁっ！」
+			DATA 「痛いっ、のっ……だんだん、くせにっ……」
+			DATA 「びりびり、するっ！　凄いよ、これっ……！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「あぁ……やめ、て、それ……私、もう」
+			DATA 「くぅ……ふにゃふにゃに、なっちゃうね、これ……」
+			DATA 「凄いや、私の考え、読まれてるみたい、っ！」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「やらしい……気持ちいい、けど、さ」
+			DATA 「……っ、つつかないでっ、足、震えちゃ、っ」
+			DATA 「ああ……ぬるぬるで、楽しいな……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「ここ、弱いの……私と、おんなじ」
+			DATA 「精液……一杯、欲しいよ……」
+			DATA 「あは……二人で、気持ちよく、なろ？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ひ、っ……！　今は、っ……敏感にっ！」
+			DATA 「あ、あ……身体、溶けちゃう、っ、こんなっ……」
+			DATA 「んん、っ、もっと、強く、壊してっ……！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「何か、っ……一杯、見られてる、みたいっ」
+			DATA 「や、だ……こっち、見ないで、来ないでっ……」
+			DATA 「も少し、手心、欲しいなっ……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あ、ぁっ、もう、どうでもいい、薬、さえっ……」
+			DATA 「全部、わからなくなる、頭の中、っ……！」
+			DATA 「が、っ……！　苦しい、よ、っ……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「ん、っ……もう、わかってる、癖に」
+			DATA 「あう……っ、もっと、ちょうだい、何でもするから……っ」
+			DATA 「弄られるの、好きっ……ずっと、気持ちいい、の……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「ああ……っ、擦れて、溶けちゃっ……！」
+			DATA 「気持ちよすぎて、何も、考えられないや……っ」
+			DATA 「あは……精液、全部欲しいなっ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「じゃあ、っ、動く、よ……っ、ぁっ！」
+			DATA 「気持ちい……？　腰抜けるまで、搾ったげるっ……」
+			DATA 「次は……私の、番だねっ……？」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ん、ふぅ、っ！　クリトリス、駄目、だよっ……」
+			DATA 「いいっ……くすぐられて、気持ちいっ……」
+			DATA 「ふぁ……先っぽ、吸わないでっ……？」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATAFORM 「あは……%MASTERNAME%、見てる……っ」
+			DATA 「ちょ、そこはっ……あああ……もう」
+			DATA 「うぅ、やらしいのに、つかまっちった……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「あ、ぐっ、こんなの、もうっ……！」
+			DATA 「やだっ……気持ちよく、ないのにっ……」
+			DATA 「ひっ……！　こっち、こないでっ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「うん……私を、好きにしてっ……？」
+			DATAFORM 「あぁ……%MASTERNAME%、違うの、これはっ……」
+			DATA 「気持ちいい、から……仕方ない、よね……？」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「んんんっ、そこ、擦っちゃ、だめ……っ」
+			DATA 「あ、あ……腰が、砕けちゃう、っ……」
+			DATA 「やだ……気持ちいいとこ、全部、覚えられちゃう……っ！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ふ、ふっ……触手でも、感じるんだね……？」
+			DATA 「あぁ……甘いのっ、これ、なんでっ……？」
+			DATA 「ほら……こっち、だよっ……？」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「あぁ……っ、そんな、いじられたらっ……」
+			DATA 「この快感、覚えちゃう、よっ……」
+			DATA 「どうしてなのかな、凄く、恥ずかしいや……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「やだ、なあっ、もう……」
+			DATA 「うぅ……腰が、びりびりしてっ……」
+			DATA 「そんなに、見たいのっ、私の、恥ずかしい、とこっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ちょっとっ……！　強すぎ、痛いっ、てっ！」
+			DATA 「くぅ……っ、身体、熱いのっ……」
+			DATA 「あ、ぁっ……見られて、責められて、私……！」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ひっ……な、何でも、するから……ね？」
+			DATA 「あは、っ、もっと、凄いこと、しようよ……」
+			DATA 「っ、ここ、こんなに、なっちゃったよっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「……ぅっ、擦れて、気持ちい……」
+			DATA 「ん……音、いっぱい、出ちゃってるっ……」
+			DATA 「もっと、近くにっ……二人で、一緒に」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「こっち、おいでよ、気持ち、いいよ……？」
+			DATA 「んんっ……恥ずかしさも、悪くないね……」
+			DATA 「暖かいねえ、人の身体って」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「ん……気持ち、いいよ……」
+			DATA 「は、ふぅ……その動き、いいね、好きだよ……」
+			DATA 「愛してる……なんて、言って欲しい？　えへへ」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「くぅ……っ、見ても、いいけどっ……」
+			DATA 「他の女の子、見ちゃ駄目だから、ねっ……？」
+			DATA 「見えてる、っ……？　どう、かな？」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「や、ぁっ！　ちぎれちゃう、ってばっ！」
+			DATA 「痛いのに、気持ち、いいって……変、かなっ」
+			DATA 「ねぇ、ちょっと、過激、すぎるよ……」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「気持ち、よくって、もう、駄目……」
+			DATA 「もっと、こすって、もっと……」
+			DATA 「身体を自由にされるの、好きかも……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「ふふ……こすれ合って、やらしい、な……」
+			DATA 「きっと、もっと、良くなるよ……？」
+			DATA 「我慢しちゃ、嫌だからね？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「どう、これ？　色々、試させてよ」
+			DATA 「ん……今、震えた？　嬉しいな」
+			DATA 「ほらほら、腰、引けて……んっ、やぁ……」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_UV
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「んっ……赤ちゃん、欲しいな」
+			DATA 「ね、キス……してっ、一杯」
+			DATA 「奥、っ、気持ちい……のっ！」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「顔、見ないでっ？　何か、緩んじゃってっ……」
+			DATA 「ち、違うの、恥ずかしいんじゃなく、ってっ」
+			DATA 「もう、しょうがない、な、ぁっ！」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「か、はっっ……！　激しっ……！」
+			DATA 「そこ、むりっ、もう、や、ぁっ！」
+			DATA 「あぁ……入っちゃった、凄いよっ……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「んっ、してっ！　私を、モノにっ……！」
+			DATA 「あ、んっ！　やだ、怖い、よっ……」
+			DATA 「ぐちゃぐちゃに、して、っ！　私の、おまんこっ……！」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「ね、どうなのかな、私の、身体っ……」
+			DATA 「好きなの、精液の感触、とかっ……」
+			DATA 「おまんこ、気持ち、いいのっ……！」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「む……っ、気持ちいい？　私は、凄く、っ」
+			DATA 「ぁ、びくびく、してるの、わかるよっ……」
+			DATA 「壊れちゃいそう、もう、何も、わからない、や……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ふぁっ……おまんこ、いい、のっ……！」
+			DATA 「あー……っ、全部、溶けてくっ……」
+			DATA 「っ、女に、してっ、思いっきり、っ……！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「ほら、ぁ……見て、私の、はずかしいとこ、っ」
+			DATA 「これ、思い通り、好きに、できるんだよっ……？」
+			DATA 「あ、ぁああっ、こんなの、っ、おかしくなるっ……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ん、ぅっ……！　凄い、っ、壊れるくらいっ……！」
+			DATA 「が、ぁ……、は、ぅっ、も、わたしっ……」
+			DATA 「ううう……何で、これ、がっ……？」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「あはっ……全部、くれるまで、離さない……っ」
+			DATA 「駄目だってばっ……そんな、されちゃったらっ！」
+			DATA 「ん、何か……身体、言うこと聞かなくてっ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「ふあ……っ、おっきいの、中でっ……」
+			DATA 「ぐちゃぐちゃに、なるっ……もう、何もっ……」
+			DATA 「もっと、お薬、ちょうだいっ……！」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ん、っ……気持ち良くしたら、薬、くれるっ……？」
+			DATA 「力、抜けちゃってっ……ごめんねっ……」
+			DATA 「く、ぅっ、もう、やぁっ！　気持ち、良すぎてっ！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「うん、っ……奥、ずぼずぼ、って、してぇっ！」
+			DATA 「やぁ……っ、拡げられて、覚えさせられてっ……」
+			DATA 「それ、やめっ……その動き、良すぎだよ……っ！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「くぅ……びちゃびちゃ、って、やらしいなあ……」
+			DATA 「は、ん……触手に、好きにされちゃった、っ……」
+			DATA 「やぁ……っ、全身、ぬるぬる、してっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ちょ、ちょっと、っ……そこ、入らない、ってっ！」
+			DATA 「く、ぅ……いっぱいだから、無理っ……！」
+			DATA 「あ、あ……おまんこ、壊れちゃうっ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「やぁ、ん……身体、変えられてく、触手にっ……」
+			DATA 「あ、あ……どうぞ、っ、使って、くださいっ……」
+			DATA 「……っ、私でっ、精液処理、してっ……！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「ぅ、あ……中で、動いてっ……」
+			DATA 「温かいの、全身にっ……」
+			DATA 「ひ……触手が、こっち、にっ……」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ん……私の中、どう、かなっ……？」
+			DATA 「腰、動いちゃう……おっきいの、好きっ……」
+			DATA 「ふ、うっ！　あ、やぁ……っ、そこ、だめっ！」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「やぁ……っ、ちょっと、恥ずかしい、な……っ」
+			DATA 「ん、あっ、ゆっくり、されるの、好き……っ」
+			DATA 「ふぅ、っ、いい、よっ……もっと、見てっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「気持ちいっ……！　辱めて、何も、わかんなくなるまで……」
+			DATA 「や、だっ……奥、深すぎ、だよっ……！」
+			DATA 「ふぁ……っ、これ、凄いっ……！」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「あぅ、っ！　ぐっ……おっき、すぎっ……」
+			DATA 「ぅ……見て、っ、拡がってる、とこっ……」
+			DATA 「やだっ、い、やっ！　もう、許して……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATAFORM 「%MASTERNAME%……、私を、めちゃくちゃに、して？」
+			DATA 「うん、っ、全部、あげる、っ……！」
+			DATA 「ぁ、恥ずかしいよ、こんなの、っ」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んっ……やらしい、ね、これっ……」
+			DATA 「腰、抜けちゃいそっ……激しく、てっ！」
+			DATA 「いっぱい、出してっ……私が、溺れる、くらいに……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「は、ぁ……っ、来てるの、おっきいのがっ……」
+			DATA 「あはは、っ、こんな、格好、でっ……！」
+			DATA 「何だよ……っ、もう、こんなにしてっ」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATAFORM 「嬉し……っ、%MASTERNAME%と、繋がってる、の」
+			DATA 「離さないで、私、寂しがりなんだから、ね……」
+			DATA 「奥、気持ちいっ！　もっと、深い、のっ！」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「うぅ……なんか、照れちゃうな」
+			DATA 「ちょ、っと……あっち、向いてみない？」
+			DATA 「あ、んっ！　やだ、恥ずかしっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「おっきすぎる、ってのも考え物かも、ね……」
+			DATA 「あぁ……ちょっと、苦しい、かな」
+			DATA 「ううぅ……びりびり、って、痺れる、の」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATAFORM 「もう、%MASTERNAME%の女だ、ってわかってるよ」
+			DATA 「ふふ……私、躾けられちゃったなあ」
+			DATA 「ねえ、もっと……何でもするからさ」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「気持ちいい？　私も、良いよ……っ」
+			DATA 「あは……っ、これ、凄いっ……」
+			DATA 「やだなぁ……我慢、できそうにないや……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「最近、慣れてきたかな？　コツがわかったっていうかさ」
+			DATA 「あ、はぁ……全部、入ったぁ……」
+			DATA 「搾ったげるから、覚悟、してよね？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_UA
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「お尻、熱い、のっ、鎮めてよ……！」
+			DATA 「あ……もう、弱いんだから、優しく、して……？」
+			DATAFORM 「気持ち良いの、すきっ……%MASTERNAME%も、好き、だよっ」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「やぁ……凄い、音っ、聞かれちゃって、るっ！」
+			DATA 「胸が、苦しいの、どきどき、しすぎてっ……」
+			DATA 「うう……恥ずかしいのに、慣れてきちゃ、ぁっ！」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「お尻、拡げるの、いい、よっ……」
+			DATA 「駄目に、なっちゃ、ぅっ、こんなの……！」
+			DATA 「好き、私が、壊されてくの、っ……！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「お、ぅっ、や、ぁっ！　奥、やだ、ぁっ！」
+			DATA 「ずっと、傍に、置いてね、っ、約束、だよっ？」
+			DATA 「ふぁ……何か、ね？　心が、満たされてくのっ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「お尻、一杯、欲しいのっ……」
+			DATA 「全部、ぉっ！　好きに、してっ……！」
+			DATA 「ひ、っ！　もう、むり、やだぁ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「あ、はぁ……私、これ、好きかもっ……」
+			DATA 「したげる、立てなくなるまで、気持ちよくっ……！」
+			DATA 「ん、っ……ちょっと、動きづらい、けどっ」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「お尻、っ、おしり、好き、っ……！」
+			DATAFORM 「近く……%MASTERNAME%、私を、壊してっ……」
+			DATA 「あ、はっ……あははっ……お尻、幸せっ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「うぅ……何だよっ……こんなのってっ……」
+			DATA 「は、い……っ、何でも、するから、さ……っ」
+			DATA 「拡がるのっ……見られたっ、見られてる……っ！」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ぁ……あんまり、痛く、ないかも、っ……」
+			DATA 「薬の、せいかな……何か、ぼんやり、するんだけど……」
+			DATA 「ああああっ、裂ける、っ、もう、やだぁ……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「何でも、するから、っ！　ちょうだい、っ……」
+			DATA 「ぉ、ほ……っ、お尻、っ、もっ……！」
+			DATA 「出ちゃう、っ、見ないで、っ……あ、ああっ！」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あは……くらくらする、っ……この、臭い……」
+			DATA 「緩く、なっちゃうよ、っ、気持ち、良すぎてっ！」
+			DATA 「感じ、過ぎてっ……！　もっと、一杯、してっ……？」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ちょ……っ、これ、駄目になる、かもっ……！」
+			DATA 「ぉ、奥まで、欲しい、っ……」
+			DATA 「動いて、いい、よねっ……？　もう、動く、よっ……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「くぅ……ん、お尻、ぐぽぐぽ、ってっ！」
+			DATA 「これ……だめ、頭、真っ白に、なっちゃうよっ……」
+			DATA 「ひゃ、っ……お腹、吸われてるっ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATAFORM 「やだぁ……っ、%MASTERNAME%の、前なのにっ」
+			DATA 「い、ぃっ……こんなこと、されてっ……」
+			DATA 「う、っ、これ、もうやだっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「あああああっ！　痛い、っ、もう、むりっ！」
+			DATA 「ぐ、ぅ……お尻、もう入らない、からっ」
+			DATA 「こんな、拡げられて、私……っ！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「や、ぁっ！　そこ、っ、弱いのにっ、つよすぎてっ！」
+			DATA 「んっ、ぉ……っ、ほじられてる、音、やだぁ……」
+			DATA 「もっと、奥、きてよっ……全部、あげる、からっ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「こんなの、って……私、やだぁっ……」
+			DATA 「うぅ……中で、動いてるよっ……」
+			DATA 「は、ん……太いの、擦れて……っ！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「あは……お尻、締めると、気持ちい……」
+			DATA 「癖、覚えられてる、っ、やだぁ……」
+			DATA 「どんどん、好きになっちゃう、っ、触手なのに……っ」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「あ……ぉっ、お尻、やだ、ぁっ……」
+			DATA 「……っ、ねえ、もっと、激しくして……？」
+			DATAFORM 「んっ、音、出ちゃう、よっ、%MASTERNAME%……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「う、あ……これは、びりびり、するねっ……」
+			DATA 「見えちゃう、お尻、見て、拡げてっ……！」
+			DATA 「や、はっ……奥まで、全部、知られちゃったっ……！」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぐっ……ぅ、少し、乱暴、だねっ……」
+			DATA 「あ、ぅ……こんなの、見て、っ、私っ！」
+			DATA 「思いっきり……お尻で、私を、ぉっ、壊してっ！」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATAFORM 「ぁ、おっ！　私は、%MASTERNAME%の、ものだからねっ……！」
+			DATA 「ぅ……もう、気持ちよくって、なにもっ……」
+			DATA 「あは……っ、駄目に、されてるの、好きだよ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「ん……見えてる？　気持ちい？」
+			DATA 「ね、私のお尻……好き？」
+			DATA 「きゃ……っ、そんなに、擦らないで……っ！」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「んふ……っ、思いっきり、しちゃうね……？」
+			DATA 「私、先に、いっちゃい、そっ……ごめん、ね……？」
+			DATA 「みっともないな、私っ……でも、しょうがない、よねっ？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「ん、もう……いきなりだなあ」
+			DATA 「ぁ……やだ、そっちは……」
+			DATA 「！　もう少し、雰囲気、考えて、んっ、よねっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「やぁ……っ！　音、立てないでっ……」
+			DATA 「顔、赤くなっちゃってる、かもっ」
+			DATA 「恥ずかしいなあ、もう……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「ちょっと、ま、ぁっ、おしり、やぁっ！」
+			DATA 「う、ううっ！　ひどい、よっ……」
+			DATA 「おっきい……ひりひり、するよ……」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「これ……忘れられなく、なっちゃうっ……」
+			DATA 「手、握って？　怖い、の……」
+			DATA 「あ……おっ、これ、好きぃ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「ほじられてるの、気持ちいいよ……っ」
+			DATA 「うう……集中、できな、あっ！」
+			DATA 「二人で、一緒に……っ」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「具合は、どうかなっ……？」
+			DATAFORM 「%MASTERNAME%の、よくわかるよ……」
+			DATA 「あは……気持ちよさそう、好きな顔だねえ」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_UB
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「でっかい、赤ちゃんだなあ……」
+			DATA 「甘えて、いい？　たまには、いいよね」
+			DATA 「んっ……見て、こんな、なっちゃった……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「う、っ……おっぱい、熱く、なって……」
+			DATA 「やっぱり、あんまり、大きくない、よねっ？」
+			DATA 「見て、私の、恥ずかしい、とこっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ちぎれちゃう、おっぱい、もう、ぁっ……！」
+			DATA 「う、ぁ……激しいな、もう……」
+			DATA 「違う、私、気持ちよくなんて、そんなっ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「くうぅ……何か、悔しいけど、気持ちいいな……」
+			DATA 「あぁ、捏ねるの、やめてっ！　忘れられなく、なっちゃっ！」
+			DATA 「えへへ、私、ずっとこうしてたいっ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「ん……満足、させられてるか、心配だねえ」
+			DATA 「ちゃんと、言って、よっ？　言うとおり、やるから……っ」
+			DATA 「もっと、近づいて、一緒に……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「強め、好きだよねっ？　頑張るよ……」
+			DATA 「あぁ……私も、気持ちいいの、ごめんね？」
+			DATA 「精液搾るのに、覚えたこと、試してみるよ……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「くぅ……ぅ、まだ、っ、続けるのっ……？」
+			DATA 「ん、もう、っ、おっぱい、溶けちゃう、っ！」
+			DATA 「ずっと、っ……離さないでよね……っ？」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「あう、ぅ……」
+			DATA 「見てもいいけど、っ、ああ、もう……」
+			DATA 「なんか、ぼーって、なって来た……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「は、ん……乳首、虐めないで、っ」
+			DATA 「うぅ、っ、あれ、何か、気持ちい……？」
+			DATA 「あ、ぐぅ……っ、痺れるねえ……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATAFORM 「うぅん……しょうがないねえ、%MASTERNAME%は」
+			DATA 「わかった、からさ……ね、ちょうだいよ」
+			DATA 「ほら、これで、どう……？」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あは、おっぱい、凄い、っ！」
+			DATAFORM 「きもち、いい……ね、%MASTERNAME%、は……？」
+			DATA 「ほしい、もっと、ほしいよお……っ！」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「こんな風に、されたかったんじゃない？」
+			DATA 「くぅ……どう、これっ？」
+			DATA 「あぁん……あせらないでよ、もう」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「うん……っ、優しく、してねっ……？」
+			DATA 「こんなっ……わたしの、おっぱいっ……」
+			DATA 「うう……乳首、吸わないでっ……？」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「やだぁ……乳首、強調しないでよ……っ」
+			DATA 「恥ずかしいな、もう……」
+			DATAFORM 「見ないで、っ、%MASTERNAME%っ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「くぅ……先っぽ、ちぎれちゃう、っ！」
+			DATA 「……あ、あ……っ、おっぱい、やめてっ！」
+			DATA 「んっ！　痛い、っ……怖い、のっ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「好きに、されちゃってる……触手、にっ……！」
+			DATAFORM 「あぁ……%MASTERNAME%、ごめんねっ……？」
+			DATA 「おっぱい、もうだめっ……何も、考えられなく、なるっ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「んっ……乳首、擦れてるっ……」
+			DATA 「あぁ……そんなに、くすぐらないでよっ……」
+			DATA 「違う、っ……触手、なの、これはっ……」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「挟む……と、どうなる、かなっ……？」
+			DATA 「触手……先っぽから、何か、でてっ……」
+			DATA 「うぅ……変な臭い、だけど、ちょっと……」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん……そんな、丹念なの、やっ……」
+			DATA 「う……見えてる、もしかしてっ……？」
+			DATA 「あぁ……おっぱい、優しく、されるとっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「あは……乳首、立っちゃった、ね……」
+			DATA 「……責任とって、鎮めてよ？」
+			DATA 「う……視線が絡み付いてくる、おっぱいに」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「やぁ……っ、先っぽ、とれちゃうってばっ……」
+			DATA 「あ、赤く、なっちゃって、こんなっ……」
+			DATA 「っ、ねえ、もう、終わりに、しない？」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「こんなとこ、見られちゃったらっ、もう……」
+			DATA 「いじりがい、無いかも、でも、好きに、して？」
+			DATA 「何か、訳わからなくて、暖かくって……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATAFORM 「%MASTERNAME%……？　おっぱい、どう？」
+			DATA 「ん……やらしい、匂いが、するよ……」
+			DATA 「あぁ……熱いの、早く、欲しいな……？」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「ほら……どう、気持ちい？」
+			DATAFORM 「全部、わかってるから、反応する場所、%MASTERNAME%の」
+			DATA 「やぁ……っ、いじっちゃ、やだっ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「もう……やらしい手つきは変わらないなあ」
+			DATA 「あっ……なんか、もどかしい、かも」
+			DATA 「あはは……そんなに、好き？」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「う……視線が怖い」
+			DATA 「あんまり、無茶させないでよ……」
+			DATA 「そんなに、見たい？　……しょうがないな、もう」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「んっ！　あ、やぁっ……！」
+			DATA 「はぅ……っ！　おっぱい、やだぁ……」
+			DATA 「い、いじわるぅ……っ！　どうして欲しいか、知ってるくせにっ」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「あぁ……わたし、もうだめっぽいや……」
+			DATA 「気持ちいいの、好きだよ……」
+			DATAFORM 「もっと、教えて、%MASTERNAME%……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATAFORM 「ぁ、はっ……触って？　%MASTERNAME%の、なんだから」
+			DATA 「がっつかないでよ、もう……嫌いじゃ、ないけどね」
+			DATA 「疼いてきちゃう、お預けはもう、やだよ？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「う、ん……どう、おっぱい、気持ちい？」
+			DATA 「熱い、っ……すごく、やらしいなあ……」
+			DATA 「えへ……大分、上手くなったでしょ？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_O
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「ご主人さま、っ……もう、私っ」
+			DATA 「あまり、私なんかに、構ってると……」
+			DATA 「……許してくれますか？　慕って、いることを……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「恥ずかしい、わけじゃ、ないんですけどっ……」
+			DATA 「どんなことも、やりますよ？」
+			DATA 「視線……あ、ぁ……独り占め、しちゃってっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ん、あっ！！　は、ぁぅ、あ……」
+			DATA 「あぁ……ごめんなさい、ご主人さまっ！」
+			DATA 「だらしない奴隷に、躾、おねがい、しますっ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「いつまでも、ご主人さまの、傍に……」
+			DATA 「私、幸せな、奴隷ですっ……」
+			DATA 「どんな言葉より、私に、響くんですよ……？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「んっ……凄く、震えてっ……」
+			DATA 「ご主人さま、あの、私っ……」
+			DATA 「精液、全部私で、処理、してくださいね？」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「もう一度、やってみます、ね？」
+			DATA 「こっちも、どうですかっ……？」
+			DATA 「はい、ご主人さま、なんなりと」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「あぁ……ご主人さまぁ……」
+			DATA 「私、何でもしますから……」
+			DATA 「んう、何だか、頭がくらくらして……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「ど、どうぞ……」
+			DATA 「っ……こんなもので、よければ」
+			DATA 「少し、恥ずかしい、ですっ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ひ、んっ！　ぐらぐら、してる……」
+			DATA 「いたぁ、っ！　う、あっ！！」
+			DATA 「あはぁ……もっと、ください……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「全部、ご主人さまのものです……っ」
+			DATA 「あぁ……見つめられて、私っ」
+			DATA 「うふ、ふふふふふ……」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あぁ……素敵、ご主人さまぁ……」
+			DATA 「近くに感じられて、しあわせ……」
+			DATA 「震えてる、こんなにっ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「これ、いいんですか、っ？」
+			DATA 「ご褒美……くださいね？」
+			DATA 「ご主人さま、わたし、もう……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「どうぞ……何でも、してくださいね？」
+			DATA 「ん……この感触、気持ちい……っ」
+			DATA 「あぁ……こんな、近くにっ……！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「ひゃ、ぁ……ご主人さまに、見られっ……」
+			DATA 「こんな、感じで、どうですかっ……？」
+			DATA 「汁……舐められてるっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぐ、うううぅっ！　こんなの、身体がっ……！」
+			DATA 「やぁ……っ、何、されるか、わからなくてっ」
+			DATA 「ひ……っ、近づいてくる、こっちにっ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「ん、うっ……そんなに、脅かさなくても、私っ……」
+			DATA 「はい……どうすれば、いいですかっ？」
+			DATA 「ここ、私の……弱いところ、なんですっ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「……んんっ、うっ……どう、ですかっ？」
+			DATA 「ああぁ……ぬるぬるしてるの、身体がっ……」
+			DATA 「きゃ、っ……こんなに、激しいなんてっ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「はい、どうでしょう、かっ……？」
+			DATA 「触手、気持ちよさそうに、震えてますよ……」
+			DATA 「私の、身体で……よくなってっ？」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「……ご主人さま、何でも、命令してくださいね？」
+			DATA 「んっ……いえ、何でも、無いです……っ」
+			DATA 「ずっと、置いてもらえたら、嬉しいです」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「ご主人さまっ……どう、ですか……？」
+			DATA 「あは……っ、見えて、ますか？」
+			DATA 「っ……う、少し、いや、かなり……恥ずかしい、かも」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぁ、ぐぅっ！　ごめんなさい、ご主人さまっ！」
+			DATA 「ひっ……これは、っ……違うんですっ！」
+			DATA 「あぁ……っ、こんなっ、私……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ご主人さま、次は、どうしますか……？」
+			DATA 「ぅ、何だか、視線を合わせられない、というか」
+			DATA 「もう、私は……全身、ご主人さまの、ものですからね？」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「はいっ……ご主人さまっ……」
+			DATA 「どう、ですかっ……？　変、じゃないですかっ？」
+			DATA 「気持ちよく、なってもらいたいな……って」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「こんな感じで、良いですかっ？」
+			DATA 「あぁ……ご主人さまに、みられてっ……」
+			DATA 「あはは……少しは、上手くなってますかね？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「……わ、私なんかに、そんなっ」
+			DATA 「ご主人、さまっ……」
+			DATA 「ありがとう、ございますっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「はい、ご主人さま……」
+			DATA 「見て、もらえてますかっ……？」
+			DATA 「うぅ……っ、恥ずかしい、かも、しれませんっ」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「あっ！　ひゃ、ぁっ！」
+			DATA 「ご、ごめんなさい、っ！　ご主人さまっ！」
+			DATA 「ん、んんんっ！　や、ああっ！！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「どんな事でも、言ってくださいね……？」
+			DATA 「ご主人さま、私、幸せです……」
+			DATA 「はいっ！　ご主人さまっ」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「どうでしょう、ご主人さま……？」
+			DATA 「まずい事、ないですかねえ？」
+			DATA 「もっと、がんばりますねっ」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「私、やりますね……？」
+			DATA 「ええ、任せてくださいね！」
+			DATA 「……ぅう、失敗、してませんよね？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_OC
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「は、ぁっ、腰、砕けちゃいます、よっ」
+			DATA 「ご主人さまの、いじわるっ……」
+			DATA 「私、何でこんなに、良くなってっ……？」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「あぁ……クリトリス、だめっ……」
+			DATA 「見られちゃう、ビンビンに、なっちゃってるのっ……」
+			DATA 「ご主人さま、もう、わたしっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ひゃ、っ！　う、んっ……やぁ……」
+			DATA 「苦しい、です、ご主人さまっ……」
+			DATA 「もう、こんなの、でも、私ぃ……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「抓らないでぇ……もう、許し、てっ……」
+			DATA 「震えてるの、クリトリス、私、やぁ、っ！」
+			DATA 「ん、ぅ……ご主人さま、いつも、ありがとうございますっ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「あ、ぁ……擦れてるのが、わかりますっ……」
+			DATA 「身体、熱くなっちゃって、ご主人さま……？」
+			DATA 「匂いっ……精液の、匂い……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「あん……満たされてます、わたしっ……」
+			DATA 「ご主人さま、不満は、全部……私に、っ」
+			DATA 「お願い、しても、いいです、かっ……？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「くぅ……先っぽ、痺れて、っ」
+			DATA 「熱い、焼けちゃいそうですっ……！」
+			DATA 「ご主人さまぁ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「びくびく、震えちゃって……」
+			DATA 「そんな、近くにっ……」
+			DATA 「あん……何で、わたし……？」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ふらふら、しちゃいます……っ」
+			DATA 「ぐう、っ、敏感、なのにっ！」
+			DATA 「痛い、筈なのに……？」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「強くされたら、わたしっ……」
+			DATA 「あ……あ……ご主人さま……」
+			DATA 「クリトリス、気持ちい……っ」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「はぁ、っ、あつい、ですっ」
+			DATA 「これが、私にッ……」
+			DATA 「ご主人さま、もう、私っ」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「ください、っ、ご主人さまっ」
+			DATA 「欲しいの、もっとっ……！」
+			DATA 「あああ……凄い、匂い……」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ご主人さまっ……クリトリスに、触手がっ……！」
+			DATA 「これっ……だめっ、おかしく、なっちゃいますっ！」
+			DATA 「ひんっ、身体、溶けちゃっ……」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「あ、あ……足、広げないでっ……」
+			DATA 「くぅ……っ、ご主人さま、これはっ……」
+			DATA 「ひ……ごめん、なさいっ……！」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「や、ぁ……っ、噛むの、やぁ……！」
+			DATA 「くぅっ……！　もう、私っ……」
+			DATA 「こないでっ……触手、クリトリス、がっ……！」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「そこ、はっ、敏感なのっ……！」
+			DATA 「はい、どうぞ、っ！　気持ちよく、なってくださいねっ？」
+			DATA 「クリトリス、っ……そんなに、弄られるとっ……」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「あ、んっ……こんな、触手にっ……！」
+			DATA 「やだぁっ……もう、気持ちいいの、むりっ……」
+			DATA 「ご主人さま、っ……助けてっ……！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「んっ……！　どう、ですかっ……？」
+			DATA 「触手のぬるぬる、好きっ……」
+			DATA 「はぅ……っ、来て、もっとっ……！」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん……っ、ご主人さま、もう、だめっ……！」
+			DATA 「は、ぁん……ごめんなさい、気持ちよくて、っ」
+			DATA 「や、あぁっ！　今、敏感に、なっちゃってっ！」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「っ、見せ付けて、やりますよ……」
+			DATA 「い、ぃ……っ、見られながら、いじられてっ……」
+			DATA 「ちょ……っ、水気、多くてっ……ごめんなさいー！」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「や、ぅっ！　そんな、っ、ご主人、さまっ……」
+			DATA 「あん、っ……クリトリス、やだぁっ……」
+			DATA 「今、びりって、きましたよっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「違うんですっ、ご主人さま……これ、はっ……」
+			DATA 「こんなに、しちゃいましたっ……」
+			DATA 「後で、ご褒美、くださいよっ……？」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「ご主人さまの、っ……こすれてっ……」
+			DATA 「はぅ……っ、見られちゃって、わたしっ……」
+			DATA 「あぁ……ずっと、こうしてたい、ですっ」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「どうですか、ご主人さまっ……？　私の、技術は」
+			DATA 「ん、っ……何だか、妙な気分に、なっちゃいますね……」
+			DATA 「違いますよっ……これは、ご主人さまの、為でっ」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「あぁ……クリトリス、気持ちいい、ですっ……」
+			DATA 「そんな、にっ、されちゃ、私っ……」
+			DATA 「ご主人さまっ……！」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「んっ……やぁ……見られて、るっ……」
+			DATA 「はい、ご主人さま、っ……」
+			DATA 「そんなぁ……っ！」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「やぁっ……！　痛い、ですっ！」
+			DATA 「うう……ひりひり、します」
+			DATA 「ご主人さまっ、私、もうっ……」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「ご主人さま、ありがとうございます……っ」
+			DATA 「はぅ、んっ……いえ、なんでも、ないです……」
+			DATA 「そんな、されたら、わたしっ……！」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「擦れて、ますっ……」
+			DATA 「私のことは、っ、気に、なさらずっ……」
+			DATA 「ああ、ぁ……っ、気持ち、良いですかっ？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「う、んっ……どうですかっ？」
+			DATA 「気持ちよく、なってくださいねっ……」
+			DATA 「はぁ……っ、私も、もうっ……」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_OV
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「頭の中……真っ白で、もうっ……」
+			DATA 「奴隷に、もったいないくらい、幸せですっ」
+			DATA 「導いて、ください、ご主人さまっ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「……っ！　びしょぬれで、ごめんなさいっ……」
+			DATA 「あぁ……おまんこ、熱い、ですっ」
+			DATA 「どうぞ、恥ずかしいところ、見てくださいっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「大きいの、奥まで、来て……わたしっ」
+			DATA 「や、ぁ……それ、刺激、強すぎ、てっ」
+			DATA 「っ！　う、ぁっ！　ご主人、さまっ！」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「私は、ご主人さまのもの、ずっと、ずっと……」
+			DATA 「今、女として、奴隷として、っ、幸せ……っ」
+			DATA 「う、ん……っ、私、もっと、わたし、っ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「気持ちよく、なって、っ、ご主人さま……っ」
+			DATA 「私、もう、先に、っ……ぁ、ぁあっ！」
+			DATA 「いつでも、どこでも、っ、精液、どうぞ、っ」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「ご奉仕、しますねっ、ご主人さまっ……？」
+			DATA 「全部、っ、私に任せて……全部」
+			DATA 「ぁ……あっ、奥まで、そんなにっ……」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ご主人さま、っ、もう、私っ！」
+			DATA 「あは、は……っ、景色、ぐるぐるして」
+			DATA 「奥、好き、ですっ……！！」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「奥まで、見えちゃうっ……」
+			DATA 「えへへ、っ、どう、ですかっ？」
+			DATA 「うぅ……ん、これ、はずかしっ……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「あ、あ゛……おっきく、なって……」
+			DATA 「いっぱい、だあ……」
+			DATA 「これ、どうして、ごしゅじんさま……っ」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「あう……う゛、そんな、されちゃったら、っ」
+			DATA 「もっと、もっともっと、くださいよおっ」
+			DATA 「ご主人さま、しあわせぇ……っ」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「あぐっ、ぐぅっ、おまんこ、おかしく、っ」
+			DATA 「ひあ……っ、これ、つづけられたらぁ……」
+			DATA 「とける……ごしゅじんさま、わたしっ」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「んう……熱いの、震えてますっ……」
+			DATA 「こんなに、なっちゃったぁっ……」
+			DATA 「欲しい、もっと、もっともっとっ！！」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「は……っ、奥、もう、やめてっ……！」
+			DATA 「拡がっちゃうっ……ご主人さま、ぁあっ！」
+			DATA 「く……こすり付けないでっ、欲しく、なっちゃいますっ」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「い、ぃっ……おまんこ、全部、躾けられちゃうっ……！」
+			DATA 「こんな、続けられたら、私っ……」
+			DATA 「あ、あ……ご主人さまの、前なのにっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「……！　ぁ、あ……ぉっ、お腹、無理っ……」
+			DATA 「ぐ、ぅっ、それ以上は、壊れちゃう……っ！」
+			DATA 「だ、大丈夫、です、ご主人さま、っ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「こんな……おまんこ、抉られて、わたしっ……！」
+			DATA 「ひ、いっ！　あ、ん……っ、もう、動かないでっ……！」
+			DATA 「ご主人さまの、じゃない、っ、のにっ！」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「っ……ごめんなさい、ご主人さまっ……」
+			DATA 「あ、あ……おまんこ、中で動いてっ……！」
+			DATA 「んっ、あっ！　そんな……これ、私っ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「んっ……おまんこ、締めますねっ……？」
+			DATA 「私の身体、どう、ですかっ……？」
+			DATA 「触手に、滅茶苦茶、されたいのっ……！」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「ん……っ、ご主人さま、音、でちゃってっ……」
+			DATA 「満たされてる……っ、もったいないくらいに、幸せっ……」
+			DATA 「あ……顔、見ないで、くださいよ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「っ、ひどいですっ……ご主人さま……」
+			DATA 「あ、あ……そんなの、見られちゃっ……」
+			DATA 「近づかれると、ばれちゃいます、からっ……」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「ぐぅ、っ！　も、ぅっ、奥、やだぁっ……！」
+			DATA 「許してっ……！　ご主人さま……！」
+			DATA 「んんっ……抉られてっ、おまんこ、がぁっ……」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「はぁ……んっ、やぁ、っ、気持ちいいの、見られてっ」
+			DATA 「あ、ぁ……頭、真っ白に、なっちゃう、ご主人、さま……」
+			DATA 「こんな、格好でっ……駄目な奴隷で、ごめんなさいっ」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「あぁ……ご主人さまの、逞しくって……」
+			DATA 「ん……っ、身体、抑えられなく、なっちゃうっ……！」
+			DATA 「見えて、ますかっ……？　ご主人さまの、もの、ですよ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「はいっ……どんなことでも、やりますよ」
+			DATA 「ご主人さまは、ここ、弱いんですよ……」
+			DATA 「近くで見ると、いつも以上に、っ……」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「あぁ……ご主人さま、わたし、っ……」
+			DATA 「幸せです、ご主人さま……」
+			DATA 「うぅっ、私、なんかにっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「そんなぁ……恥ずかしい、ですよっ……」
+			DATA 「あぅ……っ、どう、ぞ……」
+			DATA 「はい……ご主人、さま……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「……っ、おっきい、です、っ……」
+			DATA 「あ、んっ！　そんなぁっ！！」
+			DATA 「もっと、まだ、やれますっ……！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「んん、ううっ……！　すごい、のっ……」
+			DATA 「なんだか、わたしっ……」
+			DATA 「ご主人さま、ん、っ、ご主人さまぁっ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「ご主人さま、どうです、かっ……？」
+			DATA 「いつでも、使って、くださいねっ……」
+			DATA 「おまんこ、気持ち、いいですっ……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「私、役に立ててますかっ……？」
+			DATA 「何でも、やりますからっ……」
+			DATA 「ご主人さまは、休んでてくださいね？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_OA
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「けつまんこ、擦られる、とっ……わたしっ……！」
+			DATA 「もう、出ちゃいます、ご主人さまっ……！」
+			DATA 「あ、あぁ……満たされて、暖かい、のっ……」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「ご、ごめん、なさいっ……洗うの、不十分、でっ」
+			DATA 「い、やぁ……音、出ちゃって、ますっ……」
+			DATA 「恥ずかしい、格好でっ、こんなに、なっちゃってっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「ぐ、ぅっ、あ、壊れちゃう、もう、っ……！」
+			DATA 「ご主人、さまっ！　ごめんなさい、っ！」
+			DATA 「ぁ……っ、少し、意識、がっ……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「は、ぅ……っ、けつまんこ、ほじられて、っ！」
+			DATA 「わたし、いつでも、使って、くださいねっ？」
+			DATA 「ずっと、置いて、くれますかっ、ご主人、さまぁっ……」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「出す時、みたいにする、とっ……意識が、っ」
+			DATA 「奥、つつかれるの、痺れて、っ！」
+			DATA 「あ……ぉっ、も、弱いのっ、戻れなく、なっちゃっ！」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「けつまんこ、いい、っ、どこよりも、好きっ……！」
+			DATA 「搾りますよ、全部、腰が、抜けるまでっ……？」
+			DATA 「想像、しちゃうんですよ、精液の、勢い……っ」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ぁお゛……っ、けつまんこ、おおお゛っ！！」
+			DATA 「とけちゃう、っ、おしり、こわれるっ……」
+			DATA 「ごしゅじんさまっ……あぁ……」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「ぜんぶ、みてぇ……ご主人さまぁ……」
+			DATA 「はい、っ……これで、っ」
+			DATA 「ほっ、ぉっ……おなか、びくびく震えてますっ……」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ああああああ゛あ゛っ！！　ごれ、っ、むり、い゛っ」
+			DATA 「あたま、おかしくなるぅ……っ」
+			DATA 「もっと、つよくっ、ごしゅじんさまっ……！」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「は、う゛っ、誓います、ぅっ！　ご主人さまの、奴隷、ですっ！！」
+			DATA 「も、お゛おっ、何でも、やりますからっ」
+			DATA 「くる、くるくるッ、凄いの、きちゃう、っ！」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「ほぉ゛っ、おっ……けつまんこ、おお゛っ」
+			DATA 「ご主人さま、ぁあっ、もう、私っ」
+			DATA 「ああ……ぁ、とろけるっ……」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「好きに、ぃい゛っ！　動きます、ねっ……」
+			DATA 「あ、ぉ……ご主人さま、っ、深くっ」
+			DATA 「こんなに、なるなんて、え゛っ」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「あ……ぉっ、触手に、犯されてっ……好きに、なっちゃ……！」
+			DATA 「身体……いっぱいで、幸せ、ですっ……」
+			DATA 「もっと、っ！　けつまんこ、壊す、ぐらいっ……！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「どう、ぞ……奴隷の、けつまんこ、ですっ……」
+			DATA 「あぁ……奥、ほじられると、出ちゃい、ますっ！」
+			DATA 「や、ぁぁっ！　中身、吸わないでっ……！」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ぉ、おっ、熱いっ、お尻、焼けるっ！」
+			DATA 「も、もう、入らな……っ、ぐ、ぅううっ！」
+			DATA 「ご主人さまっ……私、もうっ……」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「あ、ぁはっ……けつまんこ、ずぼずぼ、されてるのっ……！」
+			DATA 「ひ、ぃい……っ、お尻、何も、考えられない……っ」
+			DATA 「ずるい……っ、こんなの、っ！　ご主人さま……ぁ」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「く……ぅっ、襞、全部広がっちゃう、っ！」
+			DATA 「ん、これ……私に、下さいっ……！」
+			DATA 「ぁ……凄い、臭い……だけど、私っ」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「こう、ですかぁ……っ？」
+			DATA 「こんな、びくびくしてっ……どきどきしますっ」
+			DATA 「綺麗に、っ、しますね……？」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「あ……ご主人、さまぁ……もっと、っ」
+			DATA 「え、ぅ……っ、こんなの、我慢、できませんっ……！」
+			DATA 「お……っ、奥、がっ、私……っ！」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「やぁっ……下品な、音出ちゃうっ……！」
+			DATA 「あぁ……ケツマンコ、ほじるの、すきっ……！」
+			DATA 「ご主人さま、っ、ぉ、っ！　もうっ、わたし……っ」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「あは……っ、何でも、ご主人さま、ならっ……」
+			DATA 「ぐぅっ……！　これも、素敵っ……」
+			DATA 「おっきい……っ、壊れちゃいそうな、程っ……！」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「ふふ……っ、もう、ご主人さまっ……」
+			DATA 「ぉ、っ！　尻穴奴隷の、ケツマンコ、お願い、しますっ！」
+			DATA 「あ、はっ……身体、満たされてくっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「んっ……気持ち、良いですかっ……？」
+			DATA 「ご主人さま、どんなことも、してください、ねっ？」
+			DATA 「私……もう、先にっ、あ、やだぁ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「はい……いきます、ご主人、さまっ」
+			DATA 「教わったように、できて、ますか……？」
+			DATA 「んっ……出ちゃう、っ、こんな、とこでっ……！」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「そんなにっ、ご主人さまっ……！」
+			DATA 「けつまんこ、だめに、なっちゃ、ぁっ、やだぁっ！」
+			DATA 「私、奴隷、なんです、よっ……？」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「は、はいっ……どうぞ……」
+			DATA 「あ……っ、見られて、わたしっ……」
+			DATA 「ご主人さま、っ、顔、近い、ですっ……！」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「あ……ぁ、おっ！　拡がって、る、っ！」
+			DATA 「ひゃ、っ……痛い、っ、けど、気持ち、いっ……」
+			DATA 「んんんんっ！　ごしゅじんさま、ぁっ！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「どうぞ、躾けて、くださいっ……」
+			DATA 「ご主人さま、あぁ……っ」
+			DATA 「ぉ、おっ、う……奥、までっ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「か、はっ……おっきい、ですっ……」
+			DATA 「こっちで、気持ちよく、しますねっ……？」
+			DATA 「ご主人さま、私のことは、気にしないで……」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 「便利な、奴隷だと思ってもらえれば、嬉しいですっ……」
+			DATA 「私、気持ちよくなっちゃって、っ……！」
+			DATA 「ご主人さまに、気持ちよくなって、欲しいな」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_OB
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 「おっぱい、ぃい……っ、優しいのも、いいですっ」
+			DATA 「ご主人さま、勘違い、しちゃいそう、でっ、私……」
+			DATA 「大きくなくって、すみません……っ」
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 「うぅ、もう少し、堂々とできれば、いいのにっ」
+			DATA 「やだ、っ、乳首、かちかちに、なってっ」
+			DATA 「見られてる、のに、なんだか、わたしっ……」
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 「んん……ぅっ！　ひっぱらない、でっ！」
+			DATA 「あぁ……っ、ひりひり、してます、ご主人さまっ！」
+			DATA 「お腹の奥が……何だか、っ、暖かくなって……」
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 「うぅっ、奴隷で、よかった……」
+			DATA 「私、ご主人さまが、いないと、駄目なんですっ」
+			DATA 「頭、痺れて……変なこといったら、お仕置き、してください、ね？」
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 「んっ……気持ちい、私、っ……」
+			DATA 「いつまでも、我慢、できます、からっ」
+			DATA 「は、ぁっ、もう、すぐ、ご主人さまっ……」
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 「ご主人さまっ……使ってもらえて、幸せです……っ」
+			DATA 「は、ぃ……あんまり、大きくないです、けどっ……」
+			DATA 「精液、全部搾れるよう、頑張りますよっ？」
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 「ふわふわ、しますっ……」
+			DATA 「ご主人さま、何か、いつもよりっ」
+			DATA 「くぅ……先っぽ、痺れてっ」
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 「あぁ……私、みられてっ」
+			DATA 「なんで、恥ずかしい、はずなのに……」
+			DATA 「ご主人さま、こんなに、なっちゃいましたっ」
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 「ひぃ……っ、おっぱい、壊れるっ……」
+			DATA 「あ、う、そんな、うそっ」
+			DATA 「ご主人さまに、躾けられちゃった、ぁ……」
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 「う、ぅ……っ、乳首、服従してるっ……！」
+			DATA 「こわいっ……ご主人さまのこと、もっとっ」
+			DATA 「ふうぅっ、視線が、わたしにっ」
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 「おっぱい、とれちゃいますっ……！！」
+			DATA 「ん……ごしゅじんさま、あぁ……」
+			DATA 「ひうっ！　そんな、強くっ」
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 「あは……どうですかっ……？」
+			DATA 「もう、ご主人さまったら……っ」
+			DATA 「おっぱい、気持ちいーですか……？」
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 「ひっ……！　優しく、くすぐられたら、っ……！」
+			DATA 「乳首、駄目にされちゃって、ますっ……」
+			DATA 「んっ……こんなの、好きになっちゃうっ……！」
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 「ご……ご主人さま、っ……！」
+			DATA 「顔、見ちゃ、駄目……ですっ……」
+			DATA 「あ、あ……私の、おっぱいが、こんなっ……」
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 「ひ、ぐっ！　も、っ……」
+			DATA 「やぁ……っ、おっぱい、虐めないでっ……！」
+			DATA 「乳首、こんなに、なっちゃいました……っ」
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 「あは、っ……触手、いいっ……！」
+			DATA 「こっち、おっぱい、ですよっ……」
+			DATA 「どうぞ、っ、好きに、してくださいね……？」
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 「はうっ……生暖かくて、っ……」
+			DATA 「ご主人さまっ……これ、私っ……」
+			DATA 「乳首と、擦れてるっ……！」
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 「ん……ちゅ、っ、あぁ……この、臭いっ……」
+			DATA 「ふ、あ……意識、飛んじゃいそう、にっ」
+			DATA 「気持ち、いいですかっ……？」
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 「あぅ……っ、おっぱい、凄いっ……」
+			DATA 「んっ、ご主人さまっ、あんまり、見ないでっ……」
+			DATA 「私の、こんなに、なっちゃうんだっ……」
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 「あぁ……乳首が、こんなに、硬くっ……！」
+			DATA 「ご主人さまにっ、わたしのっ……！」
+			DATA 「ん、ぅ……っ！　そこ、近くはぁ……っ」
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 「あ……あ！　ちぎれちゃ、っ、ううっ！」
+			DATA 「ひんっ！　も、これ以上は、あっ！」
+			DATA 「ん……ご主人さま、私に、お仕置き……っ」
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 「い、いっ……こんなのっ、幸せでっ……」
+			DATA 「ご主人さまが、わたしにっ……！」
+			DATA 「おっぱいっ……いっぱい、いじめてっ……」
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 「ん……もう、そこ、だめっ……」
+			DATA 「ご主人さまの、いじわる……っ」
+			DATA 「あ、ぁ……私の、おっぱいがっ……」
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 「ん……こんなの、どうです、かっ……？」
+			DATA 「あは……あんまり、大きくは、無いですけどっ」
+			DATA 「どうぞ……力、抜いてくださいね？」
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 「あ、んっ、ご主人さまっ、おっぱい、はぁっ……」
+			DATA 「胸が、ぎゅーって、なって……もう、わたし……」
+			DATA 「どうぞ、私で、よければっ……」
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 「ん……これ、大丈夫、ですかっ……？」
+			DATA 「や、あは、は……見ないで、下さいよぉ」
+			DATA 「う、ぅんっ！　ご主人さま、熱い、ですっ……」
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 「う……っ、ううっ！　先っぽ、やだぁっ……」
+			DATA 「く、苦しいです、ご主人さまっ！」
+			DATA 「や、ぁぁあっ、あ、ん！　そんな、もう、っ！」
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 「は、はぃっ……ごしゅじん、さまっ……」
+			DATA 「私なんかが、こんなっ……！」
+			DATA 「あぁ……ありがとう、ございますっ……」
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 「どうですか……？　おっぱい、いいですっ……」
+			DATA 「気持ちよく、なってくださいね？　私のことは、気にしないで」
+			DATA 「ん、うっ……ほんと、に、好きなんですね……？」
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+				DATA 「下手だったら、ごめんなさい……」
+				DATA 「私のも、擦れちゃって、ますっ」
+				DATA 「え、え……っと、どうですか、ご主人、さまっ？」
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_N
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_NC
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_NV
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_NA
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+@K40_SPEAK_NB
+SELECTCASE CFLAG:8000
+	;中毒愛情
+	CASE 1
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒羞恥
+	CASE 2
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒苦痛
+	CASE 3
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒服従
+	CASE 4
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒性交
+	CASE 5
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;中毒先導
+	CASE 6
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ羞恥
+	CASE 7
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ苦痛
+	CASE 8
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ服従
+	CASE 9
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;トラウマ性交
+	CASE 10
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物愛情
+	CASE 11
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物羞恥
+	CASE 12
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物苦痛
+	CASE 13
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物服従
+	CASE 14
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物性交
+	CASE 15
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;薬物先導
+	CASE 16
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手愛情
+	CASE 17
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手羞恥
+	CASE 18
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手苦痛
+	CASE 19
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手服従
+	CASE 20
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手性交
+	CASE 21
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;触手先導
+	CASE 22
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出愛情
+	CASE 23
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出羞恥
+	CASE 24
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出苦痛
+	CASE 25
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出服従
+	CASE 26
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出性交
+	CASE 27
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;露出先導
+	CASE 28
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常愛情
+	CASE 29
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常羞恥
+	CASE 30
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常苦痛
+	CASE 31
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常服従
+	CASE 32
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常性交
+	CASE 33
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;通常先導
+	CASE 34
+		PRINTDATAW
+			DATA 
+			DATA 
+			DATA 
+		ENDDATA
+	;その他
+	CASEELSE
+ENDSELECT
+RETURN 0
+

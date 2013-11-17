@@ -1,0 +1,7762 @@
+;-------------------------------------------------
+;妖精化阿求口上 Ver2.10（キャラクターの名前を入れる、下にコンセプトなど一言あれば入れる）
+;呪精は「感情乏しい」が追加されるので、かなり脱力（？）させてみました
+;…調教時のコマンドにはほとんど反映されてないけど、まあ妖精扱い
+;妖精時の口上を少し変更、やりすぎたな…
+;-------------------------------------------------
+
+;Ver2.50からの修正点
+;・特殊ルートの仕様大幅変更
+;配慮が足りなくて本当に悪かったです…
+
+;口上の主な変更方針
+;・妖精時の堕ちるスピードを減速（早い内から堕ちるとありがたみが薄くなっちゃう）
+;・おかしい地の文を修正
+
+;阿求は見た物を記憶して忘れないという能力を持っていたはずなので、素質変動イベントもそれに合わせてみました
+;・映姫と紫は物凄い力を持っている上に阿求と繋がりがあるので、場合によってはあなたが酷い目に合うかも
+;・強烈な快楽か異常な経験を積ませると素質は変化しやすい…かも
+;・酷いことはしたくない？　だったらキスして何もしなくてを繰り返してみてはどうですか？
+
+
+;-------------------------------------------------
+;口上設定雛形
+;48とX2をキャラ番号に置換し、Y1を助手のキャラ番号に置換する。
+;ただし、キャラ番号が3桁未満のキャラの場合、48,Y1は1、X2は001のように変える必要がある
+;そしてコマンド内の適当な条件の下のPRINTFORMWの後ろに半角スペースを置いてセリフを追加してください。
+;テンプレートが更新された際には、新しいテンプレをベースにして、
+;該等する条件のPRINTFORMWの行をコピー＆ペーストしていくことをお勧めします。（手間はかかるが、エラーは起こりえない）
+;口上を追加しないコマンドには行頭に『;』をつけましょう。後で追加した際に初めての口上が出ないなどの弊害が起こります。
+;また、口上を追加したコマンドの『;』をきちんと外しましょう。これだと条件を満たしても口上がでません
+;条件の追加や変更は自由ですが、その際には随時テストをしていくとよいでしょう。（エラーの原因は、ほぼ確実に手を加えた部分にあるため）
+;最後にできればread meも読んで下さい
+;-------------------------------------------------
+
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG 201～219を使用
+;-------------------------------------------------
+@KOJO_48_SLAVE_MESSAGE_TRAIN_START
+;--------------------------------------------------
+;エキストラモード構文　CFLAG:5020を使用(暫定)
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------;
+IF CFLAG:5020 == 0
+	PRINTL 素質が変わるイベントを発生させますか？
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―素質変化イベント搭載モードで調教を開始します―
+		CFLAG:5100 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW ―通常モードで調教を開始します―
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	PRINTL 口上のイベント内で珠が手に入るようにしますか？
+	PRINTL （手に入るようにすると特に妖精時の中盤でのダルみを軽減できます）
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP0
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―口上イベント内で珠が手に入るようにします―
+		CFLAG:5119 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW ―口上イベント内では珠が手に入らないようにします―
+	ELSE
+		GOTO INPUT_LOOP0
+	ENDIF
+	PRINTL 阿求を妖精にしますか？
+	PRINTL （白いキャンディを使用した時と同じ能力変化が発生します）
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP1
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―あなたは親しい商人から白いキャンディを貰い、嫌がる阿求に無理矢理飲み込ませた―
+		PRINTFORMW 悲鳴を上げながら体の変化が進み、完全に妖精になった阿求を姿見の前に立たせ、阿求は自分が妖精になった事を知るとショックを受けて酷く落胆した
+		;心を変えるならまずは服装から
+		PRINTFORMW 阿求に無理矢理、妖精用のワンピースを着させた……
+		PRINTL 反発刻印LV3を取得
+		TALENT:200 = 1
+		MARK:9 = 3
+		MARK:97 = 3
+		TALENT:138 = 0
+		RELATION:48 = 70
+	ELSEIF RESULT == 1
+		PRINTFORMW ―何もせずに調教を開始します―
+	ELSE
+		GOTO INPUT_LOOP1
+	ENDIF
+	CFLAG:5020 = 1
+ENDIF
+
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、48を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ（Y1を助手のキャラ番号にする）
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5021 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時 CFLAG5001
+;-------------------------------------------------
+;主人が罠にはめられて妖精になるようになっている
+IF CFLAG:5121 == 2
+	TALENT:MASTER:121 = 1
+	TALENT:MASTER:120 = 0
+	TALENT:MASTER:128 = 1
+	TALENT:MASTER:200 = 1
+ENDIF
+
+;バグ潰しのため、主人の絶頂ゲージをリセット
+SIF CFLAG:5121 == 2
+	CFLAG:5122 = 0
+
+;特殊ルートの仕様変更
+IF CFLAG:5123 == 0 && CFLAG:5121 == 2
+	DRAWLINE
+	PRINTFORML 感覚等まだ弄られない場所を勝手に弄ってしまったのは本当に悪かったです……
+	PRINTFORMW 仕様を変更して隠しパラメータにしますので許してください……
+	CFLAG:5124 = (ABL:MASTER:0+ABL:MASTER:1+ABL:MASTER:2+ABL:MASTER:3)/4
+	CFLAG:5125 = ABL:MASTER:11
+	CFLAG:5126 = ABL:MASTER:30
+	CFLAG:5127 = (EXP:MASTER:0+EXP:MASTER:1+EXP:MASTER:41+EXP:MASTER:44)/4
+	CFLAG:5128 = EXP:MASTER:2
+	CFLAG:5129 = EXP:MASTER:10
+	CFLAG:5123 = 1
+	IF TALENT:MASTER:131 == 1
+		CFLAG:5130 = 2
+	ELSEIF TALENT:MASTER:170 == 1
+		CFLAG:5130 = 1
+	ENDIF
+	ABL:MASTER:0 = 0
+	ABL:MASTER:1 = 0
+	ABL:MASTER:2 = 0
+	ABL:MASTER:3 = 0
+	ABL:MASTER:11 = 0
+	ABL:MASTER:30 = 0
+	EXP:MASTER:0 = 0
+	EXP:MASTER:1 = 0
+	EXP:MASTER:41 = 0
+	EXP:MASTER:44 = 0
+	EXP:MASTER:2 = 0
+	EXP:MASTER:10 = 0
+	TALENT:MASTER:170 = 0
+	TALENT:MASTER:131 = 0
+	;どうしようかすごく迷ったけど弄れるようにしました
+	;コンフィグのスクリプトを作った人には本当に感謝してる
+	PRINTL イベントによって主人の素質が変わる前は、どんな素質でしたか？
+	$INPUT_LOOP_0
+	IF CFLAG:5123 & 16
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 0] ふたなり
+	;-------------------------------------------------
+	IF CFLAG:5123 & 8
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 1] 女性
+	;-------------------------------------------------
+	IF CFLAG:5123 & 2
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 2] 妖精
+	;-------------------------------------------------
+	IF CFLAG:5123 & 4
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 3] 小柄体型
+	;-------------------------------------------------
+	IF CFLAG:5123 & 64
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 4] 幼稚
+	;-------------------------------------------------
+	IF CFLAG:5123 & 32
+		PRINT ○
+	ELSE
+		PRINT ×
+	ENDIF
+	PRINTL [ 5] 淫乱
+	PRINTL  [100] 戻る
+	
+$INPUT_LOOP_1
+INPUT
+IF RESULT == 100
+	PRINTW ゲームを再開します
+	RETURN 0
+ELSEIF RESULT == 0
+	IF CFLAG:5123 & 16
+		PRINTW 元はふたなりじゃなかった、と判定します
+		CFLAG:5123 -= 16
+	ELSE
+		PRINTW 元はふたなりだった、と判定します
+		CFLAG:5123 |= 16
+	ENDIF
+ELSEIF RESULT == 1
+	IF CFLAG:5123 & 8
+		PRINTW 元は女性だった、と判定します
+		CFLAG:5123 -= 8
+	ELSE
+		PRINTW 元は女性じゃなかった、と判定します
+		CFLAG:5123 |= 8
+	ENDIF
+ELSEIF RESULT == 2
+	IF CFLAG:5123 & 2
+		PRINTW 元は妖精じゃなかった、と判定します
+		CFLAG:5123 -= 2
+	ELSE
+		PRINTW 元は妖精だった、と判定します
+		CFLAG:5123 |= 2
+	ENDIF
+ELSEIF RESULT == 3
+	IF CFLAG:5123 & 4
+		PRINTW 元は小柄体型じゃなかった、と判定します
+		CFLAG:5123 -= 4
+	ELSE
+		PRINTW 元は小柄体型だった、と判定します
+		CFLAG:5123 |= 4
+	ENDIF
+ELSEIF RESULT == 4
+	IF CFLAG:5123 & 64
+		PRINTW 元は幼稚じゃなかった、と判定します
+		CFLAG:5123 -= 64
+	ELSE
+		PRINTW 元は幼稚だった、と判定します
+		CFLAG:5123 |= 64
+	ENDIF
+ELSEIF RESULT == 5
+	IF CFLAG:5123 & 32
+		PRINTW 元は淫乱じゃなかった、と判定します
+		CFLAG:5123 -= 32
+	ELSE
+		PRINTW 元は淫乱だった、と判定します
+		CFLAG:5123 |= 32
+	ENDIF
+ENDIF
+PRINTL 他に
+GOTO INPUT_LOOP_0
+
+ELSEIF CFLAG:5001 == 0
+	;呪精
+	IF TALENT:48 == 1
+		DRAWLINE
+		PRINTFORMW 「……ぁ」
+		PRINTFORMW 阿求が目を覚ましたので%CALLNAME:MASTER%は今の状況を理解させる為に声をかけた
+		PRINTFORMW 「あ……きゅう……？　それって、誰……？」
+		PRINTFORMW 「え……そもそも私って……誰？」
+		PRINTFORML 様子がおかしい、どうやら呪精の呪いの影響で、自分自身のことでさえも忘れてしまったようだ
+		PRINTFORMW 「それって……気持ちいいこと？　やってみたいな……」
+		PRINTFORMW 阿求は%CALLNAME:MASTER%が服に手をかけても何もしなかった
+	;妖精
+	ELSEIF TALENT:200 == 1
+		IF CFLAG:5101 == 1
+			DRAWLINE
+			PRINTFORMW 「ん……ぅ……ここは？」
+			PRINTFORMW 阿求が目を覚ますと見知らぬ部屋に驚き、%CALLNAME:MASTER%を見つけるとすぐに睨みつけてきた
+			PRINTFORMW 「阿礼乙女初の妖精である私を監禁するなんて只では済みませんよ」
+			PRINTFORMW どうやら今の妖精の姿の影響を受けて、調教の記憶以外の一部の記憶も変わっているらしい
+			PRINTFORMW 「早く解放してくだ……嫌！　やめて！」
+			PRINTFORMW 今の状況を思い知らしめる為に%CALLNAME:MASTER%は阿求の服を脱がし始めた
+		ELSE
+			DRAWLINE
+			PRINTFORMW 「そ、そんな……私が、妖精に……」
+			PRINTFORMW 阿求は変わり果てた自分の姿を見て、酷く落胆している
+			PRINTFORMW 「こんな姿……受け入れることなんて、できません……ううっ……」
+			PRINTFORMW 阿求はその場に蹲って、泣きだしてしまった
+		ENDIF
+	ELSE
+		DRAWLINE
+		PRINTFORMW 「私をこんな部屋に監禁して、何をするつもりなんですか？」
+		PRINTFORMW %CALLNAME:MASTER%は阿求にこれから行う事の趣旨を伝えた
+		PRINTFORMW 「え……嘘？　そんなふざけた商売が行われていたなんて……信じられません」
+		PRINTFORMW %CALLNAME:MASTER%は今の状況から逃れようとしている阿求の服を脱がし始めた
+		PRINTFORMW 「い、いやですっ！　やめて！　こんなのって！」
+	ENDIF
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG5001
+;-------------------------------------------------
+
+;前回は放置して終了
+ELSEIF CFLAG:5116 == 1
+	CFLAG:5117 -= DAY
+	;普通5日も持たないだろうけど、短すぎると気付かずにセーブして詰みってことになって困る恐れがあるので
+	;6日以上経過
+	IF CFLAG:5117 <= -6
+		A = RAND:2
+		IF A == 1
+			DRAWLINE
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、振動音以外何も聴こえてこない中、ぐったりと倒れたまま身じろぎ一つしない阿求を見つけた
+			PRINTFORMW 少しやりすぎたかな……と思い阿求の元に駆け寄り様子を確かめると、阿求の瞳孔は開いていて、息もしていないようだ
+			PRINTFORMW 時、既に遅し……%CALLNAME:MASTER%の目の前は真っ暗になった
+			PRINTW  
+			DRAWLINE
+			PRINTL ------------------------------------GAMEOVER-----------------------------------
+			QUIT
+		;狂気を付けた時の分岐や処理を考えるのが面倒なのでここに投入
+		ELSE
+			DRAWLINE
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、そこにはくぐもった可笑しな声を上げている阿求を見つけた
+			PRINTFORMW 着けていた物を全部外してやっても、身体に触っただけで阿求は笑い声を上げた……
+			PRINTFORMW どうやら大きすぎる快楽を長時間受け続けた事によって、身体の感覚と精神が壊れてしまったらしい
+			PRINTFORMW 今更ながらに大きな罪悪感を感じた%CALLNAME:MASTER%は目の前が真っ暗になった
+			PRINTW  
+			DRAWLINE
+			PRINTL ------------------------------------GAMEOVER-----------------------------------
+			QUIT
+		ENDIF
+	ELSE
+		DRAWLINE
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、全身を汗だくにして顔を蕩けさせている阿求が、何度も達しながら艶やかな喘ぎ声を上げていた
+		PRINTFORMW %CALLNAME:MASTER%が阿求の元へ寄り、身に付けている物を取り外してやると、阿求は安心した表情を見せた
+		PRINTFORMW 「よ……よがり死ぬかと思いましたぁ……、もぅ、こんなこと、しないでぇ……」
+		PRINTFORMW %CALLNAME:MASTER%は阿求を抱き締めて安心させた
+		;おまけのようなイベントなのでわざと弱めに設定
+		;反発刻印剥がすのには使えるけど5日かかって屈服の珠4000…はね
+		PRINTFORML %PALAMNAME:0%の珠＋{CFLAG:5117*(-300)*ABL:0}
+		PRINTFORML %PALAMNAME:1%の珠＋{CFLAG:5117*(-300)*ABL:1+((EXP:0/2)*(-CFLAG:5117))}
+		PRINTFORML %PALAMNAME:2%の珠＋{CFLAG:5117*(-300)*ABL:2+((EXP:1/2)*(-CFLAG:5117))}
+		PRINTFORML %PALAMNAME:3%の珠＋{CFLAG:5117*(-300)*ABL:3}
+		PRINTFORML %PALAMNAME:13%の珠＋{CFLAG:5117*(-300)*ABL:11+(((ABL:11+ABL:21)/20)*(-CFLAG:5117))}
+		PRINTFORML %PALAMNAME:14%の珠＋{CFLAG:5117*(-800)}
+		PRINTFORML %PALAMNAME:17%の珠＋{CFLAG:5117*(-300)+(MARK:8*(-CFLAG:5117))}
+		PRINTFORMW %PALAMNAME:20%の珠＋{CFLAG:5117*(-200)*MARK:9}
+		JUEL:0 += CFLAG:5117*(-300)*ABL:0
+		JUEL:1 += CFLAG:5117*(-300)*ABL:1+((EXP:0/2)*(-CFLAG:5117))
+		JUEL:2 += CFLAG:5117*(-300)*ABL:2+((EXP:1/2)*(-CFLAG:5117))
+		JUEL:13 += CFLAG:5117*(-300)*ABL:11+(((ABL:11+ABL:21)/20)*(-CFLAG:5117))
+		JUEL:14 += CFLAG:5117*(-800)
+		JUEL:17 += CFLAG:5117*(-300)+(MARK:8*(-CFLAG:5117))
+		JUEL:20 += CFLAG:5117*(-200)*MARK:9
+		BASE:0 = 100
+		CFLAG:5116 = 0
+		CFLAG:5117 = 0
+		RETURN 1
+	ENDIF
+	
+;主人の絶頂経験が150以上、欲望がLV5以上の場合＆淫乱を持っている場合＆反発刻印LV1以上
+;はいはい精神を引き摺る引き摺る
+ELSEIF CFLAG:5128 >= 150 && CFLAG:5125 >= 5 && CFLAG:5130 == 1 && MARK:9 >= 1 && CFLAG:5130 < 2
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%は淫らな考えばかりが頭をよぎる中、何をすればいいのか先を考えられなくなっていた
+	PRINTFORMW その様子を見ていた阿求はこんなことは予想していたかのような表情を浮かべて言った
+	PRINTFORMW 「あらあら……この様子じゃ私の相手は無理そうですね」
+	PRINTFORMW 「これからは私が手伝ってあげますぅ♪　一緒に気持ちよくなりましょうねぇ♪」
+	CFLAG:5130 = 2
+
+;主人の絶頂経験が100以上、欲望がLV4以上の場合
+ELSEIF CFLAG:5128 >= 100 && CFLAG:5125 >= 4 && CFLAG:5130 == 0
+	DRAWLINE
+	PRINTFORMW 阿求はいつまで経ってもやってこない%CALLNAME:MASTER%を不審に思ったので、%CALLNAME:MASTER%の部屋を訪ねた
+	PRINTFORMW そこには鍵もかけずに、喘ぎ声を上げながら自慰に耽っている%CALLNAME:MASTER%の姿があった
+	PRINTFORMW 「すっかり乱れちゃって……%CALLNAME:MASTER%も私の気持ちがよく分かったのですねぇ♪」
+	PRINTFORMW %CALLNAME:MASTER%ははっとして自慰を取りやめ、蕩けた顔の焦点が合わない目で阿求を見つめた
+	PRINTFORMW 「さあ、今度は私を気持ちよくしてくださいね♪」
+	CFLAG:5130 = 1
+
+;素質変化イベントを全部見た
+;ELSEIF CFLAG:5107 == 1 && CFLAG:5108 == 1 && CFLAG:5109 == 1 && CFLAG:5115 == 1 && TALENT:48 == 0 && CFLAG:5113 == 0 && CFLAG:5112 == 0
+ELSEIF CFLAG:5107 == 1 && CFLAG:5108 == 1 && CFLAG:5109 == 1 && TALENT:48 == 0 && CFLAG:5113 == 0 && CFLAG:5112 == 0
+	;妖精
+	IF TALENT:200 == 1
+		DRAWLINE
+		PRINTFORMW 部屋に入った%CALLNAME:MASTER%に濃厚な甘い香りが鼻を突いた
+		PRINTFORML 臭いが気になってすぐにベッドの上に目をやると、そこで阿求が全身汗と愛液まみれになりながら自慰に耽っている
+		PRINTFORML 「あぁん！　ら、らめぇ♪　なんほイっへも止まはなひほおぉっ♪」
+		PRINTFORML 完全に呂律が回らず、もはや何を言ってるのか聞き取れない喘ぎ声を発している阿求は
+		PRINTFORMW %CALLNAME:MASTER%を見るや否やハッとして行為を止め、%CALLNAME:MASTER%の前に立った
+		PRINTFORMW まだ余韻が抜けきってない阿求の足は、がくがく震えながら太腿を擦り合わせている
+		PRINTFORMW 「%CALLNAME:MASTER%、わらひ、もうまへのとひから、すっと、このひょうたいらのぉ♪」
+		PRINTFORMW この時が来るのを察していた%CALLNAME:MASTER%は、この日の為に用意したシルクの濃い紫色の服一式を持ってきて、阿求に着させた
+		PRINTFORML 背中には大きなリボンがあって、太腿が隠れる程度の長さしかないミニスカートのワンピース
+		PRINTFORMW 膝下辺りまでの長さのニーソックス、可愛らしいカチューシャと艶やかに光るドレスグローブ
+		;主人を一瞬でバスター化させる程度の能力
+		PRINTFORMW これらを着た阿求は、元の真面目で礼儀正しいイメージから一変して、艶やかで妖しい、まるで小悪魔のように見えた。
+		PRINTFORMW %CALLNAME:MASTER%は、着替え終わった阿求を姿身の前に来させた
+		PRINTFORMW 「わ、私……すっごく似合ってるぅ……」
+		PRINTFORMW 「私は……とっても淫乱でドＭで、一生%CALLNAME:MASTER%の奴隷である妖精ですぅ♪」
+		PRINTFORMW 「だから……もっと、私を、堕としてぇ♪」
+		PRINTFORMW %CALLNAME:MASTER%は阿求を押し倒した……
+		PRINTFORMW 
+		PRINTFORMW 阿求は[貞操観念]と[気丈]を失い、[プライド低い]と[小悪魔]を得た
+		TALENT:30 = 0
+		TALENT:12 = 0
+		TALENT:17 = 1
+		TALENT:93 = 1
+	ELSE
+		DRAWLINE
+		PRINTFORMW 「やぁん！　らめぇ！　わらひ、こわれひゃっらのぉっ？　ふぁぁ！」
+		PRINTFORMW 呂律が回らなくなりながら自慰をしている阿求は、もっと快楽を得るために着物の裾を破り始めた
+		PRINTFORMW 破れた裾からは、阿求の汗と愛液で濡れた太腿が覗かせている
+		PRINTFORMW そんな中部屋に来た%CALLNAME:MASTER%を見て、ハッとして行為を辞めた阿求は%CALLNAME:MASTER%に擦り寄ってきた
+		PRINTFORMW 「か、身体が勝手に疼いてしまうんです……」
+		PRINTFORMW 「だから、私と……快楽の歴史を……紡いでくださいぃ……ふぅん！　らめぇ！　はやくぅ♪」
+		PRINTFORMW 結局堪らなくなって再び自慰を始めた阿求を見て、堪らなくなった%CALLNAME:MASTER%は阿求を押し倒し、服を脱がせた。
+		PRINTFORMW 
+		PRINTFORMW 阿求は[貞操観念]と[気丈]を失い、[プライド低い]を得た
+		TALENT:30 = 0
+		TALENT:12 = 0
+		TALENT:17 = 1
+	ENDIF
+	CFLAG:5113 = 1
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:2 == 1
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「は……ぁ……」
+		PRINTFORMW 阿求は虚ろな眼差しをこちらに向けている
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「まだ来るのですか……」
+		PRINTFORMW 「妖精になってから、回復が早くなったのが恨めしいです」
+	ELSE
+		PRINTFORMW 「……自分が馬鹿らしいこと、してると思いませんか？」
+		;すっごく思う
+		PRINTFORMW 「あなた、外界から来たんですよね？」
+		PRINTFORMW 「人里に行ってそこで暮らしませんか？　今ならまだ許せますよ……」
+	ENDIF
+	CFLAG:5001 = 2
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:2 == 2
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「あぅ……もっと気持ちいいこと教えて……」
+		PRINTFORMW 阿求は何かを期待しているような仕草をしている
+	;妖精
+	;LV3との落差が低くなるので修正
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「……どうして、私を妖精なんかに変えたのですか？」
+		PRINTFORMW 「私をいじめる為？　それとも……妖精を馬鹿にしている私への罰、ですか？」
+		PRINTFORMW 「どちらにしても……これからどうやって生きていけばいいのでしょうか……」
+		PRINTFORMW 阿求は深いため息をついて、暗い表情を浮かべている
+	ELSE
+		PRINTFORMW 「そ、そろそろ私に満足しましたでしょう？」
+		PRINTFORMW 「いい加減解放してもらえませんか……これ以上やっても無駄ですよ」
+		PRINTFORMW 言葉とは裏腹に阿求は焦りの表情を見せている
+	ENDIF
+	CFLAG:5001 = 3
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:2 == 3 && TALENT:TARGET:150 == 0
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「ああっ……ふぁぁ……」
+		PRINTFORMW %CALLNAME:MASTER%が阿求の部屋に入ると既に着衣を乱しながら自慰を始めていた
+		PRINTFORMW 「我慢……できなかったんです……早くしましょうよ」
+		PRINTFORMW 阿求は自分で服を脱ぎ始めた
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「ああっ、もうダメぇ……体が勝手に感じちゃうぅ……」
+		PRINTFORMW 「こんな体でぇ……はあっ……」
+		PRINTFORMW どうやら自分の意思より快楽の方が勝ってきているようだ
+	ELSE
+		PRINTFORMW 「んっ、はぁ……」
+		PRINTFORML 「今日は何をするのですか……」
+		PRINTFORMW 阿求はとろんとした目で%CALLNAME:MASTER%を見つめてきた、どうやら調教に少しだけ興味を持ったようだ
+	ENDIF
+	CFLAG:5001 = 4
+	RETURN 1
+
+;恋慕
+ELSEIF CFLAG:5001 < 5 && TALENT:TARGET:150 == 1
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「あっ……%CALLNAME:MASTER%だ……」
+		PRINTFORMW %CALLNAME:MASTER%が阿求の部屋に入った途端、いきなり阿求が抱きついてきた
+		PRINTFORMW 「もう……気持ちよすぎてぇ……何も……考えられません……」
+		PRINTFORMW 「ずっと%CALLNAME:MASTER%の元に……居させてくださいぃ……」
+		PRINTFORMW 「気持ちよければ……他は何も要りませんからぁ♪」
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「やっと、来てくれたのですね……」
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入った途端、阿求が飛びついてきた
+		PRINTFORMW 「妖精になる前は、妖精なんて馬鹿だとしか思っていませんでした……」
+		PRINTFORMW 「それが……いざ妖精になってみると……気持ちよくて……身体が丈夫になって……」
+		PRINTFORMW 「私、もう妖精なんて馬鹿にしません、むしろ大好きです……」
+		PRINTFORMW 「……私、身体に引き摺られて馬鹿になっちゃったかも……」
+		PRINTFORMW 阿求は照れながら顔を赤くした
+	ELSE
+		PRINTFORMW 「んっ……んはぁ、んくぅ！」
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入った時、阿求は一糸纏わぬ姿で自慰を始めていた
+		PRINTFORMW %CALLNAME:MASTER%に気づいた阿求は慌てて自慰を止め、%CALLNAME:MASTER%に抱きついた
+		PRINTFORMW 「こ、これ……気持ちいいんですよ」
+		PRINTFORMW 「もっと……色々と、教えてください……」
+		PRINTFORMW 「私、もう離れませんから……」
+		PRINTFORMW そう言って阿求は%CALLNAME:MASTER%に抱きつきながら、泣き続けた
+	ENDIF
+	CFLAG:5001 = 5
+	RETURN 1
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K48_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上（Y1を助手のキャラ番号に置換、48をキャラ番号に変更する) CFLAG5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+
+
+;阿求がふたなり+サドっ気LV5以上+（好感度5000以上or反発刻印LV1以上）+快楽に溺れている+助手が紫だと特殊ルートに突入
+ELSEIF TALENT:121 && ABL:20 >= 5 && (CFLAG:2 >= 5000 || MARK:9 >= 1) && CFLAG:5113 == 1 && TALENT:48 == 0 && CFLAG:5121 == 0 && NO:ASSI == 22
+	DRAWLINE
+	PRINTL 特殊イベントの条件を満たしました、発生させますか？
+	PRINTL （主人の素質・能力が大きく変動します）
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP2
+	INPUT
+	;恋慕時の開始口上を増やしたい上により燃えるシチュエーションにしたかったので変更
+	IF RESULT == 0
+		;PRINTFORMW 「あはっ、%CALLNAME:MASTER%、また来てくれたのですね？」
+		;PRINTFORMW 「今日はとっても美味しい紅茶を淹れてみたんです、飲んでくれませんか？」
+		;PRINTFORMW 今日はやけに優しいな……と思いながらも厚意を無駄にする訳にはいかないと思って%CALLNAME:MASTER%は何の疑いも持たずに紅茶を飲んだ
+		;PRINTFORMW 紅茶を飲みほし、美味しかった……と思った瞬間、%CALLNAME:MASTER%の意識は途絶えて……
+		PRINTFORMW %CALLNAME:MASTER%はいつも通り阿求の部屋に向かっていた
+		PRINTFORMW 今回は何をしようか、ということを考えながら阿求の部屋の扉を開けた瞬間、%CALLNAME:MASTER%の意識は途絶えて……
+		PRINTFORMW                 ・
+		PRINTFORMW                 ・
+		PRINTFORMW                 ・
+		PRINTFORMW 目を覚ました時、%CALLNAME:MASTER%は阿求と一緒にベッドに横になっていた
+		PRINTFORM いきなり倒れるとはさすがに働きすぎたかな……と思って起き上った瞬間、%CALLNAME:MASTER%は
+		IF TALENT:MASTER:120 == 1
+			PRINTFORMW 胸の膨らみと自分の身体の小ささに気づいた
+		ELSE
+			PRINTFORMW 自分の身体の小ささに気づいた
+		ENDIF
+		PRINTFORMW いつの間にか起きていた阿求は、困惑している%CALLNAME:MASTER%を見ながら話し始めた
+		PRINTFORMW 「私……%CALLNAME:MASTER%に色々されている内にふと%CALLNAME:MASTER%を虐めたくなって、それで紫様に協力してもらったんです」
+		PRINTFORMW 「%CALLNAME:MASTER%がこの部屋に来た時だけその姿になる効果がこの部屋にかかっています」
+		PRINTFORMW 『ふふ……私もこの話を最初に聞かされた時はビックリしたわ、そうそう、この部屋で身体が変化したら、次行動するまでの間、姿が変化したままになるから』
+		PRINTFORMW 『まあ、じっくりとその身体を楽しみなさいな』
+		PRINTFORMW 「これからは、一緒に気持ちよくなりましょうね♪」
+		PRINTFORMW 阿求はいきなり%CALLNAME:MASTER%の胸を揉み始めた
+		;主人が女性
+		SIF TALENT:MASTER:120 == 0
+			CFLAG:5123 |= 8
+		;主人が小柄体型
+		SIF TALENT:MASTER:128 == 1
+			CFLAG:5123 |= 4
+		;主人が幼稚
+		SIF TALENT:MASTER:131 == 1
+			CFLAG:5123 |= 64
+		;主人が淫乱
+		SIF TALENT:MASTER:170 == 1
+			CFLAG:5123 |= 32
+		;主人が妖精
+		SIF TALENT:MASTER:200 == 1
+			CFLAG:5123 |= 2
+		;主人がふたなり
+		SIF TALENT:MASTER:121 == 1
+			CFLAG:5123 |= 16
+		CFLAG:5121 = 2
+		TALENT:MASTER:121 = 1
+		TALENT:MASTER:120 = 0
+		TALENT:MASTER:128 = 1
+		TALENT:MASTER:200 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW スキップします
+		CFLAG:5121 = 1
+	ELSE
+		GOTO INPUT_LOOP2
+	ENDIF
+
+;映姫が助手（転生に関わってるようなので呪精の時だけ）
+ELSEIF NO:ASSI == 36 && TALENT:48 == 1
+	DRAWLINE
+	;初めて
+	IF CFLAG:5002 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み+呪精
+		IF TALENT:TARGET:150 == 1 && CFLAG:5001 >= 5 && TALENT:48 == 1
+			PRINTFORMW 「んふっ……はあぁ……いいよぉ……」
+			PRINTFORMW 『ま、まさかこの子は……阿礼の……』
+			PRINTFORMW 『人の命を弄るだけではなく、意思をも変えてしまうとは』
+			PRINTFORMW 『さすがに少し……やりすぎでは？』
+			PRINTFORMW 映姫様は呆れた表情で%CALLNAME:MASTER%を見ている
+			CFLAG:5002 = 1
+		ELSEIF TALENT:48 == 1
+			PRINTFORMW 「あ……あなたはぁ……だれぇ……？」
+			PRINTFORMW 『ま、まさかこの子は……阿礼の……』
+			PRINTFORMW 『阿礼乙女は代々転生を行いながら幻想郷の歴史をまとめる役目があるのですが……』
+			PRINTFORMW 『さすがにこの状態では転生など行える状態ではないじゃないですか』
+			PRINTFORMW 『そう、あなたは少し人の命を弄びすぎる』
+			PRINTFORMW %CALLNAME:MASTER%は映姫様の説教を受けた……
+			CFLAG:5002 = 1
+		ENDIF
+			RETURN 1
+	;二回目以降
+	ELSE
+		;恋慕+呪精
+		IF TALENT:TARGET:150 == 1 && TALENT:48 ==1
+			PRINTFORMW 「おねえちゃん……だいすきぃ……」
+			PRINTFORMW 『そ、そうですか？　あはは……』
+			PRINTFORMW 映姫様は少し顔を赤くして照れているようだ
+		;それ以外
+		ELSEIF TALENT:48 == 1
+			PRINTFORMW 「あ、おねえちゃんだぁ……はぁ……はぁ……」
+			PRINTFORMW 『……でも、これはこれでかわいい……ですね』
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;慧音が助手
+;原作で会話してたシーンあったっけ？
+ELSEIF NO:ASSI == 26
+	DRAWLINE
+	;初めて
+	IF CFLAG:5003 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:TARGET:150 == 1 && CFLAG:5001 >= 5
+			IF CFLAG:5113 == 1
+				PRINTFORMW 「あはっ♪　慧音さんだぁ♪　その顔を見ると%CALLNAME:MASTER%の魅力、いっぱい教え込まれたようですね♪」
+				PRINTFORMW 「私、阿求なんですぅ、これからは一緒にいっぱい気持ちよくなりましょう♪」
+				PRINTFORMW 『……阿求？　いや、私の中の記憶では阿求はこんな淫らな格好をして喜ぶような子ではなかったはずだ……』
+				PRINTFORMW 『大人しく真面目な少女をここまで変えてしまうとは……%CALLNAME:MASTER%の力は予測できないな』
+			;妖精
+			ELSEIF TALENT:200 == 1
+				PRINTFORMW 「慧音さん、お久し振りです……」
+				PRINTFORMW 『？　見かけない顔だが、もしかして阿求か？』
+				PRINTFORMW 「そ、そうですよぉ、羽が生えただけなのに酷いですね」
+				PRINTFORMW 『い、いや、前見た時よりも顔付きが大人らしくなってたものでな……私も人の事は言えないが』
+				PRINTFORMW 『%CALLNAME:MASTER%は……本当に恐ろしい方だ』
+			ELSE
+				PRINTFORMW 「慧音さん、お久し振りです……」
+				PRINTFORMW 『阿求、お前……そんなところに居たのか』
+				PRINTFORMW 「はい、私……%CALLNAME:MASTER%に従うと心に決めましたから」
+				PRINTFORMW 『……実は私もなんだ、%CALLNAME:MASTER%……今日は休ませないぞ？』
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あ、慧音さん、まさかこんな所で見かけるなんてぇ……」
+				PRINTFORMW 『？　見かけない顔だが、もしかして阿求か？』
+				PRINTFORMW 「そ、そうですよぉ、こんな姿に変えられてしまって、その上閉じ込められて……もう最悪なんです」
+				PRINTFORMW 「お願いします、一緒に……ここから逃げませんか？」
+				PRINTFORMW 『何を言ってるんだ？　なぜ%CALLNAME:MASTER%から逃げる必要がある？』
+				PRINTFORMW 「……え？」
+				PRINTFORMW 『私は%CALLNAME:MASTER%に頼まれて、お前にここの素晴らしさを教える手伝いをしに来たんだ』
+				PRINTFORML 「い……い……やぁ……っ！」
+				PRINTFORMW 阿求は目を絶望の色に染めて固まっている
+			ELSE
+				PRINTFORMW 「あ、慧音さん、会えてよかったぁ……」
+				PRINTFORMW 『おお、阿求か、まさかこんな所に居るとは、村のみんなが心配してるだろう』
+				PRINTFORMW 「そうですよね？　でも慧音さんが居るなら、私、どんな事をされても耐えられそうです」
+				PRINTFORMW 『……耐える？　何を耐えるんだ？』
+				PRINTFORMW 「……え？」
+				PRINTFORMW 『ここは素晴らしい場所じゃないか、飯は三食規則正しく出るし、毎日辛いことを気にせずに楽しいことだけを行える』
+				PRINTFORMW 『それに……%CALLNAME:MASTER%に気に入られたならば、ほぼ毎日会える、何が苦痛なんだ？』
+				PRINTFORML 「う……うそ……？」
+				PRINTFORMW 阿求は目を絶望の色に染めて固まっている
+			ENDIF
+		ENDIF
+			CFLAG:5003 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5003 == 1
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			IF CFLAG:5113 == 1
+				A = RAND:2
+				IF A > 1
+					PRINTFORMW %CALLNAME:MASTER%が部屋に入った時、既に阿求と慧音は互いに甘い声を出しながら交わっていた
+					PRINTFORML 『ん……すまない、あの子がどうしてもって言ってきたんでな』
+					PRINTFORMW 「遅かったじゃないですかぁ♪　早くやりましょうよぉ♪」
+				ELSE
+					PRINTFORMW 「%CALLNAME:MASTER%……待ってましたよぉっ♪」
+					PRINTFORMW 『短い人生を充実して過ごしている……と考えられなくはないが、まあ深いことは考えないでおこう』
+				ENDIF
+			;妖精
+			ELSEIF TALENT:200 == 1
+				A = RAND:2
+				IF A > 1
+					PRINTFORMW 「け、慧音ぇ……羽……くすぐったいよぉ♪」
+					PRINTFORMW 『ふふ……この身体、結構楽しそうじゃないか』
+				ELSE
+					PRINTFORMW 「ま、待ち切れないよぉっ♪　%CALLNAME:MASTER%……はやくきてぇ……」
+					PRINTFORMW 『阿求がああ言ってる事だし、早速始めないか？』
+				ENDIF
+			ELSE
+				A = RAND:2
+				IF A > 1
+					PRINTFORMW 「はぁぁ♪　慧音さんの胸、柔らかいぃ……」
+					PRINTFORMW 『……私は枕じゃないぞ、さあ、%CALLNAME:MASTER%が来たから立つんだ』
+				ELSE
+					PRINTFORMW 「慧音さん、やっぱり綺麗ですね……」
+					PRINTFORMW 『御世辞を言っても褒美は出ないぞ、……もっと寺子屋に来てほしかったな』
+				ENDIF
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				;屈服刻印LV3以上
+				IF MARK:2 >= 3
+					PRINTFORMW 「はあっ……身体が疼いて仕方がないのぉ……」
+					PRINTFORML 『そうか、ここの素晴らしさが身に染みてきたのだろう、もうすぐ楽になれるぞ』
+					PRINTFORMW 「ち、違うぅ……違うのぉっ……」
+				;それ以外
+				ELSE
+					PRINTFORMW 「慧音……お願い……私を、逃がして……永遠亭に行って姿、元に戻してもらいたいから……」
+					PRINTFORML 『その姿、可愛いじゃないか、何が不満なんだ？』
+					PRINTFORMW 「……い、いやなの……この姿だけは、いやぁ……」
+				ENDIF
+			ELSE
+				;屈服刻印LV3以上
+				IF MARK:2 >= 3
+					PRINTFORMW 「慧音さん、もっと気持ちいいこと、教えて……」
+					PRINTFORMW 『そうか、やっとお前にもここの素晴らしさが分かってもらえたか、私は嬉しいぞ』
+					PRINTFORML 「……ううっ、うっ……ぐずっ……」
+					PRINTFORMW 慧音の返事を聞いて、阿求は涙を流し始めた
+				;それ以外
+				ELSE
+					PRINTFORMW 「慧音さん、お願い……目を覚まして……寺子屋の子供たちが居るでしょう？」
+					PRINTFORML 『……？　ああ、子供達にもこの気持ちよさ、教えてやらないといけないな』
+					PRINTFORMW 「ち……違う……あぁぁ……」
+				ENDIF
+			ENDIF
+		ENDIF
+			RETURN 1
+	ENDIF
+	
+;紫が助手
+;「あなた」の名前を「貴方」にすると混乱するよ！
+ELSEIF NO:ASSI == 22
+	DRAWLINE
+	;初めて
+	IF CFLAG:5004 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:TARGET:150 == 1 && CFLAG:5001 >= 5
+			IF CFLAG:5113 == 1
+				PRINTFORMW 「んはぁ！　紫様ぁ♪　私、もう駄目なんですぅ、壊れちゃいましたぁ♪」
+				PRINTFORMW 『……こんな淫らな格好を見るのは、九代目の貴方が初めてだわ』
+				PRINTFORMW 「そうなのですかぁ、私、一族の中では最も駄目な子ですぅ、いじめてくださいぃ♪」
+				PRINTFORMW 『幻想郷は全てを受け入れるのよね……例え%CALLNAME:MASTER%のような人物でも……残酷な話よ』
+			;妖精
+			ELSEIF TALENT:200 == 1
+				PRINTFORMW 「ゆ、紫様……」
+				PRINTFORMW 『姿は変わってるみたいだけど貴方か……%CALLNAME:MASTER%の所に居たのね』
+				PRINTFORMW 「そうなんです、今では私、妖精が好きになりました……すごく気持ちいいんですよ」
+				PRINTFORMW 『……あの子、前は妖精を好かなかったのに……これも、%CALLNAME:MASTER%の力なのかしらね？』
+			ELSE
+				PRINTFORMW 「紫様、お久し振りでございます」
+				PRINTFORMW 『ふふ……貴方も%CALLNAME:MASTER%に従う事にしたのね、賢明な判断よ』
+				PRINTFORMW 『さあ、一緒に%CALLNAME:MASTER%を気持ちよくさせましょう？』
+				PRINTFORMW 「はいっ！　紫様！」
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「……あ、紫様！　助けてください！　私、閉じ込められている上に妖精にされてしまったんです！」
+				PRINTFORMW 『助ける……？　それは、無理よ』
+				PRINTFORMW 「ど、どうしてですか！　貴方の能力を使えばここから逃げ出したり姿を元に戻したり位は簡単でしょう？」
+				PRINTFORMW 『……この空間では%CALLNAME:MASTER%が真実となるのよ』
+				PRINTFORMW 「そ……そん……な……っ」
+				PRINTFORMW 阿求はショックを隠し切れないようだ
+			ELSE
+				PRINTFORMW 「……あ、紫様！　助けてください！　私、閉じ込められてしまったんです！」
+				PRINTFORMW 『助ける……？　それは、無理よ』
+				PRINTFORMW 「ど、どうしてですか！　貴方の能力を使えばここから逃げ出すことは簡単でしょう？」
+				PRINTFORMW 『%CALLNAME:MASTER%に囚われてしまったこと、それが運命なのよ』
+				PRINTFORMW 『貴方も……運命に、従いなさい。そして%CALLNAME:MASTER%を慕うのよ……』
+				PRINTFORML 「い、いやぁ……」
+				PRINTFORMW 阿求は返す言葉を思いつかず、その場で固まってしまった
+			ENDIF
+		ENDIF
+			CFLAG:5004 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5004 == 1
+		;主人が罠に嵌った
+		IF CFLAG:5121 == 2
+			IF CFLAG:5130 == 2
+				PRINTFORMW 「%CALLNAME:MASTER%、一人だけ勝手に始めてるなんてズルいですよぉっ♪」
+				PRINTFORMW 『……自分が誰だということくらいは覚えてるわよね？』
+			ELSEIF CFLAG:5130 == 1
+				PRINTFORMW 「%CALLNAME:MASTER%、こうして見ると可愛いですね」
+				PRINTFORMW 『その身体に慣れてきた、ということかしら？』
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			IF CFLAG:5113 == 1
+				A = RAND:2
+				IF A > 1
+					PRINTFORMW 「ぅうん♪　紫様、来るのが遅かったじゃないですかぁ♪」
+					PRINTFORMW 『あらあら、先に始めていたのね……盛んな子ねぇ』
+				ELSE
+					PRINTFORMW 「ぁん♪　私、先代に会わす顔がないんですぅっ♪」
+					PRINTFORMW 『ふふっ……貴方に”次”の代があるならこのことを伝えてあげましょうか……』
+				ENDIF
+			;妖精
+			ELSEIF TALENT:200 == 1
+				A = RAND:2
+				IF A > 1
+					PRINTFORMW 『どう？　妖精の姿、気持ちいい？』
+					PRINTFORMW 「くぅ、うぅん♪　す、すごく気持ちいいですっ！」
+				ELSE
+					PRINTFORMW 『先に言っておくけど、貴方……転生できるかどうか保証できないわよ？』
+					PRINTFORMW 「別に今更転生のことなんて……それに、こんな駄目な私なんて後世に伝えない方がいいです」
+				ENDIF
+			ELSE
+				A = RAND:2
+				IF A > 1
+					PRINTFORML %CALLNAME:MASTER%が部屋に入った時、既に阿求は紫と交わっていた
+					PRINTFORMW 『あらあら、コツを覚えるのが早いじゃない』
+					PRINTFORMW 「これが、んっ、私の能力であり習慣ですから……」
+				ELSE
+					PRINTFORMW 「紫様ぁ……また来てくださったのですね……」
+					PRINTFORMW 『%CALLNAME:MASTER%と貴方が魅力的ですからね、それに惹かれて何度も来てしまうのよ』
+				ENDIF
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				;屈服刻印LV3以上
+				IF MARK:2 >= 3
+					PRINTFORMW 「はぁ……このままだと頭、おかしくなっちゃいそう……」
+					PRINTFORML 『耐えないと馬鹿になっちゃうわ、妖精、嫌なんでしょ？』
+					PRINTFORMW 「そうなんですぅ……でも、ぅうん……」
+				;それ以外
+				ELSE
+					PRINTFORMW 「紫様……せめて、人間に戻してください……」
+					PRINTFORML 『%CALLNAME:MASTER%がした行動は否定できないから無理だわ、それに今の貴方、すごく似合ってるわよ？』
+					PRINTFORMW 「……い、いやなの……妖精なんて……馬鹿なだけじゃないの……」
+				ENDIF
+			ELSE
+				;屈服刻印LV3以上
+				IF MARK:2 >= 3
+					PRINTFORMW 「紫様……私……私、は……」
+					PRINTFORMW 『ふふっ、いいじゃない、残りの人生を全て%CALLNAME:MASTER%に捧げても……もうやるべきことはやったのでしょう？』
+					PRINTFORML 「こんな人生より……普通の人生の方が……いいよぉ……」
+					PRINTFORMW 紫の言葉を聞いて、阿求は涙を流し始めた
+				;それ以外
+				ELSE
+					PRINTFORMW 「紫様、その態度、戦略の内なんですよね……」
+					PRINTFORML 『あの戦略は代価なのよ、月の民を驚かせるためだけのね。だから今回は何も無いわ』
+					PRINTFORMW 「そ……そんなぁ……」
+				ENDIF
+			ENDIF
+		ENDIF
+			RETURN 1
+	ENDIF
+
+
+;助手
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5004 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:TARGET:150 == 1 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5004 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE CFLAG:5004 == 1
+		;恋慕
+;		IF TALENT:TARGET:150 == 1
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5005 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:TARGET:150 == 1 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5005 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE CFLAG:5005 == 1
+		;恋慕
+;		IF TALENT:TARGET:150 == 1
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K48_KOJO2
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降、48をキャラ番号に変更する） CFLAGなし 
+;-------------------------------------------------
+@K48_KOJO2
+;主人が罠にはめられて妖精になるようになっている
+IF CFLAG:5130 == 2
+	DRAWLINE
+	PRINTFORML %CALLNAME:MASTER%は視界をピンク色に染めながら淫らな行為を想像し、涎を垂らして惚けている
+	PRINTFORMW 「……%CALLNAME:MASTER%、大丈夫ですか？　もうすっかり快楽の虜ですねっ♪」
+	RETURN 1
+
+;主人が罠にはめられて妖精になるようになっている
+ELSEIF CFLAG:5130 == 1
+	DRAWLINE
+	PRINTFORML 「%CALLNAME:MASTER%、もう我慢できなさそうですね」
+	PRINTFORMW 「早速始めましょうか♪」
+	RETURN 1
+
+;反発刻印Lv3+非妖精
+ELSEIF MARK:9 == 3 && TALENT:200 == 0
+	DRAWLINE
+	PRINTFORMW 「こんなこと……絶対に許せません……」
+	PRINTFORMW 阿求は鋭い視線を%CALLNAME:MASTER%に向けた
+	RETURN 1
+
+;反発刻印Lv3+妖精+屈服刻印Lv0
+ELSEIF MARK:9 == 3 && TALENT:200 == 1 &&MARK:2 == 0
+	DRAWLINE
+	PRINTFORMW 「よくも私をこんな姿にしてくれましたね」
+	PRINTFORMW 「末代まで呪ってあげますよ…」
+	RETURN 1
+
+;着たまま始める場合
+ELSEIF CFLAG:5113 == 1
+	DRAWLINE
+	A = RAND:2
+	IF A >= 0
+		PRINTFORMW 「んぅ！　はぁん！　あぁぁ♪」
+		PRINTFORML 「すみませんっ、勝手に始めてましたぁ、早くしてぇ♪」
+		PRINTFORMW 阿求は妖艶に微笑んで%CALLNAME:MASTER%を誘った
+	ELSEIF A >= 1
+		PRINTFORML 「私、もう我慢できないんです……はあっ、早く、早くぅ♪」
+		PRINTFORMW 阿求は短いスカートの裾を持ち上げて%CALLNAME:MASTER%を誘った
+	ENDIF
+	RETURN 1
+
+;快楽に溺れて乱れるイベントを見た後+妖精
+ELSEIF CFLAG:5113 == 1 && CFLAG == 0 && TALENT:200 == 1 && CFLAG:5118 == 0
+	DRAWLINE
+	PRINTFORMW 「この格好、すごく気に入りましたぁ♪」
+	PRINTFORMW 「これからは、これを着たままでやりませんか？」
+	PRINTL [0] それを待っていた！
+	PRINTL [1] いや……そんな趣味は無いんだ
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 「ありがとうございますぅ♪　じゃ早速始めましょうよぉ♪」
+		CFLAG:5118 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW 「そうですか……じゃあいつも通り、脱いでからやりましょうね♪」
+		CFLAG:5118 = 2
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:2 == 0
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「……ぁ……また来てくれた」
+	ELSE
+		PRINTFORMW 「いやっ！　やめてください！」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「は……ぁ……」
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「こんな姿にされたのが屈辱です」
+		PRINTFORMW 「一生許しませんから……」
+	ELSE
+		PRINTFORML 「こんなことをしても、時間の無駄だと思いますよ？」
+		PRINTFORMW 阿求は服を脱がされながら冷静に言った
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORML 「もっと……気持ちいいこと……したい」
+		PRINTFORMW 阿求は太腿を擦り合わせながら%CALLNAME:MASTER%を見つめている
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「はぁ……あなたは私に、何を望んでいるのですか？」
+	ELSE
+		PRINTFORMW 「また……また、ですか」
+		PRINTFORMW 「何度も言ってるじゃないですか、これ以上は無駄だって……」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:2 == 3 && TALENT:TARGET:150 == 0
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORML 「早く……してぇ……」
+		PRINTFORMW 阿求は服を脱ぎ始めながら催促するかのように%CALLNAME:MASTER%を見つめている
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「ふ、ふあっ……ち、違うぅ、こんなの私じゃないぃ……」
+		PRINTFORML 「お願いだからぁ……収まってぇ……」
+		;反発刻印LV3だと全然好感度が上がらないので欲望のＬＶに応じて強引に珠をプレゼント
+		;身体が快楽に敏感なせいで心まで引き摺られていくって最高じゃないか？
+		IF CFLAG:5119 == 1 && ABL:10 < 5
+			PRINTFORML %PALAMNAME:11%の珠＋{ABL:11*650}
+			JUEL:11 += ABL:11*650
+		ELSEIF CFLAG:5119 == 1 && MARK:9 >= 1
+			PRINTFORML %PALAMNAME:14%の珠＋{ABL:11*3200}
+			JUEL:14 += ABL:11*3200
+		ENDIF
+		PRINTFORMW 阿求は自分の身体に精神が引き摺られようとしている
+	ELSE
+		PRINTFORMW 「今日も来てくれたのですね」
+		PRINTFORMW 「さあ、もっと色んな事を教えてください……」
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:TARGET:150 == 1
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	;ＦＦ6方式でヒントを出してみる
+	IF TALENT:200 == 1 && TALENT:48 == 0
+		A = RAND:7
+	ELSE
+		A = RAND:6
+	ENDIF
+	IF A == 6
+		PRINTFORML 「私、どこかの本で読んだことがあるのですが……」
+		PRINTFORMW 「この世には、妖精になんらかの術をかけて別の者にしてしまう手法があるらしいですね」
+		PRINTFORMW 「少し……怖いです」
+	ELSEIF A == 5
+		IF CFLAG:5109 == 0
+			PRINTFORML 「私、どこかの本で読んだことがあるのですが……」
+			PRINTFORMW 「縄で縛ってからやるプレイがあるらしいですね」
+			PRINTFORMW 「少し、興味が……あるなぁ……」
+		ELSE
+			PRINTFORML %CALLNAME:MASTER%が部屋に入った途端、懐かしい音色が聞こえてきた
+			PRINTFORMW 「この曲、未来のような音色がして好きなんです」
+			PRINTFORMW 「他にも似たような音色の曲、いっぱい持ってますよ？」
+		ENDIF
+	ELSEIF A == 4
+		IF CFLAG:5115 == 0
+			PRINTFORML 「%CALLNAME:MASTER%、今日は過激なことをしませんか？」
+			PRINTFORMW 「過激なことって何だ、って？　例えば……大勢に輸姦されるとかです」
+		ELSE
+			PRINTFORML 「今日は紅茶を入れてみたんです、飲んでからやりませんか？」
+			PRINTFORMW %CALLNAME:MASTER%は阿求と一緒に紅茶を飲んで優雅な一時を過ごした
+		ENDIF
+	ELSEIF A == 3
+		IF CFLAG:5108 == 0
+			PRINTFORML 「私、見たことは何でも覚えてしまうのですよ……」
+			PRINTFORMW 「だから、あまり私に淫らな行為は見せないでくださいね？　壊れちゃいますから」
+		ELSE
+			PRINTFORML 「今日は紅茶を入れてみたんです、飲んでからやりませんか？」
+			PRINTFORMW %CALLNAME:MASTER%は阿求と一緒に紅茶を飲んで優雅な一時を過ごした
+		ENDIF
+	ELSEIF A == 2
+		;妖精
+		;呪精でも違和感なさそうなので使いまわし
+		IF TALENT:200 == 1
+			PRINTFORML 「く……ぅ……ふぁん！　あぁ……」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、既に阿求は乱れた着衣になって身体を慰めていた
+			PRINTFORML 「あ……やっと来てくれたんですね、待ち切れなかったので勝手に始めてましたぁ……」
+			PRINTFORMW 阿求は%CALLNAME:MASTER%を押し倒した…
+		ELSE
+			PRINTFORMW 「普通じゃ味わえないことを一杯してもらえるなんて……」
+			PRINTFORMW 「私……かなり幸せです」
+		ENDIF
+	ELSEIF A == 1 && ABL:20 >= 2
+		PRINTFORML 「%CALLNAME:MASTER%はいじめられること、好きですか？」
+		PRINTFORMW 「……ただの冗談ですよ、まだ私にそんな気はありませんから」
+	ELSE
+		;呪精
+		IF TALENT:48 == 1
+			PRINTFORML 「んふぅ……何も考えられないれすぅ♪」
+			PRINTFORMW 「%CALLNAME:MASTER%……早く私を乱してぇ……」
+		;妖精
+		ELSEIF TALENT:200 == 1
+			PRINTFORML 「待ってました、早くやりましょうね♪」
+			PRINTFORMW 阿求は催促するかのように%CALLNAME:MASTER%の手を引っ張った
+		ELSE
+			PRINTFORML 「今日も来てくれたのですね、早速始めましょう♪」
+			PRINTFORMW 阿求は手を招いて%CALLNAME:MASTER%を誘った
+		ENDIF
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_48_SLAVE_MESSAGE_TRAIN_END
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、48を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K48_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ CFLAG 211～220を使用
+;--------------------------------------------------
+;バグを潰す為にここで特殊フラグはリセット
+IF CFLAG:5118 == 3
+	CFLAG:5118 = 1
+ENDIF
+
+;クリキャップ+二プルキャップ+バイブ+アナルバイブ+縄+アイマスクを装着したまま終了
+IF TEQUIP:20 == 1 && TEQUIP:25 == 1 && TEQUIP:30 == 1 && TEQUIP:35 == 1 && TEQUIP:40 >= 1 && TEQUIP:41 >= 1 && TEQUIP:52 != 1 && CFLAG:5119 == 1
+	DRAWLINE
+	PRINTL この状態のまま終了しますか？
+	PRINTL （いいえを選んだ場合は全部外してから終了します）
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP0
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW %CALLNAME:MASTER%は、目隠しをされて縛られながら全身を責められている阿求を置き去りにして部屋から出た
+		PRINTFORMW 感じすぎているせいなのか、扉を閉めた音が鳴っても阿求は%CALLNAME:MASTER%が出ていったのにも気づかずに、くぐもった喘ぎ声を上げ続けている
+		PRINTFORMW この状態ではよくて5日しか持たないだろう……
+		CFLAG:5116 = 1
+		CFLAG:5117 = DAY
+		RETURN 1
+	ELSEIF RESULT == 1
+		
+	ELSE
+		GOTO INPUT_LOOP0
+	ENDIF
+	
+ENDIF
+
+;あなたが淫乱を習得+自慰経験160以上+絶頂経験160以上+各種感覚LV5以上+欲望LV5以上+幼稚を持ってる+反発刻印がLV1以上
+IF CFLAG:5124 >= 5 && CFLAG:5128 >= 160 && CFLAG:5129 >= 160 && CFLAG:5125 >= 5 && CFLAG:5130 == 2 && MARK:9 >= 1
+	DRAWLINE
+	PRINTL 特殊エンドの条件を満たしました
+	PRINTL この状態を次のプレイに受け継げませんが開始しますか？
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP1
+	INPUT
+	IF RESULT == 0
+		DRAWLINE
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW %CALLNAME:MASTER%はぼんやりとしていた意識の中、全身に走る快楽だけを感じていた
+		PRINTFORMW 少しだけ意識がはっきりしたので周りの様子を見ると、どうやら%CALLNAME:MASTER%は複数の見知らぬ人間に囲まれて
+		PRINTFORMW 穴という穴に棒やバイブ等を押し込められているようだ
+		PRINTFORMW %CALLNAME:MASTER%に復讐をする意図があった阿求は、%CALLNAME:MASTER%を罠に嵌めて妖精にして調教する計画を立て
+		PRINTFORMW ついにできあがったと感じた阿求は前回の調教の後、ひっそりと奴隷商人を呼んで%CALLNAME:MASTER%を売り払ったらしい
+		PRINTFORMW そんな事はつゆ知らず、頭の中が頻繁に真っ白になって考えがまとまらない%CALLNAME:MASTER%は、何度も達しながら喘ぎ続けた……
+		PRINTFORMW 
+		PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求BADエンド)
+		PRINTFORMW 
+		QUIT
+	ELSEIF RESULT == 1
+		
+	ELSE
+		GOTO INPUT_LOOP1
+	ENDIF
+ENDIF
+
+;主人が快楽から抜けられない
+IF CFLAG:5121 == 2 && CFLAG:5130 == 1
+	DRAWLINE
+	PRINTFORMW 「%CALLNAME:MASTER%、まるで私みたいに乱れましたね、そんなに気持ちよかったですか？」
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:121 = 0
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:128 = 0
+	TALENT:MASTER:200 = 0
+	;主人が女性
+	SIF CFLAG:5123 & 8
+		TALENT:MASTER:120 = 0
+	;主人が小柄体型
+	SIF CFLAG:5123 & 4
+		TALENT:MASTER:128 = 1
+	;主人が幼稚
+	SIF CFLAG:5123 & 64
+		TALENT:MASTER:131 = 1
+	;主人が淫乱
+	SIF CFLAG:5123 & 32
+		TALENT:MASTER:170 = 1
+	;主人が妖精
+	SIF CFLAG:5123 & 2
+		TALENT:MASTER:200 = 1
+	;主人がふたなり
+	SIF CFLAG:5123 & 16
+		TALENT:MASTER:121 = 1
+	RETURN 1
+ENDIF
+
+;主人が快楽から抜けられない
+IF CFLAG:5121 == 2 && CFLAG:5130 == 1
+	DRAWLINE
+	PRINTFORMW 「あはは、顔、蕩けちゃってますね。快楽気に入りましたか？」
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:121 = 0
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:128 = 0
+	TALENT:MASTER:200 = 0
+
+	;主人が女性
+	SIF CFLAG:5123 & 8
+		TALENT:MASTER:120 = 0
+	;主人が小柄体型
+	SIF CFLAG:5123 & 4
+		TALENT:MASTER:128 = 1
+	;主人が幼稚
+	SIF CFLAG:5123 & 64
+		TALENT:MASTER:131 = 1
+	;主人が淫乱
+	SIF CFLAG:5123 & 32
+		TALENT:MASTER:170 = 1
+	;主人が妖精
+	SIF CFLAG:5123 & 2
+		TALENT:MASTER:200 = 1
+	;主人がふたなり
+	SIF CFLAG:5123 & 16
+		TALENT:MASTER:121 = 1
+	RETURN 1
+ENDIF
+
+
+;主人が一時的に妖精フラグが立ってる
+IF CFLAG:5121 == 2
+	DRAWLINE
+	PRINTFORMW 「気持ちよかった……ですよね？　まだ足りないようなら少しづつ教えてあげますよ」
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:121 = 0
+	TALENT:MASTER:120 = 1
+	TALENT:MASTER:128 = 0
+	TALENT:MASTER:200 = 0
+	;主人が女性
+	SIF CFLAG:5123 & 8
+		TALENT:MASTER:120 = 0
+	;主人が小柄体型
+	SIF CFLAG:5123 & 4
+		TALENT:MASTER:128 = 1
+	;主人が幼稚
+	SIF CFLAG:5123 & 64
+		TALENT:MASTER:131 = 1
+	;主人が淫乱
+	SIF CFLAG:5123 & 32
+		TALENT:MASTER:170 = 1
+	;主人が妖精
+	SIF CFLAG:5123 & 2
+		TALENT:MASTER:200 = 1
+	;主人がふたなり
+	SIF CFLAG:5123 & 16
+		TALENT:MASTER:121 = 1
+	RETURN 1
+ENDIF
+
+;反発刻印Lv3+非妖精
+IF MARK:9 == 3 && TALENT:200 == 0
+	DRAWLINE
+	PRINTFORMW 「このことは絶対に許しませんので覚悟していてくださいね……」
+	PRINTFORMW 部屋から出ていく%CALLNAME:MASTER%の背に、言葉を突き刺さった
+	RETURN 1
+	
+
+;反発刻印Lv3+妖精+屈服刻印Lv1以下
+ELSEIF MARK:9 == 3 && TALENT:200 == 1 &&MARK:2 == 0
+	DRAWLINE
+	PRINTFORMW 「このことは絶対に許しませんので覚悟していてくださいね……」
+	PRINTFORMW 部屋から出ていく%CALLNAME:MASTER%の背に、言葉が突き刺さった
+	RETURN 1
+
+
+;屈服刻印Lv1以下
+ELSEIF MARK:2 <= 1
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「ぇ……もう終わり……なの？」
+	ELSE
+		PRINTFORMW 「やっと、終わりましたか……」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「あぁ……気持ちいぃ……よぉ……」
+		PRINTFORMW 阿求は物足りなさそうな表情で%CALLNAME:MASTER%を見つめた
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORML 「はあっ……」
+		PRINTFORMW 阿求はため息をついている
+	ELSE
+		PRINTFORMW 「早く、この部屋から出ていってください……」
+	ENDIF
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:TARGET:150 == 0
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「ふ……ぁ……もっとぉ……してぇ……」
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORML 「いやぁ……疼きが収まらないよぉ……うぁん！」
+		PRINTFORMW 終わってからもしばらくの間阿求は自身を慰めていた…
+		;さりげなく好感度も微妙に補正を加えておきますね
+		SIF MARK:9 == 0 && CFLAG:5119 == 1
+			CFLAG:2 += 20
+	ELSE
+		PRINTFORMW 「今日はこれで終わりですか……」
+		PRINTFORMW 「また次の機会があれば、一杯教えてくださいね」
+	ENDIF
+	RETURN 1
+
+;恋慕+着衣プレイ+体力500以上
+ELSEIF CFLAG:5118 == 1 && TALENT:TARGET:150 == 1 && BASE:0 >= 500
+	DRAWLINE
+	PRINTFORML 「はぁ……服、汚れちゃいましたぁ♪」
+	PRINTFORMW %CALLNAME:MASTER%は汗等ですっかり濡れてしまった服を洗って、その後再び阿求に渡した
+	RETURN 1
+
+;恋慕＋体力500未満
+ELSEIF TALENT:TARGET:150 == 1 && BASE:0 < 500
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORML 「くぅん……はぁ……ぁ……」
+		PRINTFORMW 満足した阿求はその場で眠り始めた
+		SIF CFLAG:5118 == 1
+			PRINTFORMW %CALLNAME:MASTER%は汗等ですっかり濡れてしまった服を脱がしてから洗って、その後再び阿求に渡した
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORML 「もう駄目ぇ、おやすみなさいぃ……」
+		PRINTFORMW 阿求は疲れたのかすぐに眠り始めた
+		SIF CFLAG:5118 == 1
+			PRINTFORMW %CALLNAME:MASTER%は汗等ですっかり濡れてしまった服を脱がしてから洗って、その後再び阿求に渡した
+	ELSE
+		PRINTFORMW 「もう……これ以上は、無理ぃ……」
+	ENDIF
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:TARGET:150 == 1
+	DRAWLINE
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「もう……終わりなんですかぁ……？」
+		PRINTFORMW 「まだ……足りないよぉ……」
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW 「えっ？　もう終わりですか？　私はまだ大丈夫だから……もっとやってほしいな」
+	ELSE
+		PRINTFORMW 「終わり……ですか」
+		PRINTFORMW 「分かりました、次はもっとやってほしいです」
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係（48をキャラ番号に置換）
+;コマンド実行時に出力されます
+;これは主人が悶え石を持っててもおかしくないレベル
+;--------------------------------------------------
+@KOJO_48_TRAIN_MESSAGE_S_GENERAL
+;訳あって助手を犯すを選んだ場合は特殊処理
+IF TEQUIP:42 && (SELECTCOM != 226 || SELECTCOM != 506) && SELECTCOM == 26
+	CFLAG:5103 += 1
+	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+	RETURN 0
+ENDIF
+
+;精神が乱れていると自分で弄り始める
+IF CFLAG:5113 == 1 && TEQUIP:40 == 0 && SELECTCOM != 224
+	A = RAND:4
+	IF A == 3
+		SOURCE:0 += 3000
+		CFLAG:5114 = 1
+	ELSEIF A == 2
+		SOURCE:1 += 3000
+		CFLAG:5114 = 2
+	ELSEIF A == 1
+		SOURCE:2 += 3000
+		CFLAG:5114 = 3
+	ELSE
+		SOURCE:3 += 3000
+		CFLAG:5114 = 4
+	ENDIF
+ENDIF
+
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ・猿轡(?)・触手口屈辱時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 && (SELECTCOM != 226 || SELECTCOM != 506)
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、48を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG 9000～9999を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG9000
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:9000 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふ……ぁっ、はあっ、はあっ」
+			ELSE
+				PRINTFORMW 「くぅ……んぅ……」
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふあっ……こんなの、何ともありませんから……！」
+			ELSE
+				PRINTFORMW 「そんな手で厭らしく触らないでくださいっ！」
+			ENDIF
+		ENDIF
+			CFLAG:9000 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「あはっ♪　もっと触ってぇ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 阿求は服の上から触られているのにも関わらず感じまくって身体を跳ねさせた
+				ELSE
+					PRINTFORMW 阿求は少し触っただけで身体を大きく跳ねさせた
+				ENDIF
+			ELSE
+				PRINTFORML 「きゃふ！　そこ、痺れちゃうのぉっ！」
+				PRINTFORMW 阿求は少し触られただけで身体を震わせた
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んっ！　触られただけでなのにぃっ♪」
+			ELSE
+				PRINTFORMW 「あんっ！　触られただけで、気持ちよく……ふぁぁ♪」
+			ENDIF
+			CFLAG:9000 = 6
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「やめてぇ……これ以上されたらぁ……」
+			ELSE
+				PRINTFORMW 「あぁぁ♪　やっぱり気持ちいいですね」
+			ENDIF
+			CFLAG:9000 = 5
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「う……んっ、駄目で、すっ！」
+			ELSE
+				PRINTFORMW 「ふぁ……ぁ……ん、やめてください」
+			ENDIF
+			CFLAG:9000 = 4
+		;Ｃ感覚2以上
+		ELSEIF ABL:0 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「んっ……はあっ、はあっ……んうっ……」
+			ELSE
+				PRINTFORML 「だ、だめぇ！　ふぁ……やめてくださいっ！」
+				PRINTFORMW 阿求は時々身震いしながら%CALLNAME:MASTER%の手を払いのけて抵抗している
+			ENDIF
+			CFLAG:9000 = 3
+		;それ以外
+		ELSEIF MARK:2 <= 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「何とも……ないです」
+			ELSE
+				PRINTFORML 「い、いやぁ！　離してっ、くださいっ！」
+				PRINTFORMW 阿求は%CALLNAME:MASTER%の手を払いのけて抵抗している
+			ENDIF
+			CFLAG:9000 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG9001
+;岩清水 CFLAG9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9001 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			PRINTFORMW 「そ、そんな所……んくぅ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「そ、そんな所、汚いから！　やめてぇ！」
+		ENDIF
+			CFLAG:9001 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「ふぁぁ♪　私のあそこ、そんなに美味しいのぉっ？」
+				PRINTFORM 阿求は
+				IF CFLAG:5118 == 1
+					PRINTFORM 脇腹をきつく摘まんで、
+				ELSEIF TEQUIP:40 == 0
+					PRINTFORM 服の腹をきつく摘まんで、
+				ELSE
+					PRINTFORM 服をはだけさせる位跳ねまくって
+				ENDIF
+				PRINTFORMW 快楽に悦びを感じている
+			ELSE
+				PRINTFORML 「うぁん！　そんなに激しく舐めないでぇっ、うぅん……」
+				PRINTFORMW 阿求は舐められる度に身体を痙攣させている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「いいのぉ……とってもいいのぉ……ああああぁぁん♪」
+			ELSE
+				PRINTFORMW 「あぁん！　す、すごく感じちゃう！　くぅああああん！」
+			ENDIF
+			CFLAG:9001 = 6
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「くぅん…！　何とも、んっ、ないっ……」
+			ELSE
+				PRINTFORMW 「はぁん！　舐められただけで痺れちゃうぅ！」
+			ENDIF
+			CFLAG:9001 = 5
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「ふぁ……ぁ……んっ！　お願いだから、やめてぇ……」
+				PRINTFORMW 阿求は時々身体を震わせた
+			ELSE
+				PRINTFORMW 「そこ、敏感だから、やめてくださ……はぁん！」
+			ENDIF
+			CFLAG:9001 = 4
+		;Ｃ感覚2以上
+		ELSEIF ABL:0 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「ふうぅ、はあっ、はあっ……」
+				PRINTFORMW 阿求は快楽を堪えている……
+			ELSE
+				PRINTFORML 「ぁふ……やめてっ！　ふぁ……そんな所を舐めないでっ！」
+			ENDIF
+			CFLAG:9001 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「や、やめてぇ……」
+			ELSE
+				PRINTFORMW 「やめてっ！　そんな所に顔をくっ付けないでっ！」
+			ENDIF
+			CFLAG:9001 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611 || (SELECTCOM == 1 && TEQUIP:56)
+	;恋慕+露出癖Lv3以上+C感覚Lv3以上
+	IF TALENT:TARGET:150 == 1 && ABL:14 >= 3 && ABL:0 >= 3
+		PRINTFORMW 
+		;CFLAG:9611 = 6
+	;恋慕
+	ELSEIF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:9611 = 5
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:0 >= 3 && ABL:14 >= 3
+		PRINTFORMW 
+		;CFLAG:9611 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 
+		;CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:9611 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG9002
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「お、お尻の穴なんて……！」
+		CFLAG:TARGET:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「やんっ♪　わらひは、おひりで感じちゃうのぉっ♪」
+				PRINTFORM 阿求は
+				SIF CFLAG:5118 == 1 || TEQUIP:40 == 0
+						PRINTFORM 服を掴みながら
+				PRINTFORMW 顔を紅潮させている
+			ELSE
+				PRINTFORML 「らめぇ、おひりばっかりさわらないでぇ♪」
+				PRINTFORMW お尻を弄る度に阿求は身体を跳ねさせた
+			ENDIF
+		;恋慕+潤滑Lv2以上
+		ELSEIF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ひゃん！　お尻、いいのぉっ♪」
+			ELSE
+				PRINTFORMW 「あぁん♪　これ、癖になっちゃいますぅ♪」
+			ENDIF
+			CFLAG:9002 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んっ……もっと濡らしてからやって」
+			ELSE
+				PRINTFORMW 「もう少し濡らしてほしいです……」
+			ENDIF
+			CFLAG:9002 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふぁん♪　……え？　ど、どうして……」
+			ELSE
+				PRINTFORMW 「んあっ！　尻の穴を弄られてるのに、んふっ！　どうして……」
+			ENDIF
+			CFLAG:9002 = 4
+		;潤滑Lv2以上＋A感覚Lv2以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふ……ぁ、ん……ぁ」
+				PRINTFORMW 阿求は未知の感覚に対して戸惑っているようだ
+			ELSE
+				PRINTFORMW 「くぅ……んふぅ……」
+				PRINTFORMW 阿求は未知の感覚に悶えているようだ
+			ENDIF
+			CFLAG:9002 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「くうっ！　痛い、痛い……っ！」
+			ELSE
+				PRINTFORMW 「いっ……そんな所、弄るのやめてくださいっ！」
+			ENDIF
+			CFLAG:9002 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG9007
+;シャワーオナニー CFLAG8801
+;-------------------------------------------------
+;通常自慰（シャワー無し）
+IF SELECTCOM == 7 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:9007 == 0
+		PRINTFORMW 「ちょっと悪趣味じゃ……ありませんか？」
+		CFLAG:TARGET:9007 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「ふぁぁぁん！　わらひ、ひもひいいのぉっ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 阿求は服の上から弄っているにも関わらず、乳首を勃たせながら弄る度に身体を跳ねさせた
+				ELSE
+					PRINTFORMW 阿求は蕩けた顔で涎を垂らしながら身体を弄り倒した
+				ENDIF
+			ELSE
+				PRINTFORML 「あぁん！　頭がとろけちゃうのぉっ！」
+				PRINTFORMW 阿求は涎を垂らし潮を吹かしながら身体を弄った
+			ENDIF
+		;恋慕＋自慰中毒Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:30 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あぁ……気持ちよすぎてぇ、何も考えりゃれないれすぅ♪」
+			ELSE
+				PRINTFORMW 「ゆ、指が止まらなくて、何も考えりゃれ……んぁあ！」
+			ENDIF
+			CFLAG:9007 = 6
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「き、気持ちいいですぅ……ふぁん♪」
+			ELSE
+				PRINTFORMW 「はぁん！　すごく気持ちいぃ……」
+			ENDIF
+			CFLAG:9007 = 5
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 「やぁぁん！　指がっ、止まらないのぉっ！　あぁん♪」
+			CFLAG:9007 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「はぁっ……恥ずかしいのにっ……ふぁぁ♪」
+			ELSE
+				PRINTFORMW 「んっ、んんっ！　んはぁ……ぁ」
+			ENDIF
+			CFLAG:9007 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、いやぁ……見ないで……」
+			CFLAG:9007 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;シャワーオナニー
+;ELSEIF SELECTCOM == 7 && TEQUIP:54
+	;初めて
+	IF CFLAG:8801 == 0
+		PRINTFORMW 
+		;CFLAG:TARGET:8801 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:30 >= 3
+			PRINTFORMW 
+			;CFLAG:8801 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:8801 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:30 >= 3
+			PRINTFORMW 
+			;CFLAG:8801 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:8801 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG9005
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:9005 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9005 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9005 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG9003
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:9003 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「揉まれた、だけ、なのにぃっ、ひゃん！」
+			ELSE
+				PRINTFORML 「ふぅん！　くぅん！　きゃふ！」
+				PRINTFORMW 阿求は胸を揉まれる度に荒く息を吐きながら身体を跳ねさせている
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「そんな、揉まれても……」
+			ELSE
+				PRINTFORML 「いやっ、止めてください！」
+				PRINTFORMW 阿求は必死に抵抗している
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:9003 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「ぁあん！　わらひ、こんなことでイっちゃう位エッチな妖精なのぉっ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 服の上から胸を揉む度に、阿求は甘い声を出して身体を跳ねさせた
+				ELSE
+					PRINTFORMW 阿求は胸を揉まれる度に甘い声を出して淫らに身じろぎをした
+				ENDIF
+			ELSE
+				PRINTFORML 「ふぁぁ……胸がとけちゃうよぉ……」
+				PRINTFORMW 阿求は胸を揉まれる度に身体を震わせている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「くふぅ、きゃふっ♪　もう、我慢できない、れすぅ……♪」
+			ELSE
+				PRINTFORMW 「ぅうん！　もっとぉ、もっと揉んでぇ！」
+			ENDIF
+			CFLAG:9003 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふあっ♪　ああぁああん、ふぁぁ……」
+			ELSE
+				PRINTFORMW 「はぁ……はぁ……、小さくても、こんなに気持ちいいのですね……うぅん！」
+			ENDIF
+			CFLAG:9003 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:3 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「くぅ、きゃふ！　あぁん！　気持ちいぃ……」
+			ELSE
+				PRINTFORMW 「ひゃん！　な、何もないです……んっ……」
+			ENDIF
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「やめてください……」
+			ELSE
+				PRINTFORMW 「くぅぅ！　小さいからって無理矢理揉まないでください！」
+			ENDIF
+			CFLAG:9003 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キス CFLAG9006
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:9006 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「んっ……んんっ、ぷはぁ……もっと、してください……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめ……んーっ！　んーっ！」
+			PRINTFORMW 「ぷはぁ……そんな、これが初めてなんて……」
+		ENDIF
+		;前回行ったのが何もしない
+		IF PREVCOM == 9
+			CFLAG:5111 += 1
+			CALL TOKUSYU_EVENT_K48
+			RETURN 0
+		ENDIF
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「んっ……んんっ、ぷはぁ……もっと、してください……」
+			CFLAG:9006 = 4
+		;従順Lv2以上
+		ELSEIF ABL:10 >=2
+			PRINTFORMW 「んっ、んーっ！　んっ……」
+			PRINTFORMW 阿求は嫌がっていたが抵抗が弱くなっている
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「だ、だめっ！　やめ……んんっ！　んーっ！」
+			PRINTFORMW 「ぷはぁ……やめてください……」
+			CFLAG:9006 = 2
+		ENDIF
+		IF PREVCOM == 9
+			CFLAG:5111 += 1
+			CALL TOKUSYU_EVENT_K48
+			RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG9009
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:9009 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「早くぅ……ぁ……ん」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え？　一体、何を……」
+		ENDIF
+			CFLAG:9009 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:150 == 1 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「じ、焦らさないでぇ……ぁ……ん」
+			CFLAG:9009 = 4
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			PRINTFORMW 「次は何をするのですか？」
+			CFLAG:9009 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「何を考えているのですか……」
+			CFLAG:9009 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG9010
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:TARGET:9010 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「こんな物でされるより、やっぱり%CALLNAME:MASTER%の手の方がいいです……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「道具に頼るなんて……」
+		ENDIF
+			CFLAG:TARGET:9010 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「はぁぁん！　らめぇ！　震えすぎらのぉっ♪」
+				PRINTFORM 阿求は
+				IF TEQUIP:40 == 0 || CFLAG:5118 == 1
+					PRINTFORM スカートの裾を掴みながら
+				ELSE
+					PRINTFORM 振動から来る快楽で口を半開きにして喘ぎ声を出しながら
+				ENDIF
+				PRINTFORMW 身体を乱れさせている
+			ELSE
+				PRINTFORML 「あぁあああぁ♪　はめぇ、しゃへれないぃ……」
+				PRINTFORMW 振動から来る快楽で阿求は口を半開きにしたまま悶えている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふぁ……ぁ……ふ、震えがぁ……止まらないのぉっ♪」
+			ELSE
+				PRINTFORMW 「この震え、癖になりそう……ふぁあああん♪」
+			ENDIF
+			CFLAG:9010 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふあっ、んぅっ、こんな道具なんか、いやぁ！」
+			ELSE
+				PRINTFORML 「んっ、んんっ！　だ、だめぇ……」
+			ENDIF
+			CFLAG:9010 = 4
+		;Ｃ感覚2以上
+		ELSEIF ABL:0 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「んうっ、はぁ……んんっ！」
+				PRINTFORMW 阿求は時々悶えながら快楽を堪えている
+			ELSE
+				PRINTFORML 「ふぁ……自分の手で、んぁ！　しないのですか……」
+			ENDIF
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「自分の腕に自信が無いのですか？」
+			CFLAG:9010 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG9012　CFLAG8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20
+	;初めて
+	IF CFLAG:TARGET:9012 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「せっかくなら%CALLNAME:MASTER%に入れてほしかったです……」
+				PRINTFORMW 「でも、これが望みなのなら……んうっ」
+			;それ以外
+			ELSE
+				PRINTFORMW 「え？　まさかそれを入れるつもりですか？」
+				PRINTFORMW 「そんなの入れられたら……だ、だめ！　やめてっ！」
+			ENDIF
+		;非処女
+		ELSE
+			;快楽陥落イベント後
+			IF CFLAG:5113 == 1
+				;妖精
+				IF TFLAG:200 == 1
+					PRINTFORML 「こんなにぃ、震えないでぇ！　あぁん♪」
+					PRINTFORM 阿求は
+					IF TEQUIP:40 == 0 || CFLAG:5118 == 1
+						PRINTFORM スカートの裾を掴みながら
+					ELSE
+						PRINTFORM 振動から来る快楽で口を半開きにして喘ぎ声を出しながら
+					ENDIF
+					PRINTFORMW 身体を乱れさせている
+				ELSE
+					PRINTFORML 「くぅん！　うぅん！　やめへぇ……」
+					PRINTFORMW 振動から来る快楽で阿求は口を半開きにしたまま悶えている
+				ENDIF
+			;恋慕
+			ELSEIF TALENT:150 == 1
+				PRINTFORML 「あぁ……震えてる、すごく気持ちよさそう……」
+				PRINTFORMW 「早く入れてぇっ！　はぁっ！　んぅん♪」
+			;それ以外
+			ELSE
+				PRINTFORMW 「こ、こんな卑猥な物を入れられたら私、壊れ……んあ！　や、やめ、てぇぇ！」
+			ENDIF
+		ENDIF
+			CFLAG:9012 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「こんなにぃ、震えないでぇ！　あぁん♪」
+				PRINTFORM 阿求は
+				IF TEQUIP:40 == 0 || CFLAG:5118 == 1
+					PRINTFORM スカートの裾を掴みながら
+				ELSE
+					PRINTFORM 振動から来る快楽で口を半開きにして喘ぎ声を出しながら
+				ENDIF
+				PRINTFORMW 身体を乱れさせている
+			ELSE
+				PRINTFORML 「くぅん！　うぅん！　やめへぇ……」
+				PRINTFORMW 振動から来る快楽で阿求は口を半開きにしたまま悶えている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「うぁぁ！　凄いぃ♪　んぁ！　くぅ！　んぅ！」
+			ELSE
+				PRINTFORML 「あ、あぁん！　う、動けないぃ♪」
+			ENDIF
+			CFLAG:9012 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「や、やんっ！　気持ちよくなんかないです！　あぁん！」
+			ELSE
+				PRINTFORML 「はぁ、はぁ……ぅん！　はぁぁ……」
+				PRINTFORMW 阿求は荒い息を吐きながら時々身を震わせて悶えている
+			ENDIF
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ひどいです……ううっ」
+			ELSE
+				PRINTFORMW 「痛いですっ！　やめてください！」
+			ENDIF
+			CFLAG:9012 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORML 「あぁっ！　ひゃぅぅ……」
+		PRINTFORMW 抜く間際に軽く突いてやると阿求は甘い声を上げた
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「くぅ！　もう、やめてください……」
+		CFLAG:8811 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;Ｅマッサージャ CFLAG9011
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:9011 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「それをここに当てる……って使い道、違いますよね？」
+			PRINTFORMW 「でも、気持ちよくなれるならいいかな……って、ふ、震えすぎぃ！　やぁん！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ、それ、香霖堂で見た事があります」
+			PRINTFORMW 「でも使い方が分からなかったのですよね……どうやって使うのですか？」
+			PRINTFORMW 「……ってそこに当てるのはやめっ……！　ひぅううううっ！」
+		ENDIF
+			CFLAG:9011 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「らめぇ♪　頭、ばかになっひゃうのぉっ♪」
+				PRINTFORM 阿求は
+				IF TEQUIP:40 == 0 || CFLAG:5118 == 1
+					PRINTFORM スカートの裾を掴みながら
+				ELSE
+					PRINTFORM 振動から来る快楽で口を半開きにして喘ぎ声を出しながらも
+				ENDIF
+				PRINTFORMW 必死に堪えようとしている
+			ELSE
+				PRINTFORML 「うぅん！　私の心が解れちゃうのぉっ……」
+				PRINTFORMW 振動から来る快楽で阿求は口を半開きにしたまま悶えている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふぁぁぁん！　頭が、真っ白になっちゃうぅ♪」
+			ELSE
+				PRINTFORMW 「うぅん！　あぁぁ！　癖になっちゃいそう……」
+			ENDIF
+			CFLAG:9011 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ひぃ……ひぃん！　こ、こんなので感じて、なんか、ふぁぁ！」
+			ELSE
+				PRINTFORMW 「ぁ……ぁ……、この振動が……すごく気持ちいいです、んっ！」
+			ENDIF
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「それを離してぇ！　これ以上されると、狂っちゃう！」
+			ELSE
+				PRINTFORMW 「はあっ！　離してくだ、ふぁっ！　あぁ！」
+			ENDIF
+			CFLAG:9011 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG9013　CFLAG8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9013 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「や、優しくしてくださいね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何ですかそれは？　……え？　尻に入れる？」
+			PRINTFORMW 「だ、だめぇ！　そんなの絶対に入りませんから！　いやぁぁぁ！」
+		ENDIF
+			CFLAG:TARGET:9013 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「んぁぁ！　おひり、くせになっひゃいそう♪」
+				PRINTFORM 阿求は
+				IF TEQUIP:40 == 0 || CFLAG:5118 == 1
+					PRINTFORM スカートの裾を掴んで
+				ELSE
+					PRINTFORM 振動から来る快楽で口を半開きにして喘ぎ声を出しながらも
+				ENDIF
+				PRINTFORMW 必死に堪えようとしている
+			ELSE
+				PRINTFORML 「あぁぁぁ！　おひり、すごすぎるのぉっ♪」
+				PRINTFORMW 振動から来る快楽で阿求は口を半開きにしたまま悶えている
+			ENDIF
+		;恋慕＋A感覚Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あぁっ、お、お尻すごいのおっ！」
+			ELSE
+				PRINTFORMW 「うぁん！　ひいっ！　お尻の中が震えて気持ちいいですぅ！」
+			ENDIF
+			CFLAG:9013 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 「ぐうっ……これ、本当に気持ちいい物なんですか？」
+			CFLAG:9013 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「うぁん！　ひうっ……え？　い、いやぁ！　こんなのなんて……」
+			ELSE
+				PRINTFORML 「んぅ……んん……んくぅ……違う、違うぅ……」
+				PRINTFORMW 阿求は赤らめた顔を俯け、時々身体を震わせながら感覚に戸惑っている
+			ENDIF
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛い！　痛いっ！」
+			CFLAG:9013 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ま、まだぁ、物足りないよぉ……」
+			ELSE
+				PRINTFORML 「んぅ……もう抜くのですか？　まだまだ足りないのですが……」
+			ENDIF
+		CFLAG:8812 = 3
+	;A感覚Lv3以上
+	ELSEIF ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あ、ふぅん♪　い、いやぁ……」
+			ELSE
+				PRINTFORMW 「んっ、はあ……はあ……くぅ！　くぁあああああん♪」
+				PRINTFORML 「もう……いやぁ……やめてぇ……」
+				PRINTFORMW 抜く間際にアナルバイブを軽く動かしてやると、不意打ちの快楽で阿求は悶えた
+			ENDIF
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「もう、やめて……」
+		CFLAG:8812 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG9014　CFLAG8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30
+	;初めて
+	IF CFLAG:9014 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9014 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9014 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8813 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8813 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG9015　CFLAG8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35
+	;初めて
+	IF CFLAG:9015 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9015 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9015 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8814 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8814 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG9191　CFLAG8861
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35
+	;初めて
+	IF CFLAG:9191 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9191 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9191 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9191 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8861 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8861 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG9016　CFLAG8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30
+	;初めて
+	IF CFLAG:9016 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9016 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9016 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8815 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8815 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG9020
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:TARGET:9020 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「初めてを%CALLNAME:MASTER%を捧げられるのが嬉しいです。」
+				PRINTFORMW 「んっ……くぅ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「え？　ち、ちょっとそれは困りま……いやぁああああ！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「私達、これが初めてじゃないんですよね……」
+				PRINTFORMW 「ちょっとヘン、かも」
+			;それ以外
+			ELSE
+				PRINTFORMW 「つ、次は前ですか？　いやぁ！」
+			ENDIF
+		ENDIF
+			CFLAG:9020 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「んぁん！　ふぁぁん！　あぁぁ♪　すごい、すごいのぉっ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 阿求は短いスカートをはだけさせながら激しく乱れた
+				ELSE
+					PRINTFORMW 阿求は突かれる度に激しく乱れている
+				ENDIF
+			ELSE
+				PRINTFORML 「す、すごいのぉっ！　もっと奥まで入れてぇ！」
+				PRINTFORMW 阿求は顔を紅潮させながら%CALLNAME:MASTER%に強く抱きついている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「あぁん！　もっと、私を滅茶苦茶にしてぇ！」
+				PRINTFORMW 阿求は喘ぎ声を上げながら%CALLNAME:MASTER%に強く抱きついている
+			ELSE
+				PRINTFORML 「す、すごいですぅ！　んぅん！」
+				PRINTFORMW 阿求は喘ぎ声を上げながら乱れている
+			ENDIF
+			CFLAG:9020 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「はぁ……んくぅ……だ、駄目ぇ♪」
+					PRINTFORMW 阿求は頭を横に振って快楽を否定している
+				ELSE
+					PRINTFORML 「くぁあ！　く、癖になりそうです……」
+					PRINTFORMW 阿求はとろんとした眼で行為を受け入れている
+				ENDIF
+			CFLAG:9020 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「こ、これ以上はやめて……このままだと私が……」
+					PRINTFORMW 阿求は焦っているかのように必死で%CALLNAME:MASTER%を止めようとしている
+				ELSE
+					PRINTFORMW 「ど、どうしてこんなことに……」
+				ENDIF
+			CFLAG:9020 = 3
+		;それ以外
+		ELSE
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「もう……やだぁ……くずっ」
+				ELSE
+					PRINTFORMW 「ぐうっ、痛いっ！　やめてくださいっ！」
+				ENDIF
+			CFLAG:9020 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG9021
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:TARGET:9021 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「後ろ？　%CALLNAME:MASTER%のいじわるぅ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「え？　ま、まさか……痛ぃ！　痛いです！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「後ろですか？　少し怖いですね……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「う、後ろからなんてぇ！　そんなの、やめてぇ！」
+			ENDIF
+		ENDIF
+			CFLAG:9021 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「あぁん♪　わらひ、ケモノみたいっ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 阿求は短いスカートをはだけさせながら激しく乱れた
+				ELSE
+					PRINTFORMW 阿求は突かれる度に激しく乱れている
+				ENDIF
+			ELSE
+				PRINTFORML 「んぁん！　わらひ、動物になっちゃったのぉっ♪」
+				PRINTFORMW 阿求は突かれる度に熱い吐息と共に喘ぎ声を出している
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「あぁぁ！　私、後ろから、激しく犯されてるぅ♪」
+					PRINTFORMW 自分の熱い吐息を感じられるせいか、阿求は頬を赤らめて喘いでいる
+				ELSE
+					PRINTFORML 「ふぁん！　あぁあ！　顔、見たいのぉっ！」
+					PRINTFORMW 阿求は%CALLNAME:MASTER%の顔が見えない分快楽に意識がいっているようだ
+				ENDIF
+			CFLAG:9021 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「や、やぁあ！　こんなことで感じるなんてぇ！」
+					PRINTFORMW 自身の意思に反して阿求は腰を振って快楽を得ようとしている
+				ELSE
+					PRINTFORML 「あぁ！　私、まるで動物みたいに……うゃん！」
+					PRINTFORMW 阿求は微かに喘ぎながら、無意識の内に自分から腰を軽く動かしている
+				ENDIF
+			CFLAG:9021 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「ふぁ……駄目……あぁ……」
+					PRINTFORMW 阿求の口から小さな喘ぎ声が出ている
+				ELSE
+					PRINTFORMW 「んぅ……気持ち……いいかも」
+				ENDIF
+			CFLAG:9021 = 3
+		;それ以外
+		ELSE
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「駄目……駄目……」
+					PRINTFORMW 阿求の口からは弱々しい否定の言葉しか出なかった
+				ELSE
+					PRINTFORMW 「こんなのって……あんまりです……」
+				ENDIF
+			CFLAG:9021 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルセックス CFLAG9030
+;アナルセックスは正常位か後背位に統合する予定(4月6日時点)
+;
+;-------------------------------------------------
+IF SELECTCOM == 30 || SELECTCOM == 31
+	;初めて
+	IF CFLAG:TARGET:9030 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「お尻でするのですか？」
+			PRINTFORMW 「……変わってますね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、まさかそれをお尻に……？」
+			PRINTFORMW 「む、無理です！　そんなの……ぐぅああああっ！」
+		ENDIF
+		CFLAG:TARGET:9030 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「おひりが、あそこみたいなのぉっ♪」
+				PRINTFORM 阿求はお尻を突かれる度に
+				SIF CFLAG:5118 == 1 || TEQUIP:40 == 0
+					PRINTFORM スカートを掴みながら
+				PRINTFORMW 身体を跳ねさせた
+			ELSE
+				PRINTFORML 「おひり、病み付きになっちゃうぅ♪」
+				PRINTFORMW 阿求はお尻を突かれる度に半開きになった口から舌を出しながら喘いだ
+			ENDIF
+		;恋慕＋A感覚Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふぁ、ぁん！　お尻、とっても気持ちいいのぉっ♪」
+			ELSE
+				PRINTFORMW 「あぁぁ……お尻でこんなに気持ちよくなっちゃうなんてぇ……あぁん！」
+			ENDIF
+			CFLAG:9030 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「痛いのっ！　もう少しゆっくり動かしてぇ！」
+			ELSE
+				PRINTFORMW 「ぐぅっ……ち、ちょっと、優しく……」
+			ENDIF
+			CFLAG:9030 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ふぅ……ぅん！　ふぁぁあ！　お、お尻なのに、気持ちいぃ！」
+			ELSE
+				PRINTFORMW 「はぁあ♪　わ、私のお尻、変になっちゃったよぉ……」
+			ENDIF
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「い、痛い！　お願いだから、抜いてぇ！」
+			ELSE
+				PRINTFORMW 「ぐぅっ……痛い……」
+			ENDIF
+			CFLAG:9030 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG9025
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:9025 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:9025 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+			;CFLAG:9025 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9025 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG9040
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:TARGET:9040 == 0
+		;奉仕精神Lv3以上
+		IF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9040 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:TARGET:150 == 1 && ABL:TARGET:13 >= 5
+			PRINTFORMW 
+			;CFLAG:9040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+			;CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9040 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG9041
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:TARGET:9041 == 0
+		;奉仕精神Lv3以上
+		IF ABL:TARGET:13 >= 3
+			PRINTFORMW 「分かりました、できるだけ上手くやってみますね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「それを口で咥えるんですか？」
+			PRINTFORMW 「やったことはありませんがやってみますね……」
+		ENDIF
+			CFLAG:TARGET:9041 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:TARGET:150 == 1 && ABL:TARGET:13 >= 5
+			PRINTFORML 「私の口で気持ちよくなって……」
+			PRINTFORMW 阿求は上目遣いで%CALLNAME:MASTER%を見つめながら舌を動かした
+			CFLAG:9041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:TARGET:13 >= 3
+			PRINTFORMW 「ちゅ……ちゅば……どうですか？」
+			PRINTFORMW 「覚えることは得意なんですよ」
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んん、臭い……」
+			CFLAG:9041 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG9042
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:TARGET:9042 == 0
+		;奉仕精神Lv3以上
+		IF ABL:TARGET:13 >= 3
+			PRINTFORMW 「えっ？　胸？」
+			PRINTFORMW 「……無理ですよ、やってはみますけど」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……もしかしてこんな胸なのを知ってて言ってるんですか？」
+		ENDIF
+			CFLAG:TARGET:9042 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			IF CFLAG:5118 == 1
+				PRINTFORML 「ふぁぁ♪　胸が擦れて気持ちいいのぉっ！　%CALLNAME:MASTER%も気持ちよくなってぇ♪」
+				PRINTFORMW 阿求は服の上から棒を挟んで扱いている
+			ELSE
+				PRINTFORML 「ふぁぁ♪　胸が服と擦れて気持ちいいのぉっ！　%CALLNAME:MASTER%も気持ちよくなってぇ♪」
+				PRINTFORMW 阿求は胸で棒を挟んで扱いている
+			ENDIF
+		;恋慕＋奉仕精神Lv5
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:TARGET:13 >= 5
+			PRINTFORMW 「はあっ……胸が熱くて、その上気持ちよくて……ふぁぁ」
+			CFLAG:9042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:TARGET:13 >= 3
+			PRINTFORMW 「んんっ……胸が、熱いっ！」
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっぱりやりづらいですね……でも工夫すれば何とかなりそうです」
+			CFLAG:9042 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG9043
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:TARGET:9043 == 0
+		;恋慕有り
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9043 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕有り
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9043 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9043 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG9024
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:TARGET:9024 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:0 == 1
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「私が動いて入れるんですか？」
+				PRINTFORMW 「初めてだからちょっと怖いけど……やってみます」
+			;それ以外
+			ELSE
+				PRINTFORMW 「じ、自分で入れろだなんて……」
+				PRINTFORMW 「もうこれ以上無理です……っていやぁ！　やめて！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「私が動いて入れるんですか？」
+				PRINTFORMW 「分かりました、ぅん……当たる所が違って気持ちいぃ……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「じ、自分から入れろだなんて！」
+				PRINTFORMW 「だめっ！　無理です！　い……やぁぁあああああ！」
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:9024 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「はぁぁ♪　らめぇ！　腰、動かないでぇ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 阿求はスカートをはだけさせながら淫らに腰を振った
+				ELSE
+					PRINTFORMW 阿求は息を荒くしながら自ら淫らに腰を振った
+				ENDIF
+			ELSE
+				PRINTFORML 「んっ！　んふぅ！　うぁん！　%CALLNAME:MASTER%が動かなくても私が勝手に動きますぅ！」
+				PRINTFORMW 阿求は艶やかな喘ぎ声を上げながら腰を振っている
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+				;妖精
+				IF TFLAG:200 == 1
+					PRINTFORML 「やんっ！　はあぁ！　もっとっ！　私を！　突き上げてぇ！」
+					PRINTFORMW 阿求は顔を蕩けさせながら淫らに腰を振った
+				ELSE
+					PRINTFORML 「んっ！　ふぁ！　あぁん！　私の中、気持ちいいですか？」
+					PRINTFORMW 阿求は顔を赤らめながら腰を振っている
+				ENDIF
+			CFLAG:9024 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:13 >= 3 && ABL:1 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「や、んぅ、ふぁあ！　腰が、勝手に動いちゃうのぉ♪」
+				ELSE
+					PRINTFORMW 「あ、あぁぁ！　凄い！　凄すぎます！　あぁん！」
+				ENDIF
+			CFLAG:9024 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「こ、腰が、勝手にぃ！」
+				ELSE
+					PRINTFORMW 「動きたくなんかない、です……」
+				ENDIF
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「ひどい……ひどいよぉ……」
+				ELSE
+					PRINTFORMW 「い、いや！　抜いて！」
+				ENDIF
+			CFLAG:9024 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG9220
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:TARGET:9220 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「痛いですね……でも%CALLNAME:MASTER%に叩かれてるならいいです」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あうっ！　痛いっ！　やめてください！」
+		ENDIF
+			CFLAG:TARGET:9220 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「あ、ああっ！　私はっ！　こんなことをされて感じちゃう駄目な妖精ですっ！　あんっ！」
+					PRINTFORMW 尻を叩かれる度に阿求は甘い息を吐き出している
+				ELSE
+					PRINTFORML 「あぁぁ……気持ちいい！　気持ちいいです！　もっと叩いてぇ！」
+					PRINTFORMW 尻を叩かれる度に阿求は身体を赤くしていき、歓喜の表情を浮かべながら甘い声を上げている
+				ENDIF
+			CFLAG:TARGET:9220 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「ふあっ♪　痛いけど、気持ちいい……」
+				ELSE
+					PRINTFORML 「うん……はぁ……ぐぅ……ふぁぁ……♪」
+					PRINTFORMW 阿求は叩かれる度に微かに甘い声を出して悶えている
+				ENDIF
+			CFLAG:TARGET:9220 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「い、痛いぃ！　ぐうぅ……」
+				ELSE
+					PRINTFORMW 「ぐうっ！　やっぱり慣れないですっ！」
+				ENDIF
+			CFLAG:TARGET:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「あぁっ！　ふぁあ！　痛いはずなのにぃ！　感じちゃうなんてぇ♪」
+				ELSE
+					PRINTFORMW 「あっ……！　ち、違います！　痛いはずなのにぃ……」
+				ENDIF
+			CFLAG:TARGET:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐっ！　こんなことでは屈しませんよ……！」
+			CFLAG:TARGET:9220 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG9221
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:TARGET:9221 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「む、鞭ですか……」
+			PRINTFORMW 「%CALLNAME:MASTER%にされるのならまだいいかな……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐうぅ！　鞭なんて！　いやぁ！」
+		ENDIF
+			CFLAG:TARGET:9221 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「あんっ！　ふぁん！　もっと！　きつくしてぇ！」
+				ELSE
+					PRINTFORMW 「あぁん！　ぅん！　叩かれた痕がぁ！　気持ちいぃ！」
+				ENDIF
+			CFLAG:TARGET:9221 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「はぁ、はぁ、痛いのが気持ちいぃ」
+				ELSE
+					PRINTFORMW 「んぅ！　はぁん！　この痛みがいいです！」
+				ENDIF
+			CFLAG:TARGET:9221 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「ぐぅっ！　もっとやさしく……！」
+				ELSE
+					PRINTFORMW 「ぅん！　すごく、痛いぃ……」
+				ENDIF
+			CFLAG:TARGET:9221 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「んぁ！　ひぁぁ！　いやぁ！　痛いはずなのにぃ！」
+				ELSE
+					PRINTFORMW 「あぁあ！？　う、嘘？　痛みが快楽に！？」
+				ENDIF
+			CFLAG:TARGET:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あうっ！　痛いです！」
+			CFLAG:TARGET:9221 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG9222
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:TARGET:9222 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「いくら%CALLNAME:MASTER%でもさすがにそれは……」
+			PRINTFORMW 「怖い！　怖いぃ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「は、針？」
+			PRINTFORMW 「い、いやぁ！　そんなの刺されたら…あああぁあ！」
+		ENDIF
+			CFLAG:TARGET:9222 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「あぁん！　ひぁあ！　もっと！　もっと刺してぇ！」
+					PRINTFORMW 「私は！　こんなにドＭで卑らしい妖精なんですぅ！」
+				ELSE
+					PRINTFORMW 「ひぃ……ひぃん！　あぁぁ！　いいの！　針で刺されるのがいいのぉっ！」
+				ENDIF
+			CFLAG:TARGET:9222 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「ぐぅっ！　やあっ！　あんっ！　この痛さが気持ちいぃ♪」
+				ELSE
+					PRINTFORMW 「あぁぁ！　この痛さ、癖になっちゃいそう……」
+				ENDIF
+			CFLAG:TARGET:9222 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「んぁあ！　さすがに痛いぃ……」
+				ELSE
+					PRINTFORMW 「あぁ！　ちょっと、痛すぎます……」
+				ENDIF
+			CFLAG:TARGET:9222 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「ぐんっ！　いやっ！　こんなに痛いのに感じるなんていやぁ！」
+				ELSE
+					PRINTFORMW 「うぁう！　痛すぎるのが気持ちいいとかいやぁ！」
+				ENDIF
+			CFLAG:TARGET:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐぅ……！　痛い！　痛いっ！」
+			CFLAG:TARGET:9222 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41
+	;初めて
+	IF CFLAG:TARGET:9225 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9225 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+			PRINTFORMW 
+			;CFLAG:TARGET:9225 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:TARGET:9225 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:TARGET:9225 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:TARGET:9225 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:TARGET:9225 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		;PRINTFORMW 
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8871 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG9224　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:TARGET:9224 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「私……これで縛られるの……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「それで私を縛るつもりですか？」
+		ENDIF
+			CFLAG:TARGET:9224 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				PRINTFORML 「締めつけがきついのぉっ、もっときつくしてぇ♪」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 服の上から縛られた阿求は、却って裸で縛られている時より艶やかに見えた
+				ELSE
+					PRINTFORMW 縛られた阿求は、熱い吐息を出している
+				ENDIF
+			ELSE
+				PRINTFORMW 「縛られるの、大好き、なんですぅっ！」
+				PRINTFORMW 「だから、もっと、縛ってぇ♪」
+			ENDIF
+		;恋慕＋マゾっ気Lv5以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「は、羽ごと食い込んで痛いぃ！」
+					PRINTFORMW 「私、これから悪戯されるんだぁ♪」
+				ELSE
+					PRINTFORMW 「きゃふぅ！　お願い、もっときつく縛ってぇ！」
+					PRINTFORMW 「そうした方が、より感じられるからぁ……」
+				ENDIF
+			CFLAG:TARGET:9224 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORMW 「んぁ！　きつく締めつけられてるせいで、ところどころ食い込んでるぅ！」
+				ELSE
+					PRINTFORMW 「身じろぎするだけで、縄が擦れて……うぁん！」
+				ENDIF
+			CFLAG:TARGET:9224 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 「縄がきつすぎて、身動き一つ取れないですね……」
+			CFLAG:TARGET:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 「締め付けられた所が食い込んで……ふぁぁ」
+			CFLAG:TARGET:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「き、きつい……です」
+			CFLAG:TARGET:9224 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「ま、また……縛って」
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「あ、あぁぁ……ふぅ」
+		PRINTFORMW 阿求は縄で締め付けられていた所を手で撫でている
+		CFLAG:8872 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ CFLAG9226　CFLAG:8873
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 226 && TEQUIP:42
+	;初めて
+	IF CFLAG:TARGET:9226 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「声、自由に出せないの？　なんだかつまらなさそう……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「や、やめてっ！　くふっ！　んんーっ！」
+		ENDIF
+			CFLAG:TARGET:9226 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+			PRINTFORML 「ん……っ、んっ……」
+			PRINTFORMW 荒い息を吐きながら阿求は目を潤し、顔を赤らめている
+			CFLAG:TARGET:9226 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+			PRINTFORML 「んっ……ん……んんっ……んっ……」
+			PRINTFORMW 阿求は快楽を感じて熱い吐息を吐き出している
+			CFLAG:TARGET:9226 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 「声を自由に出せないのが、逆に感度を高くしていいかも……」
+			CFLAG:TARGET:9226 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORML 「んふぅ！　んんっ！　んっ！　んんんっ！」
+			PRINTFORMW 息苦しさが快楽に繋がっているのか阿求は艶やかな声を出している
+			CFLAG:TARGET:9226 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また着けるのですか！　いやで……んーっ！」
+			CFLAG:TARGET:9226 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 226 && TEQUIP:42 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「ぷはぁっ……はあっ、はあっ……悪くないですね」
+		CFLAG:8873 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ぷはぁっ！　これ、いやぁっ！」
+		CFLAG:8873 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;浣腸 CFLAG9174
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 174 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9174 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9174 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9174 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9174 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9174 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9174 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;排泄 CFLAG8851
+;-------------------------------------------------
+IF TEQUIP:25 == 0 && SELECTCOM == 174
+	;初めて
+	IF CFLAG:TARGET:8854 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:8854 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:8854 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:8854 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:8854 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:8854 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローション使用 CFLAG9060
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:TARGET:9060 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「はぁ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひゃん！　な、なにこれ……」
+		ENDIF
+			CFLAG:TARGET:9060 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「濡れるだけで興奮してきました、ふぁ……」
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだぁ、とろとろしますぅ……」
+			CFLAG:9060 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬使用 CFLAG9061
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:TARGET:9061 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「別に使わなくても私は大丈夫ですよ？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んん……ぷはぁ、はぁっ……熱い、身体が、熱いぃ……」
+		ENDIF
+			CFLAG:TARGET:9061 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「こんな物使わなくたって私は……ぁ」
+			ELSE
+				PRINTFORMW 「んうっ……はぁ……はぁ、早くやりましょうよ」
+			ENDIF
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ん……身体が熱いぃ」
+			ELSE
+				PRINTFORMW 「んうぅ……はぁ、はぁ」
+			ENDIF
+			CFLAG:9061 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:TARGET:9100 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「私を撮る？」
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「可愛く見えるように撮ってほしいな……」
+			ELSE
+				PRINTFORMW 「恥ずかしいですね……でも%CALLNAME:MASTER%と一緒なら……」
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「それは何ですか？　……え？　今から私を撮る？」
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「や、やぁ！　こんな屈辱的な姿撮らないでぇ！」
+			ELSE
+				PRINTFORMW 「恥ずかしいからやめてください！　だめぇ！」
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:9100 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;快楽陥落イベント後
+		IF CFLAG:5113 == 1
+			;妖精
+			IF TFLAG:200 == 1
+				IF CFLAG:5118 == 1
+					PRINTFORMW 「んはっ♪　私、これから着たまましちゃうのぉっ♪」
+				ELSE
+					PRINTFORMW 「私が乱れる所、いっぱい撮ってぇ♪」
+				ENDIF
+			ELSE
+			;先祖がビデオ見れる訳が（ry
+				PRINTFORMW 「ご先祖様すみませんっ！　私、こんなに駄目になっちゃったのぉっ♪」
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「この羽、ビデオだとより可愛らしく見えるのですね」
+				PRINTFORMW 「もっと、可愛く見えるように撮って……」
+			ELSE
+				PRINTFORMW 「やっぱり慣れませんね、恥ずかしいです……」
+			ENDIF
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「こんなの記憶に残さないでぇ！」
+			ELSE
+				PRINTFORMW 「恥ずかしいぃ……」
+			ENDIF
+			CFLAG:9100 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:TARGET:9104 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+				IF CFLAG:5118 == 1
+					PRINTFORMW 「……さすがにこれは服を脱がないと、面白くないですよね」
+					PRINTFORMW 阿求は着ていた服を脱ぎ始めた
+					CFLAG:5118 = 3
+				ELSE
+					PRINTFORMW 「外で、ですか？」
+					PRINTFORMW 「恥ずかしいのですが、%CALLNAME:MASTER%が居るなら……」
+				ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「え？　外に？」
+				PRINTFORMW 「いや！　いやぁ！　こんな姿、誰にも見られたくない！」
+			ELSE
+				PRINTFORMW 「は、裸のまま外に出るなんて！　嫌です！」
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:9104 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:14 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5118 == 1
+					PRINTFORML 「……さすがにこれは服を脱がないと、面白くないですよね」
+					PRINTFORMW 阿求は着ていた服を脱ぎ始めた
+					CFLAG:5118 = 3
+				ELSE
+					PRINTFORML 「厭らしい姿を見られるんですね……はあっ、はあっ」
+					PRINTFORMW 阿求は期待で瞳を潤ませている
+				ENDIF
+			ELSE
+				PRINTFORMW 「は、恥ずかしいですが、それが、気持ち、いいのっ！」
+			ENDIF
+			CFLAG:9104 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「い、嫌だけど……でも、こんな姿を見られるのが気持ちいいような……」
+			ELSE
+				PRINTFORMW 「恥ずかしいはずなのに……期待しちゃうなんて……」
+			ENDIF
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「だ、だめぇ！　こんな妖精の姿なんて見せたくない！」
+			ELSE
+				PRINTFORMW 「いやぁ！　恥ずかしいです！」
+			ENDIF
+			CFLAG:9104 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5118 == 3
+					PRINTFORML 「いっぱい見られてよかったぁ♪　次もまた着たままでやってぇ♪」
+					PRINTFORMW 阿求は再び服を着始めた
+					CFLAG:5118 = 1
+				ELSE
+					PRINTFORMW 「あぁぁ……いっぱい私のこと見られたぁ……♪」
+				ENDIF
+			ELSE
+				PRINTFORMW 「恥ずかしかったのですが、……慣れたら癖になりそうです」
+			ENDIF
+		CFLAG:8821 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「こ、こんな屈辱……くうっ」
+		CFLAG:8821 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG9026
+;-------------------------------------------------
+IF SELECTCOM == 26
+	;初めて
+	IF CFLAG:TARGET:9026 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「ああ、気持ちよさそうですね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、いやぁ！　そんなの私に見せないでぇ！」
+		ENDIF
+			CFLAG:TARGET:9026 = 1
+			CFLAG:5103 += 1
+			CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「私の相手も後でしてくださいね」
+			CFLAG:9026 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんな、はしたないことを……」
+			CFLAG:9026 = 2
+		ENDIF
+			CFLAG:TARGET:9026 = 1
+			CFLAG:5103 += 1
+			CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG9260
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:TARGET:9260 == 0
+		;奉仕精神Lv3以上
+		IF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:TARGET:9260 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:TARGET:150 == 1 && ABL:TARGET:13 >= 5
+			PRINTFORMW 
+			CFLAG:9260 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+			CFLAG:9260 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9260 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フィスト系コマンド CFLAG9231
+;-------------------------------------------------
+IF SELECTCOM == 231 || SELECTCOM == 232 || SELECTCOM == 233
+	;初めて
+	IF CFLAG:TARGET:9231 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:TARGET:9231 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:21 >= 5
+			PRINTFORMW 
+			CFLAG:TARGET:9231 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:TARGET:150 == 1 && ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:TARGET:9231 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			CFLAG:TARGET:9231 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >= 3
+			PRINTFORMW 
+			CFLAG:TARGET:9231 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:TARGET:9231 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG9500　CFLAG:8901
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:TARGET:9500 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「きゃぁっ！　これ、本当に気持ちいいのですか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、こんな化け物に犯されるなんて！　やめてぇ！」
+		ENDIF
+			CFLAG:TARGET:9500 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+触手経験20以上（消費基本値が三分の一になる）
+		IF TALENT:TARGET:150 == 1 && EXP:53 >= 20
+			IF CFLAG:5113 == 1
+				PRINTFORML 「ふぁぁ♪　私、化け物大好きなのぉっ♪」
+				PRINTFORMW 阿求は絡め取られながら歓喜の声を上げた
+			ELSE
+				PRINTFORML 「次はどんなことをしてくれるのですかぁ……」
+				PRINTFORMW 阿求の目は期待で潤っていた
+			ENDIF
+			CFLAG:9500 = 4
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			IF CFLAG:5118 == 1
+				PRINTFORML 「粘液で服が汚れちゃいますぅ……」
+			ELSE
+				PRINTFORMW 「さすがに慣れないですね……」
+			ENDIF
+			CFLAG:9500 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて！　離してぇ！」
+			CFLAG:9500 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;恋慕+触手経験20以上（消費基本値が三分の一になる）
+	IF TALENT:TARGET:150 == 1 && EXP:53 >= 20
+		IF CFLAG:5118 == 1
+			PRINTFORML 「あはぁ……服がぬるぬるしてるぅ♪」
+			PRINTFORMW 阿求は粘液で濡れた服を手で触って感触を味わっている
+		ELSE
+			PRINTFORML 「くぅん、いいよぉ……」
+			PRINTFORMW 解放されるとすぐに阿求は疲労で全身をぐったりとさせた
+		ENDIF
+		CFLAG:8901 = 3
+	;恋慕
+	ELSEIF TALENT:TARGET:150 == 1
+		IF CFLAG:5118 == 1
+			PRINTFORML 「濡れた服が肌にくっ付いて気持ち悪いぃ……」
+		ELSE
+			PRINTFORMW 「ちょっと、疲れましたぁ……」
+		ENDIF
+		CFLAG:8901 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「はあっ……はあっ……ひうっ！」
+		PRINTFORMW 解放されてからも阿求は恐怖で身体を震わせていた
+		CFLAG:8901 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・触手関連 CFLAG9501～CFLAG9566まで使用……するために空ける
+;触手で行うってこと以外は状況の被りが多くてネタが切れたんだぜ……
+;着衣プレイなんて考えたせいで付けるのにかなり苦労する触手中毒とそうでない状態での二つの文章を考える必要が出てきて苦労が2倍！
+;妖精+普通で4倍！倍々ゲーム！面白いからいいけどね
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;触手挿入 CFLAG:9501　CFLAG:8902
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 501 && TEQUIP:20
+	;初めて
+	IF CFLAG:TARGET:9501 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「は、初めてが触手ですか？」
+				PRINTFORMW 「できれば%CALLNAME:MASTER%に入れてほしかったです……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「や、やぁ！　それだけはやめてぇ！」
+				PRINTFORMW 「こんなのに初めてなんて……！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW 「あはぁ……すごく太いぃ」
+			;それ以外
+			ELSE
+				PRINTFORMW 「い、いやぁ！　そんなの入らない！　入らないって！」
+				PRINTFORMW 「だからやめ……ぐううっ！」
+			ENDIF
+		ENDIF
+			CFLAG:9501 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;V感覚Lv5以上＋触手中毒Lv3以上
+		IF ABL:1 >= 5 && ABL:35 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「はぁん！　太くって、ぬるぬるして、大好きぃ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求は服の下に潜って挿入された触手が脈を打つのに合わせて、スカートをひらひらさせながら淫らに腰を振っている
+					ELSE
+						PRINTFORMW 阿求は挿入された触手が脈を打つのに合わせて、顔を赤くしながら淫らに腰を振っている
+					ENDIF
+				ELSE
+					PRINTFORML 「きゃふ！　あぁん！　これぇ、大好きぃ♪」
+					PRINTFORMW 阿求は静かに触手が脈を打つのに合わせて淫らに腰を振っている
+				ENDIF
+			ELSE
+				IF CFLAG:5113 == 1
+					PRINTFORML 「ふぁん！　ぬるぬるしてるのが、いいのぉっ！」
+					PRINTFORMW 触手が挿入された途端、阿求は甘い声を上げながら身体を跳ねさせた
+				ELSE
+					PRINTFORML 「んぅん！　ふぁぁん！　すっごく、気持ちいぃ……」
+					PRINTFORMW 触手が挿入された途端、阿求は悦びの表情を浮かべた
+				ENDIF
+			ENDIF
+			CFLAG:9501 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「らめぇ！　それ以上入れないれぇ！」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 触手が服の下に潜って挿入された途端、阿求は身体を跳ねさせた
+					ELSE
+						PRINTFORMW 触手が挿入された途端、阿求は身体を跳ねさせた
+					ENDIF
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORML 「これぇ、太いのぉっ！　もっと動いてぇ！」
+						PRINTFORMW 触手の動きに合わせて、阿求は熱い吐息を出しながら腰を振った
+					ELSE
+						PRINTFORML 「んうっ、ふぁん！　もっと動いてぇ！」
+						PRINTFORMW 触手の動きに合わせて、阿求は腰を振った
+					ENDIF
+				ENDIF
+			ELSE
+				PRINTFORMW 「ひぁ、ぁあん！　この苦しさが、逆に気持ちいぃ♪」
+			ENDIF
+			CFLAG:9501 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「ふぅ……くぅ……」
+			PRINTFORMW あまりに太すぎるのか、阿求は呼吸をするのが苦しそうだ
+			CFLAG:9501 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+;ELSEIF SELECTCOM == 501 && TEQUIP:20 == 0
+	;V感覚Lv5以上＋触手中毒Lv5以上
+	IF ABL:1 >= 5 && ABL:35 >= 5
+		;妖精
+		IF TALENT:200 == 1
+			IF CFLAG:5113 == 1
+				PRINTFORML 「もう抜いちゃうのぉっ？　らめぇ……足りないよぉ」
+				IF CFLAG:5118 == 1
+					PRINTFORMW 触手が抜かれてからも、阿求は何かを求めるようにスカートをひらひらさせながら腰を振り続けている
+				ELSE
+					PRINTFORMW 触手が抜かれてからも、阿求は何かを求めるように腰を振り続けている
+				ENDIF
+			ELSE
+				PRINTFORML 「うぁん！　抜かない、でぇっ♪」
+				PRINTFORMW 触手が抜かれてからも、阿求は何かを求めるように腰を振り続けている
+			ENDIF
+		ELSE
+			PRINTFORML 「はあっ、あはぁ♪」
+			PRINTFORMW 触手が抜かれた途端、阿求は満足したかのような表情を浮かべてぐったりとした
+		ENDIF
+		CFLAG:8902 = 3
+	;V感覚Lv4以上＋触手中毒Lv2以上
+	ELSEIF ABL:1 >= 4 && ABL:35 >= 2
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「ま、まだ物足りないよぉ……」
+		ELSE
+			PRINTFORMW 「んんっ、すっかり癖になってしまいました……」
+		ENDIF
+		CFLAG:8902 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「はあっ、はあっ……」
+		PRINTFORMW 息苦しかったのか阿求は荒く呼吸をしている
+		CFLAG:8902 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル触手 CFLAG9502　CFLAG:8903
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 502 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9502 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「お尻の中にそれを入れるなんて……もう滅茶苦茶ですね」
+			PRINTFORMW 「でも少し気になる、かも……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え？　これ、お尻に入れるのですか？」
+			PRINTFORMW 「む、無理です！　そんなの入れられたら……うぁぁ！」
+		ENDIF
+			CFLAG:9502 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;A感覚Lv5以上＋触手中毒Lv5以上
+		IF ABL:2 >= 5 && ABL:35 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「らめぇ！　わらひのおひり、こわれひゃっらのぉっ♪」
+					PRINTFORM 服の下に潜り込んで尻の穴に挿入された触手のあまりの快楽に、阿求は
+					SIF TEQUIP:40 == 0 || CFLAG:5118 == 1
+						PRINTFORM 服を掴んで
+					PRINTFORMW スカートをはだけさせながら乱れている
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORML 「ふぁぁん！　わらひのあそこ、二つあるぅ♪」
+						PRINTFORMW 阿求は熱い息を出しながら乱れている
+					ELSE
+						PRINTFORML 「んぁぁん！　私のお尻、もうだめなのぉっ♪」
+						PRINTFORMW 阿求は熱い息を出しながら快楽で震えている
+					ENDIF
+				ENDIF
+			ELSE
+				PRINTFORML 「あぁぁ！　だめぇ！　お尻なのにあそこみたいになっちゃってるぅ！」
+				PRINTFORMW 触手が尻に挿入された途端、阿求は全身を震わせて潮を吹きだした
+			ENDIF
+			CFLAG:9502 = 4
+		;A感覚Lv4以上＋触手中毒Lv3以上
+		ELSEIF ABL:2 >= 4 && ABL:35 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「らめぇ！　わらひのおひり、こわれひゃっらのぉっ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求はスカートをはだけさせながら乱れている
+					ELSE
+						PRINTFORMW 阿求は身体から汗をしたらせながら乱れている
+					ENDIF
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORMW 「ぬるぬるしてるのがおひりと相性よすぎるのぉっ♪」
+					ELSE
+						PRINTFORMW 「ぬ、ぬるぬるして気持ちいいのぉっ！」
+					ENDIF
+				ENDIF
+			ELSE
+				PRINTFORMW 「ひぁぁっ！　すごい……ぃぃ……んんっ……」
+			ENDIF
+			CFLAG:9502 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛いっ！　もう入らないです！　だから、やめてぇ！」
+			CFLAG:9502 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 502 && TEQUIP:25 == 0
+	;A感覚Lv5以上＋触手中毒Lv5以上
+	IF ABL:2 >= 5 && ABL:35 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「きゃふ！　物足りないよぉ……」
+			ELSE
+				PRINTFORMW 「んあああっ！　……へぇ？　もう抜いたの？　まだお尻に感覚があるんですぅ……」
+			ENDIF
+		CFLAG:8903 = 3
+	;A感覚Lv4以上＋触手中毒Lv3以上
+	ELSEIF ABL:2 >= 4 && ABL:35 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んあああっ！　お尻が、ひりひりしてるのぉ……」
+			ELSE
+				PRINTFORMW 「はぁん！　もう、癖になっちゃいました……」
+			ENDIF
+		CFLAG:8903 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっと、終わったの？　もう、入れないでぇ……」
+		CFLAG:8903 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手貫通 CFLAG:9524　CFLAG:8904
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 524 && TEQUIP:25 == 3
+	;初めて
+	IF CFLAG:TARGET:9524 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「んっ、何この感覚……うっ！　うぷっ！　んんっ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やぁ……何か変……くぅ！　うんっ！　んんーっ！」
+		ENDIF
+		CFLAG:9524 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;マゾっ気LV4以上+触手中毒LV3以上
+		IF ABL:35 >= 3 && ABL:21 >= 4
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「私、触手に身体を征服されちゃっても感じちゃう変態なんですぅ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求は服を艶やかに湿らしながら身体を震わせて甘い息を出している
+					ELSE
+						PRINTFORMW 阿求は卑しい汗を垂らしながら身体を震わせて甘い息を出している
+					ENDIF
+				ELSE
+					PRINTFORML 「はぁう！　私、身体を触手に征服されていっちゃうのぉっ♪　んんっ♪」
+					PRINTFORMW 触手が阿求の身体に入っていく度に、阿求は身体を震わせて甘い息を出している
+				ENDIF
+			ELSE
+				IF CFLAG:5113 == 1
+					PRINTFORML 「ぁは♪　私、ありえない経験をしてるんですねっ！」
+					PRINTFORMW 触手が阿求の身体に入っていく度に、阿求は身体を震わせて甘い息を出している
+				ELSE
+					PRINTFORML 「怖いぃ……すっごく怖いぃ、けど気持ちいいんですぅ！」
+					PRINTFORMW 触手が阿求の身体に入っていく度に、阿求は身体を震わせて甘い息を出している
+				ENDIF
+			ENDIF
+			CFLAG:9524 = 4
+		;屈服刻印LV2以上かマゾっ気LV4以上
+		ELSEIF (ABL:10 >= 4 || MARK:2 >= 2)
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「うっ……んんっ、はぁ……♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求は期待と不安の両方の気持ちで服を湿らせている
+					ELSE
+						PRINTFORMW 阿求は期待と不安の両方の気持ちで身体を濡らしている
+					ENDIF
+				ELSE
+					PRINTFORMW 「いやぁ……あぁ……んんっ……」
+				ENDIF
+			ELSE
+				IF CFLAG:5113 == 1
+					PRINTFORMW 「耐えます……耐えますよぉ……んっ……」
+				ELSE
+					PRINTFORMW 「耐えるしかないのでしょう？　なら……んっ……」
+				ENDIF
+			ENDIF
+			CFLAG:9524 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んう！　またなの？　いやなのぉっ！」
+			ELSE
+				PRINTFORMW 「ま、またなの？　もういやぁ……」
+			ENDIF
+			CFLAG:9524 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 524 && TEQUIP:25 == 0
+	;マゾっ気LV4以上+触手中毒LV3以上
+	IF ABL:35 >= 3 && ABL:21 >= 4
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「んはぁ！　はあっ！　気持ちよかったぁ♪」
+		ELSE
+			PRINTFORMW 「この怖さが堪らないんですぅ♪」
+		ENDIF
+		CFLAG:8904 = 3
+	;屈服刻印LV2以上かマゾっ気LV4以上
+	ELSEIF (ABL:10 >= 4 || MARK:2 >= 2)
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「やっと、終わった……」
+		ELSE
+			PRINTFORMW 「怖かったですよ……」
+		ENDIF
+		CFLAG:8904 = 2
+	;それ以外
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「もう……こんなの……いや……」
+		ELSE
+			PRINTFORMW 「こんな事、もうしませんよね……？」
+		ENDIF
+		CFLAG:8904 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手緊縛 CFLAG9507　CFLAG:8905
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 106 && TEQUIP:40
+	;初めて
+	IF CFLAG:TARGET:9507 == 0
+		;恋慕+マゾっ気Lv3
+		IF TALENT:150 == 1 && ABL:21 >= 3
+			PRINTFORMW 「はぁん！　私、縛られちゃうのっ！」
+			PRINTFORMW 阿求は期待に満ちた表情で触手に縛られていく
+		;マゾっ気Lv3以上
+		ELSEIF ABL:21 >=3
+			PRINTFORML 「う、ぁぁう！　やめてぇ！」
+			PRINTFORMW 言葉とは裏腹に阿求は息を荒くして身体を赤くしている
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、いやぁ！　離してください！」
+		ENDIF
+			CFLAG:9507 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;マゾっ気Lv5以上＋触手中毒Lv5以上
+		IF ABL:21 >= 5 && ABL:35 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「はぁん♪　きつく縛ってぇ！　もっと、もっとぉっ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 服の上から縛られて熱い吐息を出している阿求の姿は、妖艶に見えた
+					ELSE
+						PRINTFORMW 縛られて熱い吐息を出しながら悶えている阿求の姿は、妖艶に見えた
+					ENDIF
+				ELSE
+					PRINTFORMW 「うゃん！　ぬるぬるしていいのぉっ、もっと、きつく、縛ってぇ♪」
+				ENDIF
+			ELSE
+				IF CFLAG:5113 == 1
+					PRINTFORMW 「し、死んでしまう位きつく縛ってみてぇ……苦しくなればなる程気持ちよくなっちゃうからぁ♪」
+				ELSE
+					PRINTFORMW 「うぅん！　縛られてるのにぃ……全身が引き締まる程気持ちよくなっちゃうぅ♪」
+				ENDIF
+			ENDIF
+			CFLAG:9507 = 4
+		;マゾっ気Lv3以上＋触手中毒Lv2以上
+		ELSEIF ABL:21 >=3 && ABL:35 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「はぁん♪　縛られるの、大好きぃ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求は服の上から縛られて、微かにだが淫らに腰を動かしている
+					ELSE
+						PRINTFORMW 阿求はきつく縛られて、微かにだが淫らに腰を動かしている
+					ENDIF
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORMW 「うぅん！　気持ちいいなんてぇ♪」
+					ELSE
+						PRINTFORMW 「い、やぁぁん！　ち、違うのぉっ！　こんなのっ、気持ちいいはずがぁっ♪」
+					ENDIF
+				ENDIF
+			ELSE
+				PRINTFORMW 「はぁっ……何ともないですよ？　本当に……ぁう」
+			ENDIF
+			CFLAG:9507 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ、全身がぬるぬるして気持ち悪いよぉ……」
+			CFLAG:9507 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 106 && TEQUIP:40 == 0
+	;マゾっ気Lv5以上＋触手中毒Lv5以上
+	IF ABL:21 >= 5 && ABL:35 >= 5
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORML 「ふぁ、ぁぁん♪　縛られてた所が、ヒリヒリして気持ちいいのっ！」
+			PRINTFORMW 阿求は縛られていた所を抑える為に手を動かそうとしている
+		ELSE
+			PRINTFORML 「あはっ、ふぁああああん♪　力が、抜けちゃいますぅ……」
+			PRINTFORMW 縛っていた触手が力を緩めた途端、阿求は全身を脱力させた
+		ENDIF
+		CFLAG:8905 = 3
+	;マゾっ気Lv3以上＋触手中毒Lv2以上
+	ELSEIF ABL:21 >= 3 && ABL:35 >= 2
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「あふぅ……ど、どうしてぇ、もう縛られてないのにぃ……ふぁん♪」
+		ELSE
+			PRINTFORML 「んんっ、ぁう……」
+			PRINTFORMW まだ余韻が残っているのか阿求は無意識の内に身体を震わせた
+		ENDIF
+		CFLAG:8905 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はあっ……はあっ……」
+		CFLAG:8905 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;触手口辱 CFLAG415　CFLAG:416
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 108 && TEQUIP:98
+	;初めて
+	IF CFLAG:TARGET:415 == 0
+		;恋慕+奉仕精神Lv5以上
+		IF TALENT:85 == 1 && ABL:6 >=5
+			PRINTFORML 「はぁ……太そう、ですね……んんぅ！　んうん！　んぅん！」
+			PRINTFORMW 初めての経験にも関わらず阿求は顔を赤らめて、くぐもった艶めかしい声を上げながら触手を舌で舐め回し始めた
+			PRINTFORMW どうやらいつもの行為の成果で奉仕自体が快楽に繋がるようになっていたようだ
+		;奉仕精神Lv3以上
+		ELSEIF ABL:6 >= 3
+			PRINTFORML 「そっ、そんなの入れ……んうっ！　……んんっ、んっ……」
+			PRINTFORMW 阿求は急に大人しくなって、口に挿入された触手を舐め始めた
+		;それ以外
+		ELSE
+			PRINTFORMW 「や、やめてっ！　そんな物向けな……んぷっ！　んんっ！　んんぅ！」
+		ENDIF
+			;CFLAG:415 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;奉仕精神Lv5以上＋触手中毒Lv5以上
+		IF ABL:6 >= 5 && ABL:21 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「また入れてくれるなんて嬉しいですぅ♪　……んんっ！　んぅん！　んんっ……」
+				PRINTFORMW 口に入れられるのがあまりに気持ちいいのか、阿求は全身を紅潮させ、目を潤わせながら腰を艶めかしく振った
+			ELSE
+				PRINTFORML 「んんっ、んっ、んうっ、ん……」
+				PRINTFORMW 阿求は頬を赤らめて、艶めかしいくぐもった声を出しながら触手を舐め回している
+			ENDIF
+			;CFLAG:415 = 4
+		;奉仕精神Lv3以上＋触手中毒Lv2以上
+		ELSEIF ABL:6 >= 3 && ABL:21 >= 2
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORML 「はあっ♪　早くぅ、それ口に、入れてぇ♪」
+				PRINTFORMW 阿求は期待で目を潤わせている
+			ELSE
+				PRINTFORML 「んっ……んんっ、んーっ……」
+				PRINTFORMW 阿求は頬を赤らめて大人しくなっている、触手の感触を気持ちよく思っているようだ
+			ENDIF
+			;CFLAG:415 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、またなの！　いや！　いやぁ……んんっ！　んーっ！　んんぅ！」
+			;CFLAG:415 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 108 && TEQUIP:98 == 0
+	;奉仕精神Lv5以上＋触手中毒Lv5以上
+	IF ABL:6 >= 5 && ABL:21 >= 5
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORML 「ぷはぁ♪　まだ物足りないよぉ♪　もっとぉ！」
+			PRINTFORMW 阿求は未だに全身を紅潮させたまま、口から糸のように伸びた涎を垂らしながら催促している
+		ELSE
+			PRINTFORML 「ぷはぁ、あ……ぁん……」
+			PRINTFORMW 阿求は時折擦れた喘ぎ声を出している
+		ENDIF
+		;CFLAG:416 = 3
+	;奉仕精神Lv3以上＋触手中毒Lv2以上
+	ELSEIF ABL:6 >= 3 && ABL:21 >= 2
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORML 「ぷはぁ♪　気持ち、よかったぁ♪」
+			PRINTFORMW 阿求は顔を蕩けさせた
+		ELSE
+			PRINTFORML 「ぷはっ……はあっ……はぁ……」
+			PRINTFORMW 阿求はとろんとした目で惚けている
+		ENDIF
+		;CFLAG:416 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「ぷはぁ……もうやめてぇ……」
+		PRINTFORMW 阿求は胸を大きく動かしながら息を付いている
+		;CFLAG:416 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・通常版
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;指挿入れ CFLAG9004
+;Gスポット刺激 CFLAG9600
+;-------------------------------------------------
+IF SELECTCOM == 4 || SELECTCOM == 600
+	;Gスポット刺激
+	IF SELECTCOM == 600 || (PREVCOM == 4 && ABL:PLAYER:12 >= 3 || PREVCOM == 600)
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5113 == 1
+					PRINTFORML 「ひあっ♪　らめぇ、そこばっかり擦らないでぇ♪」
+					IF CFLAG:5118 == 1
+						PRINTFORMW 阿求は着衣を乱れさせながら身体を跳ねさせた
+					ELSE
+						PRINTFORMW 阿求は艶やかな喘ぎ声を上げながら身体を跳ねさせた
+					ENDIF
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORML 「くふっ！　ふぁん！　そこ、はぁん！　弱いから、あぁん！　らめぇ♪」
+						PRINTFORMW 弱点を擦る度に阿求は身体を跳ねさせて潮を吹きながら絶頂に達した
+					ELSE
+						PRINTFORML 「きゃふ！　あぁん！　擦られる度に、うぅん！　頭が、真っ白にぃっ♪」
+						PRINTFORMW 弱点を擦る度に阿求は身体を跳ねさせて潮を吹きながら絶頂に達した
+					ENDIF
+				ENDIF
+			ELSE
+				PRINTFORML 「ひあっ♪　刺激が強すぎますぅ……」
+				PRINTFORMW 弱点を擦る度に阿求は喘ぎながら絶頂に達した
+			ENDIF
+			CFLAG:9600 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:1 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「や、やあんっ！　だめぇ！　そこばっかり突かないでぇ！」
+			ELSE
+				PRINTFORMW 「んっ、んうっ！　そこ、弱いんですぅ！」
+			ENDIF
+			CFLAG:9600 = 3
+		;それ以外
+		ELSE
+			PRINTFORM 「んっ！　んんっ！　んくぅ……」
+			PRINTFORMW 阿求は弱点を悟られないように堪えている
+			CFLAG:9600 = 2
+		ENDIF
+			RETURN 0
+	;指挿入れ
+	ELSE
+		;初めて
+		IF CFLAG:9004 == 0
+			;処女（処女でないキャラの場合は無記入でよい）
+			IF TALENT:TARGET:0 == 1 && EXP:0 == 1
+				;恋慕
+				IF TALENT:TARGET:150 == 1
+					PRINTFORMW 「は、初めては指なの？　ちょっとがっかり……」
+				;それ以外
+				ELSE
+					PRINTFORMW 「え？　ち、ちょっと……私、まだなんです」
+					PRINTFORMW 「だからやめ……くぅぅ！」
+				ENDIF
+				CFLAG:9004 = 1
+				RETURN 0
+			;非処女
+			ELSE
+				;恋慕
+				IF TALENT:TARGET:150 == 1
+					;妖精
+					IF TALENT:200 == 1
+						IF CFLAG:5113 == 1
+							PRINTFORML 「わらひ、指しか入れられてないのにぃっ！　ふぁぁん♪」
+							IF CFLAG:5118 == 1
+								PRINTFORMW 中に入れた指を曲げると、阿求は着衣を乱れさせながら身体を跳ねさせた
+							ELSE
+								PRINTFORMW 中に入れた指を曲げると、阿求は甘い声を出しながら身体を跳ねさせた
+							ENDIF
+						ELSE
+							IF CFLAG:5113 == 1
+								PRINTFORML 「ひゃ、ひゃめぇ！　ゆびたへてからたかかっへにぃっ♪」
+								PRINTFORMW 指を差し入れする度に阿求は呂律が回らなくなっていき、中に入れた指を曲げてやるだけで阿求は身体を跳ねさせた
+							ELSE
+								PRINTFORML 「んふっ、やぁん！　……指だけでこんなに感じちゃうなんてぇ！」
+								PRINTFORMW 中に入れた指を曲げてやるだけで阿求は身体を跳ねさせた
+							ENDIF
+						ENDIF
+					ELSE
+						PRINTFORML 「す、すごいぃ……指だけで、こん、あんっ！　なに感じられちゃう！」
+						PRINTFORMW 中に入れた指を動かす度に阿求は甘い声を出している
+					ENDIF
+				;V感覚Lv3以上
+				ELSEIF ABL:1 >= 3
+					;妖精
+					IF TALENT:200 == 1
+						PRINTFORMW 「んふぅ！　ゆ、指だけなのにぃ……」
+					ELSE
+						PRINTFORMW 「あぁん！　え？　指だけで？　嘘でしょう……？」
+					ENDIF
+				;それ以外
+				ELSE
+					PRINTFORMW 「指だけですか……まだマシな方ですね……」
+				ENDIF
+				CFLAG:9004 = 1
+				RETURN 0
+			ENDIF
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:TARGET:150 == 1
+				;妖精
+				IF TALENT:200 == 1
+					IF CFLAG:5113 == 1
+						PRINTFORML 「あぁん♪　ゆ、指だけじゃ物足りないのぉっ♪　%CALLNAME:MASTER%のも入れてぇ♪」
+						IF CFLAG:5118 == 1
+							PRINTFORMW 中に入れた指を曲げると、阿求は着衣を乱れさせながら身体を跳ねさせた
+						ELSE
+							PRINTFORMW 中に入れた指を曲げると、阿求は甘い声を出しながら身体を跳ねさせた
+						ENDIF
+					ELSE
+						PRINTFORML 「んふっ、やぁん！　……次は%CALLNAME:MASTER%のを入れてぇ！」
+						PRINTFORMW 中に入れた指を曲げてやるだけで阿求は身体を跳ねさせた
+					ENDIF
+				ELSE
+					IF CFLAG:5113 == 1
+						PRINTFORML 「ひゃ、ひゃめぇ！　ゆびたへてからたかかっへにぃっ♪」
+						PRINTFORMW 指を差し入れする度に阿求は呂律が回らなくなっていき、中に入れた指を曲げてやるだけで阿求は身体を跳ねさせた
+					ELSE
+						PRINTFORMW 「くぅん！　くふぅ！　……これは慣らしてくれただけですよね？」
+					ENDIF
+				ENDIF
+				CFLAG:9004 = 4
+			;V感覚Lv3以上
+			ELSEIF ABL:1 >= 3
+				;妖精
+				IF TALENT:200 == 1
+					PRINTFORML 「はぁ……はぁ……ぁん！　ち、違うのっ！」
+					PRINTFORMW 口では否定しながらも、中に入れた指を動かす度に阿求は甘い声を出している
+				ELSE
+					PRINTFORMW 「こ……ぉぉ……んな事、んぅぅ……だめぇ……」
+					PRINTFORMW 指が入れられた瞬間だけ阿求は身体を震わせた
+				ENDIF
+				CFLAG:9004 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「あまりその場所を弄らないで……」
+				CFLAG:9004 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG9351
+;-------------------------------------------------
+IF SELECTCOM == 351 &&  TEQUIP:54
+	;初めて
+	IF CFLAG:TARGET:9351 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9351 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9351 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9351 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG9022
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:9022 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9022 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9022 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			;CFLAG:9022 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9022 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG9023
+;乱れ牡丹 CFLAG9612
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:TARGET:9023 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9023 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9023 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:1 >= 3
+			PRINTFORMW 
+			;CFLAG:9023 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9023 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9023 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612 || (SELECTCOM == 23 && TEQUIP:56)
+	;初めて
+	IF CFLAG:TARGET:9612 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9612 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:14 >= 3 && ABL:1 >= 3
+			PRINTFORMW 
+			;CFLAG:9612 = 6
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9612 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:14 >= 3 && ABL:1 >= 3
+			PRINTFORMW 
+			;CFLAG:9612 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9612 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG9352
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:TARGET:9352 == 0
+		;奉仕精神Lv3以上
+		IF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9352 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:TARGET:150 == 1 && ABL:TARGET:13 >= 5
+			PRINTFORMW 
+			;CFLAG:9352 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:TARGET:13 >= 3
+			PRINTFORMW 
+			;CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9352 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG9062
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;恋慕+おもらし癖
+	IF TALENT:150 && TALENT:45
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「お、おしっこが出ちゃうぅ♪　出すのがとっても気持ちいいのぉっ！」
+		ELSE
+			PRINTFORMW 「んうっ、もう、止まらないよぉ……」
+		ENDIF
+		CFLAG:9062 = 4
+	;恋慕
+	ELSEIF TALENT:150
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「ひぅっ！　おしっこが貯まって敏感になってるぅ♪」
+		ELSE
+			PRINTFORMW 「物好きですね、汚いだけですよ？」
+		ENDIF
+		CFLAG:9062 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「はあ……はあ……だ、だめぇ……」
+		ELSE
+			PRINTFORMW 「や、やあっ！　ここで出す、なんて……」
+		ENDIF
+		CFLAG:9062 = 2
+	;それ以外
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「はぁ……はぁ……な、何ともないです」
+			PRINTFORMW %CALLNAME:MASTER%はニヤニヤしながら阿求を見つめている
+		ELSE
+			PRINTFORMW 「トイレに行きたいのですが……え？　ここで出せと？　そ、そんな……」
+		ENDIF
+		CFLAG:9062 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG9103 解除 CFLAG8822
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:TARGET:9103 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「鏡の前でするのですか？」
+			PRINTFORMW 「私の卑しい姿、いっぱい見られるんだぁ……」
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 「ん……ぁはぁ……」
+			PRINTFORMW 阿求は恥ずかしさで目を潤わせている
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「か、鏡？」
+				PRINTFORMW 「い、いやぁ！　こんな姿なんて見たくない！」
+			ELSE
+				PRINTFORMW 「鏡立てながらするなんて……趣味が悪いですね」
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:9103 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:14 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				IF CFLAG:5118 == 1
+					PRINTFORML 「私、すっごく淫らな服装をしてる……」
+					PRINTFORML 「でも、この格好、大好きなのぉっ♪」
+					PRINTFORMW 阿求は自分の姿を見て身体を紅潮させている
+				ELSE
+					PRINTFORML 「あぁ、これが今の私……」
+					PRINTFORML 「こんな格好で卑しく感じてるのですかぁ……あぁ……」
+					PRINTFORMW 阿求は自分の姿を見て身体を紅潮させている
+				ENDIF
+			ELSE
+				PRINTFORMW 「私、すごく卑しい姿をしてる……」
+			ENDIF
+			CFLAG:9103 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「私、こんな厭らしい姿をしてるんだ……」
+			ELSE
+				PRINTFORMW 「恥ずかしいけど……すぐに慣れますよね？」
+			ENDIF
+			CFLAG:9103 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「私……こんな姿なのに少し興奮して……」
+				PRINTFORMW 「ち、違います！　決して受け入れてる訳では……」
+			ELSE
+				PRINTFORMW 「あぁ、鏡に映ってる私、赤くなってる……」
+			ENDIF
+			CFLAG:9103 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「か、鏡？」
+				PRINTFORMW 「い、いやぁ！　こんな姿なんて見たくない！」
+			ELSE
+				PRINTFORMW 「鏡立てながらするなんて……趣味が悪いですね」
+			ENDIF
+			CFLAG:9103 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 103 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:TARGET:8822 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ぁは……私、えっちな妖精……」
+			ELSE
+				PRINTFORMW 「恥ずかしいけど、これはこれで気持ちいいですね」
+			ENDIF
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「お願いだから、もうやらないでぇ……」
+			ELSE
+				PRINTFORMW 「……あなたの痴態もこの鏡に映してやりたいですね」
+			ENDIF
+		ENDIF
+			CFLAG:TARGET:8822 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「ぁは……私、えっちな妖精……」
+			ELSE
+				PRINTFORMW 「恥ずかしいけど、これはこれで気持ちいいですね」
+			ENDIF
+			CFLAG:8822 = 3
+		;それ以外
+		ELSE
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「お願いだから、もうやらないでぇ……」
+			ELSE
+				PRINTFORMW 「……あなたの痴態もこの鏡に映してやりたいですね」
+			ENDIF
+			CFLAG:8822 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG9350 解除 CFLAG8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:TARGET:9350 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9350 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9350 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 350 && TEQUIP:53 == 0
+	;初めて
+	IF CFLAG:TARGET:8824 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:8824 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:8824 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:8824 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;,裸エプロン(新妻プレイ) CFLAG9090 解除 CFLAG8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:TARGET:9090 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			IF CFLAG:5118 == 1
+				PRINTFORML 「少し待ってください、服を脱ぎますから……」
+				PRINTFORMW 阿求は服を脱いでから、エプロンを着けた
+				CFLAG:5118 = 3
+			ELSE
+				PRINTFORMW 「結婚したみたいで少し、恥ずかしいですね」
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうしてこんな物を私が……」
+		ENDIF
+			CFLAG:TARGET:9090 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			IF CFLAG:5118 == 1
+				PRINTFORML 「少し待ってください、服を脱ぎますから……」
+				PRINTFORMW 阿求は服を脱いでから、エプロンを着けた
+				CFLAG:5118 = 3
+			ELSE
+				PRINTFORMW 「似合ってますか？」
+			ENDIF
+			CFLAG:9090 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……満足しましたか？」
+			CFLAG:9090 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:TARGET:8823 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			IF CFLAG:5118 == 3
+				PRINTFORML 「この格好もいいですね……」
+				PRINTFORMW 阿求はエプロンを脱いで、再び服を着た
+				CFLAG:5118 = 1
+			ELSE
+				PRINTFORMW 「これ、気に入りました……」
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなのを着させて何が嬉しいのですか……」
+		ENDIF
+			CFLAG:TARGET:8823 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			IF CFLAG:5118 == 3
+				PRINTFORML 「この格好もいいですね……」
+				PRINTFORMW 阿求はエプロンを脱いで、再び服を着た
+				CFLAG:5118 = 1
+			ELSE
+				PRINTFORMW 「え？　もう外してしまうの？」
+			ENDIF
+			;CFLAG:8823 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「変な趣味ですね……」
+			CFLAG:8823 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG9111
+;強制放尿 CFLAG9620
+;-------------------------------------------------
+IF SELECTCOM == 111 || SELECTCOM == 620
+	;強制放尿
+	IF SELECTCOM == 620 || SELECTCOM == 111 && ((TALENT:45 == 0 && ABL:10 >= 4 && ABL:11 >= 3 && ABL:21 >= 3) || (TALENT:45 && TEQUIP:22 == 0))
+		;恋慕+おもらし癖+野外プレイ
+		IF TALENT:150 && TALENT:45 && TEQUIP:52
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あ、あぁぁ♪　みんなに見られながら出すのが気持ちいいですぅ！」
+			ELSE
+				PRINTFORMW 「私はこんなことして感じちゃう変態なんですぅ！」
+			ENDIF
+			CFLAG:9620 = 5
+		;恋慕+おもらし癖
+		ELSEIF TALENT:150 && TALENT:45
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んぁあ♪　私が出してる所、もっと見てぇ！」
+			ELSE
+				PRINTFORMW 「見られながら出すの、気持ちいいです……」
+			ENDIF
+			CFLAG:9620 = 4
+		;露出癖Lv5
+		ELSEIF ABL:14 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「んぁあ♪　私が出してる所、もっと見てぇ！」
+			ELSE
+				PRINTFORMW 「見られながら出すの、気持ちいいです……」
+			ENDIF
+			CFLAG:9620 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「やっ、やぁ！　出すのが気持ちいいなんていやぁ！」
+			ELSE
+				PRINTFORMW 「んぁ！　はぁあああああ……」
+				PRINTFORMW 阿求は唖然としながら恍惚とした表情で放尿している
+			ENDIF
+			CFLAG:9620 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、いやぁ！　無理矢理出させないでぇ！」
+			CFLAG:9620 = 1
+		ENDIF
+	;放尿
+	ELSE
+		;恋慕+おもらし癖+野外プレイ
+		IF TALENT:150 && TALENT:45 && TEQUIP:52
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「あぁ♪　私は、こんなことして感じちゃうド変態な妖精なんですぅ！」
+			ELSE
+				PRINTFORMW 「恥ずかしすぎて気持ちいぃのぉ！　あぁ！」
+			ENDIF
+			CFLAG:9111 = 5
+		;恋慕+おもらし癖
+		ELSEIF TALENT:150 && TALENT:45
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「はぁぁぁぁう！　気持ちいぃ！」
+			ELSE
+				PRINTFORMW 「んぁぁ！　いつものように出ちゃう！」
+			ENDIF
+			CFLAG:9111 = 4
+		;露出癖Lv5
+		ELSEIF ABL:14 >= 5
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「はぁぁ！　出ちゃうぅ♪」
+			ELSE
+				PRINTFORMW 「私の恥ずかしい所、見てぇ♪」
+			ENDIF
+			CFLAG:9111 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			;妖精
+			IF TALENT:200 == 1
+				PRINTFORMW 「で、出ちゃうのに感じちゃうなんてぇ！」
+			ELSE
+				PRINTFORMW 「んぅ……！はぁああああああ……」
+				PRINTFORMW 阿求は唖然とした表情で放尿している
+			ENDIF
+			CFLAG:9111 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅ……いやぁ！　出ちゃう！　だめぇ！」
+			CFLAG:9111 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ鑑賞 CFLAG9101
+;-------------------------------------------------
+IF SELECTCOM == 101
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「あぁ……気持ちよさそう……」
+		PRINTFORMW 阿求は切ない息を吐きながら潤んだ目でビデオを見ている
+	ELSE
+		PRINTFORMW 「やめてぇ！　こんなの、見たくないぃ！」
+		PRINTFORML 阿求は必死に目を瞑って見ないようにしようとしたので
+		PRINTFORMW %CALLNAME:MASTER%はビデオの音量を上げた
+	ENDIF
+	CFLAG:5103 += 1
+	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・アナル関連
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;アナル舐め CFLAG9180
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:9180 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9180 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9180 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:2 >= 3
+			PRINTFORMW 
+			;CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9180 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG9172 終了時CFLAG8852
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9172 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9172 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9172 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9172 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9172 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9172 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8852 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		;CFLAG:8852 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8852 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;------------------------------------------------
+;正常位アナル CFLAG9030
+;-------------------------------------------------
+;IF SELECTCOM == 30
+;	;初めて
+;	IF CFLAG:9030 == 0
+;		;恋慕
+;		IF TALENT:TARGET:150 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			;CFLAG:TARGET:9030 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:10 + UP:10
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			;CFLAG:9030 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			;CFLAG:9030 = 4
+;		;潤滑Lv2以上＋A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+;			PRINTFORMW 
+;			;CFLAG:9030 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			;CFLAG:9030 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG9031
+;-------------------------------------------------
+;IF SELECTCOM == 31
+;	;初めて
+;	IF CFLAG:9031 == 0
+;		;恋慕
+;		IF TALENT:TARGET:150 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			;CFLAG:TARGET:9031 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:10 + UP:10
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			;CFLAG:9031 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			;CFLAG:9031 = 4
+;		;潤滑Lv2以上＋A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+;			PRINTFORMW 
+;			;CFLAG:9031 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			;CFLAG:9031 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG9032
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:9032 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9032 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上
+		IF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9032 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9032 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			;CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9032 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG9033
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:9033 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9033 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上
+		IF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9033 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9033 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			;CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9033 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG9034
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:9034 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9034 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上
+		IF TALENT:TARGET:150 == 1 && P >= PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9034 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:TARGET:150 == 1 && P < PALAMLV:2
+			PRINTFORMW 
+			;CFLAG:9034 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:2 >= 3
+			PRINTFORMW 
+			;CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9034 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;空気浣腸 開始時CFLAG9175 終了時CFLAG8855
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 175 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9175 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9175 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9175 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9175 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9175 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9175 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 175 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8855 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		;CFLAG:8855 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8855 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;拡張バルーン 開始時CFLAG9173 終了時CFLAG8853
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 173 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9173 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9173 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9173 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9173 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9173 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9173 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 173 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8853 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		;CFLAG:8853 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8853 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル電極 開始時CFLAG9171 終了時CFLAG8851
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 171 && TEQUIP:25
+	;初めて
+	IF CFLAG:TARGET:9171 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9171 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9171 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9171 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+			PRINTFORMW 
+			;CFLAG:9171 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9171 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 
+		;CFLAG:8851 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:2 >= 3 && ABL:21 >= 3
+		PRINTFORMW 
+		;CFLAG:8851 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8851 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG9044
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:9044 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9044 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+従順Lv5以上
+		IF TALENT:TARGET:150 == 1 && ABL:10 >= 5
+			PRINTFORMW 
+			;CFLAG:9044 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9044 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:13 >= 3
+			PRINTFORMW 
+			;CFLAG:9044 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9044 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;レズ調教コマンド（デフォ主人公でも可能なもの） CFLAG646以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+
+;-------------------------------------------------
+;３P CFLAG9610
+;-------------------------------------------------
+IF SELECTCOM == 610
+	;初めて
+	IF CFLAG:TARGET:9610 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9610 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9610 = 5
+		;V感覚Lv3以上＋A感覚Lv3以上
+		ELSEIF ABL:1 >= 3 && ABL:2 >= 3
+			PRINTFORMW 
+			;CFLAG:9610 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9610 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9610 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シックスナイン CFLAG9602
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:TARGET:9602 == 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			;CFLAG:TARGET:9602 = 1
+			RETURN 0
+	ELSE
+		;恋慕+奉仕精神Lv3以上+C感覚Lv3以上
+		IF TALENT:TARGET:150 == 1 && ABL:13 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			;CFLAG:9602 = 6
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:9602 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:13 >= 3 && ABL:0 >= 3
+			PRINTFORMW 
+			;CFLAG:9602 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:9602 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:9602 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係（48をキャラ番号に置換）
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_48_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+
+;一部特殊処理
+;-------------------------------------------------
+;自分で追加して愛撫
+;-------------------------------------------------
+IF CFLAG:5113 == 1 && SELECTCOM != 224 && CFLAG:5100 == 1
+	IF CFLAG:5114 == 1
+		PRINTFORML 物足りなくなった阿求は、自分で股間の豆を弄り始めた
+	ELSEIF CFLAG:5114 == 2
+		PRINTFORML 物足りなくなった阿求は、自分で股間の秘所を撫でたり指を差し入れしたりし始めた
+	ELSEIF CFLAG:5114 == 3
+		PRINTFORML 物足りなくなった阿求は、自分で尻の穴を弄り始めた
+	ELSEIF CFLAG:5114 == 4
+		PRINTFORML 物足りなくなった阿求は、自分で胸を揉み始めた
+	ENDIF
+	CFLAG:5114 = 0
+ENDIF
+
+;-------------------------------------------------
+;阿求にやられる
+;-------------------------------------------------
+IF CFLAG:5121 == 2 && TEQUIP:42 == 0
+	PRINTFORML 阿求は%CALLNAME:MASTER%を愛撫した
+	;主人が感覚LV5以上
+	IF CFLAG:5124 >= 5
+		PRINTFORML あまりの快楽に%CALLNAME:MASTER%は頭が真っ白になりながら甘い声を上げている
+		CFLAG:5127 += 16
+	;主人が感覚LV3以上
+	ELSEIF CFLAG:5124  >= 3
+		PRINTFORML %CALLNAME:MASTER%は時々身体を震わせながら抵抗できずに熱い吐息を出している
+		CFLAG:5127 += 8
+	ELSE
+		PRINTFORML %CALLNAME:MASTER%は阿求の手を何度も振りほどいた
+		CFLAG:5127 += 4
+	ENDIF
+	CFLAG:5122 += CFLAG:5124*1000+500
+	IF CFLAG:5122 >= 10000
+		PRINTFORML %CALLNAME:MASTER%は身体を大きく反らして絶頂に達した
+		IF CFLAG:5130 >= 1
+			PRINTFORML %CALLNAME:MASTER%は艶やかな口調でもっと快楽をねだっている
+			CFLAG:5128 += 4
+		ELSE
+			CFLAG:5128 += 2
+		ENDIF
+		CFLAG:5122 = 0
+	ENDIF
+	IF CFLAG:5127 >= 12 && CFLAG:5124 < 1
+		PRINTFORML %CALLNAME:MASTER%は触られた所が少し痺れるようになった
+		CFLAG:5124 = 1
+	ELSEIF CFLAG:5127 >= 24 && CFLAG:5124 < 2
+		PRINTFORML %CALLNAME:MASTER%は胸などを刺激されると息が荒くなるようになった
+		CFLAG:5124 = 2
+	ELSEIF CFLAG:5127 >= 36 && CFLAG:5124 < 3
+		PRINTFORML %CALLNAME:MASTER%は強く刺激されると身体中に快楽が走るようになった
+		CFLAG:5124 = 3
+	ELSEIF CFLAG:5127 >= 36 && CFLAG:5124 < 3
+		CFLAG:5124 = 4
+	ELSEIF CFLAG:5127 >= 84 && CFLAG:5124 < 5
+		PRINTFORML %CALLNAME:MASTER%は触られただけで喘ぎ声が出る位の快楽を感じるようになった
+		CFLAG:5124 = 5
+	ENDIF
+	CALL ANATA_YOKUBOU_K48_TOKUSYU
+ENDIF
+;-------------------------------------------------
+;四重絶頂　CFLAG:5106
+;-------------------------------------------------
+IF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+	IF TEQUIP:42
+		
+	ELSE
+		PRINTFORML 「ぁ……かはぁ……くぅ……んんっ！」
+	ENDIF
+	PRINTFORML 阿求は次々に襲ってくる絶頂のせいで、喘ぐことすらできないようだ
+	CFLAG:5106 += 1
+	;8回以上
+	IF CFLAG:5106 >= 8 && CFLAG:5100 == 1 && (TALENT:100 == 0 || TALENT:102 == 0|| TALENT:104 == 0 || TALENT:106 == 0)
+		PRINTFORMW 強すぎる快楽に身体が適応したのか阿求の身体は敏感になった
+		IF TALENT:100 == 0
+			PRINTFORMW 阿求は[Ｃ敏感][Ｖ敏感][Ａ敏感][Ｂ敏感]を得た
+			TALENT:101 = 0
+			TALENT:100 = 1
+		ELSE
+			PRINTFORMW 阿求は[Ｖ敏感][Ａ敏感][Ｂ敏感]を得た
+		ENDIF
+		TALENT:103 = 0
+		TALENT:105 = 0
+		TALENT:107 = 0
+		TALENT:102 = 1
+		TALENT:104 = 1
+		TALENT:106 = 1
+		CFLAG:5107 = 1
+	ENDIF
+ENDIF
+
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、48を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG 221～260を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG8001
+;-------------------------------------------------
+P = PALAM:10 + UP:10
+IF P > PALAMLV:2 && CFLAG:TARGET:8001 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「こんなことしなくても私は十分なのに……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんっ、濡れてきました」
+		ENDIF
+	;それ以外
+	ELSE
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「べとべとしますね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ち、違いますっ！　これは仕方がないことで……」
+		ENDIF
+	ENDIF
+		CFLAG:TARGET:8001 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG8002
+;-------------------------------------------------
+P = PALAM:13 + UP:13
+IF P > PALAMLV:2 && CFLAG:8002 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「薬なんて使わなくたって私は……ふぁぁ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ああっ、やぁ……気持ち、いいです」
+		ENDIF
+	;それ以外
+	ELSE
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「んぅ、ふ、ふ……ぁ」
+			PRINTFORMW 「く、薬のせいですよ」
+		;それ以外
+		ELSE
+			PRINTFORML 「こ、こんなの、はあっ、気持ち、よくなんか……はぁっ……」
+			PRINTFORMW 阿求は息を荒げながら否定の言葉を紡いでいる
+		ENDIF
+	ENDIF
+		CFLAG:8002 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG8003
+;-------------------------------------------------
+P = PALAM:15 + UP:15
+IF P > PALAMLV:2 && CFLAG:8003 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「あぁ……恥ずかしいぃ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「ちょっと、これ……恥ずかしいです」
+	ENDIF
+		CFLAG:8003 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG8004
+;-------------------------------------------------
+P = PALAM:17 + UP:17
+IF P > PALAMLV:2 && CFLAG:8004 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「こ……怖いです……もうやめて……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやぁ……助けて……」
+	ENDIF
+		CFLAG:8004 = 1
+ENDIF
+
+;-------------------------------------------------
+;潤滑が300000を超えた CFLAG8020
+;-------------------------------------------------
+P = PALAM:10 + UP:10
+IF P > 300000 && CFLAG:TARGET:8020 == 0 && CFLAG:5100 == 1 && TALENT:42 == 0
+	PRINTFORMW 阿求の秘所から愛液が洪水のように湧き始めた
+	PRINTFORMW どうやら身体が濡れやすい体質になったようだ
+	PRINTFORMW 阿求は[濡れやすい]を得た
+	SIF TALENT:43 == 1
+		TALENT:43 = 0
+	TALENT:42 = 1
+	CFLAG:5120 = 1
+ENDIF
+;-------------------------------------------------
+;初めてC絶頂 CFLAG8005
+;-------------------------------------------------
+IF NOWEX:0 > 0 && CFLAG:8005 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「あぁっ、気持ち、いいで、すぅっ！　あぁああああん！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ、くぅっ、やぁっ！　もうっ、駄目ぇ！　はぁああああああ！」
+	ENDIF
+		CFLAG:8005 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてV絶頂 CFLAG8006
+;-------------------------------------------------
+IF NOWEX:1 > 0 && CFLAG:8006 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「あんっ！　ふぁあ！　中が……すごいのっ！　あぁああああん！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやぁ、あんっ！　中が……熱くって！　ふぁあああああ！」
+	ENDIF
+		CFLAG:8006 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてA絶頂 CFLAG8007
+;-------------------------------------------------
+IF NOWEX:2 > 0 && CFLAG:8007 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「んっ、ふぁ、はぁん！　お尻っ！　いいですっ！　あぁああああああっ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふぁっ？　あ、いや、いやっ！　お尻でなんてぇっ！　やぁああああああああん！」
+	ENDIF
+		CFLAG:TARGET:8007 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてB絶頂 CFLAG8008
+;-------------------------------------------------
+IF NOWEX:3 > 0 && CFLAG:8008 == 0
+	;恋慕
+	IF TALENT:TARGET:150 == 1
+		PRINTFORMW 「ふ……ふぁ……あぁ！　胸が、ヒリヒリしてっ！　やぁあああん！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「む、胸が、おかしくなってっ！　あぁあああああん！」
+	ENDIF
+		CFLAG:TARGET:8008 = 1
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG8009
+;-------------------------------------------------
+A = UP:20 + UP:21
+IF TFLAG:0 > 0 && CFLAG:8009 == 0
+	;恋慕かつ主人のセックスによる処女喪失
+	IF TFLAG:2
+		;恋慕かつ反発刻印未取得
+		IF TALENT:TARGET:150 == 1 && (A < 500 || TFLAG:150 == 1)
+			PRINTFORMW 「ぃ、痛ぃ！　でも%CALLNAME:MASTER%にしてもらえたと思うと、すごく嬉しいぃ……」
+		;恋慕かつ反発刻印取得
+		ELSE
+			PRINTFORMW 「いくら%CALLNAME:MASTER%でも……これだけはいやぁあああ！」
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「んっ、少し物足りないです……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え？　今プツッって……」
+			PRINTFORMW 「そ、そんなぁ……」
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%……初めては、%CALLNAME:MASTER%じゃないの？」
+			PRINTFORML 「ど、どうして……？」
+			PRINTFORMW 阿求は困惑の表情を浮かべている
+		;それ以外
+		ELSE
+			PRINTFORMW 「は、初めてをこんなことで奪われるなんてっ！」
+			PRINTFORMW 「最低……最低、ですっ……！」
+		ENDIF
+	ENDIF
+		CFLAG:TARGET:8009 = 1
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精させた CFLAG8010 CFLAG8011
+;-------------------------------------------------
+IF TFLAG:11 > 0
+		;恋慕
+		IF TALENT:TARGET:150 == 1
+			PRINTFORMW 
+			;CFLAG:8010 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 
+			;CFLAG:8010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			;CFLAG:8010 = 2
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG8012
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;奉仕精神Lv5
+	IF ABL:13 >= 5
+		PRINTFORMW 
+		;CFLAG:8012 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:13 >= 3
+		PRINTFORMW 
+		;CFLAG:8012 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8012 = 1
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG8015
+;-------------------------------------------------
+IF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:8015 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「ふぁぁ♪　こんなの初めてぇ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぁぁ！　や、やめてぇ……」
+		ENDIF
+			CFLAG:8015 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「で、出る！　出ますぅ！　ふぅんん♪」
+			CFLAG:8015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひぃうう！　何、これ……」
+			CFLAG:8015 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG8016
+;-------------------------------------------------
+IF TFLAG:31 > 0
+	;初めて
+	IF CFLAG:TARGET:8106 == 0
+		;従順Lv4以上
+		IF ABL:TARGET:10 >= 4
+			PRINTFORMW 「ひぅっ！　で、出ますぅ！　はぁぁ♪」
+			PRINTFORMW 阿求は乳を出す感覚で快楽を感じている
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひぅっ！　で、出るぅ！　どうしてぇ！」
+		ENDIF
+			CFLAG:8016 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;従順Lv4以上
+		IF ABL:TARGET:10 >= 4
+			PRINTFORMW 「ふ、ぁぁん♪　わ、私の乳っ、飲んでくださいっ！」
+			CFLAG:8016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「私……ついに壊れちゃったの？」
+			CFLAG:8016 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｃ感覚Lv5でＣ絶頂50以上 CFLAG8017
+;-------------------------------------------------
+IF ABL:0 >= 5 && EX:0 >= 50 && NOWEX:0 > 0
+	;初めて
+	IF CFLAG:8017 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「ううっ、んぁん！　くぅううううん！」
+			PRINTFORMW 「敏感すぎて、痺れちゃってるぅん！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「そ、それ以上弄られると、らめっ！」
+			PRINTFORMW 「らめてぇ！　やぁん！」
+		ENDIF
+			CFLAG:8017 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「ううっ、んぁん！　くぅううううん！」
+			PRINTFORMW 「敏感すぎて、痺れちゃってるぅん！」
+			CFLAG:8017 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、またなの！　もうだめぇ！　やぁん！」
+			CFLAG:8017 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ感覚Lv5でＶ絶頂50以上 CFLAG8018
+;-------------------------------------------------
+IF ABL:1 >= 5 && EX:1 >= 50 && NOWEX:1 > 0
+	;初めて
+	IF CFLAG:8018 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「中が……中が、変なのぉ！　はぁあああん♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くぅ……ぅん……うぅん、だめ……だめぇ！　やぁああん！」
+		ENDIF
+			CFLAG:8018 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「イくぅ、イったまま、またイっちゃうぅ！　はぁあああん♪」
+			CFLAG:8018 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「くぅ……ぅん……うぅん♪　だめ……だめぇ！　やぁああん！」
+			CFLAG:8018 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ感覚Lv5でＡ絶頂50以上 CFLAG8019
+;-------------------------------------------------
+IF ABL:2 >= 5 && EX:2 >= 50 && NOWEX:2 > 0
+	;初めて
+	IF CFLAG:8019 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORML 「お、お尻がぁ！　気持ちよすぎぃ……ぁぁ♪」
+			PRINTFORMW 阿求は痙攣したかのように悶えている
+		;それ以外
+		ELSE
+			PRINTFORMW 「お、お尻で、こんなに気持ちよくなっちゃうなんてぇ！　うぁう！　ひぃん！」
+		ENDIF
+			CFLAG:8019 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORML 「お、お尻がぁ！　気持ちよすぎぃ……ぁぁ♪」
+			PRINTFORMW 阿求は痙攣したかのように悶えている
+			CFLAG:8019 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あぁ！　んぁう！　やぁん！　ひぃ、ひぃん♪」
+			PRINTFORMW 「私、壊れちゃったよぉ……」
+			CFLAG:8019 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ感覚Lv5でＢ絶頂50以上 CFLAG8020
+;-------------------------------------------------
+IF ABL:3 >= 5 && EX:3 >= 50 && NOWEX:3 > 0
+	;初めて
+	IF CFLAG:8020 == 0
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「む、胸がぁ！　とっても変になっちゃて……あぁん♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「も、揉まれるだけでぇ……ぅんっ！　意識がぁ……あぁん！　やめてぇ……」
+		ENDIF
+			CFLAG:8020 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:150 == 1
+			PRINTFORMW 「む、胸がぁ！　とっても変になっちゃて……あぁん♪」
+			CFLAG:8020 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、またぁ……、だめぇ……ひぃん！」
+			CFLAG:8020 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;絶頂に達した
+;-------------------------------------------------
+IF NOWEX:0 >= 1 || NOWEX:1 >= 1 || NOWEX:2 >= 1 || NOWEX:3 >= 1
+	IF NOWEX:0 > 0 && NOWEX:1 > 0 && NOWEX:2 > 0 && NOWEX:3 > 0
+
+	ELSE
+		IF TEQUIP:40 == 0
+			;恋慕
+			IF TALENT:150 == 1
+				;Ｃ以外のどこかが敏感
+				IF TALENT:102 == 1 || TALENT:104 == 1 || TALENT:106 == 1
+					PRINTFORML 「ふぁぁぁん！　わらひ、ひもひいいのっ！　いいのぉっ♪」
+				;妖精
+				ELSEIF TALENT:200 == 1
+					PRINTFORML 「あ、ぁぁん！　あふぁっ♪　私には、この卑しい身体が、似合ってるのぉっ♪」
+				ELSE
+					PRINTFORML 「あんっ♪　私、イくっ！　イっちゃいます！　あぁああん！」
+				ENDIF
+			ELSE
+				;Ｃ以外のどこかが敏感
+				IF TALENT:102 == 1 || TALENT:104 == 1 || TALENT:106 == 1
+					PRINTFORML 「あっ、はぁああああっ！　らめぇ！　そこ敏感すぎりゅんれすぅ♪」
+				;妖精
+				ELSEIF TALENT:200 == 1
+					PRINTFORML 「や、やあっ！　この身体、気持ちよすぎ……ふぁああん♪」
+				ELSE
+					PRINTFORML 「わ、私、イっちゃうぅ！　ふぁああん♪」
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;呪精になった CFLAG:5105
+;無理矢理「転生」したんだからおかしくなっても仕方が無い
+;-------------------------------------------------
+IF TALENT:48 == 1 && CFLAG:5105 == 0
+	PRINTFORMW             ・
+	PRINTFORMW             ・
+	PRINTFORMW             ・
+	PRINTFORMW 転生が終わった途端、阿求は顔を紅潮させながら秘所を弄り始めた
+	PRINTFORMW 「ふぁぁ……体が……疼く……疼くよぉ……」
+	PRINTFORMW やがて股を擦り合わせながらあられもない喘ぎ声を上げるようになってきた
+	PRINTFORMW 「はあっ……あぁ……もぉ……イくぅ……ふぁああああん♪」
+	PRINTFORMW 全身を震わして達した阿求は%CALLNAME:MASTER%を押し倒した
+	PRINTFORMW 「私が誰だったか覚えてないけど……%CALLNAME:MASTER%……気持ちよく……してぇ♪」
+	PRINTFORMW 阿求は[気丈]を失った
+	TALENT:12 = 0
+	CFLAG:5105 = 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係（48をキャラ番号に置換）
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_48_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、48を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K48_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K48_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG8097
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8097 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「ぐぐっ……！　お願い、もう少しやさしくして……」
+	ELSE
+		PRINTFORMW 「あ……があっ！」
+		PRINTFORMW 「もう言う事聞くから痛いことしないでぇ……」
+	ENDIF
+		CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG8098
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8098 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 
+	ELSE
+		;呪精（記憶消去）
+		IF TALENT:48 == 1 && CFLAG:5101 == 1
+			PRINTFORMW 「ふ────ぁぁん！」
+			PRINTFORMW 「気持ちいい……よぉ♪」
+		;妖精
+		ELSEIF TALENT:200 == 1
+			PRINTFORMW 「い────はああああああぁぁぁっ！」
+			PRINTFORMW 「こ、こんなにっ、感じちゃうなんてぇっ！」
+		ELSE
+			PRINTFORMW 「くぅ、くぅぅん！　んふっ、んっ、んはあっ！」
+			PRINTFORMW 「あ、頭が真っ白に────ぁぁぁぁん！」
+		ENDIF
+	ENDIF
+		CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG8299
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8099 == 0
+	;呪精
+	IF TALENT:48 == 1
+		PRINTFORMW 「うんっ……%CALLNAME:MASTER%……大好きぃ♪」
+		PRINTFORMW 阿求はぐったりとしながら虚ろな眼で%CALLNAME:MASTER%を見つめていた
+	;妖精
+	ELSEIF TALENT:200 == 1
+		PRINTFORMW （はあっ……はあっ……）
+		PRINTFORMW （疼きが止まらないっ、私おかしくなっちゃったの？）
+		PRINTFORMW （いや、この体のせいよ、絶対にこの体のせい……）
+	ELSE
+		PRINTFORMW （ひ、酷いことされてるのに嫌気を感じないなんて……）
+		PRINTFORMW （私、もう元の場所には帰れない……）
+	ENDIF
+	CFLAG:8099 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG8100
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8100 == 0
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「少し、酷くないですかぁ……」
+	ELSE
+		;呪精
+		IF TALENT:48 == 1
+			PRINTFORMW 「…………っ」
+			PRINTFORMW 阿求が%CALLNAME:MASTER%を見つめる目がきつくなったような気がする
+		ELSE
+			PRINTFORMW 「この事は閻魔様に告げ口しちゃいますから……」
+			PRINTFORMW 「あなた、地獄に墜ちますよ……」
+		ENDIF
+	ENDIF
+		CFLAG:8100 = 1
+ENDIF
+
+;-------------------------------------------------
+;体力0
+;Ｑ：映姫様はこんなこと、本当にできるの？
+;Ａ：調整中です
+;Ｑ：紫と映姫様の違いは何ですか？
+;Ａ：キャラが違います
+;正直、結末がアレだし無茶した時にもわざわざ表示されるとウザいので
+;スキップできるようにしておきました。
+;-------------------------------------------------
+IF BASE:0 <= 0 && ASSI < 0
+	RETURN 0
+ELSEIF BASE:0 <= 0 && (NO:ASSI == 36 || NO:ASSI == 22)
+	PRINTL 阿求の体力が0になりました
+	PRINTL 体力0時のイベントをスキップしますか？
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		RETURN 0
+	ELSEIF RESULT == 1
+		;呪精以外+助手が映姫様+主人があなた
+		;蓬莱人等が主人だと整合性が取れないので
+		IF TALENT:48 == 0 && NO:ASSI == 36 && NO:MASTER == 0
+			PRINTFORMW …………
+			PRINTFORMW ………
+			PRINTFORMW ……
+			WAIT
+			PRINTFORMW 阿求は全身を大きく痙攣させ、その場に倒れた、顔を覗き込むと瞳孔が広がっていくのが見える
+			PRINTFORMW あ、しまった、と%CALLNAME:MASTER%が思った瞬間、%CALLNAME:MASTER%の意識は途切れた
+			PRINTFORMW                  ・
+			PRINTFORMW                  ・
+			PRINTFORMW                  ・
+			PRINTFORMW 目を覚ますと、%CALLNAME:MASTER%は薄暗い部屋の中に居た
+			PRINTFORMW あぁ、あの後寝てしまったのか……と思い%CALLNAME:MASTER%が起き上がろうとすると
+			PRINTFORM 着物の裾
+			;オトコ
+			IF TALENT:MASTER:120
+				PRINTFORM と長い髪の毛
+			ENDIF
+			PRINTFORMW が目についた、何か様子がおかしい……と%CALLNAME:MASTER%が思っている間に映姫様が部屋に入ってきた
+			PRINTFORMW %CALLNAME:MASTER%が事情を聞こうとしたその時、%CALLNAME:MASTER%は縄で縛られた
+			PRINTFORMW 『まだあどけない少女を攫って卑猥な行為をさせたあげく、息の根を止めてしまうとは……』
+			PRINTFORMW 『あなたは、命を軽視しすぎる……』
+			PRINTFORMW そう言ってから映姫様が大きな姿見を%CALLNAME:MASTER%の目の前に持ってきた
+			PRINTFORM %CALLNAME:MASTER%が姿見を覗き込むと、そこには
+			IF TALENT:200 == 1
+				PRINTFORM 人の姿のままの
+			ENDIF
+			PRINTFORMW 阿求の姿と、その後ろに立つ映姫様の姿しか写っていなかった
+			PRINTFORMW 『あなたには、あの子と同じ苦しみを味わってもらいます……』
+			PRINTFORMW 『快楽に戸惑わされ、希望を奪われ、そして……息も出来ぬ程の快楽によがり狂う……』
+			PRINTFORMW 『その全てを……その身を以って味わうがいい』
+			PRINTFORMW 怒りが籠った口調で映姫様が喋り終わるや否や、阿求になった%CALLNAME:MASTER%を着物の上から愛撫し始めた
+			PRINTFORMW それと同時に%CALLNAME:MASTER%の全身に快楽が走り、頭の中は真っ白になった
+			PRINTFORMW ……この調子では10日、いや、3日で身が堕とされ、7日もあれば心も堕とされるだろう……
+			RETURN 0
+		;呪精以外+助手が紫+主人があなた
+		;幻想郷が故郷の人物が主人だと整合性が取れないので
+		;この紫、誰てめえ……
+		ELSEIF TALENT:48 == 0 && NO:ASSI == 22 && NO:MASTER == 0
+			PRINTFORMW …………
+			PRINTFORMW ………
+			PRINTFORMW ……
+			WAIT
+			PRINTFORMW %CALLNAME:MASTER%は薄暗い部屋のベッドの上で目を覚ました
+			PRINTFORMW どうやらここは外の世界の方の%CALLNAME:MASTER%の部屋のようだ
+			PRINTFORMW なんだ、夢だったのか、と思い%CALLNAME:MASTER%は部屋の電気を付けようと電灯の紐を手を伸ばしたが、手が届かなかった。
+			PRINTFORMW あれ？何かおかしい……と変に思った%CALLNAME:MASTER%は身を起こして、部屋にある姿見の前に立った
+			PRINTFORMW ……姿見には%CALLNAME:MASTER%の姿は無く、代わりに阿求の姿が写っていた
+			PRINTFORM とても驚き、その場で硬直した%CALLNAME:MASTER%
+			;淫乱
+			IF TALENT:170 == 1
+				PRINTFORMW ではあったが
+				PRINTFORMW その姿を見ている内に身体が欲情して疼いてきた%CALLNAME:MASTER%は、その場で胸を揉みしだき、あられの無い声を上げていった……
+				;自慰中毒Lv3以上
+				IF ABL:30 >= 3
+					PRINTFORMW そして絶頂に達した%CALLNAME:MASTER%は、それでもまだ物足らず、股間を愛撫し始めた
+					PRINTFORMW 次第に息が荒くなり、全身を紅潮させた%CALLNAME:MASTER%は何度も絶頂に達し、その場に倒れて
+					PRINTFORMW 何かに取り憑かれたかのように自慰に没頭していった……
+				ENDIF
+			ELSE
+				PRINTFORMW はこれから先の事を考えると目の前が真っ黒になった……
+			ENDIF
+			PRINTFORMW その様子を遠くから見ていた紫は、小さく頬を緩ませて笑った
+			PRINTFORMW 『阿求が事切れる直前に、%CALLNAME:MASTER%と阿求の境界を歪ませて精神を移動させたわ』
+			PRINTFORMW 『大丈夫、因果律は変えてあるから誰も%CALLNAME:MASTER%の事は不思議に思わない』
+			PRINTFORMW 『また後で迎えに来てあげる、……その頃には%CALLNAME:MASTER%の精神が、その身体に引き摺られて壊れちゃってるでしょうけどね、ふふ……』
+			;全身敏感+淫乱系素質同時全取得イベント
+			IF (TALENT:171 == 1 || TALENT:172 == 1) && TALENT:173 == 1 && TALENT:174 == 1 && TALENT:175 == 1 && TALENT:176 == 1 && TALENT:177 == 1 && TALENT:178 == 1 && TALENT:100 == 1 && TALENT:102 == 1 && TALENT:104 == 1 && TALENT:106 == 1
+				PRINTFORMW 
+				PRINTFORMW それから数日後……
+				PRINTFORMW %CALLNAME:MASTER%は部屋から出ずに、ずっと自慰に耽っていたようだ
+				IF TALENT:80 == 1
+					PRINTFORM %CALLNAME:MASTER%の目の前には大鏡を置き、縄で手以外を縛りながら
+				ELSE
+					PRINTFORM 息を荒くして、可愛らしい声を上げながら、
+				ENDIF
+				PRINTFORMW 一糸纏わぬ姿で秘所や胸を弄りまくっている。
+				PRINTFORM 時折
+				SIF TALENT:45 == 1
+					PRINTFORM 尿を噴き出しながら
+				PRINTFORMW 身体を反らし、まるで阿求本人であるかのような口調で喘ぎながら絶頂に達している
+				PRINTFORMW その身体は全身愛液と汗で濡れており、目は濁っていた。どうやら自分が誰だか忘れてしまっているようだ
+				PRINTFORMW そんな中、紫はスキマを通って再びやってきた
+				PRINTFORMW 『%CALLNAME:MASTER%、”迎えに”来たわ』
+				PRINTFORMW 『……ってあら、もうすっかりできちゃってるみたいね』
+				PRINTFORMW 『じゃあもう説明は要らないのかしら？　あなたには”居場所”があるのよ……』
+				PRINTFORMW 紫は絶頂に達した直後でぐったりとしている%CALLNAME:MASTER%を抱き抱え、来たスキマを再び通って幻想郷へと戻っていった……
+				PRINTFORMW ……その後、%CALLNAME:MASTER%と阿求の姿を見た者は、誰も居ない……
+				RETURN 0
+			ELSE
+				RETURN 0
+			ENDIF
+		ENDIF
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;イベント口上集（48、X2をキャラ番号に置換する） FLAG 261～296
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_BEFORE
+;-------------------------------------------------
+;調教後自慰 CFLAG8151
+;口上のERBだけでどこまでできるかという限界までの縛りプレイに挑戦中
+;-------------------------------------------------
+
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:150 ==1
+		PRINTFORMW 「はあぁ……全然収まらないぃ♪」
+		PRINTFORMW 「もうこのままずっと……ふぁああぁああん♪」
+		CFLAG:8101 = 3
+	;自慰中毒Lv3以上
+	ELSEIF ABL:30 >= 3
+		PRINTFORMW 「あ、またイ、くぅっ！」
+		PRINTFORMW 「手を止めたくてもぉっ！　止まらな、いぃぃ！」
+		CFLAG:8151 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はあっ、はあっ……このままだと、駄目になっちゃう……」
+		CFLAG:8151 = 1
+	ENDIF
+	IF CFLAG:5124 >= 3
+		PRINTFORML %CALLNAME:MASTER%は快楽を忘れきれず、自慰をし始めた
+		;自慰中毒LV5以上+淫乱
+		IF CFLAG:5126 >= 5 && CFLAG:5130 >= 1
+			PRINTFORML 快楽無しでは生きられない身体になっているようだ。%CALLNAME:MASTER%は頭の中を快楽で埋め尽くして艶やかに喘ぎながら自慰に耽っていった
+			CFLAG:5129 += 25
+			CFLAG:5128 += 20
+		;自慰中毒LV5以上
+		ELSEIF CFLAG:5126 >= 5
+			PRINTFORML あまりの快楽で頭が真っ白になった。疲れて動けなくなるまで%CALLNAME:MASTER%は喘ぎながら自慰に耽っていった
+			CFLAG:5129 += 20
+			CFLAG:5128 += 15
+		;自慰中毒LV3以上
+		ELSEIF CFLAG:5126 >= 3
+			PRINTFORML 全身に気持ちいい痺れを感じつつ、%CALLNAME:MASTER%は熱い吐息を出して喘ぎながら自慰に耽っていった
+			CFLAG:5129 += 15
+			CFLAG:5128 += 10
+		;自慰中毒LV2以上
+		ELSEIF CFLAG:5126 >= 2
+			PRINTFORML 心地いい気持ちよさが癖になった%CALLNAME:MASTER%は、熱い吐息を出しつつ自慰に耽っていった
+			CFLAG:5129 += 10
+			CFLAG:5128 += 5
+		;自慰中毒LV1以上
+		ELSEIF CFLAG:5126 >= 1
+			PRINTFORML 自慰に少し慣れてきた。%CALLNAME:MASTER%は時々身体を震えさせながら自慰に耽った
+			CFLAG:5129 += 5
+			CFLAG:5128 += 1
+		;それ以外
+		ELSE
+			CFLAG:5129 += 1
+		ENDIF
+		;自慰経験が92以上の時
+		IF CFLAG:5129 >= 92 && CFLAG:5126 < 5
+			PRINTFORMW %CALLNAME:MASTER%は自慰によって得られる快楽が強くなった
+			CFLAG:5126 = 5
+		;自慰経験が32以上の時
+		ELSEIF CFLAG:5129 >= 32 && CFLAG:5126 < 3
+			PRINTFORMW %CALLNAME:MASTER%は自慰をしないと収まらなくなった
+			CFLAG:5126 = 3
+		;自慰経験が12以上の時
+		ELSEIF CFLAG:5129 >= 12 && CFLAG:5126 < 2
+			PRINTFORMW %CALLNAME:MASTER%は自慰をするのが癖になった
+			CFLAG:5126 = 2
+		;自慰経験が2以上の時
+		ELSEIF CFLAG:5129 >= 2 && CFLAG:5126 < 1
+			PRINTFORMW %CALLNAME:MASTER%は自慰が少し楽しみになっている
+			CFLAG:5126 = 1
+		ENDIF
+		CALL ANATA_YOKUBOU_K48_TOKUSYU
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;レズプレイ CFLAG8154
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE154
+IF 1
+	;恋慕
+	IF TALENT:150 ==1
+		PRINTFORMW 
+		;CFLAG:8154 = 4
+	;レズ中毒Lv3以上
+	ELSEIF ABL:32 >= 3
+		PRINTFORMW 
+		;CFLAG:8154 = 3
+	;レズっけLv3以上
+	ELSEIF ABL:22 >= 3
+		PRINTFORMW 
+		;CFLAG:8154 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		;CFLAG:8154 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG8140
+;口上以外の既存のERBを弄って互換性を無くすのが嫌なので力技で対処
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;恋慕
+	IF TALENT:150 ==1
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「これぇ、咥えてると安心できるのぉっ♪」
+		ELSE
+			PRINTFORMW 「んぷっ……気持ちいいですか？　今日もお願いしますね♪」
+		ENDIF
+		IF CFLAG:5116 == 1
+			PRINTFORML ……どうやら寝ぼけて幻覚を見ていたようだ
+			PRINTFORMW 阿求の方は感じすぎて前に%CALLNAME:MASTER%が居るような錯覚を受けて奉仕を行っている
+		ENDIF
+		CFLAG:8140 = 3
+	;奉仕精神Lv5以上
+	ELSEIF ABL:13 >= 5
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「ふぁぁ、これ、止められないよぉ♪」
+		ELSE
+			PRINTFORMW 「はぁ……咥えるのが癖になってしまいました……」
+		ENDIF
+		IF CFLAG:5116 == 1
+			PRINTFORML ……どうやら寝ぼけて幻覚を見ていたようだ
+			PRINTFORMW 阿求の方は感じすぎて前に%CALLNAME:MASTER%が居るような錯覚を受けて奉仕を行っている
+		ENDIF
+		CFLAG:8140 = 2
+	;それ以外
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「い、いや……身体が疼いて仕方が無かったので……」
+		ELSE
+			PRINTFORMW 「んぷっ……これで、いいのですか？」
+		ENDIF
+		IF CFLAG:5116 == 1
+			PRINTFORML ……どうやら寝ぼけて幻覚を見ていたようだ
+			PRINTFORMW 阿求の方は感じすぎて前に%CALLNAME:MASTER%が居るような錯覚を受けて奉仕を行っている
+		ENDIF
+		CFLAG:8140 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG8150
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;V感覚Lv4以上
+	IF ABL:1 >= 4
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「こ、腰が止まらないのぉっ♪」
+			PRINTFORMW 「もっとぉ！　私を突いてくださいぃ♪」
+		ELSE
+			PRINTFORMW 「まだ帰らないで……ふぁぁん！　あぁん！」
+		ENDIF
+		CFLAG:8150 = 2
+	;それ以外
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORMW 「あぁぁ、まだまだ足りないよぉ……」
+		ELSE
+			PRINTFORMW 「お願いします、もう少しだけ……」
+		ENDIF
+		CFLAG:8150 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG8158
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;V感覚Lv5以上
+	IF ABL:1 >= 5
+	;妖精
+	IF TALENT:200 == 1
+		PRINTFORMW 「ふあっ！　す、すごすぎますぅ♪」
+	ELSE
+		PRINTFORMW 「はぁぁ……この感覚、堪りません……」
+	ENDIF
+		CFLAG:8158 = 2
+	;それ以外
+	ELSE
+	;妖精
+	IF TALENT:200 == 1
+		PRINTFORMW 「寝る前になっても、疼いて疼いて仕方が無かったんですぅ……」
+		PRINTFORMW 「もっとぉ……私を犯してくださいぃ♪」
+	ELSE
+		PRINTFORMW 「少し……いいですか？」
+	ENDIF
+		CFLAG:8158 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;売却
+;-------------------------------------------------
+
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;恋慕+反発刻印Lv3未満
+	IF TALENT:150 && MARK:9 < 3
+		IF TALENT:48 == 1
+			PRINTFORMW 売却を阿求に伝えた途端、阿求はふわっと動いて%CALLNAME:MASTER%に抱きついた
+			PRINTFORMW 「や……やだぁ……私、%CALLNAME:MASTER%から離れたくなぁい……」
+			PRINTFORMW 「おねがぁい……考えなおしてぇ……」
+			PRINTFORMW 阿求は%CALLNAME:MASTER%に抱きついたまま離れようとしなかった
+		ELSE
+			PRINTFORMW 「えっ……」
+			PRINTFORMW 売却することを阿求に伝えた途端、阿求は目に涙を浮かべ必死に%CALLNAME:MASTER%に抱きついた
+			PRINTFORMW 「私のどこが不満だったんですか？言ってくれれば直しますからぁ……」
+			PRINTFORMW 「おねがい……私を%CALLNAME:MASTER%の元に居させてください……」
+			PRINTFORMW それから数時間の間、阿求は離れようとしなかった……
+		ENDIF
+	;反発刻印Lv3
+	ELSEIF MARK:9 == 3
+		;呪精
+		IF TALENT:48 == 1
+			PRINTFORMW 「ふぁ……ぁ……許しませんからぁ……絶対に戻ってきてあげます……」
+			PRINTFORMW 阿求は輝きが弱いが憎悪の目を%CALLNAME:MASTER%に向けている
+		;妖精
+		ELSEIF TALENT:200 == 1
+			PRINTFORMW 「私をこんな姿にした上に売却……」
+			PRINTFORMW 「一体どれだけ私に屈辱を与えたら済むのですか？」
+			PRINTFORMW 「次出会った時は覚悟しておいてくださいね……」
+			PRINTFORMW 阿求は今までに無いくらい憎悪を込めた目を%CALLNAME:MASTER%に向けた
+		ELSE
+			PRINTFORMW 「これで%CALLNAME:MASTER%から離れられると思うと、すっきりします」
+			PRINTFORMW 阿求は気分をよくして商人に連れていかれた
+		ENDIF
+	;淫乱
+	ELSEIF TALENT:170
+		;呪精
+		IF TALENT:48 == 1
+			PRINTFORMW 「ふぁ……ぁふ♪　次の人、上手いのかなぁ……」
+			PRINTFORMW 阿求は次の主人の事を考えながら息を荒くしている
+		;妖精
+		ELSEIF TALENT:200 == 1
+			PRINTFORMW 「私を売る？」
+			PRINTFORMW 「そうですか……こんな姿を他人に晒すなんて想像しただけで……ふあっ♪」
+			PRINTFORMW 阿求はこれから先の事を想像しただけで軽く達したようだ
+		ELSE
+			PRINTFORMW 「私、売られてしまうのですか？」
+			PRINTFORMW 「こうして、私は様々な人の手に渡って、様々な事を……あぁぁ♪」
+			PRINTFORMW 阿求はこれからの自分の事を想像して顔を紅潮させ、涎を垂らしながら快楽を感じているようだ
+		ENDIF
+	;それ以外
+	ELSE
+		;呪精
+		IF TALENT:48 == 1
+			PRINTFORMW 「えぇー……つまらないよぉ、もっとぉ……してほしかった……」
+			PRINTFORMW 阿求は落胆の表情を見せながら商人に連れていかれた
+		;妖精
+		ELSEIF TALENT:200 == 1 && CFLAG:5101 == 0
+			PRINTFORMW 「え？　……うぁぁ！　私っ、こんな状態で売られるなんてっ！　いやぁ！」
+			PRINTFORMW 阿求は舌を噛み切ろうとしたが、すぐに商人に取り抑えられ、口に布を押し込められた
+			PRINTFORMW 果たしてあの状態で次の主人は大丈夫だろうか……
+		ELSE
+			PRINTFORMW 「そう、ですか……」
+			PRINTFORMW 「次の主人、もっと優しい人だと嬉しいですね」
+			PRINTFORMW 「……まあ、%CALLNAME:MASTER%より酷い人なんて居ないのでしょうけどね」
+			PRINTFORMW 阿求は毒を含んだ言葉を吐きつつ、商人に連れていかれた
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;白のキャンディ使用時
+;-------------------------------------------------
+;-------------------------------------------------
+;白の飴玉使用
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE334
+
+	IF TFLAG:99 == 0
+		IF TALENT:150 == 1
+			PRINTFORMW 「……何ですか、これは？」
+			PRINTFORMW 「嫌な予感がするのですが……%CALLNAME:MASTER%が言うのなら飲みますけど」
+		ELSE
+			PRINTFORMW 「な……何を飲ませるつもりですか……」
+			PRINTFORMW 「やめて、離してくださ……んんっ、んぐぅ……」
+		ENDIF
+	ELSEIF TFLAG:99 == 1
+		PRINTFORMW 「う、嘘、いや、でも、そんな、ありえない……」
+		PRINTFORMW 「でもこの羽があるってことはやっぱり、私は……」
+		IF CFLAG:5113 == 1
+			PRINTFORML %CALLNAME:MASTER%は阿求にミニスカートのワンピースと、膝下までの長さがあるニーソックスと、
+			PRINTFORMW ドレスグローブとカチューシャといったシルクで濃い紫色で出来た一式を渡して着るように命じた
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%は阿求に妖精用のワンピースのような服を渡し、それを着るように命じた
+		ENDIF
+		IF CFLAG:5113 == 1
+			PRINTFORMW 「すっごく、似合ってるのぉっ……」
+		;恋慕
+		ELSEIF TALENT:TARGET:150 == 1
+			PRINTFORMW 「さ、さすがに%CALLNAME:MASTER%でもちょっと……」
+			PRINTFORMW 「ひどくないですかぁ……」
+		ELSE
+			PRINTFORMW 「……！　私を卑しめるつもりですか……！」
+			PRINTFORMW 「そんな……」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;元気になる薬使用時
+;-------------------------------------------------
+;-------------------------------------------------
+;栄養剤使用
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE310
+
+	PRINTL 全部着けたまま放置している阿求の様子がきになる……
+	PRINTL 阿求を開放して薬を与えてやりますか？
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		IF CFLAG:5116 == 1
+			CFLAG:5117 -= DAY
+			;6日以上放置していた場合
+			;一種の救済措置です。珠は手に入りません。
+			IF CFLAG:5117 <= -6
+				PRINTFORMW %CALLNAME:MASTER%が阿求の部屋に入り、阿求の様子を確かめた
+				PRINTFORMW 長時間快楽を与え続けられていたせいで、喘ぎ声すら出す気力が無いようだ
+				PRINTFORMW %CALLNAME:MASTER%は慌てて阿求に薬を与えてやると、阿求の様子が微かに回復した
+				PRINTFORMW 回復するまで少し休ませた方がいいだろう……
+				BASE = 100
+				CFLAG:5116 = 0
+				CFLAG:5117 = 0
+			ELSE
+				PRINTFORMW %CALLNAME:MASTER%はよがり狂っている阿求に付けられている物を全部外した
+				PRINTFORMW 死ぬかと思ったと少し怒られてしまったが、まあ生きているのでいいだろう
+				CFLAG:5116 = 0
+				CFLAG:5117 = 0
+			ENDIF
+		ENDIF
+	ELSEIF RESULT == 1
+		
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+
+
+;;;;-------------------------------------------------
+;;;;公開ライブ失敗
+;;;;-------------------------------------------------
+;;;IF TFLAG:200 == 4
+;;;	IF TFLAG:99 != 3
+;;;		;恋慕
+;;;		IF TALENT:150 == 1
+;;;			PRINTFORMW 「ひゃぁぁ！　私、こんなに一気に来られたら、壊れちゃうぅ♪」
+;;;			PRINTFORMW 「ふぁぁん！　きゃふ！　んんっ……んぅん……ぷはぁ……もっと、やってぇ♪」
+;;;		ELSE
+;;;			PRINTFORML 「や、やめてぇ！　やめ……んんっ！」
+;;;			PRINTFORMW 「んーっ！　んーっ！　んんっ！」
+;;;			PRINTFORMW 「ぷはぁ……こんなのって……こんなのってぇ！」
+;;;		ENDIF
+;;;		CFLAG:5102 += 1
+;;;		CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+;;;	ENDIF
+;;;ENDIF
+
+;-------------------------------------------------
+;記憶消去薬使用時　分かりやすいようにCFLAG5101を使用
+;-------------------------------------------------
+
+;-------------------------------------------------
+;記憶消去薬使用
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE324
+	;フラグ立てときますよ
+	CFLAG:5101 = 1
+
+
+;;;;-------------------------------------------------
+;;;;酒恥肉倫
+;;;;-------------------------------------------------
+;;;IF TFLAG:200 == 9
+;;;	SIF TEQUIP:42
+;;;		RETURN 0
+;;;	;人間
+;;;	IF S == 1
+;;;		;恋慕
+;;;		IF TALENT:150 == 1
+;;;			;妖精
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「やあっ、あんっ！　ふぁん！　わ、私、妖精にされて村人に犯されて感じちゃってるぅ♪」
+;;;			ELSE
+;;;				PRINTFORMW 「ふ、ふぁぁ！　私を、食べてぇ！」
+;;;			ENDIF
+;;;		ELSE
+;;;			;妖精
+;;;			PRINTFORMW 「ぐぅ、んっ！　う、動けない……いや！　いやぁ！」
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「や、やぁぁ！　やめてぇ！　これ以上私を卑しめないでぇ！」
+;;;			ELSE
+;;;				PRINTFORMW 「だ、だめぇ！　私を滅茶苦茶にしないでぇ！」
+;;;			ENDIF
+;;;		ENDIF
+;;;	ELSEIF S == 2
+;;;		;恋慕
+;;;		IF TALENT:150 == 1
+;;;			;妖精
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「ふぁ、あぁ……ぁ……ん、悪戯、しないでぇ♪」
+;;;			ELSE
+;;;				PRINTFORMW 「私、妖精に逆に悪戯されて感じちゃってるぅ！」
+;;;			ENDIF
+;;;		ELSE
+;;;			;妖精
+;;;			PRINTFORMW 「ぐぅ、んっ！　う、動けない……いや！　いやぁ！」
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「だめぇ……うんっ！　そこ撫でないでぇ……！」
+;;;			ELSE
+;;;				PRINTFORMW 「ぅんっ！　ふぁ……ぁ……くぅん！　あぁん！」
+;;;				PRINTFORMW 阿求は首を横に振って否定しながらも、秘所を弄られる度に体を震わせている
+;;;			ENDIF
+;;;		ENDIF
+;;;	ELSEIF S == 5
+;;;		;恋慕
+;;;		IF TALENT:150 == 1
+;;;			;妖精
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「わ、わらひ、もうらめ、らめなのぉ！」
+;;;				PRINTFORMW 「しぇんひんが、ふぁぁ！　うすいてぇ、くぅん！　たまらないのぉ！」
+;;;			ELSE
+;;;				PRINTFORMW 「か……体が……疼いてぇ、も、もうらめぇ！　イかせてぇ！」
+;;;			ENDIF
+;;;		ELSE
+;;;			;妖精
+;;;			PRINTFORMW 「ぐぅ、んっ！　う、動けない……いや！　いやぁ！」
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「い、いやぁ！　身体が、勝手に、疼くぅ……ふぁぁん！」
+;;;			ELSE
+;;;				PRINTFORMW 「ん……くぅ……うんっ！　ふぁ……ぁん……」
+;;;				PRINTFORML 全身が敏感になって、時々身震いしながらも必死に耐えている阿求の様子を観察して
+;;;				PRINTFORMW それを嘲笑うかのように、魔界からやってきた一団は阿求の身体を凌辱し始めた
+;;;				PRINTFORMW 「ふ、ふぇ？　ひょっと！　らめぇ！　あぁん！　ひゃぁ！」
+;;;			ENDIF
+;;;		ENDIF
+;;;	ELSE
+;;;		;恋慕
+;;;		IF TALENT:150 == 1
+;;;			;妖精
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「うゃん！　こんな大勢に犯されたらぁ、耐えられないですぅ！」
+;;;			ELSE
+;;;				PRINTFORMW 「お、おっきいのがいいのぉ！　あぁん！　ひぃん！」
+;;;			ENDIF
+;;;		ELSE
+;;;			;妖精
+;;;			PRINTFORMW 「ぐぅ、んっ！　う、動けない……いや！　いやぁ！」
+;;;			IF TALENT:200 == 1
+;;;				PRINTFORMW 「だ、だめぇ！　そんなに入らないのぉ！　あぁん！」
+;;;			ELSE
+;;;				PRINTFORMW 「怖い……怖いよぉ……、くぅっ！　うぁん！」
+;;;			ENDIF
+;;;		ENDIF
+;;;	ENDIF
+;;;	CFLAG:5102 += 1
+;;;	SIF CFLAG:5100 == 1 && BASE:0 <= 1200
+;;;		BASE:0 = 1200
+;;;	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+;;;ENDIF
+;;;
+;-----------------------------------------------
+;触手漬け
+;-----------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE250
+IF 1
+	PRINTFORMW 「きゃっ！　ち、ちょっと！　なんなんですかいきなり！」
+	PRINTFORMW 「……え？　い、いや！　やめてぇ！　いや！　いやぁ！」
+ENDIF
+
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE251
+IF 1
+	PRINTFORMW 「んんっ！　んっ！　んんんんっ！」
+	PRINTFORMW 「んうん！　んーっ！　ぷはっ！　はあぅ……」
+	PRINTFORMW 「あぁ……もぅ……むりぃ……」
+ENDIF
+
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE252
+IF 1
+	PRINTFORMW 「私が、悪かったですぅ……」
+	PRINTFORMW 「もう%CALLNAME:MASTER%の言う事を聞きますからぁ……」
+	PRINTFORMW 「お願いします……離してぇ……」
+ENDIF
+
+;-------------------------------------------------
+;触手催眠
+;-------------------------------------------------
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE8
+IF 1
+	IF TFLAG:99 == 4
+		PRINTFORMW 「こ、これは凄いぃ！　はぁん！　あぁぁ……かふぅ！」
+	ELSEIF TFLAG:99 == 1
+		PRINTFORMW 「さんっ！　はぁん！　凄いっ！」
+	ELSEIF TFLAG:99 == 2
+		PRINTFORMW 「ぁは……%CALLNAME:MASTER%、優しいですね……」
+	ELSEIF TFLAG:99 == 5
+		PRINTFORMW 「ぁは、私、白昼堂々村の中心で村の男達にマワされてるぅ！」
+		PRINTFORMW 「縄で縛られて全ての口を犯されながら村中を回ってますぅ！」
+	ELSEIF TFLAG:99 == 0
+		PRINTFORMW 「ぁ……はぁ……」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;コマンド実行拒否
+;-------------------------------------------------
+@KOJO_48_DENIAL_MESSAGE, ARG
+IF 1
+	;恋慕
+	IF TALENT:150 == 1
+		PRINTFORMW 「いくら%CALLNAME:MASTER%の頼みでもそれはちょっと……」
+		PRINTFORMW 「これをやるのはやめにして、他のことをしませんか？」
+	ELSE
+		PRINTFORML 「こんな状況でも、それだけは嫌ですっ！」
+		PRINTFORMW 阿求は頑なに抵抗をして命令を聞かなかった
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+;呪精
+@KOJO_48_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	IF TALENT:48 == 1 && TALENT:200 == 1
+		PRINTFORMW 「え……？何、これぇ……」
+		PRINTFORMW %CALLNAME:MASTER%はこの指輪の意味を阿求に教えた
+		PRINTFORMW 「そんな物を……私に……くれるの？」
+		PRINTFORMW 「ぁは……とっても嬉しい……」
+		PRINTFORMW 阿求は虚ろな目のまま、%CALLNAME:MASTER%に向かって微かに微笑んだ
+	ELSE
+		PRINTFORMW 「え？　これを私に？」
+		PRINTFORMW 「本当に、いいのですか？　だって、私……」
+		PRINTFORMW %CALLNAME:MASTER%は阿求に想いを伝えた
+		PRINTFORMW 「……そ、そのですね、ちょっと唐突すぎではありませんか？」
+		PRINTFORMW 「私にも心の準備というのが必要なんです」
+		PRINTFORMW 「でも……嬉しい……%CALLNAME:MASTER%……」
+		PRINTFORMW 阿求は顔を俯けたまま、%CALLNAME:MASTER%に抱きついた
+	ENDIF
+ENDIF
+TFLAG:200 = 0
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_EVENT_COM関係
+;コマンド処理の最後に出力
+;口上をOFFにしても実行する
+;-------------------------------------------------
+@KOJO_48_MESSAGE_COMEVENT
+;-------------------------------------------------
+;縄縛り中
+;-------------------------------------------------
+IF TEQUIP:40 >= 1
+	;恋慕
+	IF TALENT:150 == 1
+		;絶頂に達した場合
+		IF NOWEX:0 >= 1 || NOWEX:1 >= 1 || NOWEX:2 >= 1 || NOWEX:3 >= 1
+			;ボールギャグ着用
+			IF TEQUIP:42
+				IF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+					
+				ELSE
+					PRINTFORML 「んんっ、んんんんんんん！　んーーーっ！」
+					PRINTFORM くぐもった喘ぎ声を漏らしながら、
+				ENDIF
+				PRINTFORML 阿求は弓なりに身体を反らして絶頂に達した
+			ELSE
+				IF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+					
+				ELSE
+					PRINTFORML 「ぐうっ、はぁあああああん！　こ、擦れて気持ちいいですぅ♪」
+				ENDIF
+				PRINTFORML 身動きできないまま絶頂に達した阿求は、弓なりに身体を反らした
+			ENDIF
+		;野外プレイ時
+		ELSEIF TEQUIP:52 >= 1
+			;マゾっ気LV3以上
+			IF ABL:21 >= 3
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求の口から絶えずぐぐもった喘ぎ声が漏れている
+					PRINTFORML どうやらこの姿を見られて凄く感じているようだ
+				ELSE
+					PRINTFORML 「あはっ♪　私、恥ずかしい所を曝け出してるぅ！」
+					PRINTFORML 手で隠す事すらできず、その上食い込んで卑しくなっている秘所を晒すことに快楽を感じているようだ
+				ENDIF
+			ELSE
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求は顔を赤らめながら俯いている
+					PRINTFORML 他人にこの姿を見られるのが恥ずかしいようだ
+				ELSE
+					PRINTFORML 「隠す事すらできないなんて……さすがに恥ずかしいです」
+				ENDIF
+			ENDIF
+		;それ以外
+		ELSE
+			;マゾっ気LV3以上
+			IF ABL:21 >= 3
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求の口から絶えずぐぐもった喘ぎ声が漏れている
+					PRINTFORML どうやら縛られて快楽を感じているようだ
+				ELSE
+					PRINTFORML 「あぁぁ♪　私、動けないよぉ♪」
+					PRINTFORML 阿求は縛られて身動きできない状況に快楽を感じているようだ
+				ENDIF
+			ELSE
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求は頻繁に身体を揺らしている
+					PRINTFORML 縛られている感覚に慣れていないようだ
+				ELSE
+					PRINTFORML 「これ、きつくないですか……」
+				ENDIF
+			ENDIF
+		ENDIF
+	ELSE
+		;絶頂に達した場合
+		IF NOWEX:0 >= 1 || NOWEX:1 >= 1 || NOWEX:2 >= 1 || NOWEX:3 >= 1
+			;ボールギャグ着用
+			IF TEQUIP:42
+				IF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+					
+				ELSE
+					PRINTFORML 「んっ！　んっ！　んーーーーーっ！」
+					PRINTFORM くぐもった喘ぎ声を漏らしつつ、
+				ENDIF
+				PRINTFORML 嫌がりながら阿求は弓なりに身体を反らして絶頂に達した
+			ELSE
+				IF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+					
+				ELSE
+					PRINTFORML 「そ、そんなっ！　縛られたままイくなんてっ！　ふぁあああああん！」
+				ENDIF
+				PRINTFORML 身動きできないまま嫌々絶頂に達した阿求は、弓なりに身体を反らした
+			ENDIF
+		;野外プレイ時
+		ELSEIF TEQUIP:52 >= 1
+			;マゾっ気LV3以上
+			IF ABL:21 >= 3
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求の股間を通る縄が湿っている
+					PRINTFORML どうやらこの姿を見られて感じているようだ
+				ELSE
+					PRINTFORML 「そ、そんなっ！　見られるのを意識するだけで、身体が熱くなるなんてぇ！」
+					PRINTFORML 秘所のロープが湿っている、どうやら秘所を晒すことに快楽を感じているようだ
+				ENDIF
+			ELSE
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求は目に涙を浮かべながら俯いている
+					PRINTFORML 他人にこの姿を見られるのが嫌なようだ
+				ELSE
+					PRINTFORML 「いや、いやぁ！　こんな姿を見せるなんて屈辱ですっ！」
+				ENDIF
+			ENDIF
+		ELSE
+			;マゾっ気LV3以上
+			IF ABL:21 >= 3
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求はくぐもった喘ぎ声を出しながら荒い呼吸をしている
+					PRINTFORML どうやら縄で縛られていることに快楽を感じるようになっているようだ
+				ELSE
+					PRINTFORML 「ふぁぁ♪　何をされても抵抗できないよぉ♪」
+					PRINTFORML 秘所のロープが湿っている、どうやら縛られている事に快楽を覚えたようだ
+				ENDIF
+			ELSE
+				;ボールギャグ着用
+				IF TEQUIP:42
+					PRINTFORML 阿求は激しく抵抗をしている
+					PRINTFORML どうやら縛られていることが嫌なようだ
+				ELSE
+					PRINTFORML 「いや、いやぁ！　早く解いてぇ！」
+					PRINTFORML 阿求は縄を解こうと抵抗をしている
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+	CFLAG:5104 += 1
+	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ拡張
+;-------------------------------------------------
+;人里+集団視姦
+IF TFLAG:150 ==99 && TFLAG:151 == 4 && TALENT:48 == 0
+	;恋慕＋露出癖Lv3以上
+	IF TALENT:TARGET:150 == 1 && ABL:14 >= 3
+		;妖精
+		IF TALENT:200 == 1
+			IF TEQUIP:42
+				PRINTFORML 阿求は顔を赤くしながら時折くぐもった喘ぎ声を漏らしている
+			ELSE
+				PRINTFORML 「んあぁ！　ここまで堕ちた私を見てぇ！」
+			ENDIF
+		ELSE
+			IF TEQUIP:42
+				PRINTFORML 阿求は顔を赤くしながら時折くぐもった喘ぎ声を漏らしている
+			ELSE
+				PRINTFORML 「あぁ……みんなに私のこと見られてますぅ！」
+			ENDIF
+		ENDIF
+	;露出癖Lv3以上
+	ELSEIF ABL:14 >= 3
+		;妖精
+		IF TALENT:200 == 1
+			IF TEQUIP:42
+				PRINTFORML 阿求は息を荒くしながら顔を緩ませている
+			ELSE
+				PRINTFORML 「はあっ……こんな姿、見られるのは嫌なのにぃ……」
+			ENDIF
+		ELSE
+			IF TEQUIP:42
+				PRINTFORML 阿求は息を荒くしながら顔を緩ませている
+			ELSE
+				PRINTFORML 「あぁぅ……恥ずかしいのに、気持ちいい……」
+			ENDIF
+		ENDIF
+	;それ以外
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			IF TEQUIP:42
+				PRINTFORML 阿求は籠った呻き声を出しながら顔を左右に振って抵抗している
+				PRINTFORML 他人に姿を晒すのが嫌なようだ
+			ELSE
+				PRINTFORML 「や、やぁあ！　こんな姿になった私を見ないでぇ！」
+			ENDIF
+		ELSE
+			IF TEQUIP:42
+				PRINTFORML 阿求は籠った呻き声を出しながら顔を左右に振って抵抗している
+				PRINTFORML 他人に姿を晒すのが嫌なようだ
+			ELSE
+				PRINTFORML 「お願い！　私を見ないで！　恥ずかしいから……」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ鑑賞
+;-------------------------------------------------
+IF TEQUIP:51 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		IF TEQUIP:42
+			PRINTFORML 阿求は切ない息を吐きながら潤んだ目でビデオを見ている
+		ELSE
+			PRINTFORML 「あぁ……気持ちよさそう……」
+			PRINTFORML 阿求は切ない息を吐きながら潤んだ目でビデオを見ている
+		ENDIF
+	ELSE
+		IF TEQUIP:42
+			PRINTFORML 阿求は必死に目を瞑って見ないようにしようとしたので
+			PRINTFORML %CALLNAME:MASTER%はビデオの音量を上げた
+		ELSE
+			PRINTFORML 「やめてぇ！　こんなの、見たくないぃ！」
+			PRINTFORML 阿求は必死に目を瞑って見ないようにしようとしたので
+			PRINTFORML %CALLNAME:MASTER%はビデオの音量を上げた
+		ENDIF
+	ENDIF
+	CFLAG:5103 += 1
+	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ
+;-------------------------------------------------
+IF TEQUIP:56 == 1
+	;恋慕
+	IF TALENT:150 == 1
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORML 「はぁん！　鏡の私……とってもいやらしいよぉ……」
+		ELSE
+			PRINTFORML 「あぁ……私、こんなに幸せそうな顔をして感じてるんだ……」
+		ENDIF
+	ELSE
+		;妖精
+		IF TALENT:200 == 1
+			PRINTFORML 「や、やぁ！　こんな卑しい妖精、私じゃない！」
+		ELSE
+			PRINTFORML 「そ、そんな……私、こんなに感じて……」
+		ENDIF
+	ENDIF
+	CFLAG:5103 += 1
+	CALL AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;素質変動
+;使い道少ないけど一応
+;関数名被りに配慮して特異な名前に
+;-------------------------------------------------
+@AQN_CHANGE_SOSHITSU_K48_TOKUSYU
+IF CFLAG:5102 >= 3 && TALENT:33 == 0 && CFLAG:5100 == 1
+	PRINTFORMW 異常な状況下で複数の他人に犯される快楽に、阿求は病みつきになった
+	;恥じらい消そうかと考えたけどやめた
+	PRINTFORMW 阿求は[解放]を得た
+	TALENT:33 = 1
+	CFLAG:5115 = 1
+ENDIF
+
+;羞恥な行為を15回以上見せつけると、目立ちたがりと快感に素直を取得
+IF CFLAG:5103 >= 15 && TALENT:28 == 0 && TALENT:70 == 0 && CFLAG:5100 == 1
+	PRINTFORMW 阿求は口から涎を垂らし、惚けた顔でこちらを見つめている
+	PRINTFORMW どうやら頭の中から数々の行為の様子が抜けきらないようだ
+	PRINTFORMW 阿求は[目立ちたがり]と[快感に素直]を得た
+	TALENT:28 = 1
+	TALENT:70 = 1
+	CFLAG:5108 = 1
+ENDIF
+
+;拘束した状態で20回以上行為を実行すると、倒錯的とマゾを取得
+IF CFLAG:5104 >= 20 && TALENT:80 == 0 && TALENT:82 == 0 && CFLAG:5100 == 1
+	PRINTFORMW 縄で縛られながらも阿求は淫らに腰を振り始めた
+	PRINTFORMW どうやら異常な状態でいじめられるのが快楽に繋がるようになったようだ
+	PRINTFORMW 阿求は[倒錯的]と[マゾ]を得た
+	TALENT:80 = 1
+	TALENT:82 = 1
+	CFLAG:5109 = 1
+ENDIF
+RETURN 0
+
+@ANATA_YOKUBOU_K48_TOKUSYU
+IF CFLAG:5128 >= 120 && CFLAG:5125 < 5
+	PRINTFORML %CALLNAME:MASTER%は快楽に対する欲望を抑えきれないようだ
+	CFLAG:5125 = 5
+ELSEIF CFLAG:5128 >= 90 && CFLAG:5125 < 4
+	CFLAG:5125 = 4
+ELSEIF CFLAG:5128 >= 60 && CFLAG:5125 < 3
+	PRINTFORML %CALLNAME:MASTER%は快楽が好きになったようだ
+	CFLAG:5125 = 3
+ELSEIF CFLAG:5128 >= 30 && CFLAG:5125 < 2
+	CFLAG:5125 = 2
+ELSEIF CFLAG:5128 >= 5 && CFLAG:5125 < 1
+	PRINTFORML %CALLNAME:MASTER%は快楽が少し欲しくなったようだ
+	CFLAG:5125 = 1
+ENDIF
+RETURN 0
+	
+;-------------------------------------------------
+;@単体エンディング関係(48、X2をキャラ番号に置換する)
+;チーププレイ　-99
+;-------------------------------------------------
+
+@TOKUSYU_EVENT_K48
+;恋慕+40回以上行った+妖精or呪精じゃない
+IF CFLAG:5111 >= 40 && TALENT:150 == 1 && TALENT:200 == 0 && TALENT:48 == 0 && CFLAG:5112 == 0 && CFLAG:5113 == 0
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%はいつものように阿求をキスをしていた
+	PRINTFORMW そして満足したのでそろそろ口を離そうとしたら、阿求は口を離さまいとこちらに顔を迫ってきた
+	PRINTFORMW 突然の出来事で焦った%CALLNAME:MASTER%は阿求の頭を抑えて無理矢理口を離した
+	PRINTFORMW 阿求は少し残念そうな顔をしながらも、静かに話し始めた
+	PRINTFORMW 「私……%CALLNAME:MASTER%のことを、誤解してました……」
+	PRINTFORMW 「私を、異常な快楽の連続で完全に堕とし切ってしまうのが望みかと思ってて、私もそれを望んでいたけど……」
+	PRINTFORMW 「でも、今は違います、目が覚めました……」
+	PRINTFORMW そう話している内に阿求の目に輝きが戻ってきて、調教する前の真面目で律儀な感じの表情に戻っていった
+	PRINTFORMW %CALLNAME:MASTER%は、再び阿求とキスをし始めた……
+	IF TALENT:170 == 1 && CFLAG:5100 == 1
+		PRINTFORMW 阿求は[淫乱]を失った
+		PRINTFORMW ―――阿求は異常経験を全て忘れました―――
+		EXP:50 = 0
+		TALENT:170 = 0
+	ENDIF
+	CFLAG:5112 = 1
+ENDIF
+RETURN 0
+
+@KOJO_48_MESSAGE_SINGLE_ENDING
+;DRAWLINE
+;PRINTFORMW ―――単体エンド条件達成―――
+;PRINTFORMW …………
+;PRINTFORMW ………
+;PRINTFORMW ……
+;PRINTFORMW 
+;妖精
+IF TALENT:200 == 1
+	;主人が快楽から抜け切れない状態以上+阿求が呪精を持っていない
+	IF CFLAG:5130 >= 1 && TALENT:48 == 0
+		PRINTFORMW ―――単体エンド条件達成―――
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW ここは%CALLNAME:MASTER%の隠れ家
+		PRINTFORMW 阿求の罠に嵌められて妖精になってしまった%CALLNAME:MASTER%は、あれからすっかり快楽の虜となって阿求と交わり続けていた
+		PRINTFORMW 「んぁぁ！　上手いですね%CALLNAME:MASTER%、快楽を自分の身体で味わった分やり方も心得てるじゃないですか……」
+		PRINTFORMW %CALLNAME:MASTER%は阿求と互いに胸や秘所を弄りながら、口を合わせてねっとりと舌を絡ませ合っていた
+		PRINTFORMW お互いの口からはくぐもった喘ぎ声が漏れ、顔を紅潮させている
+		PRINTFORMW 「妖精は自然の一部だから死ぬことは無い、消えても再び復活する……だから、これからも、ずっと、ずーっと……%CALLNAME:MASTER%と一緒……です」
+		PRINTFORMW %CALLNAME:MASTER%と阿求は互いに強く抱き締め合った
+		PRINTFORMW 
+		PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドD)
+	;呪精を持っていない
+	ELSEIF TALENT:48 == 0
+		PRINTFORMW ―――単体エンド条件達成―――
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW ここは%CALLNAME:MASTER%の隠れ家の周辺にある森
+		PRINTFORMW そこで%CALLNAME:MASTER%のモノとなった大勢の妖精がいつものように戯れていた、
+		PRINTFORMW 様子が違う一匹の妖精を囲んでいること以外は…
+		PRINTFORMW 「い、いやぁ！　近寄らないで！」
+		PRINTFORMW その妖精──阿求は他の妖精から必死に逃れようとしていたが、ついに追い詰められてしまった
+		PRINTFORMW 恐怖のあまり動けなくなった阿求に向かって、ついに妖精達が襲いかかった
+		PRINTFORMW 「い、いや！　離して！　くぅ！　そんな所触っちゃ、んあぁ！　やぁあ！」
+		PRINTFORMW 抵抗を続けていた阿求だったが、妖精達の愛撫を受けている内に抵抗が弱々しくなり、
+		PRINTFORMW 次第に顔が上気し、息も荒っぽくなっていった
+		PRINTFORMW 「だ、駄目ぇ……妖精から逆に悪戯されて感じちゃうなんてぇ……はあぁ♪」
+		PRINTFORMW 汗で透けそうになっている服を着て太腿をガクガク震わせて立つだけで精一杯な状態の阿求の秘所を妖精達が一斉に刺激した
+		PRINTFORMW 「あ、あ、あぁあああああああぁっ！」
+		PRINTFORMW 絶頂に達してその場に倒れ、呼吸で胸を上下させてる阿求の元に%CALLNAME:MASTER%が駆け寄った
+		PRINTFORMW 「こんなことをするなんて%CALLNAME:MASTER%はひどいですね」
+		PRINTFORMW 「このことのお詫びは帰ってから私にしてくださいね♪」
+		PRINTFORMW 今日は長い夜になりそうだ
+		PRINTFORMW 
+		PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドA)
+	;呪精持ち
+	;お燐に呪精転生を使ってもらおう
+	;周回プレイ向き
+	ELSE
+		PRINTFORMW ―――単体エンド条件達成―――
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW 人里から離れた隠れ家で阿求は%CALLNAME:MASTER%の上に跨り、棒を咥えて腰を動かしていた
+		PRINTFORMW その全身は汗と愛液でぐっしょりと濡れており、口からは微かな喘ぎ声が絶えず漏れていた
+		PRINTFORMW 「ぁん……ふぁぁ……いいよぉ……いいよぉ……」
+		PRINTFORMW かつては幻想郷の歴史を記録する役割を持っていた彼女は、今では呪精となって輪廻の輪から外れてしまった
+		PRINTFORMW 生前持ち合わせていた記憶も、転生した影響で今ではすっかり消え失せ
+		PRINTFORMW もはや自分が何者だったすら覚えておらず、快楽を貪ることしか考えられなくなっていた
+		PRINTFORMW 「んんっ……イ、イきそうですぅ……あぁあああああん……♪」
+		PRINTFORMW 絶頂に達したのか阿求は全身を軽く震わせ、その後ぐったりと%CALLNAME:MASTER%にもたれかかった
+		PRINTFORMW 「あぁ……%CALLNAME:MASTER%……大好きぃ……」
+		PRINTFORMW 阿求の濁った瞳はもう何も写していない……
+		PRINTFORMW 
+	;全身敏感+淫乱系素質同時全取得イベント+触手インプラント全個所植え付け
+	;不可能な気がしますが無いよりはあったほうがいいので
+	IF (TALENT:171 == 1 || TALENT:172 == 1) && TALENT:173 == 1 && TALENT:174 == 1 && TALENT:175 == 1 && TALENT:176 == 1 && TALENT:177 == 1 && TALENT:178 == 1 && TALENT:100 == 1 && TALENT:102 == 1 && TALENT:104 == 1 && TALENT:106 == 1 && CFLAG:41 == 1023
+			PRINTFORMW そして、次の日
+			PRINTFORMW %CALLNAME:MASTER%はいつものように目を覚ました、が何かおかしい
+			PRINTFORM 薄暗いし、感触が不気味だし、そして何よりも
+			IF TALENT:MASTER:120 == 1
+				PRINTFORMW 胸に膨らみがあって背中に羽が生えてる……？
+			ELSE
+				PRINTFORMW 背中に羽が生えてる……？
+			ENDIF
+			PRINTFORML %CALLNAME:MASTER%は今の状況を整理しようとしたが、何故か意識が朦朧としているせいで
+			PRINTFORMW 考えがまとまらなかった
+			PRINTFORMW %CALLNAME:MASTER%が困惑している内に、姿は見えないものの近くに居るであろう阿求がか弱い声で喋り始めた
+			PRINTFORMW 「目が覚めたのですねぇ……%CALLNAME:MASTER%……」
+			PRINTFORMW 「私ぃ……この気持ちよさが……大好きなんですぅ……」
+			PRINTFORMW 「それでぇ……%CALLNAME:MASTER%にも、この気分を共感してもらいたくてぇ……」
+			PRINTFORMW 「夜中、%CALLNAME:MASTER%が寝ているのを見計らって、この触手部屋まで運んできたんですぅ……」
+			PRINTFORMW 「もちろん私の力を取り込んだ触手の力でぇ……%CALLNAME:MASTER%を、私と同じ姿にしてもらったんですよぉ……」
+			PRINTFORMW 「頭がとろーんとしてぇ……何も考えられないでしょう？」
+			PRINTFORM %CALLNAME:MASTER%は驚嘆した、まさか自分が……
+			IF TALENT:MASTER:120
+				PRINTFORMW 少女になった上に呪精に転生した……？
+			ELSE
+				PRINTFORMW 呪精に転生した……？
+			ENDIF
+			PRINTFORMW だから意識がはっきりしないのか……しかし、まさか触手にそんなことができる能力まで身に着けられるとは……
+			PRINTFORMW と思っている最中に突然全身に快楽が走った、どうやら触手が活動をし始めたらしい
+			PRINTFORMW 「さぁ……%CALLNAME:MASTER%も……私と一緒に気持ちよくなりましょうよぉ……」
+			PRINTFORMW 「もぅ……永遠にぃ……離しません♪」
+			PRINTFORMW 触手は%CALLNAME:MASTER%の全身のありとあらゆる口に挿入し、ゆっくりと動きはじめた
+			PRINTFORMW %CALLNAME:MASTER%はあまりの快楽で途端に頭の中が真っ白になっていき、何も考えられなくなっていった……
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW それから数日後……
+			PRINTFORMW %CALLNAME:MASTER%は口からぐぐもった艶やかな喘ぎ声を常に漏らし、
+			PRINTFORMW 全身に纏わりつきながら挿入されている触手の動きに合わせて淫らに腰を振り続けている
+			PRINTFORMW 異常な程欲情した全身は、紅潮して汗と愛液まみれになっている
+			PRINTFORMW %CALLNAME:MASTER%と阿求は、これからも永遠に快楽を貪り続けるだろう……
+			PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドEX-1)
+		ELSE
+			PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドB)
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:5112 == 0
+		PRINTFORMW ―――単体エンド条件達成―――
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW 阿求は%CALLNAME:MASTER%の”粋な”計らいで稗田家の屋敷に戻ってきていた
+		PRINTFORMW 屋敷の者や村人には「迷いの竹林で道に迷っていたら案内人が現れて……」と嘘を付いてごまかした
+		;全身敏感+淫乱系素質同時全取得イベント+触手インプラント全個所植え付け
+		;不可能な気がしますが無いよりはあったほうがいいので
+		IF (TALENT:171 == 1 || TALENT:172 == 1) && TALENT:173 == 1 && TALENT:174 == 1 && TALENT:175 == 1 && TALENT:176 == 1 && TALENT:177 == 1 && TALENT:178 == 1 && TALENT:100 == 1 && TALENT:102 == 1 && TALENT:104 == 1 && TALENT:106 == 1 && CFLAG:41 == 1023
+			PRINTFORMW しかし屋敷に戻ってからも身体が疼いて仕方が無い阿求は
+			PRINTFORMW 真夜中になってから、着物をはだけさせ、筆で乳首や秘所を撫で始めた
+			PRINTFORMW 「く、くぅ……ふぁん！　あん！　ふぁぁん！　くぅぅん！」
+			PRINTFORMW 「ま……まだ、足りないぃ……」
+			PRINTFORMW 何度も達してからもまだ身体が疼く阿求は、その場しのぎで少し着物を直し、乱れた姿のまま、森林の中へと入っていった……
+			PRINTFORMW 
+			PRINTFORMW 既に何度か達し、欲情していた身体は、そよ風が当たるだけで軽く達し、歩く度に悶えた
+			PRINTFORMW 「ぅん！　くぅ……ふぁぁん！　あぁん！　ふぁ……うぅん♪」
+			PRINTFORMW 足をガクガクと震わせながら歩いていた阿求の前に、1人の妖精が現れた
+			PRINTFORMW 阿求は淫らに微笑んで妖精を誘い、それに欲情した妖精は阿求を襲い始めた
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW 「ん、んふっ！　ふぁあああああああん！　も、もう、らめぇ……」
+			PRINTFORMW 妖精に何度も犯されて、その度に達した阿求は、地面に崩れ落ちた
+			PRINTFORMW 身に纏っていた着物は腰の部分まではだけ、まるで腰みののようになっていた
+			PRINTFORML 阿求との行為で満足した妖精は去っていき、しばらくした後に、阿求は再び立って
+			PRINTFORMW %CALLNAME:MASTER%の隠れ家を目指して歩み始めた……
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW そして、朝、%CALLNAME:MASTER%が戸を開けると、そこには一糸纏わぬ姿の阿求が立っていた
+			PRINTFORMW 「ぁはぁ……%CALLNAME:MASTER%……ただいまぁ……」
+			PRINTFORMW 阿求の話を聞くとあの妖精以降も何度も交わりながら帰ってきたらしい
+			PRINTFORMW %CALLNAME:MASTER%は阿求の頭を撫でてやると、顔を赤らめた
+			PRINTFORMW 「%CALLNAME:MASTER%……これからも、ずっと一緒に……居てくださいね……」
+			PRINTFORMW %CALLNAME:MASTER%は阿求を抱き締めた……
+			PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドEX-2)
+		ELSE
+			PRINTFORMW 早速阿求は何か書こうと筆を手に取ったが、突然%CALLNAME:MASTER%との調教の日々が頭をよぎり……
+			PRINTFORMW いつの間にか阿求は顔を紅潮させ、荒い息を付きながら着物をはだけさせ、裾をたくし上げて口で噛み締め、筆で乳首や秘所を撫で始めた
+			PRINTFORML 「んっ！　んんっ！　んんんんんっ！」
+			PRINTFORMW あまりの快楽に筆で撫でる度に阿求は身体を震わせながら悶えた
+			PRINTFORMW 「んっ、んーーっ！　んぅぅぅぅん♪」
+			PRINTFORMW そして、絶頂にまで昇り詰めた阿求は、ビクンと身体を大きく跳ねさせてから大の字に床に倒れた
+			PRINTFORMW はだけさせた着物は湿気で濡れ、肌はほんのりと赤くなっている……
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW          ・
+			PRINTFORMW 「もう……あんなこと、させないでください……」
+			PRINTFORMW あれから人の目を盗んで%CALLNAME:MASTER%の隠れ家に戻ってきた阿求は、ベッドの上で%CALLNAME:MASTER%に抱かれている
+			PRINTFORMW 「%CALLNAME:MASTER%の……いじわる……んっ！」
+			PRINTFORMW %CALLNAME:MASTER%が秘所を軽く撫でると、阿求は微かに喘いだ
+			PRINTFORMW 
+			PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドC)
+		ENDIF
+	ELSE
+	;40回以上何もしない→キスの流れを行って発生させる特殊イベントを見ていると、このエンディングに到達
+	;……純愛？
+		DRAWLINE
+		PRINTFORMW ―――特殊エンド条件達成―――
+		PRINTFORMW …………
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW 
+		PRINTFORMW 「%CALLNAME:MASTER%ー！　ちょっと来てください！」
+		PRINTFORMW %CALLNAME:MASTER%は阿求と一緒に人間の里の近くにある草原にやってきていた
+		PRINTFORMW 「この花、綺麗だと思いませんか？」
+		PRINTFORMW そう言って阿求は一輪の小さく、だけど力強く咲いている花の近くまで寄っていった。
+		PRINTFORMW 「こうして短い命の中懸命に花を咲かして、そして……散っていく」
+		PRINTFORMW 「私は、そんな花の人生が素晴らしいと思うのです」
+		PRINTFORMW 「……私も、そんな人生を歩みたいな、という願いが入ってるのかも知れませんが……」
+		PRINTFORMW そう言って阿求は%CALLNAME:MASTER%の元へ歩いていき、そのまま%CALLNAME:MASTER%の胸に顔を埋もれるようにして抱きついた
+		PRINTFORMW 「短い命の間ですが、どうか、私を愛して……ください……」
+		PRINTFORMW 
+		PRINTFORMW 　　　　　　　　―― Ending No.1048 (阿求エンドEX-3)
+		;従順が4以下、奉仕精神が4以下、レズ経験が701以上だとゲームオーバー扱いになります
+		;理不尽にシステム的な文章で（少し違うけど「コンティニューをしているのでリプレイを保存できません」のような感じの）とか出ると少し怖いよね
+		IF ABL:10 <= 4 || EXP:12 >= 701 || ABL:13 <= 4
+			PRINTFORMW 
+			PRINTFORMW （条件を満たしていないのでゲームオーバー扱いになります）
+			WAIT
+			QUIT
+		ENDIF
+	ENDIF
+ENDIF
+
+CALL GAME_CONTINUE
+RETURN 0
+
+;口上の存在判定（YM版）
+@TRY_48
+RETURN 1
+

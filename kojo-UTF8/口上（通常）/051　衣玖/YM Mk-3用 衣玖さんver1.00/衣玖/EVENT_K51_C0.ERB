@@ -1,0 +1,2954 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;初回かどうかは最初に@COM_FLAGを呼び出した上で
+;RESULT:1が1かどうかで判別できる
+;========================================================
+;-------------------------------------------------
+;愛撫 CFLAG:8200
+;-------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_51_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_51_TRAIN_MESSAGE_S_COM_0
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_0
+	;初めて
+	IF CFLAG:8200 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 「うんっ、あぁっ！もっと私に触れてください」
+					PRINTFORMW 『ん～、こうかしら？』
+				;その他の場合
+				ELSE
+					PRINTFORML 『あんたこういう事がおかしいと思わないの？』
+					PRINTFORML 「何を言っているのです？%CALLNAME:MASTER%様なら大丈夫ですよ。きっと総領娘様も気に入るはずです」
+					PRINTFORMW 『もうすっかり調教されちゃってさ～～』
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「%CALLNAME:MASTER%様、手つきが厭らしいですよ」
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『さ～てと、どうしようかな』
+				PRINTFORMW 「あ、あのこんな事は……ひゃぁぁ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『じゃあ始めるわね』
+				PRINTFORMW 「どうぞお手柔らかに」
+			ENDIF
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2
+			PRINTFORMW 「な、何度触れても気持ちよくなど…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやっ、そんな所触らないでください」
+		ENDIF
+		CFLAG:8200= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8200 <= 5)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『%CALLNAME:TARGET%ってスタイル良いよね、こうボン・キュ・ボンって感じで』
+					PRINTFORML 「ふふ、総領娘さまの身体だってスレンダーで美しいですよ」
+					PRINTFORMW 『そ、そうかな？んーそうだといいけど』
+				;その他の場合
+				ELSE
+					PRINTFORML 「気持ちよくしてくださいね」
+					PRINTFORMW 『どうして私がこんなことを……』
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んぁ…体のすみずみまで撫でまわしてください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「…あんっ、%CALLNAME:MASTER%様の手…凄くいいです」
+			ENDIF
+			CFLAG:8200 = 6
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8200 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 「んっ、くぁっ、んんっ」
+				PRINTFORML 『随分感じているみたいね』
+				PRINTFORMW 「そ、そんなことは！ああっ」
+			;その他の場合
+			ELSE
+				PRINTFORML 『……こんなのでどう？』
+				PRINTFORML 「どう？と言われましても……複雑な気分です」
+				PRINTFORMW 『奇遇ね、私もよ』
+			ENDIF
+			CFLAG:8200 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8200 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「ああんっ!!……はっ！」
+				PRINTFORMW 「ひ、卑怯です！そんな所ばかり触るなんて…」
+			;その他の場合
+			ELSE
+				PRINTFORML 「んぁ！ああ…はぁ…」
+				PRINTFORMW 「手つきが厭らしいですよぉ」
+			ENDIF
+			CFLAG:8200 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2 && (CFLAG:8200 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ…そこはっ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、くっ……んんっ！」
+			ENDIF
+			CFLAG:8200 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「駄目です！触らないでください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もうやめてください」
+			ENDIF
+			CFLAG:8200 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG:8201
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_1
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_1
+	;初めて
+	IF CFLAG:8201 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『こういうのってなんかドキドキしない？』
+					PRINTFORML 「ええします、何だか背徳感がありますね」
+					PRINTFORMW 『そうそう、いけない事をしている感がするよね』
+				;その他の場合
+				ELSE
+					PRINTFORML 「さぁ、どうぞ！」
+					PRINTFORML 『どうぞって……あんた恥じらいとかってないの？』
+					PRINTFORML 「もう慣れましたよ、それに気持ちいいですし」
+					PRINTFORMW 『うぅ……私もこうなっちゃうのかな』
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「舐められているだけでイキそうです」
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『ふーん、%CALLNAME:TARGET%のマンコってこんな味がするのね』
+				PRINTFORMW 「恥かしいのでそんな事仰らないでください」
+			;その他の場合
+			ELSE
+				PRINTFORML 『……ごくっ』
+				PRINTFORML 「あの……無理をなさらなくても」
+				PRINTFORML 『分かっているわよ、でもやんなきゃいけないでしょ！少しは大人しくしなさい』
+				PRINTFORMW 「はい……分かりました」
+			ENDIF
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2
+			PRINTFORMW 「いつまでも舐めているとふやけてしまいます」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そんな所舐めていてもおいしくありませんよ」
+		ENDIF
+		CFLAG:8201= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8201 <= 4)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『すごいもうこんなに溢れてきた……じゃあ』
+					PRINTFORMW 「んああぁ！！もっと吸ってぇぇ、ああああ」
+				;その他の場合
+				ELSE
+					PRINTFORML 「そこ、もっと舐めてくれませんか？ああ、そこも」
+					PRINTFORMW 『いちいち注文が多いわねぇ』
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORML %CALLNAME:MASTER%は秘部から滴る愛液をすすっている
+				PRINTFORMW 「やぁぁぁぁ、私の！そんなに強く吸っちゃあああ!!!」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁっ！あんっ！奥まで舌がっ」
+			ENDIF
+			CFLAG:8201 = 5
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8201 <= 3)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『美味しいわよ、あんたの愛液、クスッ』
+				PRINTFORMW 「ああーっ、あああーーーっ!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「ああ、んっ、ああぁ」
+				PRINTFORMW 『あんたはいいわよね。そうやって感じていれば……はぁ』
+			ENDIF
+			CFLAG:8201 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8201 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「あぁっ…くぁっ!!」
+				PRINTFORMW 舐められるたびに%CALLNAME:TARGET%の体をくねらせた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、今のは気持ちいいです」
+			ENDIF
+			CFLAG:8201 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「――っ、舐めないで…くすぐったいです」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「…そんなに鼻息荒くしながら舐めて犬みたいですね」
+			ENDIF
+			CFLAG:8201 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG:8202
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_2
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_2
+	;初めて
+	IF CFLAG:8202 == 0
+		;助手が天子で助手が調教
+		IF ASSIPLAY && NO:ASSI == 52
+			PRINTFORML 「んっ!?……んんっ、――っ」
+			PRINTFORMW 『痛そうね、もうちょっと力を抜いてみたら？』
+		;その他の場合
+		ELSE
+			PRINTFORMW 「痛っ！そ、そこはお尻の穴です」
+		ENDIF
+		CFLAG:8202= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8202 <= 5)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『それっ！これなら!!』
+					PRINTFORMW 「ああ、だめ、気持ちよすぎます」
+				;その他の場合
+				ELSE
+					PRINTFORML 『うわぁ……こんな所まで開発されちゃってたのね』
+					PRINTFORMW 「もっと乱暴に扱っても構いませんよ」
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「%CALLNAME:MASTER%様に弄りまわしたせいですっかりお尻が良くなりました」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やぁぁん、もっと刺激がほしいです!!」
+			ENDIF
+			CFLAG:8202 = 6
+		;恋慕かつ潤滑Lv2以上
+		ELSEIF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && (CFLAG:8202 <= 4)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「若干痛いですが気持ちもいいです」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「だんだん気持ちよくなってきました」
+			ENDIF
+			CFLAG:8202 = 5
+		;恋慕かつ潤滑Lv2未満
+		ELSEIF TALENT:恋慕 == 1 && PALAM:10 < PALAMLV:2 && (CFLAG:8202 <= 3)
+			PRINTFORMW 「っ！ちょっと痛いです…もっと濡らしてから」
+			CFLAG:8202 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8202 <= 2)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『随分と指が入るようになったようね、これなら…』
+					PRINTFORMW 「これならって何ですか？何なのですか？」
+				;その他の場合
+				ELSE
+					PRINTFORML 「んふっ……あっ」
+					PRINTFORMW 『弄りまくったおかげで随分と具合が良くなってきたわね』
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「お尻がぁ…ああんっだめぇ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あんっ、お尻で感じるなんて…」
+			ENDIF
+			CFLAG:8202 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「痛いです！弄らないでください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そんな所汚いだけですって」
+			ENDIF
+			CFLAG:8202 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG:8203
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_3
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_3
+	;初めて
+	IF CFLAG:8203 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である（パルパル受信）
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『ああ、何だか知らないけど妬ましい、妬ましいわ』
+					PRINTFORMW 「お、落ち着いてください」
+				;その他の場合
+				ELSE
+					PRINTFORML 『やっぱりあんたの胸って大きいわね……このっ』
+					PRINTFORMW 「いたたた、痛い！痛いですってば!!」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そんなに激しく揉んだりして、もうエッチなんですから」
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『ふ、ふん、その無・駄・に大きく育った胸を私が弄り倒してくれるわ！覚悟しなさい!!』
+				PRINTFORMW 「あの…何か私が悪い事をしましたか？」
+			;その他の場合
+			ELSE
+				PRINTFORML 『やっぱりあんたの胸って大きいわね……このっ』
+				PRINTFORMW 「いたたた、痛い！痛いですってば!!」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「強く揉まないでください、痛いです」
+		ENDIF
+		CFLAG:8203= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8203 <= 4)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『これくらいの大きさの方が%CALLNAME:MASTER%は良いのかな？』
+					PRINTFORML 「%CALLNAME:MASTER%様なら大きさなんてきっと気にならないと思いますよ」
+					PRINTFORMW 『そうかな？…そうだといいけど』
+				;その他の場合
+				ELSE
+					PRINTFORML 『いったい何を食べればそんなに大きく育つのよ』
+					PRINTFORMW 「いたっ、だから痛いですってやめてください！」
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あんっ、もっと強くしてもいいですよ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「これ以上大きくなったらどうしましょう」
+			ENDIF
+			CFLAG:8203 = 5
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8203 <= 3)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『羨ましいなぁ、手では理きれないほど大きな胸は』
+				PRINTFORML 「でも大きいと色々困りますよ。例えば……っ、いたた」
+				PRINTFORMW 『そんなお約束は絶対に言わせないから』
+			;その他の場合
+			ELSE
+				PRINTFORML 『いったい何を食べればそんなに大きく育つのよ』
+				PRINTFORMW 「いたっ、だから痛いですってやめてください！」
+			ENDIF
+			CFLAG:8203 = 4
+		;Ｂ感覚Lv3
+		ELSEIF ABL:Ｂ感覚 >= 3 && (CFLAG:8203 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ、くぅ…何？この感覚は…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もっと舐めて…もっと揉んでください」
+			ENDIF
+			CFLAG:8203 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「触りたい気持ちは分からなくはありませんが…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「おっぱいが好きなんですか?」
+			ENDIF
+			CFLAG:8203 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG:8204
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_4
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_4
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「激しいっ…指っ、厭らしい音を立てないで」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「んっ、そんなの…気持ちよく……ありませんよ」
+	ENDIF
+
+;-------------------------------------------------
+;フェラする CFLAG:8205
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_5
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_5
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キスする CFLAG:8206
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_6
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_6
+	;初めて
+	IF CFLAG:8206 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『ちゅ…はむ…%CALLNAME:TARGET%』
+					PRINTFORMW 「んん……あむ…」
+				;その他の場合
+				ELSE
+					PRINTFORML 『キ、キスするわよ』
+					PRINTFORMW 「いつでもどうぞ、ふふ顔真っ赤ですね」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORML 「あの…キス……してく、んんっ！」
+				PRINTFORML %CALLNAME:MASTER%は%CALLNAME:TARGET%が言い終わる前に唇を重ねた
+				PRINTFORML 「ちゅぱっ、もうびっくりしましたよ…でも%CALLNAME:MASTER%様嬉しいです」
+				PRINTFORMW 二人は再び唇を重ねた
+			ENDIF
+		;その他の場合
+		ELSE
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 「ちょっと上手いですね」
+					PRINTFORMW 『これくらいはあたり前よ』
+
+				;その他の場合
+				ELSE
+					PRINTFORML 『これはね、練習！そうよ練習よ、本気じゃないからノーカウントよ！ノーカウント』
+					PRINTFORMW 「分かりましたから落ち着いてくださいよ」
+
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、いきなり何するのですか！」
+			ENDIF
+		ENDIF
+		CFLAG:8206= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8206 <= 4)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『ちゅ…はむ…%CALLNAME:TARGET%』
+					PRINTFORMW 「んん……あむ…」
+				;その他の場合
+				ELSE
+					PRINTFORML 『キ、キスするわよ』
+					PRINTFORMW 「いつでもどうぞ、ふふ顔真っ赤ですね」
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「もっと…もっとキスしてください！んんっ！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「%CALLNAME:MASTER%様…好きです！愛しています!!」
+			ENDIF
+			CFLAG:8206 = 5
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8206 <= 3)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 「ちょっと上手いですね」
+				PRINTFORMW 『これくらいはあたり前よ』
+			;その他の場合
+			ELSE
+				PRINTFORML 『これはね、練習！そうよ練習よ、本気じゃないからノーカウントよ！ノーカウント』
+				PRINTFORMW 「分かりましたから落ち着いてくださいよ」
+			ENDIF
+			CFLAG:8206 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >= 2 && (CFLAG:8206 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ……んぅ…ちゅぱっ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁん、もっと舌を絡ませてください…」
+			ENDIF
+			CFLAG:8206 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「んん……んぁ、…………」
+				PRINTFORMW %CALLNAME:TARGET%は無言で睨みつけている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぁっ…ちゅぱっ！ん――っ」
+			ENDIF
+			CFLAG:8206 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;自慰                 CFLAG:8207
+;公開オナニー         CFLAG:8208
+;二穴バイブオナニー   CFLAG:8209
+;バイブオナニー       CFLAG:8210
+;アナルバイブオナニー CFLAG:8211
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_7
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_7
+;公開オナニー
+IF SELECTCOM == 7 &&  TEQUIP:50 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8208 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「カメラの前で自慰だなんてなかなか興奮しますね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ちゃんとやりますからカメラだけはどけてください」
+		ENDIF
+		CFLAG:8208= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8212 <= 2)
+			PRINTFORMW 「もっと股を広げて……激しくすれば…んんっ」
+			CFLAG:8208 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやぁ、こんなのが記録に残るだなんて」
+			CFLAG:8208 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;二穴バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8209 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「見たいのですか？私が乱れている所を」
+		;その他の場合
+		ELSE
+			PRINTFORML 「勝手に突っ込んで置きながらそのうえ自慰までしろって」
+			PRINTFORMW 「%CALLNAME:MASTER%はどれだけ酷い事をすれば気が済むのですか」
+		ENDIF
+		CFLAG:8209= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8208 <= 2)
+			PRINTFORMW 「やん、ふかい…もっと奥までゴリゴリしたいです」
+			CFLAG:8209 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「んくっ、こんな物……%CALLNAME:MASTER%にやられるよりかはマシですよ」
+			CFLAG:8209 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:8210 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「見たいのですか？私が乱れている所を」
+		;その他の場合
+		ELSE
+			PRINTFORML 「勝手に突っ込んで置きながらそのうえ自慰までしろって」
+			PRINTFORMW 「%CALLNAME:MASTER%はどれだけ酷い事をすれば気が済むのですか」
+		ENDIF
+		CFLAG:8210= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8209 <= 2)
+			PRINTFORMW 「やん、ふかい…もっと奥までゴリゴリしたいです」
+			CFLAG:8210 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「んくっ、こんな物……%CALLNAME:MASTER%にやられるよりかはマシですよ」
+			CFLAG:8210 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8211 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「見たいのですか？私が乱れている所を」
+		;その他の場合
+		ELSE
+			PRINTFORML 「勝手に突っ込んで置きながらそのうえ自慰までしろって」
+			PRINTFORMW 「%CALLNAME:MASTER%はどれだけ酷い事をすれば気が済むのですか」
+		ENDIF
+		CFLAG:8211= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8210 <= 2)
+			PRINTFORMW 「やん、ふかい…もっと奥までゴリゴリしたいです」
+			CFLAG:8211 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「んくっ、こんな物……%CALLNAME:MASTER%にやられるよりかはマシですよ」
+			CFLAG:8211 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;自慰
+ELSE
+	;初めて
+	IF CFLAG:8207 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%様の前でするなんて何か恥ずかしいですね」
+		;その他の場合
+		ELSE
+			PRINTFORML 「え、ここで自慰をしろと？」
+			PRINTFORML 「どうしてそんな恥ずかしい事を…」
+			PRINTFORML %CALLNAME:TARGET%が戸惑っていると%CALLNAME:MASTER%は手をあげようとした
+			PRINTFORMW 「わ、分かりましたから酷い事をしようとしないでください」
+		ENDIF
+		CFLAG:8207= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ自慰中毒Lv3
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3 && (CFLAG:8207 <= 4)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はぁ…はぁ…、だめぇ止まらない…気持ちよくって止まりません…あっ、あっ！ああっ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「――！――――!!あーっ、ああーーー!!!」
+				PRINTFORMW 一心不乱に秘部を弄っているまるで%CALLNAME:MASTER%の事なんて気にしていない
+			ENDIF
+			CFLAG:8207 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8207 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「自慰なんかより直接%CALLNAME:MASTER%様にして欲しいです」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「待っていてくださいね、今出来るように濡らしますからね」
+			ENDIF
+			CFLAG:8207 = 4
+		;自慰中毒Lv3
+		ELSEIF ABL:自慰中毒 >= 3 && (CFLAG:8207 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「あぁん！いっ！こんなにオナニーが好きになってしまうなんて、ああ！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぁ、はぁ…はぁ…もっと気持ちよく…」
+			ENDIF
+			CFLAG:8207 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「一応やりますが出来ればあまり見られたくはないです」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そんなにジロジロ見ないでください、恥ずかしいです」
+			ENDIF
+			CFLAG:8207 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG:8212
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_9
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_9
+	;初めて
+	IF CFLAG:8212 == 0
+		PRINTFORMW 「…何もしないのですか？」
+		CFLAG:8212= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ欲情Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:13 >= PALAMLV:3 && (CFLAG:8223 <= 2)
+			PRINTFORMW 「%CALLNAME:MASTER%さま～早くしましょう」
+			CFLAG:8212 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「休憩ですか分かりました」
+			CFLAG:8212 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG:8213
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_10
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_10
+	;初めて
+	IF CFLAG:8213 == 0
+		PRINTFORMW 「何ですかそれは…ひゃあ！」
+		CFLAG:8213= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8224 <= 3)
+			PRINTFORMW 「それも良いですが%CALLNAME:MASTER%様の指の方がいいです」
+			CFLAG:8213 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8224 <= 2)
+			PRINTFORMW 「もう少しそこを当ててください」
+			CFLAG:8213 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「その変な機械押し付けないで」
+			CFLAG:8213 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG:8214
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_11
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_11
+	;初めて
+	IF CFLAG:8214 == 0
+		PRINTFORMW 「いやぁぁぁ！何ですかそれ！」
+		CFLAG:8214= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8214 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「だめですよぉぉぉ!!それ反則！反則です!!んぎぃぃぃぃぃ!!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「あああぁぁぁ！%CALLNAME:MASTER%様止め…てください」
+				PRINTFORMW 「もう持ちそ…うにありません、んんっ!!」
+			ENDIF
+			CFLAG:8214 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8225 <= 2)
+			PRINTFORMW 「もっと、もっとください！」
+			CFLAG:8214 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「し、刺激が強すぎます!!」
+			CFLAG:8214 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG:8215
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「あぁっ…さ、さぁ今度は%CALLNAME:MASTER%様のモノですね」
+		RETURN 0
+	;Ｖ感覚Lv3
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁ…はぁ…もう終わりですか？」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「ひゃぅ、はぁ…はぁ…」
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8215 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「ちょ…ええ!?%CALLNAME:MASTER%様が貰ってくれるのじゃないんですか？」
+				PRINTFORMW 「あっ……待ってっ、痛っ！あっ、あああ……」
+			;処女
+			ELSEIF TALENT:処女 == 1
+				PRINTFORML 「%CALLNAME:MASTER%様！何をなさるのですか」
+				PRINTFORML 「嫌です、そんな物挿れようとなさらないで！」
+				PRINTFORMW 「ああっ、ぁぁっぁぁあああっ!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「そんな玩具もあるのですね」
+				PRINTFORMW 「いいですよ早く挿れてくださいまし」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORML 「そんな私初めてなのですよ い、挿れな…いっ!!」
+				PRINTFORMW 「いやぁぁぁ、痛いです!! 抜いてください!!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「何やら厭らしい形をしていますね」
+				PRINTFORMW 「あっ、やっぱり挿れるのですね」
+			ENDIF
+		ENDIF
+		CFLAG:8215= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8215 <= 3)
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「ちょ…ええ!?%CALLNAME:MASTER%様が貰ってくれるのじゃないんですか？」
+				PRINTFORMW 「あっ……待ってっ、痛っ！あっ、あああ……」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「ひんっ、あっ、あ、後で%CALLNAME:MASTER%様ので可愛がってくださいませ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「んぐぅ、ああっ、%CALLNAME:MASTER%様ほどではありませんが気持ちいいですね」
+				ENDIF
+			ENDIF
+			CFLAG:8215 = 4
+		;Ｖ感覚Lv3
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8215 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ひぃ、あん、あっ！玩具で…玩具なんかで……あぁぁ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「あっ、あっ、あっ、気持ちっ…いい、あぐっ…です」
+				PRINTFORMW 「もっと押し付けてください、んんっ！」
+			ENDIF
+			CFLAG:8215 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「またその玩具を挿れるのですか」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ああん、膣内がグリグリと抉られて…」
+			ENDIF
+			CFLAG:8215 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG:8216
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	;Ａ感覚Lv3
+	IF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「すっかり癖になりました」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「っ！も、漏れていませんよね？」
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8216 == 0
+		PRINTFORMW 「痛っ！何？お尻に何か入ってます!!」
+		CFLAG:8216= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;Ａ感覚Lv3
+		IF ABL:Ａ感覚 >= 3 && (CFLAG:8216 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「――ぁ、んぁ、あああ」
+				PRINTFORMW 恍惚な表情を浮かべながらバイブを受け入れている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もっとお尻をグリグリしてぇぇぇぇ」
+			ENDIF
+			CFLAG:8216 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「いたっ、いたたたた、裂ける！裂けますから抜いてぇぇぇ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「痛いだけですから、痛いだけですから」
+			ENDIF
+			CFLAG:8216 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG:8217
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	PRINTFORMW 「さぁ、次はどうします？」
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8217 == 0
+		PRINTFORMW 「そういう物はどこで買ってきているのですか？」
+		CFLAG:8217= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		PRINTFORMW 「お豆が大きくなった気分です」
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ		CFLAG:8218
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	PRINTFORMW 「うぅ、むず痒いです」
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8218 == 0
+		PRINTFORMW 「それ、哺乳瓶の…胸に付けるのですか？へ、変態ですね」
+		CFLAG:8218= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		PRINTFORMW 「ああ、何か変な感じです」
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール CFLAG:8219
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール CFLAG:8220
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG:8221
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_20
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_20
+	;初めて
+	IF CFLAG:8221 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「んふっ…やっぱり初めてはこれに限りますよねぇ」
+				PRINTFORMW 「だって…%CALLNAME:MASTER%様に愛されていますって感じられますもの」
+			;処女
+			ELSEIF TALENT:処女 == 1
+				PRINTFORML %CALLNAME:TARGET%をベットでゆっくりと押し倒した
+				PRINTFORML 「とうとうこの時が…」
+				PRINTFORML %CALLNAME:MASTER%の肉棒が%CALLNAME:TARGET%の膣内に挿入っていく
+				PRINTFORML 「痛っ、だ、大丈夫です続けてください」
+				PRINTFORMW %CALLNAME:MASTER%は%CALLNAME:TARGET%を抱きしめらがら突いた
+			;その他の場合
+			ELSE
+				PRINTFORML 「さぁ来て…%CALLNAME:MASTER%様…」
+				PRINTFORML 秘部を広げ待っている%CALLNAME:TARGET%にゆっくりと肉棒を挿入していく
+				PRINTFORMW 「んっ！ああっ!!大きい…%CALLNAME:MASTER%様優しいのですね…」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORML 「やめて…何でも致しますのでどうか…」
+				PRINTFORML 「!?　違います！何でもってそういう意味では！」
+				PRINTFORMW 「あっ、あっ、挿入ってくる…くぅぅ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「きゃあ、あっ、いやぁ…」
+				PRINTFORML 嫌がって暴れている%CALLNAME:TARGET%を押さえつけ無理矢理挿入した
+				PRINTFORMW 「ああっ、だめぇぇ、挿入ってくる……」
+			ENDIF
+		ENDIF
+		CFLAG:8221= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8221 <= 4)
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「んふっ…やっぱり初めてはこれに限りますよねぇ」
+				PRINTFORMW 「だって…%CALLNAME:MASTER%様に愛されていますって感じられますもの」
+			;効果[排卵誘発剤]
+			ELSEIF TEQUIP:16 == 1
+				PRINTFORMW 「いっ、いつもより激しいですっ！そんなに、あんっ、私との赤ちゃんが欲しいのですね」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORML 「はぁん、いっ、%CALLNAME:MASTER%様、%CALLNAME:MASTER%さまぁ！」
+					PRINTFORML %CALLNAME:TARGET%が%CALLNAME:MASTER%の名前を叫び悶えている
+					PRINTFORML それに興奮した%CALLNAME:MASTER%は%CALLNAME:TARGET%を抱きしめ激しく突く！
+					PRINTFORMW 「んぁぁぁ!!%CALLNAME:MASTER%さまぁ!!はやいです、はげしいですぅぅぅぅ!!!」
+				;その他の場合
+				ELSE
+					PRINTFORML 「あんっ、は、挿入っています！」
+					PRINTFORMW 「%CALLNAME:MASTER%様の雄々しく、やんっ、立派なっ、モノが奥まで!!」
+				ENDIF
+			ENDIF
+			CFLAG:8221 = 5
+		;屈服刻印Lv3かつＶ感覚Lv3
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8221 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML %CALLNAME:MASTER%は大きな音が出るくらい激しく腰を振っている
+				PRINTFORMW 「ああぁぁぁ、音が…音が大きいです、あん、恥ずかしいから聞かせないでぇぇ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はっ、うんっ、こんな…激しいですっ」
+			ENDIF
+			CFLAG:8221 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8221 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ……くぅ、あん、だめぇぇ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あんっ、あんっ、ちょっと激しいです」
+			ENDIF
+			CFLAG:8221 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「うぐぅ…こんなのはセックスでも何でもありません」
+				PRINTFORMW %CALLNAME:TARGET%の目には涙が零れている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やっ、早く終わってください」
+			ENDIF
+			CFLAG:8221 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG:8222
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_21
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_21
+	;初めて
+	IF CFLAG:8222 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「後ろからですね、いいですよしっかり犯してくださいね」
+				PRINTFORMW 「――っ、きたぁ…少し痛いですが気持ちがいいですよぉ」
+			;処女
+			ELSEIF TALENT:処女 == 1
+				PRINTFORML 「後ろ………からですか…」
+				PRINTFORML 「あの～…いえ、初めてはもっとロマンチックな物だと思ってましたから…」
+				PRINTFORMW 「あ、やります、初めては%CALLNAME:MASTER%様にと決めておりましたので」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うふふ、後ろからなんてちょっと興奮してきますね」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「いきなり後ろから、いやぁぁぁ…初めてがこんなのだなんて…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「後ろからなんて私は犬なんかじゃありません」
+			ENDIF
+		ENDIF
+		CFLAG:8222= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8222 <= 4)
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「後ろからですね、いいですよしっかり犯してくださいね」
+				PRINTFORMW 「――っ、きたぁ…少し痛いですが気持ちがいいですよぉ」
+			;効果[排卵誘発剤]
+			ELSEIF TEQUIP:16 == 1
+				PRINTFORMW 「もっとです！やんっ、激っ…しくっ、いっぱい出るようにめちゃくちゃ、いっ、…に犯してください」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「ああん！いつもと違います!!いつものと形が…当たっている所が違います!!」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やんっ、交尾！交尾気持ちいいです%CALLNAME:MASTER%さまぁぁぁぁ!!」
+				ENDIF
+			ENDIF
+			CFLAG:8222 = 5
+		;屈服刻印Lv3かつＶ感覚Lv3
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8222 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ああっ、凄い……まるでケダモノですね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「後ろからのセックスがこんなに気持ちのいい物だったなんて」
+			ENDIF
+			CFLAG:8222 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8222 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はんっ、あっ、だめ！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「少し乱暴ですね」
+			ENDIF
+			CFLAG:8222 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「痛い！そんなに押し付けないで!!」
+			;その他の場合
+			ELSE
+				PRINTFORML 「犯されている」
+				PRINTFORMW 「私、今後ろから犯されているのね」
+			ENDIF
+			CFLAG:8222 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG:8223
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_22
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_22
+	;初めて
+	IF CFLAG:8223 == 0
+		PRINTFORML 「んっ…ちゅぱ」
+		PRINTFORMW 「もうキスまでして」
+		CFLAG:8223= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8223 <= 4)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「うふふ…顔がすごく近いのでこれ好きですよ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「ちゅっぱ、厭らしい顔してますよ%CALLNAME:MASTER%様」
+				PRINTFORMW 「わ、私もですか!?　もう～言わないでください、恥ずかしい」
+			ENDIF
+			CFLAG:8223 = 5
+		;屈服刻印Lv3かつＶ感覚Lv3
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8223 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「あん、ちゅぱっ、ちゃっと息がしにくいですね」
+			;その他の場合
+			ELSE
+				PRINTFORML 「んっ、はぁ、あっ、ああっ!!」
+				PRINTFORMW %CALLNAME:TARGET%は手を後ろに置き股を豪快に広げながら突かれている
+			ENDIF
+			CFLAG:8223 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8223 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はんっ、やんっ、ん？キスもするの？んちゅ、ん―――っ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もう顔が近すぎですよ」
+			ENDIF
+			CFLAG:8223 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「これが好きな方ならどれほど幸せだったか…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あっ、んっ、んっ、ちゅぱ」
+			ENDIF
+			CFLAG:8223 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG:8224
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_23
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_23
+	;初めて
+	IF CFLAG:8224 == 0
+		PRINTFORMW 「変わったやりかたですね」
+		CFLAG:8224= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8224 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ、あぁ……はぁ…そんなに責めると…わたし…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もっと激しくっ、胸もあそこもめちゃくちゃにして」
+			ENDIF
+			CFLAG:8224 = 4
+		;屈服刻印Lv3かつＶ感覚Lv3
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8224 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んぁ、あそこでは飽き足らず胸まで触るなんて厭らしい座椅子ですね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「胸もあそこも気持ちいいです」
+			ENDIF
+			CFLAG:8224 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「だめですよ、そんなに責めないで」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うぅ…この体位では抵抗が難しいです」
+			ENDIF
+			CFLAG:8224 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG:8225
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_24
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_24
+	;初めて
+	IF CFLAG:8225 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「自分から捧げろってなかなか言えたものではありませんよ」
+				PRINTFORML %CALLNAME:TARGET%はクスッと笑いその膣内を自ら挿入した
+				PRINTFORMW 「んぁぁぁぁ、いいですね、自分から愛する人に捧げるこの感覚は…」
+			;処女
+			ELSEIF TALENT:処女 == 1
+				PRINTFORML 「%CALLNAME:MASTER%様～覚悟してくださいね」
+				PRINTFORML %CALLNAME:TARGET%が%CALLNAME:MASTER%の上に乗り
+				PRINTFORML そそり勃つ肉棒を自らの秘部に挿れた
+				PRINTFORML 「はぁぐぅ、ど、どうですか？私の膣内は」
+				PRINTFORML %CALLNAME:TARGET%の秘部からは純潔が出ている
+				PRINTFORMW 「少し痛いですが%CALLNAME:MASTER%様の為ならこれくらいは」
+			;その他の場合
+			ELSE
+				PRINTFORML 「%CALLNAME:MASTER%様寝そべってください」
+				PRINTFORMW 「何もしなくてもいいのですよ私から挿入しますね」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORML 「そんな…私から初めてを捧げろと？」
+				PRINTFORML 「………わ、分かりました、せめて自分のタイミングでやらせてください」
+				PRINTFORML 最初は躊躇していたが意を決したのか自ら肉棒へと腰を落としていった
+				PRINTFORMW 「ひぃぐぅ、どうですか？これで…いいのでしょう？」
+			;その他の場合
+			ELSE
+				PRINTFORML 「上に乗って腰を振れ？」
+				PRINTFORMW 「もしかして面倒くさいから全部私に任せようとしてません？」
+			ENDIF
+		ENDIF
+		CFLAG:8225= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8225 <= 4)
+			;再生処女
+			IF TALENT:処女 == 2
+				PRINTFORML 「自分から捧げろってなかなか言えたものではありませんよ」
+				PRINTFORML %CALLNAME:TARGET%はクスッと笑いその膣内を自ら挿入した
+				PRINTFORMW 「んぁぁぁぁ、いいですね、自分から愛する人に捧げるこの感覚は…」
+			;効果[排卵誘発剤]
+			ELSEIF TEQUIP:16 == 1
+				PRINTFORML 「駄目ですよ簡単に出しては」
+				PRINTFORML %CALLNAME:TARGET%は%CALLNAME:MASTER%の竿をぎゅっと握りながら腰を振っている
+				PRINTFORMW 「もっと、もっと濃くなってから出してくださいね」
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORML 「やんっ……いっ……はぁっ……」
+					PRINTFORMW 「だ、だめですよ…あんっ、わたしより先にイってしまうのは……」
+				;その他の場合
+				ELSE
+					PRINTFORML 「はぁん、いいっ」
+					PRINTFORML 「%CALLNAME:MASTER%様、涎なんて垂らして気持ちよさそう…」
+					PRINTFORMW そう言いつつ%CALLNAME:TARGET%は腰の振る速度を上げた
+				ENDIF
+			ENDIF
+			CFLAG:8225 = 5
+		;屈服刻印Lv3かつ奉仕精神Lv3以上かつV感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8225 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「はぁ…はぁ…、もっと奥に…激しく……」
+				PRINTFORMW 息は切らしながら%CALLNAME:TARGET%は快楽の為にひたすら腰を振っている
+			;その他の場合
+			ELSE
+				PRINTFORML 「どうです？気持ちいいですか？」
+				PRINTFORMW 「くすっ、なんて厭らしい表情なのかしら」
+			ENDIF
+			CFLAG:8225 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8225 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はっ！はっ！たまには私のペースでやらせてもらいますから」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あんっ、そんなっ、こっちの動きに合わせて腰を振らないでっ」
+			ENDIF
+			CFLAG:8225 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ…はぁ、はぁ、疲れてきました」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁっ、んっ、奥まで届いてますっ」
+			ENDIF
+			CFLAG:8225 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG:8226
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_25
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す CFLAG:8227
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_26
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_26
+	;初めて
+	IF CFLAG:8227 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『はっ、はっ、もっと…もっとちょうだいおねがいだからーー!!』
+					PRINTFORMW 「%CALLNAME:MASTER%様総領娘様だけではなく私にもしてください」
+				;その他の場合
+				ELSE
+					PRINTFORML 『うぐぅ、ちょっと%CALLNAME:MASTER%！なにも%CALLNAME:TARGET%の前でしなくたって』
+					PRINTFORML 「総領娘様、私にお構いなく存分に楽しんでください」
+					PRINTFORMW 『あんたは良くても私がいやなの!!』
+				ENDIF
+			;その他の場合
+			ELSE
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『はっ、はっ、いいっ、はぁん』
+				PRINTFORML 「………」
+				PRINTFORMW %CALLNAME:TARGET%はただ唖然として行為を眺めている
+			;その他の場合
+			ELSE
+				PRINTFORML 『ひゃぁ、あっぐ、ああ、ああぁ』
+				PRINTFORMW 「ああ、総領娘様」
+			ENDIF
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8227= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8227 <= 3)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『あぅん、いいよーこれすっごくいいよー』
+					PRINTFORMW 「総領娘様ばかりでずるいですよ」
+				;その他の場合
+				ELSE
+					PRINTFORML 『うぅ、これじゃ私が調教されているみたいじゃない』
+					PRINTFORMW 「きっと気のせいですよ、ふふふ」
+				ENDIF
+			;その他の場合
+			ELSE
+			ENDIF
+			CFLAG:8227 = 4
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8227 <= 2)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「わざわざ私の前でしなくてもいいのに」
+			;その他の場合
+			ELSE
+				PRINTFORML 『はぁぁ、そんな…奥まで…』
+				PRINTFORMW 「こんな事…こんな事が…」
+			ENDIF
+			CFLAG:8227 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8227 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面立位 CFLAG:8228
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_27
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_27
+	;初めて
+	IF CFLAG:8228 == 0
+		PRINTFORMW 「きゃぁ！……だ、大丈夫ですか？疲れた顔をしていますが…」
+		CFLAG:8228= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8228 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「どうですか？少し浮いているのでやりやすくなったでしょう？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んんっ、凄いです%CALLNAME:MASTER%様力持ちなのですね」
+			ENDIF
+			CFLAG:8228 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「手を放したら承知しませんよ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「し、しっかり抱きしめてくださいね」
+				PRINTFORMW 「突かれるたびに落ちそうで怖いです」
+			ENDIF
+			CFLAG:8228 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面立位 CFLAG:8229
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_28
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_28
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「後ろから抱きしめらがらするのもいいですね」
+		;その他の場合
+		ELSE
+			PRINTFORML 壁に手を当て突いている
+			PRINTFORMW 「ああっ、興奮しますね…犯されている感じがして」
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「そんなに一辺に責めるなんて欲張りですね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あん、もう…なで回すように触って…」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;正常位アナル CFLAG:8230
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_30
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_30
+	;初めて
+	IF CFLAG:8230 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「とうとうこの日が来ましたか」
+			PRINTFORMW 「恥ずかしいですがどうぞ挿れてください…」
+		;その他の場合
+		ELSE
+			PRINTFORML 「お尻に入れるのですか？」
+			PRINTFORML 「そ、そうですよね、そのつもりですから今まで弄っていたのでしょうから…」
+			PRINTFORMW 「いいですよ…その代わり優しくでお願いします」
+		ENDIF
+		CFLAG:8230= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8230 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8246 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8230 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8246 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8246 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG:8231
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_31
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_31
+	;初めて
+	IF CFLAG:8231 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「後ろから入れるのですか分かりました」
+			PRINTFORML %CALLNAME:TARGET%は後ろを向き四つん這いになる
+			PRINTFORMW 「あ、は、挿入ってくる…後ろからだとやりやすそうですね」
+		;その他の場合
+		ELSE
+			PRINTFORML 「後ろを向けって…きゃぁ!?」
+			PRINTFORML 後ろを向かした瞬間%CALLNAME:MASTER%に跪かせそのままアナルに挿入した
+			PRINTFORMW 「はぁぐ、酷いですよいきなり挿れるだなんて」
+		ENDIF
+		CFLAG:8231= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8231 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8231 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8231 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8231 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8231 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG:8232
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_32
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_32
+	;初めて
+	IF CFLAG:8232 == 0
+		PRINTFORML 「お尻に入れるのですか？」
+		PRINTFORML 「そ、そうですよね、そのつもりですから今まで弄っていたのでしょうから…」
+		PRINTFORMW 「いいですよ…その代わり優しくでお願いします」
+		CFLAG:8232= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8232 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8232 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8232 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8232 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8232 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG:8233
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_33
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_33
+	;初めて
+	IF CFLAG:8233 == 0
+		PRINTFORML 「お尻に入れるのですか？」
+		PRINTFORML 「そ、そうですよね、そのつもりですから今まで弄っていたのでしょうから…」
+		PRINTFORMW 「いいですよ…その代わり優しくでお願いします」
+		CFLAG:8233= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8233 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8233 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8233 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8233 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8233 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG:8234
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_34
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_34
+	;初めて
+	IF CFLAG:8234 == 0
+		PRINTFORML 「お尻に入れるのですかしかも私から…」
+		PRINTFORML 「では、行きますね……」
+		PRINTFORML %CALLNAME:TARGET%はゆっくりと腰を落とした
+		PRINTFORMW 「んんっ、い、いくらほぐれていたとはいえやっぱりちょっと痛いですね…」
+		CFLAG:8234= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8234 <= 3)
+			PRINTFORML 「お尻に挿れて気持ちよさそうですね%CALLNAME:MASTER%様」
+			PRINTFORMW 「お尻で感じてします変態さんにはおしおきをしないといけませんね」
+			CFLAG:8234 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8234 <= 2)
+			PRINTFORMW 「疲れますが深く挿入ってて気持ちいいですね」
+			CFLAG:8234 = 3
+		;その他の場合
+		ELSE
+			PRINTFORML 「いっ、もうちょっとゆっくりでやって構いませんか？」
+			PRINTFORMW 「さすがに痛くなってきました」
+			CFLAG:8234 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;逆アナルレイプ CFLAG:8235
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_35
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す CFLAG:8236
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_36
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_36
+	;初めて
+	IF CFLAG:8236 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『はっ、はっ、もっと…もっとちょうだいおねがいだからーー!!』
+					PRINTFORMW 「%CALLNAME:MASTER%様総領娘様だけではなく私にもしてください」
+				;その他の場合
+				ELSE
+					PRINTFORML 『うぐぅ、ちょっと%CALLNAME:MASTER%！なにも%CALLNAME:TARGET%の前でしなくたって』
+					PRINTFORML 「総領娘様、私にお構いなく存分に楽しんでください」
+					PRINTFORMW 『あんたは良くても私がいやなの!!』
+				ENDIF
+			;その他の場合
+			ELSE
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 『はっ、はっ、いいっ、はぁん』
+				PRINTFORML 「………」
+				PRINTFORMW %CALLNAME:TARGET%はただ唖然として行為を眺めている
+			;その他の場合
+			ELSE
+				PRINTFORML 『ひゃぁ、あっぐ、ああ、ああぁ』
+				PRINTFORMW 「ああ、総領娘様」
+			ENDIF
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8236= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8236 <= 3)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『あぅん、いいよーこれすっごくいいよー』
+					PRINTFORMW 「総領娘様ばかりでずるいですよ」
+				;その他の場合
+				ELSE
+					PRINTFORML 『うぅ、これじゃ私が調教されているみたいじゃない』
+					PRINTFORMW 「きっと気のせいですよ、ふふふ」
+				ENDIF
+			;その他の場合
+			ELSE
+			ENDIF
+			CFLAG:8236 = 4
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8236 <= 2)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「わざわざ私の前でしなくてもいいのに」
+			;その他の場合
+			ELSE
+				PRINTFORML 『はぁぁ、そんな…奥まで…』
+				PRINTFORMW 「こんな事…こんな事が…」
+			ENDIF
+			CFLAG:8236 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8236 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面立位アナル CFLAG:8237
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_37
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_37
+	;初めて
+	IF CFLAG:8237 == 0
+		PRINTFORML 「お尻に入れるのですか？」
+		PRINTFORML 「そ、そうですよね、そのつもりですから今まで弄っていたのでしょうから…」
+		PRINTFORMW 「いいですよ…その代わり優しくでお願いします」
+		CFLAG:8237= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8237 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8237 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8237 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8237 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8237 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面立位アナル CFLAG:8238
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_38
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_38
+	;初めて
+	IF CFLAG:8238 == 0
+		PRINTFORML 「お尻に入れるのですか？」
+		PRINTFORML 「そ、そうですよね、そのつもりですから今まで弄っていたのでしょうから…」
+		PRINTFORMW 「いいですよ…その代わり優しくでお願いします」
+		CFLAG:8238= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ潤滑Lv2以上かつA感覚Lv5以上
+		IF TALENT:恋慕 == 1 && PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 5 && (CFLAG:8238 <= 3)
+			PRINTFORML 「ああん！%CALLNAME:MASTER%様のせいでお尻が大好きな変態になってしまいました」
+			PRINTFORMW 「もっと激しく突いてください！脱腸してしまうくらい激しく!!」
+			CFLAG:8238 = 4
+		;潤滑Lv2以上かつA感覚Lv3以上
+		ELSEIF PALAM:10 >= PALAMLV:2 && ABL:Ａ感覚 >= 3 && (CFLAG:8238 <= 2)
+			PRINTFORML 「あんっ、いいですよ…やっと慣れてきました」
+			PRINTFORMW 「もっと激しくしてくれても構いません」
+			CFLAG:8238 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛いです…もっとゆっくりで優しくっ」
+			CFLAG:8238 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG:8239
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_40
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_40
+	;初めて
+	IF CFLAG:8239 == 0
+		;奉仕精神Lv3
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「どうです、少しは上手くなったでしょう」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ…なんて妙な手触りでしょう」
+		ENDIF
+		CFLAG:8239= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8239 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「いつ見ても立派ですね、ああ、掴んでみるとなんて温かい」
+
+			;その他の場合
+			ELSE
+				PRINTFORML 「%CALLNAME:MASTER%様の弱点は熟知しています」
+				PRINTFORMW 「さぁ、厭らしい噴水を出してさしあげましょう」
+			ENDIF
+			CFLAG:8239 = 4
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8239 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ここをこうして弄ってみますと…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ…すぐに楽になりますからね」
+			ENDIF
+			CFLAG:8239 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「自分でやってほしいものです」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「こんなので気持ちがいい……みたいですね」
+			ENDIF
+			CFLAG:8239 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG:8240
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_41
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_41
+	;初めて
+	IF CFLAG:8240 == 0
+		;奉仕精神Lv3
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「%CALLNAME:MASTER%の弱点…だんだん分かってきました」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「んふっ、変な味がします…」
+		ENDIF
+		CFLAG:8240= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8240 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「%CALLNAME:MASTER%様の綺麗に差し上げますね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はむぅ、ちゅ、なんて雄々しいのかしら」
+			ENDIF
+			CFLAG:8240 = 4
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8240 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んむっ、んん？これもっと大きくなるのですか」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「このまま全て搾り取ろうかしら」
+			ENDIF
+			CFLAG:8240 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「大きすぎて入りきれませんよ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「顎が疲れます」
+			ENDIF
+			CFLAG:8240 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG:8241
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_42
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_42
+	;初めて
+	IF CFLAG:8241 == 0
+		;奉仕精神Lv3
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「私のおっぱいにやみつきですね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「胸で……まぁ出来なくはないでしょうけど」
+		ENDIF
+		CFLAG:8241= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5 && (CFLAG:8241 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ここをぎゅってすれば……段々と大きくなってきました」
+
+			;その他の場合
+			ELSE
+				PRINTFORML 「私のおっぱいそんなに気持ちいいですか？」
+				PRINTFORMW 「いいのですよ、何時でも出しても」
+			ENDIF
+			CFLAG:8241 = 4
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8241 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「本当におっぱいが好きなんですね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「出したいのでしたらいつでもどうぞ」
+			ENDIF
+			CFLAG:8241 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「果たしてこれは気持ちがいいのでしょうか？」
+				PRINTFORMW 「……興奮する？そうですか」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「先っぽがちょこちょこ顔を出してちょっと可笑しいです」
+			ENDIF
+			CFLAG:8241 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG:8242
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_43
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_43
+	;初めて
+	IF CFLAG:8242 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORML 「ふふふ……とうとう貰ってくれるのですね」
+				PRINTFORML 「………あれ？どうして擦りつけて…素股!?」
+				PRINTFORML 「あ～、いえ、…もう！何でもありません!!てか知りません!!」
+				PRINTFORMW 何故だか%CALLNAME:TARGET%はそっぽを向いている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「擦るだけですか…………あ、いえ、何か物足りないとか思っていませんからね」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、挿れな……あれ？い、いえ、何でもありません」
+		ENDIF
+		CFLAG:8242= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8242 <= 2)
+			;処女
+			IF TALENT:処女 == 1
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORML 「またフェイントですか！そうなんですか!!いいでしょう我慢比べです!!!」
+					PRINTFORMW 顔を真っ赤にしながら%CALLNAME:TARGET%は意味不明な事を言っている
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あの気持ちがいいのですがもっと気持ち事しませんか？」
+				ENDIF
+			;その他の場合
+			ELSE
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「んんーっ!!%CALLNAME:MASTER%様のが……私のお豆に擦れています」
+				;その他の場合
+				ELSE
+					PRINTFORML 「擦りつけるだけじゃいけませんよ」
+					PRINTFORMW 「ちゃんと膣内に挿れていただけないと」
+				ENDIF
+			ENDIF
+			CFLAG:8242 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「はぁ……はぁ……」
+				PRINTFORMW %CALLNAME:TARGET%の顔が赤く染まっている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あそこが擦れて……へ…変な感覚です」
+			ENDIF
+			CFLAG:8242 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制 CFLAG:8243
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_44
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_44
+	;初めて
+	IF CFLAG:8243 == 0
+		PRINTFORMW 「そこを舐めるのですか？……綺麗にしているのでしょうね？」
+		CFLAG:8243= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8243 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「これが%CALLNAME:MASTER%様のお尻の味…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お尻のお掃除ですね、では舐めますよ」
+			ENDIF
+			CFLAG:8243 = 4
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8243 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「いつやっても慣れるものではありませんね…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「舐めます！綺麗にしますから押し付けないでください」
+			ENDIF
+			CFLAG:8243 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「うぇ、変な味がします　それに臭いもちょっと……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うぅ……後で歯磨きしなければ」
+			ENDIF
+			CFLAG:8243 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナルおねだり CFLAG:8244
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_45
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_45
+	;初めて
+	IF CFLAG:8244 == 0
+		PRINTFORMW 「お尻に挿れてください、も…もう自慰だけじゃ我慢できません」
+		CFLAG:8244= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8244 <= 2)
+			PRINTFORML 「%CALLNAME:MASTER%様、お尻に…お尻が空いてまいます」
+			PRINTFORMW 「どうか挿れてください」
+			CFLAG:8244 = 3
+		;その他の場合
+		ELSE
+			PRINTFORML 「お尻なら挿れても中に出しても構いません」
+			PRINTFORMW 「好きにしてください」
+			CFLAG:8244 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;足舐め強制 CFLAG:8245
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_46
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_46
+	;初めて
+	IF CFLAG:8245 == 0
+		PRINTFORML 「いやですよ汚いじゃないですか」
+		PRINTFORMW 「ちょっと…押し付けないで…もがが」
+		CFLAG:8245= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8245 <= 2)
+			PRINTFORMW 「ぺろぺろ、指の間凄い味がしますよ」
+			CFLAG:8245 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうしてこんな事をしなければいけないの」
+			CFLAG:8245 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;足扱き CFLAG:8246
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_47
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_47
+	;初めて
+	IF CFLAG:8246 == 0
+		PRINTFORMW 「足で擦ってほしいのですか？……もしかしてマゾ……なんですか？」
+		CFLAG:8246= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8246 <= 2)
+			PRINTFORML 「えい！えい！気持ちよさそうな顔をしていますね」
+			PRINTFORMW 「もっとしてあげます！もっとその顔をだらしなくさせてあげます」
+			CFLAG:8246 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そんな汚いものは足で十分ですね」
+			CFLAG:8246 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;髪扱き CFLAG:8247
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_48
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_48
+	;初めて
+	IF CFLAG:8247 == 0
+		PRINTFORMW 「ちょっ、変なモノを髪に触れないでください」
+		CFLAG:8247= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8247 <= 2)
+			PRINTFORML 「抜けないように優しくですよ…」
+			PRINTFORMW 「そう、それくらいなら痛くはありません」
+			CFLAG:8247 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いたっ、いたた、髪が！髪が抜けます!!」
+			CFLAG:8247 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;腋扱き CFLAG:8248
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_49
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_49
+	;初めて
+	IF CFLAG:8248 == 0
+		PRINTFORMW 「腋に挟めって……そんなのは私ではなく巫女さん達の方が適任ですよ」
+		CFLAG:8248= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8248 <= 2)
+			PRINTFORMW 「わ、腋臭くありません？いえ、汗でその……ひゃぁ、そんなに速く擦らないでください!!」
+			CFLAG:8248 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぅ…感覚が気色悪いですよ…」
+			CFLAG:8248 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;全身扱き CFLAG:8249
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_50
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き CFLAG:8250
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_51
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_51
+	;初めて
+	IF CFLAG:8250 == 0
+		PRINTFORMW 「んふぅ、微妙にくすぐったいですよ」
+		CFLAG:8250= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8250 <= 2)
+			PRINTFORMW 「%CALLNAME:MASTER%様のがお尻に挟まれて……ああん!!」
+			CFLAG:8250 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「時々お尻の穴に入りそうになって怖いですね」
+			CFLAG:8250 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;竿扱き CFLAG:8251
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_52
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制 CFLAG:8252
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_53
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_53
+	;初めて
+	IF CFLAG:8252 == 0
+		PRINTFORML 「そこを揉むのですか……」
+		PRINTFORML 「むむむ！玉袋と言われているだけに本当に玉みたいなのがありますね」
+		PRINTFORML おもむろに玉に力が入って悶絶する%CALLNAME:MASTER%
+		PRINTFORMW 「きゃあ、ご、ごめんなさい！そこは非常に痛いのですね」
+		CFLAG:8252= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8252 <= 2)
+			PRINTFORML 「この玉の感覚何やら気持ちがいいですね」
+			PRINTFORML 「えいっ！えいっ！」
+			PRINTFORMW %CALLNAME:TARGET%は玉を突っついて遊んでいる
+			CFLAG:8252 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「玉が潰れないようにゆっくり……優しく……」
+			CFLAG:8252 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;玉舐め強制 CFLAG:8253
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_54
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_54
+	;初めて
+	IF CFLAG:8253 == 0
+		PRINTFORML 「それを舐めるって……うぅ、気乗りがしませんがやってみます」
+		PRINTFORML %CALLNAME:TARGET%はゆっくりと玉袋を舐める
+		PRINTFORMW 「うえぇぇ、なんですかこの味……」
+		CFLAG:8253= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8253 <= 2)
+			PRINTFORML 「ふふふ、ここは大切な所ですからしっかりと綺麗にしませんとね」
+			PRINTFORMW 「はぁむ、……………はい、綺麗になりましたよ」
+			CFLAG:8253 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「また舐めないといけないのですね……」
+			CFLAG:8253 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル愛撫強制 CFLAG:8254
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_55
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション CFLAG:8255
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_60
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_60
+	;初めて
+	IF CFLAG:8255 == 0
+		PRINTFORMW 「つめたっ！何ですかそれ？」
+		CFLAG:8255= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8255 <= 2)
+			PRINTFORMW 「それを使うなんて%CALLNAME:MASTER%様はせっかちですね」
+			CFLAG:8255 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ぬるぬるします」
+			CFLAG:8255 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG:8256
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_61
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_61
+	;初めて
+	IF CFLAG:8256 == 0
+		PRINTFORML 「飲み物ですか、ありがとうございます」
+		PRINTFORMW 「変な味……それにやけに体が熱いような…」
+		CFLAG:8256= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8256 <= 2)
+			PRINTFORMW 「そんな薬に頼らなくても私は大丈夫なのに」
+			CFLAG:8256 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「それ媚薬だったのですね」
+			CFLAG:8256 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;利尿薬 CFLAG:8257
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_62
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_62
+	;初めて
+	IF CFLAG:8257 == 0
+		PRINTFORMW 「んん？何ですかこれ…急に尿意が…」
+		CFLAG:8257= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8257 <= 2)
+			;おもらし癖である
+			IF TALENT:おもらし癖 == 1
+				PRINTFORMW 「もうその薬に頼る必要ありませんね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「おしっこする所がみたいのですか？」
+			ENDIF
+			CFLAG:8257 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またおもらしさせようとするのですね」
+			CFLAG:8257 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;座薬 CFLAG:8258
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_63
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_63
+	;初めて
+	IF CFLAG:8258 == 0
+		PRINTFORMW 「痔でも何でもありませんから入れなくても……」
+		CFLAG:8258= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;Ａ感覚Lv3
+		IF ABL:Ａ感覚 >= 3 && (CFLAG:8258 <= 2)
+			PRINTFORMW 「もう何かお尻に入れておかないと落ち着かないです」
+			CFLAG:8258 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「%CALLNAME:MASTER%にとっては薬も調教の道具でしかないのですね」
+			CFLAG:8258 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;座薬(膣) CFLAG:8259
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_64
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_64
+	;初めて
+	IF CFLAG:8259 == 0
+		PRINTFORMW 「それお尻の薬ですよそんな所に入れないでください」
+		CFLAG:8259= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;Ｖ感覚Lv3
+		IF ABL:Ｖ感覚 >= 3 && (CFLAG:8259 <= 2)
+			PRINTFORMW 「もっと奥に押し込んでください」
+			CFLAG:8259 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「%CALLNAME:MASTER%にとっては薬も調教の道具でしかないのですね」
+			CFLAG:8259 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;強精神薬 CFLAG:8260
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_65
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_65
+	;初めて
+	IF CFLAG:8260 == 0
+		PRINTFORMW 「ケホッケホッ！何なんですかこれ？」
+		CFLAG:8260= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8260 <= 2)
+			PRINTFORMW 「その薬…急に来るので怖いです」
+			CFLAG:8260 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「それって前に飲んだ薬ですよね？また飲むのですか…」
+			CFLAG:8260 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;排卵誘発剤 CFLAG:8261
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_66
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_66
+	;初めて
+	IF CFLAG:8261 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML %CALLNAME:MASTER%はそっと薬を差し出した
+			PRINTFORML 「………」
+			PRINTFORML %CALLNAME:TARGET%がきょとんとした顔をしている
+			PRINTFORML 「本気なのですか…私との子供が欲しいなんて……」
+			PRINTFORMW 「ああ…%CALLNAME:MASTER%様、立派な赤ちゃん作りましょうね」
+		;その他の場合
+		ELSE
+			PRINTFORML 「うっ、けほっ、けほっ、何を飲ませたので……っ!!」
+			PRINTFORMW 薬の箱を見て%CALLNAME:TARGET%の顔が青ざめた
+		ENDIF
+		CFLAG:8261= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8261 <= 2)
+			;出産経験 1以上
+			IF EXP:出産経験 >= 1
+				PRINTFORML 「やぁん、もう%CALLNAME:MASTER%様ったらそんなに子供が欲しいのですか？」
+				PRINTFORMW 「いいですよ%CALLNAME:MASTER%様の子でしたら何人でも産んで差し上げます」
+			;その他の場合
+			ELSE
+				PRINTFORML 「飲みましたよ、後は%CALLNAME:MASTER%様のをここに注ぎ込むだけですね」
+				PRINTFORMW %CALLNAME:TARGET%は秘部を広げ誘っている
+			ENDIF
+			CFLAG:8261 = 3
+		;その他の場合
+		ELSE
+			PRINTFORML 「いやです!!%CALLNAME:MASTER%の赤ちゃんなんて産みたくありません」
+			PRINTFORMW 嫌がって暴れる%CALLNAME:TARGET%を押さえつけて無理矢理飲ませた
+			CFLAG:8261 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬 CFLAG:8262
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_67
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_67
+	;初めて
+	IF CFLAG:8262 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 「避妊薬ですか？そうですよね…初めてで妊娠は何か怖いですよね」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「避妊薬…子供はいつでも作れますからね、今は楽しみましょう」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:処女 == 1
+				PRINTFORML 「何飲ませているのですか!!それってつまり……」
+				PRINTFORMW %CALLNAME:MASTER%の意図を感づき%CALLNAME:TARGET%の顔が青ざめた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「その薬が出るって事は……あれなのですね……」
+			ENDIF
+		ENDIF
+		CFLAG:8262= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8262 <= 2)
+			PRINTFORMW 「飲みましたよ、さぁ、じっくりと愛し合いましょう」
+			CFLAG:8262 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いくら妊娠しないと言っても%CALLNAME:MASTER%とはしたくもありません」
+			CFLAG:8262 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;産卵促進剤 CFLAG:8263
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_68
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤 CFLAG:8264
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_69
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤 CFLAG:8265
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_70
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬 CFLAG:8266
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_71
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬 CFLAG:8267
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_72
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く CFLAG:8268
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_79
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射 CFLAG:8269
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_80
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射 CFLAG:8270
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_81
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射 CFLAG:8271
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_82
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射 CFLAG:8272
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_83
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射 CFLAG:8273
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_84
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射 CFLAG:8274
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_85
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射 CFLAG:8275
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_86
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射 CFLAG:8276
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_88
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン CFLAG:82977
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「もう脱いでしまっていいのですか？」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「結局脱がすのですね」
+	ENDIF
+;装着時
+ELSE
+	;初めて
+	IF CFLAG:8277 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「露出が減りましたけれどいいのでしょうか」
+			PRINTFORMW 「男のロマン？………はぁ、よく分かりませんが着ますね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「どうしてこんな物を着なければならないのでしょう」
+		ENDIF
+		CFLAG:8277= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8277 <= 2)
+			PRINTFORML 「%CALLNAME:MASTER%様、お食事になさいますか？ それともお風呂？ それともわ・た・し？」
+			PRINTFORMW 「どうしたのです？これを言わせたくて着させたのでしょう」
+			CFLAG:8277 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「まぁ一応着ますけれど…」
+			CFLAG:8277 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ CFLAG:8278
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;お医者プレイ CFLAG:8279
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ CFLAG:8280
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ CFLAG:8281
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

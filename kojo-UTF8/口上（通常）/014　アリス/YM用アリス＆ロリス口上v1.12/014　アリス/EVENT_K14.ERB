@@ -1,0 +1,2622 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは調教開始時・終了時・調教中イベント・エンディング口上用関数などが置いてあります。
+;このファイル内で他の関数を呼び出す処理のある関数は、削除せず残すことを推奨します。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;アリス口上
+;強がりで素直じゃないアリスとイチャイチャしたい人向けの口上です。
+;CFLAGの詳細
+;7000 ロリスフラグ
+;7001 調教進行フラグ
+;7002 アリス用、禁断の知識習得イベ
+;7003 ロリス用、献身的、鼓舞取得イベ、
+;7004～7010 助手判定用フラグ
+;7011 にんっしんっフラグ
+;==============================================================
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_14
+RETURN 1
+
+;========================================================
+;専用口上表示の固定化判定
+;========================================================
+;口上表示の専用口上使用設定において、選択肢を専用口上のみに固定化させたい場合は2を、専用口上＋地の文のみに固定化させたい場合は3を返すようにしてください
+;なお、1を返した(またはこの関数をコメントアウト等で使用できないようにした)場合は両方の選択肢が出るように、1・2・3以外の数値を返した時はエラー回避のため専用口上を使用できないようになっています
+;@KOJO_14_DISPLAY_SETTINGS
+;RETURN 1
+
+;========================================================
+;エキストラモード構文
+;自らの理想の嫁を表現するのに使う
+;========================================================
+@KOJO_14_EXTRA_INITIALIZATION
+;没。エキストラモードを使用する際は、ロリス化しないように。ロリス化すると無効になります。
+;IF CFLAG:8001 == 0
+;		PRINTFORML アリスってレズっ娘？
+;		PRINTL [0]ちゃんと男の子が好きだよ！
+;		PRINTL [1]マリアリが俺のジャスティス
+;		$INPUT_LOOP_1
+;		INPUT
+;		IF RESULT == 0
+;			PRINTFORMW ―――純情アリスとラブイチャモード―――
+;			PRINTFORMW アリスのレズっ気、及び霊夢、魔理沙との相性を変更します
+;			
+;			IF RELATION:1 > 100
+;				RELATION:1 = 100
+;			ENDIF
+;			IF RELATION:2 > 100
+;				RELATION:2 = 100
+;			ENDIF
+;			IF ABL:22 > 1
+;				ABL:22 = 0
+;			ENDIF
+;				
+;				
+;			CFLAG:8001 = 1
+;		ELSEIF RESULT == 1
+;			PRINTFORMW ―――通常モード―――
+;			PRINTFORMW レイアリも忘れないであげて！
+;
+;			CFLAG:8001 = 2
+;		ELSE
+;			GOTO INPUT_LOOP_1
+;		ENDIF
+;ENDIF
+
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_14_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+IF EQUIP:14
+	RETURN 0
+ENDIF
+;口枷がある場合も戻る
+IF TEQUIP:42
+	RETURN 0
+ENDIF
+;失神中も戻る
+IF TFLAG:899 >= 1
+	RETURN 0
+ENDIF
+;精神崩壊の場合は戻る
+IF TALENT:167
+	RETURN 0
+ENDIF
+DRAWLINE
+
+;調教開始口上分岐
+IF CFLAG:7001 == 0
+	TRYCALL K14_MESSAGE_START_1
+ELSE
+	TRYCALL K14_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時
+;-------------------------------------------------
+@K14_MESSAGE_START_1
+;ロリスの口上。ＥＸを条件にできなかったので幼稚で妥協…。これ以降はCFLAG7000を使用
+IF TALENT:幼稚 == 1
+	PRINTFORMW どういうことだろうか…
+	PRINTFORMW 話ではアリス・マーガトロイドという女性は妙齢の女だったはずなのだが
+	PRINTFORMW 今回購入したアリスの容姿はまだ幼い少女そのものだ…
+	PRINTFORMW まあ良いだろう、どの道する事に変わりはない
+	PRINTFORMW %CALLNAME:MASTER%はアリスの調教を始めるべく部屋に入った…
+	PRINTFORML 
+	PRINTFORMW 
+	PRINTFORMW 「あら、ようやく人が来たわ」
+	PRINTFORMW 「それで？私をどうするつもりかしら？」
+	PRINTFORMW 「言っておくけど、私を見た目通りの少女と思ってたら」
+	PRINTFORML 
+	PRINTFORMW ――死ぬわよ
+	PRINTFORML
+	PRINTFORMW 「…うふふ、それじゃあ遊びましょうか」
+	CFLAG:7000 = 1
+	CFLAG:7001 = 1
+ELSE
+	PRINTFORMW 部屋に入ると、気丈な目でアリスがこちらを睨んでいた
+	PRINTFORML 
+	PRINTFORMW 「ちょっと、これはどういうことよ？」
+	PRINTFORMW 「は？奴隷、調教？バカを言わないで！」
+	PRINTFORML 
+	PRINTFORMW 強気な発言をしているが、人形が居ない以上人形遣いの彼女に為す術は無い。
+	PRINTFORML 
+	PRINTFORMW 「フン！あんたなんかに私を堕とせるわけないわ！」
+CFLAG:7001 = 1
+RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K14_MESSAGE_START_2
+;恋慕条件を満たしても名前を教えないと恋慕イベは起こりません
+IF CFLAG:7001 == 4 && TALENT:恋慕 == 1
+	;ロリス恋慕。下剋上からの純愛、大好物です。
+	IF CFLAG:7000 == 1
+		DRAWLINE
+		PRINTFORMW アリスの部屋に行こうとした時、突然部屋から爆音が響いた
+		PRINTFORMW 部屋の扉が吹き飛び、中から煙が噴き出る
+		PRINTFORMW そして中から、アリスが勝ち誇った笑みを浮かべて出てきた
+		PRINTFORML 
+		PRINTFORMW 「ふふふ…、あの程度の拘束で私を封じられると思った？魔界人を甘く見ないでよね」
+		PRINTFORMW 「本当はいつでも逃げられたんだけど、どうせなら遊んでから帰ろうかなって」
+		PRINTFORMW アリスは笑みを浮かべたまま%CALLNAME:MASTER%ににじり寄る…
+		PRINTFORMW 「ふふ、今どんな気持ち？」
+		PRINTFORMW 「奴隷に殺されそうで怖い？逃げられそうで悔しい？」
+		PRINTFORMW 「くすくす…、自分の末路を想像してみなさい…」
+		PRINTFORMW %CALLNAME:MASTER%はこれから自分がどうなるかを考えてみた
+		PRINTFORMW 自分がアリスにした事は許されざることだろう…
+		PRINTFORMW このまま無残な死体にされるのだろうか、死体すら残らないかもしれない
+		PRINTFORMW もしくは自分が奴隷にされ、同じ辱めを受けるというのもあり得る
+		PRINTFORMW 唯一つ、自分はここまでの命なのは確かだ
+		PRINTFORMW 「どう？自分の悲惨な末路、考えた？」
+		PRINTFORMW 「さ、おしゃべりは終わりにしましょうか！」
+		PRINTFORMW アリスは%CALLNAME:MASTER%に飛びかかり、床に押し倒した
+		PRINTFORMW その幼い身体からは想像もつかない力で組み伏せられる…
+		PRINTFORMW 「さあ、覚悟なさい…」
+		PRINTFORMW アリスは%CALLNAME:MASTER%の胸倉を掴み、顔を引き寄せ――
+		PRINTFORMW 「……………」
+		PRINTFORMW 「………………なんてね」
+		PRINTFORMW そこでアリスはふっと穏やかな表情になり、
+		PRINTFORMW %CALLNAME:MASTER%の唇に自分の唇を重ねた
+		PRINTFORML 
+		PRINTFORMW 　
+		PRINTFORMW 「……%MASTERNAME%を殺すわけないじゃない」
+		PRINTFORMW 「もう、私は%MASTERNAME%無しでは生きていけないというのに」
+		PRINTFORMW 「悪ふざけしてごめんね？でも、ただ好きっていっても多分信じてもらえないから」
+		PRINTFORMW 「こんな方法でしか伝わらないと思ったの」
+		PRINTFORMW 「…これからも、どうかよろしくね」
+		PRINTFORMW 　
+		CFLAG:7001 = 5
+		RETURN 1
+	;アリス恋慕
+	ELSE
+		DRAWLINE
+		PRINTFORMW 「あら、ごきげんよう」
+		PRINTFORMW アリスは穏やかな表情で%CALLNAME:MASTER%を見つめていた…
+		PRINTFORMW 「ねえ、人を好きになったことある？」
+		PRINTFORMW %CALLNAME:MASTER%は、首を横に振った
+		PRINTFORMW 「か弱い女の子を調教するような人だもの、あるわけないわよね」
+		PRINTFORMW 「だったら、私が教えてあげましょうか？」
+		PRINTFORMW そう言ってアリスは%CALLNAME:MASTER%の顔を自分の胸にうずめた
+		PRINTFORMW 「%MASTERNAME%を想うと、胸の鼓動がとまらないの…」
+		PRINTFORMW 「私、%MASTERNAME%の事が好き。」
+		PRINTFORMW 「%MASTERNAME%になら、何をされても構わないわ」
+		PRINTFORMW 「だから、私をずっと側に置いて…」
+		PRINTFORMW 顔を上げると、アリスは真っ赤な顔で、今にも泣きそうだった
+		PRINTFORMW 彼女の孤独を、埋めてあげたい
+		PRINTFORMW 彼女を、温もりで満たしてやりたい
+		PRINTFORMW そう思った%CALLNAME:MASTER%はいつの間にか、アリスを強く抱きしめていた
+		PRINTFORMW 「ありがとう…、大好き…！」
+		PRINTFORMW 　
+		CFLAG:7001 = 5
+		RETURN 1
+	ENDIF
+ELSEIF TALENT:妊娠 == 1 && CFLAG:7011 == 0
+	IF CFLAG:7000 == 1
+		;恋慕かつ主人が父親
+		IF CFLAG:7001 >= 5 && CFLAG:70 == 1
+			PRINTFORMW 「ねえ、これ…、見てくれる？」
+			PRINTFORMW アリスは少しだけ膨らんだお腹を見せつける
+			PRINTFORMW 「私、%MASTERNAME%の子供を孕んだみたい」
+			PRINTFORMW アリスは少し不安げな表情で%CALLNAME:MASTER%を見つめている
+			PRINTFORMW 「このままじゃ%MASTERNAME%とエッチもできないし、色々迷惑かけちゃうわね…」
+			PRINTFORMW 「でも、お願い。私、この子産みたいの」
+			PRINTFORMW 「%MASTERNAME%と私の愛の証…、欲しいの」
+			PRINTFORMW 泣きそうな顔で、アリスはそう言った
+			PRINTFORMW 好きにすればいい――、と%CALLNAME:MASTER%は答えた
+			PRINTFORMW 「うん、ありがと…」
+			CFLAG:7011 = 1
+		ELSE
+			PRINTFORMW 「ねえちょっと、これ見て、これ」
+			PRINTFORMW 苛立った様子のアリスが自らの膨らんだ下腹部を見せつける
+			PRINTFORMW 「どうしてくれるの、こんな小さな子供を妊娠させて」
+			PRINTFORMW 「もう、知らない」
+			CFLAG:7011 = 2
+		ENDIF
+	ELSE
+		;恋慕かつ主人が父親
+		IF CFLAG:7001 >= 5 && CFLAG:70 == 1
+			PRINTFORMW 「ね、ねぇ…、%MASTERNAME%…、話があるの」
+			PRINTFORMW アリスが、いつになく神妙な顔をして、そう切り出した
+			PRINTFORMW 「私…、でき、ちゃった……」
+			PRINTFORMW 「%MASTERNAME%と、私の、子供…」
+			PRINTFORMW 子供ができた事で、アリスは嬉しさ半分、不安半分といった様子だ
+			PRINTFORMW 「うん、分かってるわ、奴隷の身分で子供を産もうなんておこがましいって」
+			PRINTFORMW 「でも、それでも…、私は……」
+			PRINTFORMW 「お願い！何でもするから、この子を産ませて…！」
+			PRINTFORMW 良いよ――、と%CALLNAME:MASTER%は答えた
+			PRINTFORMW 「嬉しい…、ありがとう……」
+			CFLAG:7011 = 1
+		ELSE
+			PRINTFORMW 「うふふ…、ねえ、見て？このお腹」
+			PRINTFORMW アリスが、少し膨らんだお腹を見せて言った
+			PRINTFORMW その眼は虚ろで、生気が感じられない…
+			PRINTFORMW 「監禁されて、酷い目に遭わされて、挙句の果てには…、ははっ…」
+			PRINTFORMW 「あははっ、あはっ…、はは……あはは…」
+			PRINTFORMW どうやらアリスの精神には限界が来た様だ
+			PRINTFORMW もう、彼女はダメかもしれない……
+			CFLAG:7011 = 2
+		ENDIF
+	ENDIF
+ELSEIF TALENT:親愛 == 1 && CFLAG:7001 == 5
+	IF CFLAG:7000 == 1
+		PRINTFORMW 最近自分がおかしいと感じている…
+		PRINTFORMW 確かにアリスは自分に尽くしてくれる忠実な奴隷だ
+		PRINTFORMW 人一倍目を掛けるのは当然だろう
+		PRINTFORMW だが、最近の自分のアリスへの入れ込み方は異常だ…
+		PRINTFORMW しかも、普通に調教するならまだしも、まるで恋人か妹のような扱いをしている
+		PRINTFORMW 一人の奴隷に執着する――、それは調教師の最大のタブーだ
+		PRINTFORMW 引き返せないうちに売却してしまうべきだろうか…
+		PRINTFORMW そう考えながら、今日もアリスの部屋に来てしまった
+		PRINTFORMW しかたなく、扉を開ける
+		PRINTFORMW そこには、いつもと変わらぬ笑顔のアリスが居た
+		PRINTFORMW 「あっ、%MASTERNAME%っ♪」
+		PRINTFORMW %CALLNAME:MASTER%が入って来たのが分かると、すぐさま抱きついてくる
+		PRINTFORMW 「えへへ、大好き…、%MASTERNAME%…」
+		PRINTFORMW アリスの様子も今までと何か違う…
+		PRINTFORMW 今までと警戒、興味、依存と移り変わってきたが、今回のは変化が大きい
+		PRINTFORMW まるで、愛する人に寄り添っている様な態度と表情をしている…
+		PRINTFORMW 「私、もう決めたから」
+		PRINTFORMW 「二度と%MASTERNAME%から離れない、離さない」
+		PRINTFORMW 「奴隷でも、助手でも、道具扱いでも良い…」
+		PRINTFORMW 「ずっと、側にいるからね…」
+		PRINTFORMW %CALLNAME:MASTER%の腕を抱きしめ、アリスは静かにそう告白した……
+		PRINTFORMW 「…さ、やろっか」
+		PRINTFORMW 　
+		CFLAG:7001 = 6
+	ELSE
+		PRINTFORMW アリスの部屋に入ると、静かに寝ているアリスの姿があった
+		PRINTFORMW 「ふふ…、%MASTERNAME%…」
+		PRINTFORMW %CALLNAME:MASTER%の夢を見ているのか、幸せそうな寝顔をしている…
+		PRINTFORMW ふと、ベッドの脇にある手帳が目に入った
+		PRINTFORMW 確か、アリスが以前手帳が欲しいと言ってきた事がある。その時渡したものだ
+		PRINTFORMW …何が書いてあるのだろうか、とても気になる
+		PRINTFORMW ………ペラ
+		PRINTFORMW 奴隷が何か企てていないか確認するため…、
+		PRINTFORMW %CALLNAME:MASTER%は自分にそう言い聞かせ、手帳を盗み見た
+		PRINTFORMW 『今日%MASTERNAME%に手帳をもらった。今日から日記を書こうと思う』
+		PRINTFORMW 『いつ、私が売られ、この日常が壊れるか分からないから…』
+		PRINTFORMW 　
+		PRINTFORMW 『今日は%MASTERNAME%に散々胸を弄られた。本当に%MASTERNAME%は胸が好きだ』
+		IF TALENT:母乳体質 == 1
+			PRINTFORMW 『ミルクもたくさん飲まれている。その時の表情がすごく可愛い』
+		ENDIF
+		PRINTFORMW 『今では胸を弄るだけでも絶頂に達するようになってしまった』
+		PRINTFORMW 『今日は色々な奉仕をした。手も、口も、胸も、髪も、足も、精液塗れになった』
+		IF ABL:奉仕精神 >= 5
+			PRINTFORMW 『%MASTERNAME%が喜んでくれるのは嬉しい。私も気持ち良くなってくる』
+		ENDIF
+		PRINTFORMW 『%MASTERNAME%以外の男にこんな事をするなんて、考えられない』
+		PRINTFORMW 『今日は少し優しくしてくれた。たまにこういう日がある』
+		PRINTFORMW 『その時の%MASTERNAME%を見ると、この人を好きになって良かったと思える』
+		IF EXP:愛情経験 >= 250
+			PRINTFORMW 『エッチな%MASTERNAME%は好きだ、でも優しい%MASTERNAME%はもっと好きだ』
+		ENDIF
+		PRINTFORMW 『今日は外でデートした、私はもちろん全裸に首輪とリードだ』
+		PRINTFORMW 『妖精や里の人間に丸い目で見られたが、私も%MASTERNAME%も全く気にしない』
+		PRINTFORMW 『それが私達の愛の形なのだ。誰にも口出しする権利は無い』
+		IF MARK:恥辱刻印 == 3
+			PRINTFORMW 『まぁ、最初は恥ずかしかったが、今はあまり気にならない』
+		ENDIF
+		PRINTFORMW 『今日は%MASTERNAME%にお風呂で奉仕した』
+		PRINTFORMW 『今日は%MASTERNAME%と交わった』
+		PRINTFORMW 『今日は%MASTERNAME%にアナルを弄られた』
+		PRINTFORMW %MASTERNAME%、%MASTERNAME%、%MASTERNAME%…
+		PRINTFORMW 手帳に書かれた日記に、%CALLNAME:MASTER%の名前が無い日はなかった
+		PRINTFORMW それほどまでに、自分の存在はアリスの心の奥深くまで入り込んでいるのだろう
+		PRINTFORMW ……彼女は以前、自分を好きだと言った
+		PRINTFORMW その時は、肉欲を愛情と勘違いしてるのだろうと思った
+		PRINTFORMW だから、せめて良い夢を見せようと彼女の想いに応えた
+		PRINTFORMW …でも、あの時のアリスの真摯な表情――
+		PRINTFORMW ――あれは、そんな軽い思いに見えただろうか
+		PRINTFORMW それに、あの時自分は想ったはずだ
+		PRINTFORMW 彼女の孤独を埋めたい、温もりを与えたいと…――
+		PRINTFORML 
+		PRINTFORMW ――勘違いしていたのは、全て自分だったのだ
+		PRINTFORMW アリスが肉欲を愛情と勘違いしていると思っていたように
+		PRINTFORMW 自分のアリスへの愛を欲望と勘違いしていたのだろう…
+		PRINTFORMW …これから、自分はアリスとどう接せば良いのだろうか
+		PRINTFORMW 「んっ、んん…、%MASTERNAME%…、むにゃむにゃ…」
+		PRINTFORMW とりあえず、起きるまで寝顔でも見ていよう
+		PRINTFORMW %CALLNAME:MASTER%は、ずっとアリスの頭を彼女が起きるまで撫で続けていた…
+		PRINTFORMW 　
+		CFLAG:7001 = 6
+	ENDIF
+ELSEIF CFLAG:7001 < 2 && MARK:屈服刻印 == 1
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「またこの間の遊び？」
+		PRINTFORMW 「まあ良いけど、ちゃんと私を楽しませてよね」
+		PRINTFORMW アリスは満更でもない様子だ…
+		CFLAG:7001 = 2
+		RETURN 1
+	ELSE
+		PRINTFORMW 「こんなやり方でしか女の子と向き合えないの？」
+		PRINTFORMW 「見下げ果てた奴ね」
+		PRINTFORMW そう挑発する彼女の身体は震えている…
+		PRINTFORMW 強がっているのはバレバレだ…
+		CFLAG:7001 = 2
+		RETURN 1
+	ENDIF
+ELSEIF CFLAG:7001 < 3 && MARK:屈服刻印 == 2
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「ここでの生活にも慣れてきたわ」
+		PRINTFORMW 「喜んでいいの…かしらね…」
+		PRINTFORMW アリスは%CALLNAME:MASTER%の調教に順応してきた様だ…
+		CFLAG:7001 = 3
+		RETURN 1
+	ELSE
+		PRINTFORMW 「何をされても私は屈しないわ」
+		PRINTFORMW 「諦めてさっさと解放することね」
+		CFLAG:7001 = 3
+		RETURN 1
+	ENDIF
+;好感度700以上で名前を教えるイベ
+ELSEIF CFLAG:7001 < 4 && CFLAG:2 >= 700
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「そういえば、あなたの名前、なんて言うの？」
+		PRINTFORMW 「名前も知らない人とこんな事するのは、ちょっと…ねぇ？」
+		PRINTL [0] 名前を教える
+		PRINTL [1] 名前を教えない
+		$INPUT_LOOP_2
+		INPUT
+		IF RESULT == 0
+			CALL K14_NAMEINPUT
+		ELSEIF RESULT == 1
+			;教えなかった場合「あなた」が%MASTERNAME%となります
+			MASTERNAME = %CALLNAME:MASTER%
+			PRINTFORML 「あら、教えてくれないの？」
+			PRINTFORMW 「残念ね、まあ嫌なら無理にとは言わないわ」
+			CFLAG:7001 = 4
+			RETURN 1
+		ELSE
+			GOTO INPUT_LOOP_2
+		ENDIF
+		PRINTFORML 「%MASTERNAME%かぁ…、良い名前じゃない」
+		PRINTFORMW 「改めてよろしくね、%MASTERNAME%」
+		CFLAG:7001 = 4
+		RETURN 1
+	ELSE
+		PRINTFORMW 「ねえ、あなたの名前、教えてくれない？」
+		PRINTFORMW 「名前も知らない奴にこんな事されたくないからね」
+		PRINTL [0] 名前を教える
+		PRINTL [1] 名前を教えない
+		$INPUT_LOOP_5
+		INPUT
+		IF RESULT == 0
+			CALL K14_NAMEINPUT
+		ELSEIF RESULT == 1
+			;教えなかった場合「あなた」が%MASTERNAME%となります
+			MASTERNAME = %CALLNAME:MASTER%
+			PRINTFORML 「教えてくれないのかしら？」
+			PRINTFORMW 「なら私が自由に呼ばせてもらうわね」
+			CFLAG:7001 = 4
+			RETURN 1
+		ELSE
+			GOTO INPUT_LOOP_5
+		ENDIF
+		PRINTFORML 「%MASTERNAME%ね…」
+		PRINTFORMW 「できるだけ仲良くしましょうね、%MASTERNAME%」
+		CFLAG:7001 = 4
+	RETURN 1
+	ENDIF
+;服従で異常経験５以上でアリスに禁断の知識イベ
+ELSEIF CFLAG:7002 < 1 && TALENT:服従 == 1 && EXP:異常経験 >= 5
+	PRINTFORMW 部屋に入ると、虚ろな目で本を読んでいるアリスが居た…
+	PRINTFORMW 「うふふ…、私の大事な%MASTERNAME%…」
+	PRINTFORMW 「もっと%MASTERNAME%の役に立たなくちゃ…」
+	PRINTFORMW どうやら%MASTERNAME%に対する愛情のあまり、禁忌に手を伸ばそうとしている様だ…
+	PRINTFORMW 「ふふふ……、あら、%MASTERNAME%？」
+	PRINTFORMW やっとこちらに気づいた様だ
+	PRINTFORMW 「ごめんね、気づかなくて」
+	PRINTFORMW 「でも私、これからはもっとあなたの役に立つから…」
+	PRINTFORMW 「これからも私を可愛がってね？」
+	PRINTFORML
+	PRINTFORMW アリスは禁忌の知識を得ました
+	PRINTFORMW 「禁断の知識」「狂気」を取得しました
+	TALENT:禁断の知識 = 1
+	TALENT:狂気 = 1
+	CFLAG:7002 = 1
+	RETURN 1
+;恋慕で愛情経験150以上でロリス献身的、鼓舞取得イベ、
+ELSEIF CFLAG:7000 == 1 && CFLAG:7003 < 1 && TALENT:恋慕 == 1 && EXP:愛情経験 >= 150
+	PRINTFORMW 「ねえ、%MASTERNAME%」
+	PRINTFORMW 「私はいつまでここにいられるのかしら？」
+	PRINTFORMW アリスの表情は心なしか暗く見える…
+	PRINTFORMW 「私がここにいるのは私の我侭よね、%MASTERNAME%は私を売る為にこんな事をしている」
+	PRINTFORMW 「でもね、私は%MASTERNAME%の側に居たい、本当よ」
+	PRINTFORMW 「…うん、決めた！これからはもっと積極的に調教に付き合うわ！」
+	PRINTFORMW アリスは急に吹っ切れた様な顔になった
+	PRINTFORMW 「%MASTERNAME%が私をずっと手元に置きたくなるようにね！」
+	PRINTFORMW アリスはにっこりと%CALLNAME:MASTER%に笑いかけた…
+	PRINTFORML 
+	PRINTFORMW アリスは%CALLNAME:MASTER%に心を開きました
+	PRINTFORMW 「献身的」「鼓舞」を取得しました
+	TALENT:献身的 = 1
+	TALENT:鼓舞 = 1
+	CFLAG:7003 = 1
+	RETURN 1
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K14_MESSAGE_START_3
+;-------------------------------------------------
+;助手との掛け合い口上（Y1を助手のキャラ番号に置換)
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;助手との掛け合いは一部を除いてロリスでもアリスでも変わりません
+;-------------------------------------------------
+;-------------------------------------------------
+; 助手が霊夢	CFLAG:7004
+;-------------------------------------------------
+ELSEIF NO:ASSI == 1
+;初めて
+	IF CFLAG:7004 == 0
+	;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「…どうして霊夢がいるのかしら」
+			PRINTFORMW 『ふふ、今日は私も一緒に調教するのよ』
+			PRINTFORMW 「…はぁ、%MASTERNAME%一人で十分なのに……」
+	;その他の場合
+		ELSE
+			PRINTFORMW 「霊夢…？あなた、なにやってるの」
+			PRINTFORMW 『なにって、私はご主人様の奴隷だもの。』
+			PRINTFORMW 『ご主人様の手伝いをするのは当然でしょう？』
+			PRINTFORMW （あの霊夢をこんなにするなんて…）
+			PRINTFORMW （どうやら、只者ではなさそうね）
+		ENDIF
+		CFLAG:7004= 1
+		RETURN 0
+;２回目以降
+ELSEIF CFLAG:7004 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1 
+		;ロリスの場合
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「あら、今日は霊夢も一緒なのね」
+			PRINTFORMW 『ええ、三人で楽しみましょう？』
+			PRINTFORMW 「そうね、じゃあさっそく…」
+			PRINTFORMW アリスと霊夢は%CALLNAME:MASTER%のズボンを脱がし、交互にペニスを舐め始めた…
+		;アリスの場合
+		ELSE
+			PRINTFORMW 「…あ、%MASTERNAME%！…と、余計な紅白」
+			PRINTFORMW 『随分な言い草ね、口の利き方を教えてあげないといけないかしら』
+			PRINTFORMW 「所詮、巫女は二色」
+			PRINTFORMW 「七色の人形遣いたる私に勝てるわけがないわ」
+			PRINTFORMW 「弾幕も、性行為も…ね」
+		ENDIF
+	;その他の場合
+	ELSE
+		PRINTFORMW 「あなた、博麗の巫女でしょう？」
+		PRINTFORMW 「こんなとこでこんなことしてて良いの？」
+		PRINTFORMW 『今の私はそんなことに興味はないの』
+		PRINTFORMW 『今はどうあんたを調教するかだけ考えてるわ』
+		PRINTFORMW 変わり果てた霊夢からアリスは目を逸らした…
+	ENDIF
+	RETURN 0
+ENDIF
+;-------------------------------------------------
+; 助手が魔理沙	CFLAG:7005
+;-------------------------------------------------
+ELSEIF NO:ASSI == 2
+	;初めて
+	IF CFLAG:7005 == 0
+		;ロリスの場合
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「…隠さなくても良いわ」
+			PRINTFORMW 「居るんでしょう？あなたの後ろに」
+			PRINTFORMW 「あの魔法使いが」
+			PRINTFORMW アリスが魔理沙の存在を認めると、魔理沙は%CALLNAME:MASTER%の後ろから姿を現した
+			PRINTFORMW 『よぉ、滑稽な姿になってるな。アリス』
+			PRINTFORMW 「あら、そんな事言って良いのかしら？うふふ…」
+			PRINTFORMW 『お、おい！それはやめろ…！』
+			PRINTFORMW 「ねえ知ってる%MASTERNAME%？魔理沙って昔はねえ…」
+			PRINTFORMW 『わーっ！やめろやめろ聞くなーっ！』
+			PRINTFORML 
+			PRINTFORMW 魔理沙の黒歴史を教えてもらいました
+			PRINTFORMW 魔理沙の「弱味」を握った
+			TALENT:ASSI:弱味 = 1
+		;アリスの場合
+		ELSE
+			PRINTFORMW 「ま、魔理沙っ！？」
+			PRINTFORMW 『よおアリス、お前もここに来てたのか』
+			PRINTFORMW アリスは魔理沙を見て狼狽している・・・
+			PRINTFORMW 「ち、違うの！こ、これは…」
+			PRINTFORMW 『恥ずかしがるなよ、すぐに気持ち良くしてやるからさ…』
+			PRINTFORMW 「へ…？や、ちょっと！魔理沙！？」
+		ENDIF
+		CFLAG:7005= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7005 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;ロリスの場合
+			IF CFLAG:7000 == 1
+				PRINTFORMW 「はぁ、私と%MASTERNAME%の空間に、邪魔な白黒が…」
+				PRINTFORMW 『酷い言われようだぜ』
+				PRINTFORMW 『というか…、お前よくあいつを堕としたな』
+				PRINTFORMW 『魔界人ぐらいじゃないとお前には付いていけないのかねぇ…』
+			;アリスの場合
+			ELSE
+				PRINTFORMW 「なんだ。魔理沙、アンタも一緒なの」
+				PRINTFORMW 『くくっ、こいつを独り占めしようたってそうはいかないぜ』
+				PRINTFORMW 「まあ良いわ。三人で楽しみましょうか」
+			ENDIF
+		;恋慕無しロリス
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORMW 「魔理沙…、あなた、どうしちゃったの？」
+			PRINTFORMW 『どうもこうも、私はこいつの奴隷。それだけのことだ』
+			PRINTFORMW 『アリスも一緒に堕ちようぜ？こいつに抱かれるのは快感だぜ』
+			PRINTFORMW 「くっ…、よくも魔理沙を…」
+		;恋慕無しアリス
+		ELSE
+			PRINTFORMW 『よぉ、アリス』
+			PRINTFORMW 「ま、魔理沙ぁ…」
+			PRINTFORMW 魔理沙に見られていることで、アリスは羞恥と興奮を感じている様だ…
+			PRINTFORMW 『今日もたっぷり可愛がってやるよ』
+			PRINTFORMW 「やだぁ…、魔理沙ぁ…♪」
+			PRINTFORML 
+			PRINTFORMW …すっかり二人の世界になっているが、まぁ気にしないでおこう
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+; 助手が上海人形	CFLAG:7006
+;ロリスの場合口上はありません
+;-------------------------------------------------
+ELSEIF NO:ASSI == 66
+	;初めて
+	IF CFLAG:7006 == 0 && CFLAG:7000 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「しゃ、上海！？」
+			PRINTFORMW 『シャンハーイ』
+			PRINTFORMW 上海はアリスを見つけると、すぐさまアリスの胸に飛び込んだ
+			PRINTFORMW 「よかった、無事で…」
+			PRINTFORMW 「その様子だと、あなたも今や%MASTERNAME%のものみたいね…」
+			PRINTFORMW 自分が使っていた時と比べて、変わり果てた上海の姿
+			PRINTFORMW しかしアリスは憤りなどは見せず、上海の身体をただ撫でるだけだ
+			PRINTFORMW 「%MASTERNAME%、この子ともども、これからもよろしくね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「しゃ、上海！？」
+			PRINTFORMW 『シャンハーイ』
+			PRINTFORMW 上海はアリスを見つけると、すぐさまアリスの胸に飛び込んだ
+			PRINTFORMW 「よかった、無事で…」
+			PRINTFORMW 「でも、どうしてこんな所に…、まさか……！」
+			PRINTFORMW %CALLNAME:MASTER%が命令すると、上海はアリスの身体をまさぐり始めた…
+			PRINTFORMW 「んッ…！あなた、私の人形に何をしたの…っ！！」
+		ENDIF
+		CFLAG:7006= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7006 == 1 && CFLAG:7000 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、上海。こっちにいらっしゃい」
+			PRINTFORMW アリスが呼びかけると、上海はアリスの元へ飛んで行った
+			PRINTFORMW 「ふふ、すっかり%MASTERNAME%色に染まっちゃって…」
+			PRINTFORMW 「私も、人の事言えないか…」
+			PRINTFORMW 調教済みの上海の身体を撫で、アリスは口元を綻ばせる…
+			PRINTFORMW 「さぁ、%MASTERNAME%。二人まとめて可愛がってね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「上海…」
+			PRINTFORMW 『シャンハーイ』
+			PRINTFORMW すっかり%CALLNAME:MASTER%の支配下にある上海を見て、アリスは悲しみと怒りを露わにする
+			PRINTFORMW 「よくも上海を…、許さない…！」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+; 助手が蓬莱人形	CFLAG:7007
+;ロリスの場合口上はありません
+;-------------------------------------------------
+ELSEIF NO:ASSI == 67
+	;初めて
+	IF CFLAG:7007 == 0 && CFLAG:7000 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ほ、蓬莱！？」
+			PRINTFORMW 『ホウラーイ』
+			PRINTFORMW 蓬莱はアリスを見つけると、すぐさまアリスの胸に飛び込んだ
+			PRINTFORMW 「よかった、無事で…」
+			PRINTFORMW 「その様子だと、あなたも今や%MASTERNAME%のものみたいね…」
+			PRINTFORMW 自分が使っていた時と比べて、変わり果てた蓬莱の姿
+			PRINTFORMW しかしアリスは憤りなどは見せず、蓬莱の身体をただ撫でるだけだ
+			PRINTFORMW 「%MASTERNAME%、この子ともども、これからもよろしくね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ほ、蓬莱！？」
+			PRINTFORMW 『ホウラーイ』
+			PRINTFORMW 蓬莱はアリスを見つけると、すぐさまアリスの胸に飛び込んだ
+			PRINTFORMW 「よかった、無事で…」
+			PRINTFORMW 「でも、どうしてこんな所に…、まさか……！」
+			PRINTFORMW %CALLNAME:MASTER%が命令すると、蓬莱はアリスの身体をまさぐり始めた…
+			PRINTFORMW 「んッ…！あなた、私の人形に何をしたの…っ！！」
+		ENDIF
+		CFLAG:7007= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7007 == 1 && CFLAG:7000 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、蓬莱。こっちにいらっしゃい」
+			PRINTFORMW アリスが呼びかけると、蓬莱はアリスの元へ飛んで行った
+			PRINTFORMW 「ふふ、すっかり%MASTERNAME%色に染まっちゃって…」
+			PRINTFORMW 「私も、人の事言えないか…」
+			PRINTFORMW 調教済みの蓬莱の身体を撫で、アリスは口元を綻ばせる…
+			PRINTFORMW 「さぁ、%MASTERNAME%。二人まとめて可愛がってね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「蓬莱…」
+			PRINTFORMW 『ホウラーイ』
+			PRINTFORMW すっかり%CALLNAME:MASTER%の支配下にある蓬莱を見て、アリスは悲しみと怒りを露わにする
+			PRINTFORMW 「よくも蓬莱を…、許さない…！」
+		ENDIF
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+; 助手が大江戸人形	CFLAG:7008
+;もちろんロリスは…
+;-------------------------------------------------
+ELSEIF NO:ASSI == 96
+	;初めて
+	IF CFLAG:7008 == 0 && CFLAG:7000 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、あなた…、それ…」
+			PRINTFORMW アリスは%CALLNAME:MASTER%が連れてきた大江戸人形を見て、驚いている
+			PRINTFORMW 「それ、私でも取り扱いに苦労する人形なのに、よく手懐けたわね…」
+			PRINTFORMW 「ふふ、さすが%MASTERNAME%と言ったところかしら」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あ、あなた…、それ…」
+			PRINTFORMW アリスは%CALLNAME:MASTER%が連れてきた大江戸人形を見て、驚いている
+			PRINTFORMW 「それ、私でも取り扱いに苦労する人形なのに、よく手懐けたわね…」
+			PRINTFORMW 「あなた、もしかして人形遣いの才能あるんじゃない？」
+			PRINTFORML 
+			PRINTFORMW ―アリスが%CALLNAME:MASTER%の事を少し認めました―
+			;なに、見返りが少ない？ならコメントアウトを外してしまいなさい
+			;ABL:従順 = 5
+			;TALENT:反抗的 = 0
+			;TALENT:素直 = 1
+			IF ABL:従順 < 4
+				ABL:従順 += 1
+			ENDIF
+		ENDIF
+		CFLAG:7008= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7008 == 1 && CFLAG:7000 == 0
+		PRINTFORMW 「取り扱いには十分注意しなさいよ」
+		PRINTFORMW 「乱暴に扱ったらすぐに爆発するんだから」
+		PRINTFORMW アリスはカタカタ動く大江戸を丁重に持ち上げる
+		PRINTFORMW 「この子を助手に使うと奴隷が怯えて調教どころじゃないと思うけど…」
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+; 助手がゴリアテ人形	CFLAG:7009
+;ロリスェ…
+;-------------------------------------------------
+ELSEIF NO:ASSI == 97 && CFLAG:7000 == 0
+	;初めて
+	IF CFLAG:7009 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちょっとちょっと！それどうやって持ってきたの！？」
+			PRINTFORMW アリスは部屋の扉をくぐるのに苦戦しているゴリアテをみて目を丸くする
+			PRINTFORMW 「よくこの子を奴隷にする気になったわね…」
+			PRINTFORMW 「装甲が厚いから性感なんて皆無だし、大きいから調教もし辛かったでしょうに…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ちょっとちょっと！それどうやって持ってきたの！？」
+			PRINTFORMW アリスは部屋の扉をくぐるのに苦戦しているゴリアテをみて目を丸くする
+			PRINTFORMW 「この子まで連れてくるなんて…」
+			PRINTFORMW 「あなたは一体私達をどうしたいのかしら？」
+		ENDIF
+		CFLAG:7009= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7009 == 1
+		PRINTFORMW 「その子、純戦闘用人形だから調教の助手なんかできないと思うんだけど…」
+		PRINTFORMW 「ちゃんと使えてる？なら良いのかしら…」
+		RETURN 0
+	ENDIF
+;-------------------------------------------------
+; 助手が神綺	CFLAG:7010
+;-------------------------------------------------
+ELSEIF NO:ASSI == 119
+	;初めて
+	IF CFLAG:7010 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;ロリスの場合
+			IF CFLAG:7000 == 1
+				PRINTFORMW 「あれ、お母さん？何やってるの？」
+				PRINTFORMW 『うふふ、お母さんはこの人のお手伝いしてるの』
+				PRINTFORMW 「えっ、ダメよ！%MASTERNAME%には私が居れば十分なの！」
+				PRINTFORMW アリスは%CALLNAME:MASTER%を抱きよせ、神綺から引き剥がす
+				PRINTFORMW 『あらあら、恋する乙女は怖いわねぇ…』
+				PRINTFORMW 『大丈夫よ、アリスの邪魔なんかしないわ…』
+				PRINTFORMW 神綺は、アリスの頭を優しく撫でた…
+			ELSE
+				PRINTFORMW 「し、神綺様っ！？ど、どうしてこんな所にっ！？」
+				PRINTFORMW 『ごきげんようアリス。すっかり恋する乙女の顔になってるわね』
+				PRINTFORMW 「う…、し、神綺様と言えど、%MASTERNAME%は渡しません！」
+				PRINTFORMW アリスは%CALLNAME:MASTER%を抱きよせ、神綺から引き剥がす
+				PRINTFORMW 『ふふ、娘同然の子の恋路を邪魔するわけないじゃない』
+				PRINTFORMW 『むしろもっと仲良くなれるように手伝ってあげるわ…』
+			ENDIF
+		;恋慕なしロリス
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORMW 「お、お母さん！？ど、どうしてこんな所にっ！？」
+			PRINTFORMW 『あらアリス、あなたも居たのね』
+			PRINTFORMW 「お母さん、なんでそいつと一緒にいるの？まさか…」
+			PRINTFORMW 『ええ、あなたが想像している通りよ』
+			PRINTFORMW 神綺はアリスの秘所に手を触れた
+			PRINTFORMW 「ひゃんっ！」
+			PRINTFORMW 『ふふ…、素直じゃないアリスを教育してあげないとね…』
+		ELSE
+			PRINTFORMW 「し、神綺様っ！？ど、どうしてこんな所にっ！？」
+			PRINTFORMW 『冷たいわねぇアリス。昔みたいにお母さんってよんでくれないの？』
+			PRINTFORMW 「う…、ってそうじゃなくて！あなたがいなくて魔界はどうするんです！」
+			PRINTFORMW 『アリス、私達はそんなこと気にする必要ないのよ…』
+			PRINTFORMW 神綺はアリスの乳房に手を触れた
+			PRINTFORMW 「ひゃんっ！」
+			PRINTFORMW 『私達はご主人様を気持ち良くすることだけ考えていれば良いの…♪』
+		ENDIF
+		CFLAG:7010= 1
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:7010 == 1
+		IF TALENT:恋慕 == 1
+			;恋慕ロリス
+			IF CFLAG:7000 == 1
+				PRINTFORMW 「もう、お母さん！私と%MASTERNAME%の邪魔しないでよ！」
+				PRINTFORMW 『これが反抗期というやつかしら…』
+				PRINTFORMW 神綺は困ったような表情をしている…
+			;恋慕アリス
+			ELSE
+				PRINTFORMW 「し、神綺様…」
+				PRINTFORMW 『お母さん、よ。アリス』
+				PRINTFORMW 「お母、さん……」
+				PRINTFORMW 『ふふ、良い子ね…』
+				PRINTFORMW 『さぁ、ご主人様、この子を愛してやってくださいな』
+			ENDIF
+		;その他の場合
+		ELSE
+			;恋慕なしロリス
+			IF CFLAG:7000 == 1
+				PRINTFORMW 「うう、お母さん…」
+				PRINTFORMW 『大丈夫よアリス、怖くないわ…』
+				PRINTFORMW 『すぐに気持ち良くなるから…』
+			ELSE
+				PRINTFORMW 「神綺様、目を覚ましてください…。そんな奴の言いなりになるなんてぇ…」
+				PRINTFORMW 『目を覚ますのはあなたよ、アリス。自分に素直になりなさい』
+				PRINTFORMW 『そして二人仲良くご主人様の奴隷になりましょう？』
+			ENDIF
+		RETURN 0
+		ENDIF
+	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K14_MESSAGE_START_3
+ENDIF
+
+;-------------------------------------------------
+;調教開始時 CFLAGなし
+;-------------------------------------------------
+@K14_MESSAGE_START_3
+IF TALENT:親愛 == 1 || TALENT:相愛 == 1
+	IF CFLAG:7000 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「えへへ、%MASTERNAME%…♪」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、アリスは無邪気にじゃれついてきた
+			PRINTFORMW 「絶対、離れないからね…。私の%MASTERNAME%…」
+		ELSE
+			PRINTFORMW 「ねえ、%MASTERNAME%、私の事、好き…？」」
+			IF TALENT:相愛 == 1
+				PRINTFORMW 「知ってるけど！何度でも言ってほしいのっ！」
+				PRINTFORMW アリスは顔を真っ赤にしている…
+			ELSEIF TALENT:親愛 == 1
+				PRINTFORMW 「…ごめん、答えないで。聞くのが、怖いから	
+				PRINTFORMW アリスは%CALLNAME:MASTER%の口をキスで塞いだ…
+			ENDIF
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「なんか、最近優しいわね」
+			PRINTFORMW 「ふふ、%MASTERNAME%がその気なら、私も甘えて良いのかしら？」
+			PRINTFORMW アリスは、%CALLNAME:MASTER%の胸に抱きついた…
+		ELSE
+			PRINTFORMW アリスはどこで材料を調達したのか人形を作っている…
+			PRINTFORMW 「愛しい人の人形を部屋に飾ろうと思って」
+			IF TALENT:相愛 == 1
+				PRINTFORMW 「まあ、本物も今は私のものだけどね♪」
+			ELSEIF TALENT:親愛 == 1
+				PRINTFORMW 「今は人形で我慢するけど、いつか本物を手に入れたいわね」	
+			ENDIF
+			PRINTFORMW そう言って、アリスは%CALLNAME:MASTER%に向かって微笑んだ…
+		ENDIF
+	ENDIF
+;淫乱エロリス
+ELSEIF TALENT:淫乱 == 1 && RAND:3 == 0
+	IF CFLAG:7000 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「%MASTERNAME%…、早く、早くおちんちんちょうだぁい…♪」
+			PRINTFORMW 「あそこが切なくってぇ、我慢できないのぉ…♪」
+			PRINTFORMW アリスは発情した獣そのもの表情で秘所を弄っている…
+		ELSE
+			PRINTFORMW 「えへへ、%MASTERNAME%…」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、アリスは抱きついてきた
+			PRINTFORMW 「今日もするんでしょ？」
+			PRINTFORMW 「良いよ、いっぱいしよ…」
+			PRINTFORMW 何も言ってないのにアリスはズボンを脱がせ、ペニスにしゃぶりついた…
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「%MASTERNAME%、待ってたわ…」
+			PRINTFORMW 「さあ、早くやりましょう？」
+			PRINTFORMW 「もう我慢できないの…♪」
+		ELSE
+			PRINTFORMW 「はぁ、はぁ、%MASTERNAME%…」
+			PRINTFORMW アリスは荒い息を吐いて%CALLNAME:MASTER%を求めている…
+			PRINTFORMW 「早く、早くやりましょう…！」
+		ENDIF
+	ENDIF
+	RETURN 1
+ELSEIF MARK:反発刻印 == 3
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「いつか、殺してあげるから」
+		PRINTFORMW 「楽しみにしててね？くすくす…」
+		PRINTFORMW アリスは殺意のある視線をぶつけてきた…
+	ELSE
+		PRINTFORMW 「……………」
+		PRINTFORMW アリスはずっと壁の方を向いている…
+		PRINTFORMW 「……………」
+	RETURN 1
+	ENDIF
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	IF CFLAG:7000 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「今日は何するの？%MASTERNAME%」
+			PRINTFORMW アリスは心持ちうきうきしている様だ…
+		ELSEIF RAND:2 == 0
+			PRINTFORMW %CALLNAME:MASTER%は調教をするべくアリスの部屋へと赴く…
+			PRINTFORMW アリスの部屋は扉が無く、とても風通しが良い……
+			PRINTFORMW 「そんな嫌味言わないでよ、これでも反省してるのよ…」
+			PRINTFORMW 「その扉の修理代は、私が身体で返すから…、ね？」
+		ELSE
+			PRINTFORMW 「あ、%MASTERNAME%♪」
+			PRINTFORMW 「私と遊んでくれるのよね？」
+			PRINTFORMW 「調教？それも遊びのうちよ」
+			PRINTFORMW 「私もあなたも楽しんでるんだから、遊びなの」
+		ENDIF
+	ELSE
+		IF RAND:3 == 0
+			PRINTFORMW 「あら、来てくれたのね。」
+			PRINTFORMW 「さあ、始めましょう」
+			PRINTFORMW 「私の胸も、おまんこも、お尻だって、どこでも自由にしていいんだからね」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW （ごめんね、私の人形達…）
+			PRINTFORMW （でも、私はもう、%MASTERNAME%のことしか…）
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%はアリスを調教するべく、部屋に足を踏み入れた…
+			PRINTFORMW すると、壁の方を向いて座りこんでいるアリスの姿があった
+			PRINTFORMW 「きゃっ！ちょ、ちょっと！ノックぐらいしてよ！」
+			PRINTFORMW そう憤慨するアリスの近くには、小さな水溜りができている
+			PRINTFORMW 「な、何よ、その目は」
+			PRINTFORMW 「ええそうよ、オナニーしてたわよ。何か文句ある？」
+			PRINTFORMW アリスは顔を真っ赤にして開き直っている…
+			PRINTFORMW 「もう！さっさと始めなさいよ！」
+		ENDIF
+	ENDIF
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 1
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「また来た…」
+		PRINTFORMW 「こんな事の何が楽しいのかしら？」
+	ELSE
+		PRINTFORMW 「はぁ…」
+		PRINTFORMW 「……あら、来てたのね」
+	ENDIF
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 2
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「…楽しくなんかない」
+		PRINTFORMW 「楽しくなんかないんだから！」
+	ELSE
+		PRINTFORMW 「はいはい、付き合ってあげるから」
+		PRINTFORMW 「なるべく優しくしてよね」
+	ENDIF
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 3
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「もうなんでも良いよ」
+		PRINTFORMW 「構ってくれるのなら、なんでも…」
+	ELSE
+		PRINTFORMW 「…ごきげんよう」
+		PRINTFORMW 「挨拶くらいはしないとね…」
+	ENDIF
+	RETURN 1
+;その他の場合
+ELSE
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「なんか、つまんなーい」
+		PRINTFORMW 「もっと別の事しましょう？」
+	ELSE
+		PRINTFORMW 「はあ、早く帰らないと…」
+		PRINTFORMW 「人形は毎日手入れしないとすぐに傷むのよ？」
+		PRINTFORMW 「それとも私の人形を家から持ってきてくれる？」
+		PRINTFORMW アリスは人形の身を案じているようだ…
+	ENDIF
+ENDIF
+
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_14_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+IF EQUIP:14
+	RETURN 0
+ENDIF
+;口枷がある場合も戻る
+;IF TEQUIP:42
+;	RETURN 0
+;ENDIF
+;失神中も戻る
+;IF TFLAG:899 >= 1
+;	RETURN 0
+;ENDIF
+;精神崩壊の場合は戻る
+IF TALENT:167
+	RETURN 0
+ENDIF
+DRAWLINE
+TRYCALL K14_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K14_MESSAGE_END
+;体力500以下の時50%の確率で
+IF BASE:0 < 500 && RAND:2 == 0
+	IF CFLAG:7000 == 1
+		IF TALENT:恋慕
+			PRINTFORMW 「はぁ…、はぁ…、ごめんね、もう無理…」
+			PRINTFORMW 「ん…、少しだけ、膝、貸してほしいな…」
+			PRINTFORMW アリスは%CALLNAME:MASTER%の膝枕で、眠り始めた…
+			PRINTFORMW 「はぁ、落ち着く、お母さんみたい…」
+		ELSEIF MARK:反発刻印 >= 3
+			PRINTFORMW 「ぐ、あぁ…、ま、負けない…！」
+			PRINTFORMW 「こんなことで、私は……」
+			PRINTFORMW アリスは%CALLNAME:MASTER%を睨みつけながら、気を失った…
+		ELSE
+			PRINTFORMW 「お、お願い、休ませて…」
+			PRINTFORMW 「逃げようなんて、思わないから…、お願い…」
+		ENDIF
+	ELSE
+		IF TALENT:恋慕
+			;茨歌仙によるとアリスも身体弱いらしいね
+			PRINTFORMW 「ごめんね、私、身体が弱くて…、魔法使いは皆そうなんだけど」
+			PRINTFORMW 「ちょっと休んだら、良くなるから…」
+			PRINTFORMW 「だから、また来てね…？」
+		ELSEIF MARK:反発刻印 >= 3
+			PRINTFORMW 「はぁ…、はぁ…、うぅっ…」
+			PRINTFORMW 「憶えてなさい…、くっ……」
+		ELSE
+			PRINTFORMW 「そんな、激しいだけの調教で、私が音を上げると…？」
+			PRINTFORMW 「ふん、精々好き勝手してなさい…」
+		ENDIF
+	ENDIF
+	RETURN 1
+;親愛
+ELSEIF TALENT:親愛 == 1
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「えへへっ、楽しかったね♪」
+		PRINTFORMW 「また遊んでね、待ってるから」
+	ELSE
+		PRINTFORMW 「ふふ、満足した？」
+		PRINTFORMW 「私？もちろん大満足よ」
+		PRINTFORMW 「%MASTERNAME%の愛を私が不満だなんて言うわけないじゃない」
+		PRINTFORMW 「また…、来てくれるわよね？」
+	ENDIF
+	RETURN 1
+;反発刻印３
+ELSEIF MARK:反発刻印 == 3
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「殺してやる…」
+		PRINTFORMW 「絶対に殺してやるんだから…」
+		PRINTFORMW アリスは%CALLNAME:MASTER%を睨みつけながら何やら呟いている…
+	ELSE
+		PRINTFORMW 「………死ねばいいのに」
+		PRINTFORMW アリスはそう吐き捨てて眠ってしまった…
+	ENDIF
+	RETURN 1
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「あれ？もう終わりなの？」
+		PRINTFORMW 「まあ良いや、また遊んでね」
+	ELSE
+		PRINTFORMW 「あら、もう終わりなの？残念ね…」
+		PRINTFORMW 「また来てね？絶対よ？」
+	ENDIF
+	RETURN 1
+;屈服刻印３
+ELSEIF MARK:屈服刻印 == 3
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「…うん、またね」
+		PRINTFORMW %CALLNAME:MASTER%が去る前にアリスが笑顔を見せた気がした…
+	ELSE
+		PRINTFORMW 「終わったの？…そう」
+		PRINTFORMW 「残念がってる？そんなわけないでしょう…」
+	ENDIF
+	RETURN 1
+;その他
+ELSE
+	IF CFLAG:7000 == 1
+		IF RAND:2 == 0
+			PRINTFORMW 「なんなのよ、これは…」
+			PRINTFORMW アリスは不満げな顔をしている…
+		ELSE
+			PRINTFORMW 「こんな事して、何が楽しいのよ…」
+			PRINTFORMW 「はあ、帰ろうかな…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORMW 「はあ…、いつになったら帰れるのかしら…」
+		ELSE
+			PRINTFORMW 「もう、来なくて良いわよ」
+			PRINTFORMW 「って言っても来るんでしょうね…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_14_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+;IF EQUIP:14
+;	RETURN 0
+;ENDIF
+;口枷がある場合も戻る
+;IF TEQUIP:42
+;	RETURN 0
+;ENDIF
+;失神中・失神回復時も戻る
+;IF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;ENDIF
+;精神崩壊の場合は戻る
+;IF TALENT:167
+;	RETURN 0
+;ENDIF
+
+;処女喪失時のメッセージ呼び出し
+IF TFLAG:0
+	TRYCALL K14_MESSAGE_LOST_VIRGIN
+ENDIF
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	IF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K14_MESSAGE_OVERLV2_{LOCAL}
+	ENDIF
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	IF NOWEX:LOCAL
+		TRYCALLFORM K14_MESSAGE_ORGASM_{LOCAL}
+	ENDIF
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	IF TFLAG:LOCAL
+		TRYCALLFORM K14_MESSAGE_EJAC_PLAYER_{LOCAL}
+	ENDIF
+NEXT
+
+;-------------------------------------------------
+;処女喪失
+;-------------------------------------------------
+@K14_MESSAGE_LOST_VIRGIN
+;恋慕時かつ主人のペニス
+IF TFLAG:2 && TALENT:恋慕 == 1
+	IF TALENT:相愛 == 1
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「やっと、もらってくれたぁ…」
+			PRINTFORMW アリスの瞳からは大粒の涙が溢れている…
+			PRINTFORMW 「違うの、嬉しいの…」
+			PRINTFORMW 「痛いけど、苦しいけど…、%MASTERNAME%のものになれたのが嬉しくて…」
+			PRINTFORMW 「大好き…、大好きだよ、%MASTERNAME%…」
+		ELSE
+			PRINTFORMW 「ああっ、うぅん…」
+			PRINTFORMW 「大丈夫、痛くないわ…、むしろ気持ち良いくらい…」
+			PRINTFORMW 「ふふ、%MASTERNAME%が優しい人で本当に良かった…」
+		ENDIF
+		RETURN 1
+	ELSEIF TALENT:恋慕
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「い、痛い！痛いよ、%MASTERNAME%…！」
+			PRINTFORMW 「ううん、続けて良いよ、その代わり、ぎゅってしてて…」
+		ELSE
+			PRINTFORMW 「ああっ…、だ、大丈夫…。大丈夫だから……」
+			PRINTFORMW 「そのまま続けて、止めないで…」
+		ENDIF
+		RETURN 1
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「ううっ、この、ロリコン強姦魔っ…！」
+		ELSE
+			PRINTFORMW 「覚えてなさい…。必ず殺してあげる…」
+		ENDIF
+		RETURN 1
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW
+ENDIF
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_14_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K14_MESSAGE_OVERLV2_10
+IF CFLAG:5330 == 0
+	IF TALENT:恋慕 == 1 && SELECTCOM == 60
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「うわぁ、ぬるぬるだ…♪」
+			CFLAG:5330 = 1
+		ELSE
+			PRINTFORMW 「ふふ、これなら大丈夫ね…」
+			CFLAG:5330 = 1
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「んっ、濡れてきちゃった…」
+			CFLAG:5330 = 1
+		ELSE
+			PRINTFORMW 「ほら、私のここ、もうこんなに…」
+			PRINTFORMW アリスは愛液の滴る秘所を見せつけてきた…
+			CFLAG:5330 = 1
+		ENDIF
+	ELSEIF SELECTCOM == 60
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「ねえ、なんなの？このぬるぬるしたもの…」
+			CFLAG:5330 = 1
+		ELSE
+			PRINTFORMW 「うう、ぬるぬるで気持ち悪い…」
+			CFLAG:5330 = 1
+		ENDIF
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW アリスの秘所から水音がする…
+			PRINTFORMW 「うそ、おもらししちゃった…」
+			PRINTFORMW 「え、違うの？あいえき？なにそれ」
+			CFLAG:5330 = 1
+		ELSE
+			PRINTFORMW アリスの秘所から愛液が滴り落ちている…
+			PRINTFORMW 「ち、違うっ！ただの汗よっ！」
+			CFLAG:5330 = 1
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 1
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K14_MESSAGE_OVERLV2_13
+IF CFLAG:5333 == 1
+	IF TALENT:恋慕 == 1 && SELECTCOM == 61
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「えへへ、興奮してきちゃった…」
+			PRINTFORMW 「もっとしよう、ね？」
+			CFLAG:5333 = 1
+		ELSE
+			PRINTFORMW 「薬が効いてきたのかしら…」
+			PRINTFORMW 「あそこが疼いてきたわ…」
+			CFLAG:5333 = 1
+		ENDIF
+	ELSEIF TALENT:恋慕 == 1
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「ねえ、%MASTERNAME%…♪」
+			PRINTFORMW アリスは息を荒げながら這い寄ってくる…
+			CFLAG:5333 = 1
+		ELSE
+			PRINTFORMW 「もっと、もっとしましょう…？」
+			PRINTFORMW アリスは情欲のこもった目でこちらを見ている…
+			CFLAG:5333 = 1
+		ENDIF
+	ELSEIF SELECTCOM == 61
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「ねえ、さっきの薬、なんだったの…？」
+			PRINTFORMW アリスは息を荒げている…
+			CFLAG:5333 = 1
+		ELSE
+			PRINTFORMW 「薬で女の子を従えて、楽しい？」
+			CFLAG:5333 = 1
+		ENDIF
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「んっ、少し楽しくなってきたかも…」
+			PRINTFORMW アリスは熱に浮かされた様な顔をしている…
+			CFLAG:5333 = 1
+		ELSE
+			PRINTFORMW 「ね、ねえ、もう十分でしょ？」
+			PRINTFORMW 「これ以上やられると、私…」
+			CFLAG:5333 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;-------------------------------------------------
+@K14_MESSAGE_OVERLV2_15
+;PRINTFORMW 
+;CFLAG:5335 = 1
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;-------------------------------------------------
+@K14_MESSAGE_OVERLV2_17
+;PRINTFORMW 
+;CFLAG:5337 = 1
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5300～を使用
+;@KOJO_14_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_0
+;初めて
+IF CFLAG:5300 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「んっ、やっ、だめ、何か来るっ、ふあああぁぁんっ！！」
+		PRINTFORMW 「何、今の…、凄かった…」
+		CFLAG:5300 = 1
+	ELSE
+		PRINTFORMW 「ん、ふあ、んんっ、んあああぁっ！」
+		PRINTFORMW 「……な、何よ今の…」
+		PRINTFORMW 「知らない、私こんなの知らないわ…！」
+		PRINTFORMW アリスは初めての絶頂に困惑している…
+		CFLAG:5300 = 1
+	ENDIF
+;２回目以降
+ELSE
+	;今回の調教でのＣ絶頂が50以上
+	IF EX:0 >= 50
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「やぁっ、もう、イきたくないっ！！」
+			PRINTFORMW 「やだっ、やだ、ふぁああああんっ！！！」
+		ELSE
+			PRINTFORMW 「や、イクッ、またイっちゃうっ！」
+			PRINTFORMW 「ああっ、んあああああぁっ！！」
+		ENDIF
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「やぁっ、だめ、ああっ、ふぁあああああああっ！！」
+		ELSE
+			PRINTFORMW 「いやっ、またイっちゃうっ、んんっ、んあああぁっ！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_1
+;初めて
+IF CFLAG:5301 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「ふぁあっ、なにこれ！？気持ち良いっ！」
+		PRINTFORMW 「や、ああ、ふぁああ―――っ！」
+		CFLAG:5301 = 1
+	ELSE
+		PRINTFORMW 「やぁ、あああっ！だめ、気持ち良すぎてっ」
+		PRINTFORMW 「あ、ああああああんっ！！」
+		CFLAG:5301 = 1
+	ENDIF
+;２回目以降
+ELSE
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「ふぁあっ、もう、だめっ、んあああっ！」
+	ELSE
+		PRINTFORMW 「やぁっ、だめ、なか、ふぁああぁっ！！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_2
+;初めて
+IF CFLAG:5302 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「ん、んあああああぁっ！」
+		PRINTFORMW 「はぁ、うそ、私、お尻でイっちゃったの…？」
+		CFLAG:5302 = 1
+	ELSE
+		PRINTFORMW 「やだっ、お願い、やめてっ！」
+		PRINTFORMW 「お尻なんかで、お尻なんかで気持ちよくなりたくないぃっ！！」
+		PRINTFORMW 「ん、んぐぅぅぅぅぅぅぅ！！」
+		PRINTFORMW アリスは口を固く閉じ、アナルで感じている事実を否定している…
+		CFLAG:5302 = 1
+	ENDIF
+;２回目以降
+ELSE
+	;今回の調教でのＡ絶頂が50以上
+	IF EX:2 >= 50
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「あは、お尻、気持ち良いよぉ…」
+			PRINTFORMW 「もっと、もっとしてぇ…」
+		ELSE
+			PRINTFORMW 「やだぁ、お尻で、お尻でイっちゃうっ！」
+			PRINTFORMW 「ああ、ふぁあああああっ！！」
+		ENDIF
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「なんで、なんでお尻が気持ち良いの…？」
+			PRINTFORMW 「こんなの、変よ、絶対…」
+		ELSE
+			PRINTFORMW 「もうやめてっ…」
+			PRINTFORMW 「これ以上私にみじめな思いをさせないで…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_3
+;初めて
+IF CFLAG:5303 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「や、だめ、おっぱいが…」
+		PRINTFORMW 「あん、や、やあああああぁん！」
+		CFLAG:5303 = 1
+	ELSE
+		PRINTFORMW 「おっぱい、気持ち良いっ、や、やめ…」
+		PRINTFORMW 「あ、ああああんっ！」
+		CFLAG:5303 = 1
+	ENDIF
+;２回目以降
+ELSE
+	;今回の調教でのＢ絶頂が50以上
+	IF EX:3 >= 50
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「やだっ、もうおっぱいやだぁっ！」
+			PRINTFORMW 「あ、んんっ、んあああああっ！」
+		ELSE
+			PRINTFORMW 「やぁ、おっぱい気持ち良いっ…！」
+			PRINTFORMW 「ま、またイっちゃうっ！ああっ、あああぁん！」
+		ENDIF
+	ELSE
+		IF CFLAG:7000 == 1
+			PRINTFORMW 「や、だめ、おっぱいが…、や、あああああぁん！」
+		ELSE
+			PRINTFORMW 「おっぱい、気持ち良いっ、や、やめ…、ああああんっ！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5304
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_10
+;初めて
+IF CFLAG:5304 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「わ、何これ、おっぱいからミルクが…」
+		PRINTFORMW 「私、お母さんになっちゃったの？」
+		CFLAG:5304 = 1
+	ELSE
+		PRINTFORMW 「私、母乳まで出るようになっちゃった…」
+		PRINTFORMW 「私の身体はどこまで弄ばれるのかしら」
+		CFLAG:5304 = 1
+	ENDIF
+;２回目以降
+ELSE
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「ミ、ミルクがっ、ミルクが出ちゃうよぉッ！」
+	ELSE
+		PRINTFORMW 「あはぁっ♪ミルク出すの、気持ち良い…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:5305
+;IF TFLAG:9 == 19でＶで逆レイプされて射精した場合を参照可
+;IF TFLAG:9 == 20でＡで逆レイプされて射精した場合を参照可
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:5305 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「やっ、なにこれっ！凄く、気持ち良いっ！」
+		CFLAG:5305 = 1
+	ELSE
+		PRINTFORMW 「ふぁあ…、これが、射精…、すごい……」
+		CFLAG:5305 = 1
+	ENDIF
+;２回目以降
+ELSE
+	IF CFLAG:7000 == 1
+		PRINTFORMW 「好きっ、精子出すの、大好きぃっ！」
+	ELSE
+		PRINTFORMW 「ああっ、出るっ！せーしがっ！出ちゃうっ！」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:5306
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+@K14_MESSAGE_ORGASM_12
+IF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+ENDIF
+;初めて
+IF CFLAG:5306 == 0
+	;PRINTFORMW 
+	;CFLAG:5306 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;膣内に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_11
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「出してぇ、%MASTERNAME%のせーし…。全部出してぇ…♪」
+			PRINTFORMW アリスは膣内射精されたことを心から悦んでいる…
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あはっ♪中に出てるう…」
+			PRINTFORMW 「私のこと孕ます気なんだね…、変態…♪」
+		ELSE
+			PRINTFORMW 「ちょっと、中はダメよっ！」
+			PRINTFORMW 「だめ、だめだったらッ――、」
+			PRINTFORMW アリスの懇願空しく精液はアリスの膣内へ注がれる…
+		ENDIF
+	ELSE
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「ふふ…、%MASTERNAME%の精液…」
+			PRINTFORMW 「全部、私のものよ…、全部私の中に出しなさい…」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ああ、中に出てる…」
+			PRINTFORMW 「赤ちゃん、できたら良いわね…」
+		ELSE
+			PRINTFORMW 「やだっ、だめだめ、中はだめっ！」
+			PRINTFORMW 懇願するアリスを無視して膣内に射精する…
+			PRINTFORMW 「うそ、中にでてるぅ…」
+		ENDIF
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルに射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_12
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「お尻に精液、出されちゃってるぅ…♪」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「何か、変な感じ…」
+			PRINTFORMW 「次はおまんこに出してくれるわよね…？」
+		ELSE
+			PRINTFORMW 「まぁ、お尻なら安心だけど…」
+		ENDIF
+	ELSE
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「大事な精子、お尻なんかに出さないでよ…」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あぁっ、お尻にドクドク出てるっ…！」
+		ELSE
+			PRINTFORMW 「うう、私のお尻が真っ白に…」
+		ENDIF
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;髪に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_13
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF TALENT:相愛 == 1 || TALENT:服従 == 1 || TALENT:隷属 == 1 
+			PRINTFORMW 「私の髪も、今や%MASTERNAME%のものなんだね…♪」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「髪にかかっちゃった…」
+			PRINTFORMW 「ふふ、良い匂い…♪」
+		ELSE
+			PRINTFORMW 「うう、臭い、臭いよう…」
+		ENDIF
+	ELSE
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「ふふ、髪まで真っ白にする気なの…？」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「もう♪匂いが付いちゃうじゃない…♪」
+		ELSE
+			PRINTFORMW 「よくもやってくれたわね…」
+		ENDIF
+	ENDIF
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;顔に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_14
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「えへへ、顔真っ白にされちゃった♪」
+			PRINTFORMW 「もっと、私を%MASTERNAME%色に染めて…」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「顔射されると、なんか征服されたって気分になるわね…」
+		ELSE
+			PRINTFORMW 「私の顔に、汚いものかけないでよ！」
+		ENDIF
+	ELSE
+		IF TALENT:相愛 == 1
+			PRINTFORMW 「ふふ、あったかい、%MASTERNAME%の精子…♪」
+			PRINTFORMW 「好きなだけ、出して良いからね…」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ、もう、顔にかけないでよ…！」
+		ELSE
+			PRINTFORMW 「くっ…、酷い屈辱だわ…」
+		ENDIF
+	ENDIF
+ELSE
+	;PRINTFORMW
+ENDIF
+
+;-------------------------------------------------
+;口に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_15
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF ABL:精液中毒 >= 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「でたぁ、%MASTERNAME%のせーし…♪」
+			PRINTFORMW 「もっと、もっと飲ませてぇ…♪」
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「んんっ、んむ……、ゴクン」
+			PRINTFORMW 「苦いけど、なんか好きな味…」
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「うわ、いっぱい出したわね…」
+			PRINTFORMW （ちょっと、飲んでみようかな…）
+		ELSE
+			PRINTFORMW 「んんっ、ぐうっ！？ごほっ、ごほっ！」
+			PRINTFORMW 「もう、いきなり出さないでよ…」
+		ENDIF
+	ELSE
+		IF ABL:精液中毒 >= 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、%MASTERNAME%のせーし…♪」
+			PRINTFORMW 「もちろん、もっと飲ませてくれるのよね？」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ…、困ったわね…」
+			PRINTFORMW 「精液が美味しく感じてきちゃったわ」
+			PRINTFORMW 「『%MASTERNAME%』の精液だから美味しいのだと信じたいわね…」
+		ELSEIF MARK:反発刻印 >= 3
+			PRINTFORMW 「……ぺっぺっ」
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「うう、うええ…」
+			PRINTFORMW 「…なによ、飲んでほしいの？」
+			PRINTFORMW 「これ、おなか壊したりしないでしょうね…」
+		ELSE
+			PRINTFORMW 「うっ、うえっ、げほ、ごほっ！」
+		ENDIF
+	ENDIF
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;胸に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_16
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF TALENT:淫乳 == 1
+			PRINTFORMW 「ホントにおっぱい大好きなんだね…」
+			PRINTFORMW 「私も大好きだよ、おっぱい気持ち良くなるの…」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「たくさん出したわね…♪」
+			PRINTFORMW 「私で気持ち良くなってくれて、嬉しいわ…」
+		ELSE
+			PRINTFORMW 「このロリコン…」
+		ENDIF
+	ELSE
+		IF TALENT:淫乳 == 1
+			PRINTFORMW 「おっぱいに、%MASTERNAME%の精液が…」
+			PRINTFORMW 「ああ、もうこれだけでイっちゃいそう…♪」
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ああ、どんどん出てくる、止まらないわ…♪」
+		ELSE
+			PRINTFORMW 「気持ち良かった？私は全然よ…」
+		ENDIF
+	ENDIF
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;腹に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_17
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_19
+;主人のペニス
+IF TFLAG:35
+	IF CFLAG:7000 == 1
+		IF ABL:精液中毒 >= 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「えへへ、%MASTERNAME%のせーし…、ん、美味しい…♪」
+			PRINTFORMW アリスは手に附着した精液をペロペロと舐めとっている…
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「すごい、どんどん出てくる…」
+			PRINTFORMW 「それなのに、まだ固いままなのね…」
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「よく出るわね、ホントに…」
+		ELSE
+			PRINTFORMW 「うわ、手に付いちゃったわ…」
+		ENDIF
+	ELSE
+		IF ABL:精液中毒 >= 3 && TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、%MASTERNAME%のせーし…」
+			PRINTFORMW アリスは美味しそうに手に付いた精液を舐めとっている…
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、たくさん出したわね…」
+			PRINTFORMW 「次は中に出してくれるんでしょう？」
+		ELSEIF MARK:屈服刻印 >= 3
+			PRINTFORMW 「どうしましょう」
+			PRINTFORMW 「精液が手に付いても気にならなくなってきたわ…」
+		ELSE
+			PRINTFORMW 「うわぁ、これが精液…」
+			PRINTFORMW 「べとべと、ねばねばで気持ち悪いわね…」
+		ENDIF
+	ENDIF
+ELSE
+	;PRINTFORMW
+ENDIF
+
+;-------------------------------------------------
+;秘裂に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_20
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_21
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「おちんちんも、真っ白になっちゃった♪」
+	ELSE
+		PRINTFORMW 「変なもの生やされて、それに精液かけられて…」
+		PRINTFORMW 「私はあなたの玩具じゃないっ…！」
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「そこにかけるの？おっぱいとか顔じゃなくて？」
+	ELSE
+		PRINTFORMW 「恥ずかしい…、死んでしまいたい…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;尻に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_22
+;PRINTFORMW 
+
+;-------------------------------------------------
+;太腿に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_23
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足に射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_24
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教者がキスで射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_26
+IF CFLAG:7000 == 1
+	IF TALENT:キス魔 == 1
+		PRINTFORMW 「わっ、キスだけで出しちゃったの？」
+		PRINTFORMW 「私もキスでイけるように頑張らないと…」
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「えっ、うそっ！キスでイっちゃったの！？」
+		PRINTFORMW 「はぁ…、なんか、すごいね…」
+	ELSE
+		PRINTFORMW 「うわっ、なんで何もしてないのに出してるの…！？」
+	ENDIF
+ELSE
+	IF TALENT:キス魔 == 1
+		PRINTFORMW 「ふふっ、そんなにキスが気持ち良かった…？」
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「えっ、もう出しちゃったの？」
+		PRINTFORMW 「ちょっとは我慢してよ…」
+	ELSE
+		PRINTFORMW 「うぇっ、何で出してるの…、変態…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教者がコンドームに射精
+;-------------------------------------------------
+@K14_MESSAGE_EJAC_PLAYER_28
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_14_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+;IF EQUIP:14
+;	RETURN 0
+;ENDIF
+;口枷がある場合も戻る
+;IF TEQUIP:42
+;	RETURN 0
+;ENDIF
+;失神中・失神回復時も戻る
+;IF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RETURN 0
+;ENDIF
+;精神崩壊の場合は戻る
+;IF TALENT:167
+;	RETURN 0
+;ENDIF
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		IF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K14_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+		ENDIF
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+@K14_MESSAGE_MARK0_1
+;PRINTFORMW 
+;CFLAG:5310 = 1
+
+@K14_MESSAGE_MARK0_2
+;PRINTFORMW 
+;CFLAG:5310 = 2
+
+@K14_MESSAGE_MARK0_3
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「痛いよ、%MASTERNAME%…」
+		PRINTFORMW 「もっと楽しい事しようよ…」
+		CFLAG:5310 = 3
+	ELSE
+		PRINTFORMW 「この痛み、いつか倍にして返すわね…」
+		CFLAG:5310 = 3
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「痛い…、痛いわ、%MASTERNAME%…」
+		PRINTFORMW 「この痛みがあなたの愛なの…？」
+		CFLAG:5310 = 3
+	ELSE
+		PRINTFORMW 「あ、あんた最低ね！女の子にこんな酷いことして！」
+		PRINTFORMW 強気な態度をとるアリスだが、その身体は震えている…
+		CFLAG:5310 = 3
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;-------------------------------------------------
+@K14_MESSAGE_MARK1_1
+;PRINTFORMW 
+;CFLAG:5311 = 1
+
+@K14_MESSAGE_MARK1_2
+;PRINTFORMW 
+;CFLAG:5311 = 2
+
+@K14_MESSAGE_MARK1_3
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ねえ、もっとして…」
+		PRINTFORMW 「もっと、私を狂わせて…♪」
+		CFLAG:5311 = 3
+	ELSE
+		PRINTFORMW 「ふふっ、気持ち良いわね…」
+		PRINTFORMW 「この感覚、悪くないわ…」
+		CFLAG:5311 = 3
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「もっと、もっと気持ちよくして…」
+		PRINTFORMW 「私の頭の中、%MASTERNAME%でいっぱいにして…」
+		CFLAG:5311 = 3
+	ELSE
+		PRINTFORMW 「あぁっ、気持ちよかった…」
+		PRINTFORMW 「って、違う違う！快楽なんかに負けないわよ！」 
+		PRINTFORMW 我に返ったアリスは、先ほどの痴態を思い出し自己嫌悪している…
+		CFLAG:5311 = 3
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+@K14_MESSAGE_MARK2_1
+;PRINTFORMW 
+;CFLAG:5312 = 1
+
+@K14_MESSAGE_MARK2_2
+;PRINTFORMW 
+;CFLAG:5312 = 2
+
+@K14_MESSAGE_MARK2_3
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「私はあなたのものよ」
+		PRINTFORMW 「…今更な話だけどね、改めてそう確信しちゃった」
+		CFLAG:5312 = 3
+	ELSE
+		PRINTFORMW 「あなたと遊ぶの、楽しいわ…」
+		PRINTFORMW 「ずっと、私と遊びましょう…？」
+		CFLAG:5312 = 3
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ふふ、私はあなたのものよ」
+		PRINTFORMW 「だからもっと気持ち良くしてね…？」
+		CFLAG:5312 = 3
+	ELSE
+		PRINTFORMW 「…なんか、疲れちゃったわ」
+		PRINTFORMW 「私の事は好きにしなさい」
+		CFLAG:5312 = 3
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+@K14_MESSAGE_MARK3_1
+;PRINTFORMW 
+;CFLAG:5313 = 1
+
+@K14_MESSAGE_MARK3_2
+;PRINTFORMW 
+;CFLAG:5313 = 2
+
+@K14_MESSAGE_MARK3_3
+IF CFLAG:7000 == 1
+	PRINTFORMW 「ねえ、私が何したって言うの！？」
+	PRINTFORMW 「お願いだからやめてよ、お願い……」
+	CFLAG:5313 = 3
+ELSE
+	PRINTFORMW 「い、嫌っ！来ないでっ！！」
+	PRINTFORMW アリスは半狂乱になりながら、頭を抱えてうずくまっている…
+	CFLAG:5313 = 3
+ENDIF
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+@K14_MESSAGE_MARK4_1
+;PRINTFORMW 
+;CFLAG:5314 = 1
+
+@K14_MESSAGE_MARK4_2
+;PRINTFORMW 
+;CFLAG:5314 = 2
+
+@K14_MESSAGE_MARK4_3
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「…ずいぶん楽しそうね」
+		PRINTFORMW 「私は全然楽しくないわ……」
+		CFLAG:5314 = 3
+	ELSE
+		PRINTFORMW 「ふふっ、私をあまり怒らせない方が良いわよ？」
+		PRINTFORMW 「あなたなんか、さくっ、と殺せるんだから」
+		CFLAG:5314 = 3
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ねえ、最近の%MASTERNAME%、少し酷いわ…」
+		PRINTFORMW 「もう少し優しくして。お願いだから…」
+		CFLAG:5314 = 3
+	ELSE
+		PRINTFORMW 「……………………」
+		PRINTFORMW どうやらアリスは%CALLNAME:MASTER%の顔も見たくないようだ…
+		CFLAG:5314 = 3
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+@K14_MESSAGE_MARK6_1
+;PRINTFORMW 
+;CFLAG:5316 = 1
+
+@K14_MESSAGE_MARK6_2
+;PRINTFORMW 
+;CFLAG:5316 = 2
+
+@K14_MESSAGE_MARK6_3
+IF CFLAG:7000 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「%MASTERNAME%、こんなこと、恥ずかしいよ…」
+		CFLAG:5316 = 3
+	ELSE
+		PRINTFORMW 「いくら恥ずかしくても、死にゃしないわ」
+		PRINTFORMW 「だから…、平気、平気なんだから……」
+		CFLAG:5316 = 3
+	ENDIF
+ELSE
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「良いの、どんなに恥ずかしいことでも…」
+		PRINTFORMW 「それであなたが満足するなら、私はなんでもするわ…」
+		CFLAG:5316 = 3
+	ELSE
+		PRINTFORMW 「こ、こんな辱め…、許せない…！」
+		CFLAG:5316 = 3
+	ENDIF
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_14_MESSAGE_LOOK_VIDEO
+IF CFLAG:7000 == 1
+	IF RAND:4 == 0 && TALENT:親愛 == 1
+		PRINTFORMW 「やだ、私、エッチな顔してる…」
+		PRINTFORMW 「そんな私も可愛い？あ、ありがと…」
+		PRINTFORMW 「%MASTERNAME%のイキ顔も可愛いわよ♪」
+		PRINTFORMW アリスは照れ隠しに%CALLNAME:MASTER%にキスをした…
+		PRINTFORML 愛情経験（アリス）＋3
+		PRINTFORMW キス経験（アリス）＋3
+		EXP:愛情経験 += 3
+		EXP:キス経験 += 3
+	ELSEIF RAND:3 == 0 && TALENT:淫乱 == 1
+		PRINTFORMW 「なんか、ビデオ見てたら興奮してきちゃった…」
+		PRINTFORMW 「ねえ、もっかいしよ？」
+		PRINTFORMW %CALLNAME:MASTER%とアリスは、再びまぐわった…
+		PRINTFORML Ｖ経験（アリス）＋3
+		PRINTFORML Ｖ調律経験（アリス）＋3
+		PRINTFORML 絶頂経験（アリス）＋3
+		PRINTFORMW 射精経験＋3
+		EXP:Ｖ経験 += 3
+		EXP:Ｖ調律経験 += 3
+		EXP:絶頂経験 += 3
+		EXP:MASTER:射精経験 += 3
+	ELSEIF RAND:2 == 0 && ABL:自慰中毒 >= 1 && TALENT:恋慕 == 1
+		PRINTFORMW
+		PRINTFORMW 「はぁ…、はぁ…」
+		PRINTFORMW （だめ、興奮してきちゃった…）
+		PRINTFORMW （オナニーしたい…、隣に%MASTERNAME%がいるのに…）
+		PRINTFORMW 結局、アリスは終始こっそり自慰をしていた…
+		PRINTFORMW 自慰経験（アリス）＋5
+		EXP:自慰経験 += 5
+		IF ABL:自慰中毒 < 4
+			PRINTFORMW アリスは少し自慰しやすくなった
+			ABL:自慰中毒 += 1
+		ENDIF
+	ELSE
+		PRINTFORMW 「もう、なんでこんなもの見なきゃいけないのよ…」
+		PRINTFORMW 「ま、私のビデオが売られるよりはましだけど」
+	ENDIF
+ELSE
+	IF RAND:4 == 0 && TALENT:親愛 == 1
+		PRINTFORMW 「うふふ、%MASTERNAME%のイキ顔、可愛い…♪」
+		PRINTFORMW 「きゃっ、もう、怒らないでよ」
+		PRINTFORMW 「ごめんなさい、お詫びに…♪」
+		PRINTFORMW アリスは%CALLNAME:MASTER%に奉仕をした…
+		PRINTFORML フェラ経験（アリス）＋3
+		PRINTFORMW 奉仕快楽経験（アリス）＋3
+		EXP:フェラ経験 += 3
+		EXP:奉仕快楽経験 += 3
+	ELSEIF RAND:3 == 0 && TALENT:淫乱 == 1
+		PRINTFORMW 「なんか、ビデオ見てたら興奮してきちゃった…」
+		PRINTFORMW 「ねえ、もう一回しましょう？」
+		PRINTFORMW %CALLNAME:MASTER%とアリスは、再びまぐわった…
+		PRINTFORML Ｖ経験（アリス）＋3
+		PRINTFORML Ｖ調律経験（アリス）＋3
+		PRINTFORML 絶頂経験（アリス）＋3
+		PRINTFORMW 射精経験＋3
+		EXP:Ｖ経験 += 3
+		EXP:Ｖ調律経験 += 3
+		EXP:絶頂経験 += 3
+		EXP:MASTER:射精経験 += 3
+	ELSEIF RAND:2 == 0 && ABL:精液中毒 >= 1 && TALENT:恋慕 == 1
+		PRINTFORMW
+		PRINTFORMW （はぁ…、はぁ…）
+		PRINTFORMW （だめ、興奮してきちゃった…）
+		PRINTFORMW （セックスしたい…、%MASTERNAME%のおちんちん、欲しい…）
+		PRINTFORMW その様子に察した%CALLNAME:MASTER%は、アリスに奉仕をさせた…
+		PRINTFORML 奉仕快楽経験（アリス）＋5
+		PRINTFORMW 精液経験（アリス）＋5
+		EXP:奉仕快楽経験 += 5
+		EXP:精液経験 += 5
+		IF ABL:精液中毒 < 4
+			PRINTFORMW アリスは少し精液の味を覚えた
+			ABL:精液中毒 += 1
+		ENDIF
+	ELSE
+		PRINTFORMW 「もう、なんでこんなもの見なきゃいけないのよ…」
+		PRINTFORMW 「まぁ、私のビデオが売られるよりはましだけど」
+	ENDIF
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_14_MESSAGE_IMPRESSION
+IF CFLAG:1610 == 0
+	IF CFLAG:7000 == 1
+		IF RAND:2 == 0
+			PRINTFORML 　　　「あら、ここはどこかしら？」
+		ELSE
+			PRINTFORML 　　　「誰も来ないわね…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORML 　　　「上海、蓬莱？どこに行ったの？」
+		ELSE
+			PRINTFORML 　　　「どうなってるのかしら…」
+		ENDIF
+	ENDIF
+ELSEIF (TALENT:服従 == 1 || TALENT:隷属 == 1) && RAND:5 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「私の心身は、全て%MASTERNAME%のものよ」
+	ELSE
+		PRINTFORML 　　　「私のただ一人の主、%MASTERNAME%…」
+	ENDIF
+ELSEIF TARGET == ASSI && TALENT:恋慕
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「%MASTERNAME%に悪い虫がつかないようにしないと…」
+	ELSE
+		PRINTFORML 　　　「私の指さばき、みせてあげるわ」
+	ENDIF
+ELSEIF (TALENT:キス魔 == 1 && TALENT:親愛 == 1) && RAND:4 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「さあ、%MASTERNAME%の唇を頂く時間だわ」
+	ELSE
+		PRINTFORML 　　　「また%MASTERNAME%に口を塞いでほしいわ…」
+	ENDIF
+ELSEIF TIME == 1 && TALENT:淫乱
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「さて、オナニーでもしておきましょうか」
+	ELSE
+		PRINTFORML 　　　「うふふ、今日はどんな事してくれるのかしら」
+	ENDIF
+ELSEIF TALENT:相愛 == 1 && RAND:3 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「えへへ、夜伽の準備しとかないと」
+	ELSE
+		PRINTFORML 　　　「うふふ、私だけの%MASTERNAME%～♪」
+	ENDIF
+ELSEIF TALENT:親愛 == 1 && RAND:2 == 0
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「私…、%MASTERNAME%を愛してるわ」
+	ELSE
+		PRINTFORML 　　　「%MASTERNAME%…、私を独りにしないで…」
+	ENDIF
+ELSEIF MARK:反発刻印 == 3
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「あいつ、そろそろ殺そうかな」
+	ELSE
+		PRINTFORML 　　　「無視よ、それが一番だわ」
+	ENDIF
+ELSEIF TALENT:恋慕 == 1
+	IF CFLAG:7000 == 1
+		PRINTFORML 　　　「うん、やっぱりここで遊ぶのは楽しいわね」
+	ELSE
+		PRINTFORML 　　　「この気持ちは本物かしら？」
+	ENDIF
+ELSEIF MARK:屈服刻印 == 3
+	IF CFLAG:7000 == 1
+		IF RAND:2 == 0
+			PRINTFORML 　　　「まあ、もう少し付き合ってあげようかな…」
+		ELSE
+			PRINTFORML 　　　「また、乱されちゃうのかな…」
+		ENDIF
+	ELSE
+		IF RAND:2 == 0
+			PRINTFORML 　　　「私は所詮、まな板の上の鯉」
+		ELSE
+			PRINTFORML 　　　「せめて人形の安否は確認したいな…」
+		ENDIF
+	ENDIF
+ELSE
+	IF CFLAG:7000 == 1
+		IF RAND:3 == 0
+			PRINTFORML 　　　「楽しませてほしいものね」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 　　　「まあ、流れるままにいきましょう」
+		ELSE
+			PRINTFORML 　　　「あいつ、何が目的なの？」
+		ENDIF
+	ELSE
+		IF RAND:3 == 0
+			PRINTFORML 　　　「私の人形、無事かしら…？」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 　　　「あんな変態に捕まるなんてね…」
+		ELSE
+			PRINTFORML 　　　「調教ねぇ…、何が楽しいのかしら」
+		ENDIF
+	ENDIF
+ENDIF
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_14_MESSAGE_SINGLE_ENDING
+IF CFLAG:7000 == 1
+	DRAWLINE
+	PRINTFORMW ―――単体エンド条件達成―――
+	PRINTFORMW …………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW 
+	PRINTFORMW アリスと結婚してから数カ月。
+	PRINTFORMW %CALLNAME:MASTER%はアリスと共に仲睦まじく新婚生活を送っていた
+	PRINTFORMW 「あーなーたっ♪朝だよっ」
+	PRINTFORMW %CALLNAME:MASTER%の朝はいつも可愛い妻のキスで始まる
+	PRINTFORMW アリスは常に%CALLNAME:MASTER%より早く起き、朝食の準備などもすべて済ませた上で、
+	PRINTFORMW %CALLNAME:MASTER%に朝のキスをしてくれるのだ。
+	PRINTFORMW 「んふ、ん、ちゅ、んむっ、んん…」
+	PRINTFORMW アリスのねっとりとした舌使いに弄ばれ、%CALLNAME:MASTER%のペニスはすっかり大きくなってしまった
+	PRINTFORMW 「えへへ、朝からこんなに大きくしちゃって…、エッチな旦那様だなぁ…♪」
+	PRINTFORMW そう言うアリスはエッチな新妻だ――、と言い返してやりたくなったが、
+	PRINTFORMW 再び口を塞がれ喋ることができなくなる
+	PRINTFORMW そして%CALLNAME:MASTER%の口を蹂躙しながら、アリスは布越しのペニスに手を触れた
+	PRINTFORMW 「ふふ…、布越しでどんどん大きくなっていくよ…」
+	PRINTFORMW アリスの優しくも激しい手淫に、%CALLNAME:MASTER%の快感は高まっていく…
+	PRINTFORMW 「さ、ズボンも脱いじゃおうか」
+	PRINTFORMW アリスはズボンと下着を脱がせ、剥き出しとなったペニスを手で愛撫する
+	PRINTFORMW 口はアリスの唇に塞がれ、のしかかられて身動きの取れぬまま、ペニスを弄ばれる…
+	PRINTFORMW それが、%CALLNAME:MASTER%とアリスのいつもの朝である
+	PRINTFORMW 「んむっ…、らいすき、%MASTERNAME%…」
+	PRINTFORMW そして%CALLNAME:MASTER%は、あえなくアリスの手に射精してしまった…
+	PRINTFORMW 
+	PRINTFORMW その後、%CALLNAME:MASTER%は愛しいアリスを養う為、仕事に出かける
+	PRINTFORMW 調教師を続けても良かったのだが、奴隷を調教しつつも、
+	PRINTFORMW 愛欲深いアリスの相手をするのは身体が保たないと思ったのだ
+	PRINTFORMW そして%CALLNAME:MASTER%が仕事をしている間、アリスは妻としての務めを果たす
+	PRINTFORMW 「うーん、良い天気！洗濯物もすぐ乾きそうね」
+	PRINTFORMW 洗濯物を干し終え、アリスが家に入ろうとした時、一枚の下着が落ちているのに気づいた。
+	PRINTFORMW 「あらら、落としちゃったのかな、これも干さないと…」
+	PRINTFORMW しかしアリスは、いつまで経ってもそれを干そうとしない
+	PRINTFORMW 「%MASTERNAME%の、ぱんつ…、ゴクリ」
+	PRINTFORMW アリスはいそいそと部屋に戻り、%CALLNAME:MASTER%の下着の匂いを嗅ぐ
+	PRINTFORMW 「スー…、ハー…、…なんか興奮してきた」
+	PRINTFORMW 「ちょっとだけ、ちょっとだけだから…」
+	PRINTFORMW アリスは、ローターを取り出し、局部に押しつける
+	PRINTFORMW 以前%CALLNAME:MASTER%が調教に使っていたものだが、今はアリスの自慰のお供となっている
+	PRINTFORMW 「ひゃあんっ…、だめだようっ、%MASTERNAME%…」
+	PRINTFORMW %CALLNAME:MASTER%の匂いに包まれていることで、%CALLNAME:MASTER%に犯されている気分になっているアリスは
+	PRINTFORMW %CALLNAME:MASTER%の名前を呼びながら、何度も自慰を繰り返した……
+	PRINTFORMW 
+	PRINTFORMW 「そうだ、お風呂掃除しないと」
+	PRINTFORMW 自慰に耽っていたアリスは、我に返ると、家事の続きを始める
+	PRINTFORMW %CALLNAME:MASTER%に気持ち良く入浴してもらう為、アリスはほぼ毎日風呂掃除をしている
+	PRINTFORMW 「%MASTERNAME%と一緒にお風呂…、えへへ…」
+	PRINTFORMW %CALLNAME:MASTER%と一緒に入浴する事を妄想して、恍惚とした表情になるアリス
+	PRINTFORMW しかし、アリスの仕事はまだ残っている
+	PRINTFORMW アリスは妄想を止め、風呂掃除を手早く終わらせると、キッチンへ向かった…
+	PRINTFORMW 
+	PRINTFORMW 「さて、今日のご飯は何にしようかなぁ…」
+	PRINTFORMW 毎日仕事を頑張っている%CALLNAME:MASTER%に手抜き料理など食べさせられない
+	PRINTFORMW そう固く誓っているアリスは、夕飯は毎日丹精込めて作り上げている
+	PRINTFORMW 「ウナギにしようかな、精力付けてもらわないと」
+	PRINTFORMW 「栄養バランスも大事よね、サラダも作りましょう」
+	PRINTFORMW 「あとは、シチューでも作ろうかしら」
+	IF TALENT:母乳体質 == 1
+		PRINTFORMW 「隠し味に私のミルクでも入れようかな…、なんてね♪」
+	ENDIF
+	PRINTFORMW %CALLNAME:MASTER%の為に考え抜かれた夕飯を作り、
+	PRINTFORMW %CALLNAME:MASTER%の帰りを待つアリス
+	PRINTFORMW 「えへへ、帰ったらまずお帰りなさいのキスして…」
+	PRINTFORMW 「美味しい晩ご飯食べてもらった後、裸エプロンで洗い物しようかなぁ」
+	PRINTFORMW 「ふふ、興奮して押し倒されちゃったらどうしよう♪」
+	PRINTFORMW 「それで、二人でお風呂入って、背中流しっこしてー」
+	PRINTFORMW 「ぬるぬるの身体を擦りつけ合ってー…、あぁ、最高…♪」
+	PRINTFORMW 「お風呂出たらふかふかのタオルで身体拭いてあげるの」
+	PRINTFORMW 「もちろんベッドで…、きゃー♪」
+	PRINTFORMW %CALLNAME:MASTER%の事を考えるだけで、幸せそうな表情をするアリス
+	PRINTFORMW 彼女の心には、幸福が満ちている
+	PRINTFORMW 最初は全く興味などなかった、見下してさえいた
+	PRINTFORMW でも、彼の優しさ、おおよそ調教師には向かないその穏やかさに、
+	PRINTFORMW いつしかアリスは惹かれていった
+	PRINTFORMW 初めて彼女は、ありのままの自分を受け入れてくれる人を見つけた
+	PRINTFORMW 強がる必要も、孤独に怯える必要もない
+	PRINTFORMW 彼は、永遠に彼女を愛すると誓ってくれたから――
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 扉が開き、仕事を終えた%CALLNAME:MASTER%が帰ると、アリスが出迎えてくれた
+	PRINTFORMW 「お帰りなさいっ、%MASTERNAME%」
+	PRINTFORMW アリスは、%CALLNAME:MASTER%に優しくキスをした……
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (愛しい幼な妻、ロリス)
+	RETURN 0
+ELSE
+	DRAWLINE
+	PRINTFORMW ―――単体エンド条件達成―――
+	PRINTFORMW …………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW
+	PRINTFORMW アリスと添い遂げてから数カ月、
+	PRINTFORMW %CALLNAME:MASTER%はアリスの家で二人で暮らすこととなった。
+	PRINTFORMW 
+	PRINTFORMW 「ねえ%MASTERNAME%、そこの布とってー」
+	PRINTFORMW アリスは人形を作っているらしく、
+	PRINTFORMW 今のように時々布やら針やらを取ってくれと頼まれる。
+	PRINTFORMW 少し悪戯心が芽生えた%CALLNAME:MASTER%は、布を渡すついでにアリスの乳房に手を触れた
+	PRINTFORMW 「きゃっ！？もう、いたずらしないの！」
+	PRINTFORMW 怒った口調で叱責するが、満更でもない様子だ
+	PRINTFORMW 「あとでいっぱい可愛がってもらうから、少し待ってて」
+	PRINTFORMW うっとりするほど妖艶な表情でアリスは%CALLNAME:MASTER%を窘める…
+	PRINTFORMW 
+	PRINTFORMW 待つこと３０分…
+	PRINTFORMW 「ふう、ようやく完成したわ」
+	PRINTFORMW アリスは出来上がった人形を%CALLNAME:MASTER%に見せた
+	PRINTFORMW その人形は%CALLNAME:MASTER%にもアリスにもよく似ている…
+	PRINTFORMW 「私たちに子供ができたらこんな感じかしらね？」
+	PRINTFORMW そう言って微笑む彼女に%CALLNAME:MASTER%はすっかり魅せられた
+	PRINTFORMW 我慢できずに、アリスをベッドに押し倒す
+	PRINTFORMW 「きゃっ！んもう、しょうがないわね…」
+	PRINTFORMW 「いいわ、きて…、赤ちゃんいっぱい作りましょう？」
+	PRINTFORMW %CALLNAME:MASTER%とアリスは深い深いキスをした……
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%エンド)
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_14_MESSAGE_SINGLE_ENDING_AFTER
+IF CFLAG:7000 == 1
+	PRINTFORMW 「ねぇ、またさ、調教…、やらない？」
+	PRINTFORMW 「%MASTERNAME%の調教の腕、また見たいし、私も手伝うから」
+	PRINTFORMW 「ふふ、誰を調教する？なんなら私でも良いよ？」
+	RETURN 0
+ELSE
+	PRINTFORMW 「ねえ、魔術の材料が欲しいんだけど…」
+	PRINTFORMW 「えっとね、処女の血液と、壺一杯の精液と、高位の妖怪の母乳」
+	PRINTFORMW 「%MASTERNAME%ならすぐに揃えられるでしょ？じゃ、よろしくね♪」
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_14_MESSAGE_SLAVE_ENDING
+IF CFLAG:7000 == 1
+	DRAWLINE
+	PRINTFORMW ―――奴隷エンド条件達成―――
+	PRINTFORMW …………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW 
+	PRINTFORMW 朝、%CALLNAME:MASTER%が起きると、傍らに一人の少女が控えていた
+	PRINTFORMW 「おはようございます、ご主人様」
+	PRINTFORMW 少女は幼い肢体を惜しげもなく晒し、%CALLNAME:MASTER%に跪いていた
+	PRINTFORMW 「今日も、アリスを可愛がってください」
+	PRINTFORMW 彼女が身に付けているのはかつて主に与えられた赤い色の首輪
+	PRINTFORMW それは、彼女が未来永劫%CALLNAME:MASTER%に仕える証でもある
+	PRINTFORMW %CALLNAME:MASTER%は、まずアリスの身体を愛撫した
+	PRINTFORMW 右手で胸をさすり、左手は秘所に触れる
+	PRINTFORMW 「ああんっ、ご主人様の、手っ、気持ち良いっ！」
+	PRINTFORMW それだけでアリスは快感に震え、絶頂を繰り返す
+	PRINTFORMW その後、%CALLNAME:MASTER%はアリスの首筋や太股を撫でさすった
+	PRINTFORMW 「ひゃあん！ご、ご主人様ぁッ！」
+	PRINTFORMW %CALLNAME:MASTER%が丹念に開発したアリスの身体は、今や全身が性感帯だ
+	PRINTFORMW 背中を撫でるだけで、腰が抜けた事もある
+	PRINTFORMW %CALLNAME:MASTER%は絶頂の余韻に浸っているアリスの眼前にペニスを差し出した
+	PRINTFORMW 「あはぁ、ご主人様のおちんちん…♪」
+	PRINTFORMW 「はい、ご奉仕いたします…」
+	PRINTFORMW アリスはペニスを咥え、フェラチオを始める…
+	PRINTFORMW 「んんっ、ひもひいいれすか？ごひゅじんひゃまぁ…」
+	PRINTFORMW どう見ても幼い少女にしか見えないアリスが自分のペニスを美味しそうに咥えている
+	PRINTFORMW その光景に、%CALLNAME:MASTER%は興奮したちまち射精してしまった…
+	PRINTFORMW 「きゃあっ！うふふ、たくさん出しましたね……」
+	PRINTFORMW 顔にかかった精液を、アリスは一滴残さず舐めとる
+	PRINTFORMW そして、足を開き、局部を%CALLNAME:MASTER%に見せつけた
+	PRINTFORMW 「ご主人様のおちんちん…、アリスのここに下さい…」
+	PRINTFORMW %CALLNAME:MASTER%はアリスを抱き上げ、対面座位の姿勢でアリスに挿入した
+	PRINTFORMW 「あはぁっ♪今日は、抱いて下さるんですね♪嬉しいですっ♪」
+	PRINTFORMW 子宮口まで届くペニスに突かれ、アリスは人目も憚らず悦びの声を上げる
+	PRINTFORMW アリスの口内を貪りつつ、膣内を激しく突きたてる
+	PRINTFORMW 「んむぅっ♪あ、ああんっ、ご、ご主人様ぁっ！」
+	PRINTFORMW 主である%CALLNAME:MASTER%に抱きつき、淫らな声を上げるアリス
+	PRINTFORMW そんなアリスの様子に、%CALLNAME:MASTER%は益々興奮した
+	PRINTFORMW 腰の上下をさらに激しくさせ、より強い快楽を求める
+	PRINTFORMW 「やあんっ、ご、ご主人様ぁ♪」
+	PRINTFORMW 「私、もう、イっちゃいますっ、あ、あああああんっ！！」
+	PRINTFORMW アリスが絶頂すると同時に、%CALLNAME:MASTER%も精液を膣内に射精した
+	PRINTFORMW ヒクヒクと蠢くアリスの秘貝からは、膣に入りきらない精液が滴っている…
+	PRINTFORMW 「うふふ、ご主人様、私と一緒にイってくれたんですね、嬉しい…」
+	PRINTFORMW その後、アリスは精液と愛液で汚れたペニスをフェラで掃除した…
+	PRINTFORMW 
+	PRINTFORMW おそらく、今後%CALLNAME:MASTER%がアリスを手放す事は無いだろう。
+	PRINTFORMW アリスが、%CALLNAME:MASTER%に隷属している様に、
+	PRINTFORMW %CALLNAME:MASTER%もまた、アリスの身体の虜となっているのだから…
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (淫靡な奴隷ロリス)
+	RETURN 0
+ELSE
+	DRAWLINE
+	PRINTFORMW ―――奴隷エンド条件達成―――
+	PRINTFORMW …………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW 
+	PRINTFORMW ぴちゃ、ぬちゃ、ぴちゃっ…
+	PRINTFORMW 
+	PRINTFORMW 薄暗い屋敷で、淫靡な水音のみが響いている…
+	PRINTFORMW 「あぁっ、はぁっ、ああんっ！」
+	PRINTFORMW 屋敷の一室で、%CALLNAME:MASTER%とアリスがまぐわっていた
+	PRINTFORMW アリスは犬の様な姿勢で、%CALLNAME:MASTER%の怒張を膣内で受け止めている
+	PRINTFORMW 「ご、ご主人様ぁ、そんなに激しく突かれたら私、すぐにイっちゃうぅっ！！」
+	PRINTFORMW アリスが大きく仰け反ると同時に、膣内が痙攣する
+	PRINTFORMW その刺激に、%CALLNAME:MASTER%も射精した
+	PRINTFORMW 「はぁ…、たくさん出したわね♪%MASTERNAME%…」
+	PRINTFORMW 膣内に出された精液を見て、うっとりとするアリス
+	PRINTFORMW しかし、%CALLNAME:MASTER%の欲望はまだ終わらない
+	PRINTFORMW 膣内からペニスを抜くことなく、再び腰を振りたてる
+	PRINTFORMW 「ひゃあんっ♪だ、だめ、ご主人様ぁッ！！」
+	PRINTFORMW 「私、イったばかりでぇッ！今されたら、壊れちゃうぅッ！！」
+	PRINTFORMW 甘い媚声を上げながら、アリスは快感に震える
+	PRINTFORMW その様子を楽しみながら、%CALLNAME:MASTER%はアリスを抱く
+	PRINTFORMW 二人の歪な営みは、終わりが見えることはない
+	PRINTFORMW 時間さえあれば何度でも、何時間でも%CALLNAME:MASTER%はアリスと交わり続ける
+	PRINTFORMW 
+	PRINTFORMW あれから%CALLNAME:MASTER%は何人もの奴隷を調教し、売りさばいてきた
+	PRINTFORMW しかし、アリスだけは売ることができず、ずっと手元に置いていた
+	PRINTFORMW 人形の様な美しい姿をした彼女を穢し、支配する快感に%CALLNAME:MASTER%は魅了されていた
+	PRINTFORMW 絹のようなきめ細やかな髪を白濁で汚す優越感
+	PRINTFORMW 形の整った柔らかい乳房を思うまま貪る悦楽
+	PRINTFORMW 白い柔肌を穢しつくすことで満たされる支配欲
+	PRINTFORMW 何度犯しても緩むことのない名器が与える快感
+	PRINTFORMW アリスの肉体は、%CALLNAME:MASTER%の性欲を全て満たしてくれる
+	PRINTFORMW そんな彼女を手放す理由がどこにあろうか
+	PRINTFORMW %CALLNAME:MASTER%はアリスの子宮口深くまでペニスを突き入れる
+	PRINTFORMW 「はあんっ！ご主人様ぁっ♪そこ、そこ良いっ！」
+	PRINTFORMW %CALLNAME:MASTER%は、アリスを孕ませんと、膣内に精液を流し込んだ
+	PRINTFORMW まるでアリスが自分のものであると誇示するかのように――
+	PRINTFORMW 
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_14_MESSAGE_SLAVE_ENDING_AFTER
+IF CFLAG:7000 == 1
+	PRINTFORMW 「おはようございます♪ご主人様」
+	PRINTFORMW 「今日も、可愛がって下さいね♪」
+ELSE
+	PRINTFORMW 「%MASTERNAME%…、今日も…ね♪」
+ENDIF
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_14_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K14, ARG, ARG:1
+;DRAWLINE
+;PRINTFORMW 　%CSVCALLNAME(14,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTFORMW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.14 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.14の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_14
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.14の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_14
+PRINTL [14] プロローグNo.14 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.14 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_14
+PRINTW 　　　　　　　　―― Prologue No.14 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.14に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.14に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_14
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.14に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_14
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.14 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.14の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_14
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.14 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_14
+PRINTL 
+;………………………………………………
+;キャラ追加イベントを盛り込む場合
+;………………………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;………………………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.14 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

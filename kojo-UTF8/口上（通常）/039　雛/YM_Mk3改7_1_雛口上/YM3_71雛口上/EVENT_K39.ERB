@@ -1,0 +1,1451 @@
+;==============================================================
+;YM-Mk3改7用雛口上
+;---ここから----
+;初めまして、口上の公開を挑戦させていただきましたMarpheと申します。
+;この口上の作成に当たって、RR大妖精口上の構文を参考にさせて頂きました。この場にてお礼申し上げます。
+;見返すと３点リーダーだらけで凹むorz
+;---ここまで移植元コメ---
+;移植にあたってのなんやかんやは基本的に付属txtを参照して下さい。
+;==============================================================
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_39
+RETURN 1
+
+;========================================================
+;専用口上表示の固定化判定
+;========================================================
+;口上表示の専用口上使用設定において、選択肢を専用口上のみに固定化させたい場合は2を、専用口上＋地の文のみに固定化させたい場合は3を返すようにしてください
+;なお、1を返した(またはこの関数をコメントアウト等で使用できないようにした)場合は両方の選択肢が出るように、1・2・3以外の数値を返した時はエラー回避のため専用口上を使用できないようになっています
+;@KOJO_39_DISPLAY_SETTINGS
+;RETURN 1
+
+;========================================================
+;エキストラモード構文
+;========================================================
+@KOJO_39_EXTRA_INITIALIZATION
+;あなたor霊夢or魔理沙or咲夜or妹紅or早苗or阿求or蓮子orメリー…妹紅は元人間で現在は違うような気もする。あとそもそも「あなた」以外は使うこと自体少ない気もする。
+;里の人間は人間じゃねぇ！
+;ってわけじゃないけど、まあ使われそうなところだけカバーされてればいいかなと思い特に対象変更なし。
+;弱味は結構大きな要素なので選択式に変更してみました。
+IF NO:MASTER == 0 || NO:MASTER == 1 || NO:MASTER == 2 || NO:MASTER == 9 || NO:MASTER == 31 || NO:MASTER == 42 || NO:MASTER == 48 || NO:MASTER == 49 || NO:MASTER == 50
+	PRINTFORML 雛は人間想いの神様だ
+	PRINTL [0]はい (弱味獲得)
+	PRINTL [1]いいえ (特に変化なし)
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 雛は事前の情報通り人間想いの神様のようだ
+		PRINTFORMW …それはつまりこちらが人間である事を利用できるということだ
+		PRINTFORMW 雛の【弱味】を握った
+		TALENT:弱味 = 1
+	ELSEIF RESULT == 1
+		PRINTFORMW 通常モードで調教を開始します
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+ENDIF
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_39_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+;文章によっては眠ってても関係ないわけだがさすがにめんどいのでパス
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中も戻る
+SIF TFLAG:899 >= 1
+	RETURN 0
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 0
+DRAWLINE
+
+;調教開始口上分岐
+IF CFLAG:5201 == 0
+	TRYCALL K39_MESSAGE_START_1
+ELSE
+	TRYCALL K39_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;初調教時
+;-------------------------------------------------
+@K39_MESSAGE_START_1
+	DRAWLINE
+	PRINTFORMW 「……里で私の噂くらいは聞いた事があるのでしょう？
+	PRINTFORMW 　私は人々の厄を集める厄神。私の側にいると厄災に見舞われますよ」
+	PRINTFORMW これから何をされるか、というのは理解しているようだが
+	PRINTFORMW まだ立場というものを理解していないようだ
+	CFLAG:5201 = 1
+
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K39_MESSAGE_START_2
+IF CFLAG:5201 < 2 && MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW ふわり…
+	PRINTFORMW 雛は部屋を往復しながらくるくるとまわる。
+	PRINTFORMW しばらく見惚れていた%CALLNAME:MASTER%に雛は気付いたようだ
+	PRINTFORMW 「舞踊の類ではないの…ほら、あなたにも見えるでしょう？私に集うモノが…
+	PRINTFORMW 　…これが『厄』、今まで私がしていた事もこれを集める為
+	PRINTFORMW 　お願いだから早く私を手放して……あなたの為にも」
+	PRINTFORMW %CALLNAME:MASTER%は雛の言葉を聞き流し、雛の肩に手を置いた……
+	CFLAG:5201 = 2
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5201 < 3 && MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW いつもなら雛は例の厄集めをしているところだが
+	PRINTFORMW どうやら今日はお休みのようだ
+	PRINTFORMW 扉が開いたのを理解したらしく床に俯いて座り込んでいた雛が顔をあげる
+	PRINTFORMW その表情は今まで見たどの表情よりも虚ろで
+	PRINTFORMW まるで生気のない瞳がこちらを見つめる…
+	PRINTFORMW 「…ここでは……私の能力ではもう『厄』を流しきれません
+	PRINTFORMW 　お願いですから私を手放して……」
+	PRINTFORMW こちらにその意思がないのが判ったらしく雛は悲しげな表情を浮かべ
+	PRINTFORMW その頬に一筋の涙が伝い落ちた……
+	CFLAG:5201 = 3
+	RETURN 1
+
+;屈服刻印Lv3
+;恋慕口上につながるようなので「恋慕じゃない」条件は削除
+ELSEIF CFLAG:5201 < 4 && MARK:屈服刻印 == 3
+	DRAWLINE
+	PRINTFORMW はらり……
+	PRINTFORMW 扉に手を触れた時に袖口から何かが落ちた
+	PRINTFORMW 拾ってみるとどうやら烏の羽のようだ
+	PRINTFORMW 多少の薄気味悪さを覚えるがそれを払いのけ、扉を開く
+	PRINTFORMW ここ数日、雛は厄集めをしていない
+	PRINTFORMW それは流せる量が妖怪の山にいた頃に比べ
+	PRINTFORMW 大きく減少しているからだとも言っていた
+	PRINTFORMW 先ほど見た烏の羽が脳裏をよぎる…
+	PRINTFORMW %CALLNAME:MASTER%が雛の元に歩を進めようとした刹那
+	PRINTFORMW 雛の絶叫が響き、驚いてその歩みを止める
+	PRINTFORMW 直後、目の前を何かが通り過ぎ、足元で不快な音が鳴る
+	PRINTFORMW 天井に吊っていたランプが落ちたのだ
+	PRINTFORMW 慌てて火を消した後、改めて雛に近寄る
+	PRINTFORMW 雛は震えながら自身の身体を掻き抱いていた
+	PRINTFORMW その肩に手を置くと、びくりと一際大きく震えた後、雛は顔を上げた
+	PRINTFORMW 血の気の引いた表情。恐怖と絶望に染まった瞳……
+	PRINTFORMW 声にならない懇願は聞き届けられる事もなく…雛は諦めたように衣を肌蹴た
+	CFLAG:5201 = 4
+	RETURN 1
+;恋慕
+;屈服3からつながるようなので「屈服3」条件追加
+ELSEIF CFLAG:5201 < 5 && TALENT:TARGET:恋慕 == 1 && MARK:屈服刻印 == 3
+;＼なげえ！／
+	DRAWLINE
+	PRINTFORMW 帰路の途中、黒猫を見かけた
+	PRINTFORMW じっとこちらを見つめてくるその瞳は何を訴えていたのだろうか…
+	PRINTFORMW ………
+	PRINTFORMW いつだったか…烏の羽を見かけたのは
+	PRINTFORMW あの時の雛の行動を改めて思い返す
+	PRINTFORMW 雛が何もしなければもしかしたらランプが直撃していたかもしれない
+	PRINTFORMW そうなれば雛にとっては千載一遇のチャンスであったはずなのだ
+	PRINTFORMW 大怪我にならなくとも火傷くらいは負っていただろう
+	PRINTFORMW 調教を心待ちにしている様には到底見えない
+	PRINTFORMW 幾度となく辱めを受けた雛にすれば憎悪の感情しか持っていないはずだろう
+	PRINTFORMW 里で聞いた話のなかにはこんなものもあった
+	PRINTFORMW 曰く、何をされても決して他人を傷つけるような事はしない
+	PRINTFORMW それはこのような辱めを受けていたとしても成り立つのか
+	PRINTFORMW それが神である彼女のあり方なのだろうか…
+	PRINTFORMW そしてそんな彼女に対し俺がしてきた事は何なのだろうか……
+	PRINTW 
+	PRINTFORMW 扉を開く。相変わらず床に座り込み俯いている雛の姿が目に映る……
+	PRINTFORMW 表情からは既に意思らしきものは見受けられない
+	PRINTFORMW だがそれでもこちらを確認すると立ち上がり、頭を下げる
+	PRINTFORMW 「……ご、しゅじ、ん…さま……どうぞ…雛を……す、好き…な、ように……」
+	PRINTFORMW …？以前教えた調教の挨拶か……
+	PRINTFORMW …もう、そんな挨拶を強要させた事がバカバカしく思えてしまう
+	PRINTFORMW 服を脱ぎ始めたその手を取り、抱き寄せる
+	PRINTFORMW 誰が見ても気の迷いや自己満足の類だろう
+	PRINTFORMW 今更こんな事で彼女の心が救われるとも思わない
+	PRINTFORMW それでも、何か…何でもいいから彼女の想いに報いたかった……
+	PRINTFORMW 結局俺という存在はそれしか能がないと言う事を晒しただけだとしても
+	PRINTFORMW せめてこの想いだけでも…
+	PRINTFORMW 彼女に対し感情を持って接する…それが導き出し
+	PRINTFORMW ドンッ
+	PRINTW 
+	PRINTFORMW ……何をされたか理解するまでに数秒の時を要した
+	PRINTFORMW 結論から言えば雛に突き飛ばされたのだ
+	PRINTFORMW 今までしてきた事を鑑みれば当然の帰結だろう
+	PRINTFORMW ……単に里で聞いた噂話に便乗したに過ぎないだけ。虫の善すぎる話だ
+	PRINTFORMW 雛の気持ちも考えていない
+	PRINTFORMW すまない、と考える前に謝罪の言葉が口から出た
+	PRINTFORMW 居心地の悪さに部屋を出ようと思い、背を向ける
+	PRINTFORMW 部屋の扉に手を掛けた時、背中越しに聞こえてきたのは雛の…慟哭
+	PRINTFORMW 慌てて雛に振り返る
+	PRINTFORMW まるで地の底から響くような…目と鼻の先にいる彼女が発する声とは
+	PRINTFORMW 到底信じる事はできなかった
+	PRINTFORMW なぜ雛が泣いているのかもわからない
+	PRINTFORMW だが、こんな状態の雛を一人にできるわけもなく
+	PRINTFORMW 彼女の手や肩に触れようとしたり、あるいは再び抱き寄せようと試みた
+	PRINTFORMW 雛はその度いやいやと首を振りこちらを振りほどこうとするだけ…
+	PRINTFORMW しばらくそんなやりとりを繰り返した
+	PRINTFORMW やがて、ぽつりと…雛の口から言葉が紡がれた…
+	PRINTFORMW ―――ご主人様に災いが降り注ぐ前に、私を……してください―――
+	PRINTFORMW ……聞こえない。聞いてはいけない……その望みをかなえてはならない
+	PRINTFORMW …それはあまりに悲しすぎる彼女の懇願だった……
+	PRINTW 
+	PRINTFORMW 雛は【A敏感】【C敏感】を失った
+	PRINTFORMW 雛は【快感の否定】【A鈍感】【B鈍感】【C鈍感】【V鈍感】【一線越えない】【濡れにくい】を得た
+	;ぱっと見無理ゲー化ですが一応実行値自体に変化はない…はずです。濡れにくくなってるのでAやVいじる時に注意してもらうくらいでしょうか。
+	;いっそ反発刻印3もつけようぜとか
+	TALENT:Ａ敏感 = 0
+	TALENT:Ｃ敏感 = 0
+	TALENT:快感の否定 = 1
+	TALENT:Ａ鈍感 = 1
+	TALENT:Ｂ鈍感 = 1
+	TALENT:Ｃ鈍感 = 1
+	TALENT:Ｖ鈍感 = 1
+	TALENT:一線越えない = 1
+	TALENT:濡れにくい = 1
+	CFLAG:5201 = 5
+	RETURN 1
+
+;調教開始2回目以降
+ELSEIF MARK:反発刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「もう、こんな事はやめてください」
+	PRINTFORMW %CALLNAME:MASTER%を正面から見据え、きっぱりと雛は言い放つ
+	PRINTFORMW しかし、%CALLNAME:MASTER%の手が雛に触れると瞳は揺れ、身体はふるふると小刻みに震えだした
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 0
+	DRAWLINE
+	PRINTFORMW 扉を閉める音が響く
+	PRINTFORMW 床に座り込み俯いていた雛は弾かれたようにこちらから離れようとする。が、狭い密室ではそれも無意味な抵抗だ
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW 扉を開く
+	PRINTFORMW 厄集めの最中だったのだろう。動きを止め、その姿勢のままこちらに顔を傾ける。
+	PRINTFORMW その顔に表れる表情は悲しみか、あるいは諦めか…
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	IF RAND:3 == 0
+		PRINTFORMW 雛の調教を開始しようと思い席を立つ。
+		PRINTFORMW %CALLNAME:MASTER%半ばぬるくなったコーヒーを飲み干そうとティーカップを持ち上げた
+		PRINTFORMW ピシ…カシャン
+		PRINTFORMW カップは持ち手だけを残して床に落ち、粉々に砕けてしまった……
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 雛を監禁している部屋へ向かう途中、ふと外の景色を見る
+		PRINTFORMW 外の塀にびっしりと烏の群れが止まっていた
+		PRINTFORMW 奴らには何が見えているのだ……
+	ELSE
+		PRINTFORMW 扉を閉める音が響く
+		PRINTFORMW 雛は顔をこちらに向けるが、はたしてその瞳はこちらを見ているのだろうか…
+	ENDIF
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 3 && TALENT:TARGET:恋慕 == 0
+	DRAWLINE
+	IF RAND:4 == 0
+		PRINTFORMW 烏や黒猫。割れる食器に千切れるブーツの紐。不幸を知らせるというジンクスには一通り遭遇した
+		PRINTFORMW 慣れてみると意外と些細なもので今日も雛の調教へと歩を進める
+		PRINTFORMW 最近最も驚いたのは廊下に犬の死骸が転がっていた事だろうか
+		PRINTFORMW しかもネズミ共が食事の最中だったのだからさすがに精神的に消耗した
+	ELSEIF RAND:3 == 0
+		PRINTFORMW 「……あなたが何を想っているのか…私には判りません……ですが……
+		PRINTFORMW 　私を側に置き続ける事、それはあなたに不幸しかもたらさない。……私は…それが何より……つらい……」
+		PRINTFORMW かろうじて聞き取れる程度の小さな声。雛は躊躇しながらも自ら服を脱いでいく…
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「どうしても……どうしても私はあなたの側にいなくてはならないのですか……」
+		PRINTFORMW 一糸纏わぬ姿になり、自身を掻き抱きながら雛は震えている…
+	ELSE
+		IF TIME == 0
+			PRINTFORMW 「ん…ぅん……あ……お、おは、ようござ、い…ます」
+			PRINTFORMW 寝顔を見られていたのが気恥ずかしいのか消え入りそうな声で雛は挨拶をしてくれた
+			PRINTFORML ―――だ…め……離れてっ
+			PRINTFORML ―――嫌…私のせいで誰かが傷つくのはもう嫌あぁぁぁぁっ
+			PRINTFORMW 雛の寝言がいつまでも耳から離れなかった……
+		ELSE
+			PRINTFORMW 「……あなたの周りにも、もう『厄』が充満しています
+			PRINTFORMW 　取り返しのつかない事になる前に…お願いですから私を……」
+			PRINTFORMW 後に続く言葉はうまく聞き取れなかったが……この寒気は…なんだ？
+		ENDIF
+	ENDIF
+	RETURN 1
+ELSEIF TALENT:TARGET:恋慕 == 1
+	DRAWLINE
+	IF RAND:3 == 0
+		PRINTFORMW 扉を開くと目の前に雛が立っていた
+		PRINTFORMW 悲しそうな表情のまま雛は頭を下げ、%CALLNAME:MASTER%を部屋へ通した
+		PRINTFORMW 「…なぜ……」
+		PRINTFORMW ぽつりと呟いく雛。続く言葉は聞き取れなかった……
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 部屋に入るなり雛が抱きついてくる
+		PRINTFORMW ぼろぼろと涙を流す雛を%CALLNAME:MASTER%は優しく抱き寄せる
+		PRINTFORMW 雛が落ち着くまで%CALLNAME:MASTER%は何もせずにただ抱きしめていた……
+	ELSE
+		PRINTFORMW 部屋に入った%CALLNAME:MASTER%は雛が眠っている事に気付き、静かにその脇に座る
+		PRINTFORMW そのまま雛を見つめていた%CALLNAME:MASTER%の耳に雛の寝言が聞こえる
+		PRINTFORMW 「…離れなきゃ……大事な……ご主人様……」
+		PRINTFORMW ……何故。何故、俺が涙を流しているのか……雛が起きるまでに答えを見つけておこう……
+	ENDIF
+	RETURN 1
+;恋慕＋反発刻印Lv3
+;恋慕イベントで変化する素質を考えると無理ゲーにしか見えない
+ELSEIF MARK:反発刻印 == 3 && TALENT:TARGET:恋慕 == 1
+	DRAWLINE
+	IF RAND:3 == 0
+		PRINTFORMW 「……まだ、私を側に置き続けるおつもりですか」
+		PRINTFORMW 悲しげな表情を浮かべる雛……感情を再び見せるようにはなったが…
+		PRINTFORMW …俺の望んだ雛は果たしてここにいるのか？
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「…あ……の……いえ…なんでも…ありま…せ……ん……」
+		PRINTFORMW 何事か言おうとしたのだろうがこちらと目が合った直後、雛は俯いて震えてしまった
+	ELSE
+		PRINTFORMW 「……どうしても私を側に置くというのなら……
+		PRINTFORMW  酷い事はしないでほしいです……もう……痛いのは…いや……」
+		PRINTFORMW ……俺がしたい事は…なんだ？……俺が、すべき事は……？
+	ENDIF
+	RETURN 1
+ENDIF
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_39_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中も戻る
+SIF TFLAG:899 >= 1
+	RETURN 0
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 0
+DRAWLINE
+TRYCALL K39_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;--------------------------------------------------
+@K39_MESSAGE_END
+IF MARK:反発刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「う…あぁぁぁ……」
+	PRINTFORMW 調教を終えると雛は自身の身体を抱き、泣き出してしまった
+	RETURN 1
+
+ELSEIF MARK:屈服刻印 == 0
+	DRAWLINE
+	IF RAND:2 == 0
+		PRINTFORMW ……調教を終え、扉を閉めようとした時、雛と目が合った
+		PRINTFORMW 心配そうにこちらを窺っているように見えたのは気のせいか……
+	ELSE
+		PRINTFORMW 「…よくも……こんな……」
+		PRINTFORMW ――許さない。言葉にできるはずの悪態すらも抑え込み、雛はこちらをじっと見つめていた
+	ENDIF
+	RETURN 1
+ELSEIF MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW 「…どうか…用心して……常に周りに気を配るのを怠らないで」
+	PRINTFORMW こちらがまだ解放する意思を見せなかったからだろうか、雛はこちらの身を案じてきた
+	PRINTFORMW …脅しか、あるいは本心か…？雛の瞳からも表情からもその真意は測れない
+	PRINTFORMW 例の『厄』絡みの話なのだろうが……あいにく解放してやる程お人好しでいたつもりはない
+	PRINTFORMW %CALLNAME:MASTER%は雛の言葉を聞き流し部屋を後にした
+	RETURN 1
+ELSEIF MARK:屈服刻印 >= 2 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「こわい……あなたが部屋を出る度……も、う…ここ…にっ…ひっ…ぐ……」
+	PRINTFORMW ぽつりと呟いた言葉は途中から嗚咽にかき消される。扉越しに雛の泣き声が聞こえていた……
+	RETURN 1
+;屈服3で恋慕で体力500未満
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1 && BASE:0 < 500
+	DRAWLINE
+	PRINTFORMW 「…はっぁ……ごしゅ…ご…主人さ、ま…ぁ……」
+	PRINTFORMW 少し激しすぎたかもしれない…息も絶え絶えに雛は全身を痙攣させている
+	RETURN 1
+ELSEIF TALENT:恋慕 == 1
+	DRAWLINE
+	IF RAND:3 == 0
+		PRINTFORMW 終了の旨を伝え、雛の身体の汚れをタオルで拭いていく…
+		PRINTFORMW 丁寧に拭い取ってゆくと雛の肌は朱に染まり、呼吸も荒くなっていった…
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 終了を伝え、最後に雛を抱き寄せると雛も背に腕を回す
+		PRINTFORMW しばらくそのまま抱き合っていると雛の瞳から涙が零れた……
+	ELSE
+		PRINTFORMW 雛の手が%CALLNAME:MASTER%の腕に触れ、握られる
+		PRINTFORMW 少しでも力を入れればすぐにでも振りほどけるその手を%CALLNAME:MASTER%はじっと見つめる
+		PRINTFORMW 「……だめ……離れないと……」
+		PRINTFORMW ぽつりと呟いた後雛は自らその手を離し、%CALLNAME:MASTER%から身を離す
+		PRINTFORMW 部屋を出た%CALLNAME:MASTER%の耳に扉越しから雛の泣き声が聞こえた……
+	ENDIF
+	RETURN 1
+ELSEIF MARK:反発刻印 == 3 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「ご主人様……」
+	PRINTFORMW 雛が声をかけてくる。振り返り、雛の方を見る
+	PRINTFORMW だが雛はゆっくりと首を振り、悲しそうな表情のまま黙ってしまった…
+	RETURN 1
+ENDIF
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_39_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 0
+
+;処女喪失時のメッセージ呼び出し
+SIF TFLAG:0
+	TRYCALL K39_MESSAGE_LOST_VIRGIN
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K39_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K39_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 11, 29
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K39_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+
+;-------------------------------------------------
+;処女喪失
+;-------------------------------------------------
+@K39_MESSAGE_LOST_VIRGIN
+;恋慕時かつ主人のペニス
+IF TFLAG:2
+	;PRINTFORMW 
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_39_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K39_MESSAGE_OVERLV2_10
+;PRINTFORMW 
+CFLAG:5330 = 1
+
+;ローション
+IF SELECTCOM == 60
+		IF TALENT:恋慕 == 1
+		;「初めて潤滑が超えた」で「恋慕の時」って狙ってもきつい気がするのだがどうだろうか
+			PRINTFORMW 雛の肌に粘性の液体を垂らすと冷たいのかぶるりと小さく震える
+			PRINTFORMW よく馴染むよう%CALLNAME:MASTER%の手が雛の肌を滑った……
+		ELSE
+			PRINTFORMW 「…それは？」
+			PRINTFORMW %CALLNAME:MASTER%が持つ小ビンを雛は訝しがる。%CALLNAME:MASTER%は無言のままその中身を雛に振りかける
+			PRINTFORMW 「や……ぬるぬるする……」
+		ENDIF
+ELSE
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「……ぁ…ぅ」
+			PRINTFORMW 僅かに雛が呻き、%CALLNAME:MASTER%を見つめていた視線が泳いだ
+		ELSE
+			PRINTFORMW 「……や……まって」
+			PRINTFORMW 雛の頬が朱に染まり、くるりと背を向けられてしまう
+			PRINTFORMW ぶつぶつと何か言っているようだが聞き取れる程の声量ではなかった
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K39_MESSAGE_OVERLV2_13
+;PRINTFORMW 
+CFLAG:5333 = 1
+
+IF TALENT:恋慕 == 1
+	;媚薬
+	IF SELECTCOM == 61
+;薬毒耐性あったね……すっかり忘れてましたよorz
+;とありましたが別に、アレを消してしまっても構わんのだよ？ということでコメアウトは外しておきます。
+;いや、なかなか難しいと思うけど。
+		PRINTFORMW 雛の呼吸が乱れ、ほんのりと汗ばんだ肌が桜色に染まる
+		PRINTFORMW 自身を抱き寄せ、いやいやと首を振る雛。肩に触れただけでその身はビクリと跳ねた
+	ELSE
+		PRINTFORMW 雛の呼吸が乱れ、ほんのりと汗ばんだ肌が桜色に染まる
+		PRINTFORMW ふるふると震える指先は%CALLNAME:MASTER%を求め伸ばされる
+	ENDIF
+ELSE
+	IF SELECTCOM == 61
+		PRINTFORMW 雛の呼吸が乱れ、ほんのりと汗ばんだ肌が桜色に染まる
+		PRINTFORMW 自身を抱き寄せ、いやいやと首を振る雛。背すじに沿って指を這わせると背を仰け反らせる
+		PRINTFORMW 「や…ぁっ！……身体、おかし…いっ……」
+		PRINTFORMW かくんかくんと断続的な痙攣を繰り返し、自身の変化に困惑している
+	ELSE
+		PRINTFORMW 雛の呼吸が乱れ、ほんのりと汗ばんだ肌が桜色に染まる
+		PRINTFORMW ぼんやりとこちらを見つめていた視線に目を合わせるとその瞳は動揺に揺れた
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:5335
+;作っておきながらなんですが潤滑、欲情、恥情を上げずに恋慕つけるのってどうやるんですかね。ひたすら苦痛系なのかなぁ…
+;お気づきでしたか。そんなあなたにおすすめの＠があるんだが？
+;-------------------------------------------------
+@K39_MESSAGE_OVERLV2_15
+CFLAG:5335 = 1
+
+IF TALENT:恋慕 == 1
+		PRINTFORMW 「ぁ……」
+		PRINTFORMW 雛の視線が僅かに動き、%CALLNAME:MASTER%から逸らされる
+		PRINTFORMW 雛は震える両腕で秘所と胸を覆った
+ELSE
+		PRINTFORMW 「やだ……」
+		PRINTFORMW 雛の頬が朱に染まり、そのまま俯いてしまった
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:5337
+;この口上だとほぼ常時そんな状態なんですが（汗
+;-------------------------------------------------
+@K39_MESSAGE_OVERLV2_17
+CFLAG:5337 = 1
+
+IF TALENT:恋慕 == 1
+		PRINTFORMW 「……ゃ……やめ…」
+		PRINTFORMW 雛の瞳が揺れ、%CALLNAME:MASTER%から離れようとする
+		PRINTFORMW 近づこうとすると更に怯えるだけだろう。%CALLNAME:MASTER%は雛が落ち着くまでそのまま待ち続けた
+ELSE
+		PRINTFORMW 「ひ…いや……お願い……来ない、で……」
+		PRINTFORMW じりじりと雛は%CALLNAME:MASTER%と距離を取ろうとする
+		PRINTFORMW その距離を詰めた途端、雛は身を震わせた後その場に座り込み、泣き出してしまった
+ENDIF
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5300～を使用
+;@KOJO_39_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5300
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_0
+;初めて
+IF CFLAG:5300 == 0
+	;この辺のは１～２行で済ませたかったんですが長いのは４行とかありますorz
+	CFLAG:5300 = 1
+
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「……ぁ…あ」
+		PRINTFORMW 雛の瞳が揺れる。視線が外れ、いやいやと首を振りはじめた
+		PRINTFORMW すがる場所を探しさまよう手を握ってやり、雛を絶頂へと導いた
+	ELSE
+		PRINTFORMW 「ひっ……や……うぁぁあっ」
+		PRINTFORMW こちらに伸ばされた手はしかしこちらまで届く事はなく、雛は虚空を掴み絶頂に震えた
+	ENDIF
+
+;２回目以降
+ELSE
+	;今回の調教でのＣ絶頂が50以上
+	IF EX:0 >= 50
+		;PRINTFORMW 
+	ELSE
+		;PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5301
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_1
+;初めて
+IF CFLAG:5301 == 0
+	CFLAG:5301 = 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 雛の膣内がきゅうきゅうと締まる
+		PRINTFORMW そのまま雛はがくがくと痙攣をした後、そのままぐったりと倒れこむ
+		PRINTFORMW %CALLNAME:MASTER%は雛の呼吸が整うまで雛を優しく抱き締めた
+		;これでバイブだったらなんかオモシロイ状況ですね（ぇ
+	ELSE
+		PRINTFORMW 「あ…や…だめぇっ」
+		PRINTFORMW 一際大きな嬌声を発した雛はがくがくと痙攣をする
+		PRINTFORMW 乱れた息を整える雛の肌は桜色に染まり、うっすらと汗を乗せたその姿は艶かしく
+		PRINTFORMW ……まだまだ%CALLNAME:MASTER%の責めは収まりそうになかった
+	ENDIF
+
+;２回目以降
+ELSE
+	;今回の調教でのＶ絶頂が50以上
+	IF EX:1 >= 50
+		;PRINTFORMW 
+	ELSE
+		;PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5302
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_2
+;初めて
+IF CFLAG:5302 == 0
+	CFLAG:5302 = 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「…ぅ…ぁあ」
+		PRINTFORMW ふるふると雛が弱弱しく首を振り、身を縮め、かくかくと痙攣しはじめた
+		PRINTFORMW 絶頂の波が過ぎ去った雛の頬を一すじの涙が伝った……
+	ELSE
+		PRINTFORMW 「…や……ぁあああっ？」
+		PRINTFORMW 雛の嬌声と表情に困惑が混じり、そのままぶるぶると震える
+		PRINTFORMW 絶頂の波が収まった雛は愕然とした表情のまま動こうとしなかった
+	ENDIF
+;２回目以降
+ELSE
+	;今回の調教でのＡ絶頂が50以上
+	IF EX:2 >= 50
+		;PRINTFORMW 
+	ELSE
+		;PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5303
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_3
+;初めて
+IF CFLAG:5303 == 0
+	CFLAG:5303 = 1
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 雛が瞳を閉じ、俯く。自分自身を抱くような姿勢のままビクビクと雛は痙攣を繰り返す
+		PRINTFORMW %CALLNAME:MASTER%は震え続ける雛にそっと触れ、彼女が落ち着くのを待った
+	ELSE
+		PRINTFORMW 「あ…あ…胸がっ」
+		PRINTFORMW 雛の頤が天を仰ぐ。ばたばたともがくその手が%CALLNAME:MASTER%の腕を掴む
+		PRINTFORMW 絶頂を迎える嬌声と共に雛は%CALLNAME:MASTER%の腕に爪痕を刻みつけた
+	ENDIF
+;２回目以降
+ELSE
+	;今回の調教でのＢ絶頂が50以上
+	IF EX:3 >= 50
+		;PRINTFORMW 
+	ELSE
+		;PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5304
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_10
+;初めて
+IF CFLAG:5304 == 0
+	;PRINTFORMW 
+	;CFLAG:5304 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;射精 CFLAG:5305
+;IF TFLAG:9 == 19でＶで逆レイプされて射精した場合を参照可
+;IF TFLAG:9 == 20でＡで逆レイプされて射精した場合を参照可
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:5305 == 0
+	;PRINTFORMW 
+	;CFLAG:5305 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:5306
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+@K39_MESSAGE_ORGASM_12
+SIF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+;初めて
+IF CFLAG:5306 == 0
+	;PRINTFORMW 
+	;CFLAG:5306 = 1
+;２回目以降
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;膣内に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_11
+;主人のペニス
+IF TFLAG:35
+	;対面or正常
+	;派生コマンドまでは面倒見切れないわー
+	IF SELECTCOM == 20 || SELECTCOM == 22
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7780 < 4 || (CFLAG:7780 == 4 && RAND:2 == 0))
+			;毎回毎回表示されると嫌病が発症したので。
+			;ああ、またバグが出そうな書き方を…
+			PRINTFORML 「……んんっ」
+			PRINTFORMW 雛を強く抱き寄せ%CALLNAME:MASTER%は精を放った
+			CFLAG:7780 = 4
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:7780 < 3 || (CFLAG:7780 == 3 && RAND:2 == 0))
+			PRINTFORML 「……ぁ……ん」
+			PRINTFORMW 雛は%CALLNAME:MASTER%を抱く腕に力を込め、精を迎え入れた
+			CFLAG:7780 = 3
+		ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7780 < 2 || (CFLAG:7780 == 2 && RAND:2 == 0))
+			PRINTFORML 「……まって……っ！」
+			PRINTFORMW 雛は愕然とした表情で地に視線を向けた
+			CFLAG:7780 = 2
+		ELSEIF 1 && (CFLAG:7780 < 1 || (CFLAG:7780 == 1 && RAND:2 == 0))
+			PRINTFORML 「……ひどい……最低」
+			PRINTFORML 雛の表情は険しい
+			PRINTFORMW ……その感情もいつまで保てるだろうか
+			CFLAG:7780 = 1
+		ENDIF
+	;対面or正常以外(騎乗、背面、後背、派生系もこっちか？）
+	ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7780 < 4 || (CFLAG:7780 == 4 && RAND:2 == 0))
+			PRINTFORML 「や……ご主人様……」
+			PRINTFORMW 雛は射精の間こちらに触れようと懸命に手を伸ばした
+			CFLAG:7780 = 4
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:7780 < 3 || (CFLAG:7780 == 3 && RAND:2 == 0))
+			PRINTFORML 「……や」
+			PRINTFORMW こちらを見る雛の瞳から涙が頬を伝った
+			CFLAG:7780 = 3
+		ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7780 < 2 || (CFLAG:7780 == 2 && RAND:2 == 0))
+			PRINTFORML 「……まって……っ！」
+			PRINTFORMW 雛は愕然とした表情で地に視線を向けた
+			CFLAG:7780 = 2
+		ELSEIF 1 && (CFLAG:7780 < 1 || (CFLAG:7780 == 1 && RAND:2 == 0))
+			PRINTFORML 「……ひどい……最低」
+			PRINTFORML 雛の表情は険しい
+			PRINTFORMW ……その感情もいつまで保てるだろうか
+			CFLAG:7780 = 1
+		ENDIF
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルに射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_12
+;主人のペニス
+IF TFLAG:35
+	IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7790 < 4 || (CFLAG:7790 == 4 && RAND:2 == 0))
+		PRINTFORMW 「やぁ…ご主人様……どうして……そんな」
+		CFLAG:7790 = 4
+	ELSEIF TALENT:恋慕 == 1 && (CFLAG:7790 < 3 || (CFLAG:7790 == 3 && RAND:2 == 0))
+		PRINTFORMW 「や……ぁ……」
+		CFLAG:7790 = 3
+	ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7790 < 2 || (CFLAG:7790 == 2 && RAND:2 == 0))
+		PRINTFORMW 「……なんで……なんでぇ」
+		CFLAG:7790 = 2
+	ELSEIF 1 && (CFLAG:7790 < 1 || (CFLAG:7790 == 1 && RAND:2 == 0))
+		PRINTFORMW 「う……嘘でしょ……」
+		CFLAG:7790 = 1
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;髪に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_13
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_14
+;PRINTFORMW 
+
+;-------------------------------------------------
+;口に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_15
+IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7782 < 4 || (CFLAG:7782 == 4 && RAND:2 == 0))
+	PRINTFORML 「……んぅ……んん……」
+	PRINTFORML 雛は口の中に精液を含んだままこちらの様子を伺っている
+	PRINTFORMW %CALLNAME:MASTER%が促すと雛はそれを飲み込んだ
+	CFLAG:7782 = 4
+ELSEIF TALENT:恋慕 == 1 && (CFLAG:7782 < 3 || (CFLAG:7782 == 3 && RAND:2 == 0))
+	PRINTFORML 「…ん…ふ……コクン……」
+	PRINTFORMW 雛は嫌そうな素振り一つ見せず飲み込んだ
+	CFLAG:7782 = 3
+ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7782 < 2 || (CFLAG:7782 == 2 && RAND:2 == 0))
+	PRINTFORML 「……ぅ……うぅ……」
+	PRINTFORMW 飲み込むよう指示したが耐え切れず雛は吐き出してしまった
+	CFLAG:7782 = 2
+ELSEIF 1 && (CFLAG:7782 < 1 || (CFLAG:7782 == 1 && RAND:2 == 0))
+	PRINTFORML 「…飲めだなんて…無茶いわないで」
+	PRINTFORML 口を腕で拭いながら雛は呟いた
+	PRINTFORMW ベッドには雛が吐き出した精液が染みを作っていた
+	CFLAG:7782 = 1
+ENDIF
+;-------------------------------------------------
+;胸に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_16
+IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7789 < 4 || (CFLAG:7789 == 4 && RAND:2 == 0))
+	PRINTFORML 「……んぁ……ご主人様……気持ちよかったですか？」
+	PRINTFORMW 胸に掛かった精液よりこちらの様子が気になるようだ
+	CFLAG:7789 = 4
+ELSEIF TALENT:恋慕 == 1 && (CFLAG:7789 < 3 || (CFLAG:7789 == 3 && RAND:2 == 0))
+	PRINTFORMW 雛の胸や顔、髪を精液が汚すが雛は構わずこちらを見つめている
+	CFLAG:7789 = 3
+ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7789 < 2 || (CFLAG:7789 == 2 && RAND:2 == 0))
+	PRINTFORML 「……熱い……」
+	PRINTFORMW 身に降り注ぐ精液の感触に身震いしながら雛は瞳を閉じた
+	CFLAG:7789 = 2
+ELSEIF 1 && (CFLAG:7789 < 1 || (CFLAG:7789 == 1 && RAND:2 == 0))
+	PRINTFORML 「…や……汚い」
+	PRINTFORMW 雛は顔に付いた精液が気になるようだ
+	CFLAG:7789 = 1
+ENDIF
+
+;-------------------------------------------------
+;腹に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_17
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_19
+IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (CFLAG:7781 < 4 || (CFLAG:7781 == 4 && RAND:2 == 0))
+	PRINTFORML 「……ぁ……ご主人様……気持ちよかったですか？」
+	PRINTFORMW %CALLNAME:MASTER%の射精を確認して安心したのか雛の表情から硬さが抜けた
+	CFLAG:7781 = 4
+ELSEIF TALENT:恋慕 == 1 && (CFLAG:7781 < 3 || (CFLAG:7781 == 3 && RAND:2 == 0))
+	PRINTFORMW 雛は手にかかった%CALLNAME:MASTER%の精液をぼんやりとした瞳で見続けた
+	CFLAG:7781 = 3
+ELSEIF MARK:屈服刻印 >= 1 && (CFLAG:7781 < 2 || (CFLAG:7781 == 2 && RAND:2 == 0))
+	PRINTFORML 「……ぁ……熱い……」
+	PRINTFORMW うっとりとした表情で雛は瞳を閉じた
+	CFLAG:7781 = 2
+ELSEIF 1 && (CFLAG:7781 < 1 || (CFLAG:7781 == 1 && RAND:2 == 0))
+	PRINTFORML 「…なんか不思議な気分ね」
+	PRINTFORMW 雛は手に付いた精液をまじまじと見つめながら呟いた
+	CFLAG:7781 = 1
+ENDIF
+
+;-------------------------------------------------
+;秘裂に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_20
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_22
+;PRINTFORMW 
+
+;-------------------------------------------------
+;太腿に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_23
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足に射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_24
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教者がキスで射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教者がコンドームに射精
+;-------------------------------------------------
+@K39_MESSAGE_EJAC_PLAYER_28
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_39_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5310) < LOCAL:1
+			TRYCALLFORM K39_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5310～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5310
+;-------------------------------------------------
+@K39_MESSAGE_MARK0_1
+;PRINTFORMW 
+;CFLAG:5310 = 1
+
+@K39_MESSAGE_MARK0_2
+;PRINTFORMW 
+;CFLAG:5310 = 2
+
+@K39_MESSAGE_MARK0_3
+;PRINTFORMW 
+CFLAG:5310 = 3
+IF TALENT:恋慕 == 1
+		PRINTFORMW 「……いや」
+		PRINTFORMW ぽつりと雛の口から言葉が紡がれる。聞き逃しそうなほど小さな声で……
+		PRINTFORMW 「……痛いのは、嫌…」
+		PRINTFORMW 雛は自身を掻き抱き、独り言のように呟いていた……
+ELSE
+		PRINTFORMW 「…もう……痛いのはやめて……」
+		PRINTFORMW 雛の頬を涙が伝い、こちらを見つめるその瞳は恐怖に揺れた……
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5311
+;-------------------------------------------------
+@K39_MESSAGE_MARK1_1
+;PRINTFORMW 
+;CFLAG:5311 = 1
+
+@K39_MESSAGE_MARK1_2
+;PRINTFORMW 
+;CFLAG:5311 = 2
+
+@K39_MESSAGE_MARK1_3
+	CFLAG:5311 = 3
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「……あ…ふ……」
+		PRINTFORMW 雛は喘ぎ、虚ろな瞳はこちらをぼんやりと見つめる
+		PRINTFORMW その頬は上気し、脱力した身体は%CALLNAME:MASTER%へとしなだれかかる
+		PRINTFORMW しかしすぐにその表情は曇り、%CALLNAME:MASTER%から身体を離してしまった
+	ELSE
+		PRINTFORMW 「……だめ……これ以上は」
+		PRINTFORMW 雛の手が%CALLNAME:MASTER%に添えられる
+		PRINTFORMW 「私が溺れたら……あなたから離れられなくなるから……」
+		PRINTFORMW 悲しそうな表情を浮かべ、雛はこちらから視線を逸らした
+	ENDIF
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5312
+;-------------------------------------------------
+@K39_MESSAGE_MARK2_1
+;PRINTFORMW 
+;CFLAG:5312 = 1
+
+@K39_MESSAGE_MARK2_2
+;PRINTFORMW 
+;CFLAG:5312 = 2
+
+@K39_MESSAGE_MARK2_3
+	IF TALENT:恋慕 == 1
+		PRINTFORMW くたりと、雛の身体から僅かに残されていた力が抜け、%CALLNAME:MASTER%へと預けられる
+		PRINTFORMW %CALLNAME:MASTER%が抱き寄せると胸に手が添えられる
+		PRINTFORMW しかし、以前のように突き飛ばされる事もなく、だがその手を降ろす事もなく…
+		PRINTFORMW その瞳から流れ落ちる涙だけが彼女の意思を示していた
+	ELSE
+		PRINTFORMW 「……私は厄神なのに…一緒にいてはダメなのに」
+		PRINTFORMW ぽつりぽつりと雛は呟く
+		PRINTFORMW それはまるで雛自身へ言い聞かせているように見えた
+	ENDIF
+	CFLAG:5312 = 3
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5313
+;-------------------------------------------------
+@K39_MESSAGE_MARK3_1
+;PRINTFORMW 
+;CFLAG:5313 = 1
+
+@K39_MESSAGE_MARK3_2
+;PRINTFORMW 
+;CFLAG:5313 = 2
+
+@K39_MESSAGE_MARK3_3
+;PRINTFORMW 
+;CFLAG:5313 = 3
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5314
+;-------------------------------------------------
+@K39_MESSAGE_MARK4_1
+;PRINTFORMW 
+;CFLAG:5314 = 1
+
+@K39_MESSAGE_MARK4_2
+;PRINTFORMW 
+;CFLAG:5314 = 2
+
+@K39_MESSAGE_MARK4_3
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 虚ろだった雛の瞳に意思が灯る。%CALLNAME:MASTER%を捉え、怯え震える
+		PRINTFORMW 
+		PRINTFORMW 「……あ……ぅ」
+		PRINTFORMW 雛はこちらを見つめ何事か口にしようとしていたらしい
+		PRINTFORMW しかし%CALLNAME:MASTER%が雛を見つめた途端、視線を逸らし黙ってしまった
+	;それ以外
+	ELSE
+		PRINTFORMW ……雛は自身を掻き抱きながら座り込み、俯いて震えている
+		PRINTFORMW 今僅かにでも俺が動けば恐らく泣き出してしまうだろう
+		PRINTFORMW 雛は懸命に心の危ういバランスを保とうと必死になっているのが傍から見ても手に取るようにわかった
+		PRINTFORMW …これで雛の心は折れる。冷酷な笑みを浮かべ%CALLNAME:MASTER%は雛へ向けて足を踏み出した……
+	ENDIF
+	CFLAG:5314 = 3
+
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5316
+;-------------------------------------------------
+@K39_MESSAGE_MARK6_1
+;PRINTFORMW 
+;CFLAG:5316 = 1
+
+@K39_MESSAGE_MARK6_2
+;PRINTFORMW 
+;CFLAG:5316 = 2
+
+@K39_MESSAGE_MARK6_3
+;PRINTFORMW 
+;CFLAG:5316 = 3
+
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_39_MESSAGE_LOOK_VIDEO
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_39_MESSAGE_IMPRESSION
+;PRINTFORML 　　　「」
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_39_MESSAGE_SINGLE_ENDING
+;なんだこの長さ(汗
+;ED後も継続プレイされる方はこの口上は避けた方がいいかもしれません。時間軸ループとか夢オチ等の脳内補完必須になります
+;なお、ここでのみ%CALLNAME:MASTER%（≒あなた）が喋ります。ご了承下さい
+;指輪／キス分岐はRR大妖精口上EDを参考にさせて頂きました。ありがとうございます
+
+;避けた方がいいなら選択式にすればいいじゃない
+PRINTFORMW エンディングですが、時間軸ループとか夢オチ等の脳内補完必須になるそうです。
+PRINTFORMW 継続プレイされる方は避けた方がいいかもしれません。
+PRINTFORMW エンディングを見ますか？
+PRINTL [0]はい
+PRINTL [1]いいえ
+$INPUT_LOOP_SINGLE_ENDING
+INPUT
+IF RESULT == 0
+ELSEIF RESULT == 1
+	PRINTFORMW エンディングは飛ばします。
+	RETURN 0
+ELSE
+	GOTO INPUT_LOOP_SINGLE_ENDING
+ENDIF
+
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 幻想郷の外れの森、%CALLNAME:MASTER%の胸の中で厄神、鍵山雛はその生涯を終えようとしていた……
+PRINTFORMW 
+PRINTFORMW 日増しに雛の精神はこちらから離れていく……
+PRINTFORMW 雛の心が壊れてしまわないようにと%CALLNAME:MASTER%は雛とここへ来たというのに………
+PRINTFORML 
+PRINTFORML 
+PRINTFORMW 後をついてくる雛に向かい、言葉を投げかける
+PRINTFORMW 『……俺は、奴隷商だった…いや、正確にはまだ奴隷商だ』
+PRINTFORMW 雛からは何の返答もない。%CALLNAME:MASTER%は言葉を続ける
+PRINTFORMW 『そんな…救いようもないクズにも目標ができた……だがそれも叶わなかった……』
+PRINTFORMW 振り返り、雛を見つめる。その瞳に意思はなく……まるで…人形のようで……
+PRINTFORMW 『……雛……もう、今日から君は自由だ……俺なんぞの自己満足に付き合せて……本当にすまなかった』
+PRINTFORMW 精一杯の謝罪……赦されなくとも……赦してもらえるまで何度でも……
+PRINTFORMW 雛になにもできなかった無力さを噛み締める……無力であったなら、せめて誠意だけでも……
+PRINTFORMW ……地べたに額を擦り付けるように%CALLNAME:MASTER%は雛に何度も詫びた
+PRINTFORMW 「……ジ……ユウ？……自、由……ご主人様は…私を？」
+PRINTFORMW 雛の瞳に急速に意思が宿りつつあった……
+PRINTFORMW ……ビシ……ミシッ……
+PRINTFORMW ……雛の瞳の変化に気をとられた%CALLNAME:MASTER%は『それ』に対する反応が遅れる
+PRINTFORMW ……バキッ…バキバキッビシィッ
+PRINTFORMW 音に気付いたのは雛の方が速かった。振り返った雛の視線の先を%CALLNAME:MASTER%も追う
+PRINTFORMW 生木が折れ、こちらに倒れてきている。それに気付いたのは最早眼前にそれが迫り……
+PRINTFORMW ドンッ
+PRINTW 
+PRINTFORMW 目の前に木が倒れていた……だが、それよりも…
+PRINTFORMW 今、俺を押したのは……目の前の木の下から僅かに見える赤いリボンは……何より、リボンが巻きついているその左腕は……
+PRINTFORMW 『雛ああああああぁぁぁぁぁぁぁぁぁぁッ！！』
+PRINTFORMW 静かな森の中に最後まで無力だった哀れな男の声が木霊する……
+PRINTFORML 
+PRINTFORML 
+PRINTFORMW なんとか雛を倒木の下から助け出す事はできたものの…既にその生命は急速に終焉へと向かっていくのが解る……
+PRINTFORMW 「無事……だったの…です……ね……よかった」
+PRINTFORMW ……いいわけがない。こんな男の為にその命を捨ててどうするんだ……
+PRINTFORMW 想いはしかし言葉にならず…むしろ言葉になったとしてもそれは彼女を傷つけるだけ…
+PRINTFORMW 腕の中で尽きかけているその生命
+IF CFLAG:7800 == 1
+	PRINTFORMW …コトリ
+	PRINTFORMW 何かが落ちたのか、腰の辺りで小さく鳴った音に目を向けると小さな箱……
+	PRINTFORMW とっさにそれを掴む。中身は知っている。あの時、雛に渡せなかった物。今ならば、あるいは……
+	PRINTFORMW 『雛……俺の、我がままを聞いてくれ……
+	PRINTFORMW 　ずっと……君の隣にいたい。そこを俺の居場所にさせてくれないか？』
+	PRINTFORMW %CALLNAME:MASTER%は雛の左手を取り、その薬指に…あの時渡せなかった指輪を嵌めた……
+	PRINTFORMW 雛は左手を見つめる…穏やかな表情でその薬指に嵌められた指輪を眺めるその瞳から涙が溢れた……
+ELSE
+	PRINTFORMW 何か…何かかけてやれる言葉の一つもないのか……
+	PRINTFORMW 雛は%CALLNAME:MASTER%の背に腕を廻し、抱きついてくる……
+	PRINTFORMW 「……ここを最期の居場所にさせてください……」
+	PRINTFORMW ……%CALLNAME:MASTER%は思考する前に言葉に想いを表していた
+	PRINTFORMW 『雛……俺の、我がままを聞いてくれ……
+	PRINTFORMW 　ずっと一緒だった……そして、雛の心の優しさに…想いの強さに触れることができた……
+	PRINTFORMW 　……でも…その心や想いに雛は何度も裏切られ……雛は傷つけられてきたんだ……
+	PRINTFORMW 　だから……俺は雛を支えたい……人間如きが何を傲慢な事を、と俺自身も思うし……
+	PRINTFORMW 　何より俺自身が雛の心や想いを傷つけた……それでも……この想いを受け入れてほしい』
+	PRINTFORMW %CALLNAME:MASTER%は雛を見つめ、その唇に自らの唇を重ねた……
+	PRINTFORMW 言葉の意味を理解したのか雛は驚きに目を見開き…それでも、その唇を受け入れた……
+ENDIF
+PRINTFORMW 「…嬉しい……そんな風に私を想ってくれる人がここに……最期の時に一緒にいてくれるから……」
+PRINTFORMW そこで、雛は言葉を一旦区切り、深呼吸をした…辛そうな表情。こうして会話をするのも苦痛なのだろうに
+PRINTFORMW 「……私は神として、あなたの想いに応える事はできません……」
+PRINTFORMW 目の前が暗くなる。……俺がしてきた事は決して赦される事ではない。解っていたはずなのに……
+PRINTFORMW 雛はまだ言葉を続けていた。掠れる呼吸音が混じり、一度は取り戻した意思の輝きもその瞳から既に遠く……
+PRINTFORMW ……それでも雛は続く言葉を紡いだ。…他でもない、罪深い俺の為に……
+PRINTFORMW 「…ですが……永劫の輪廻の果て、再び私とあなたの運命が交差する時………その時はお互いに一介の男女として……
+PRINTFORMW  ……その……時こそ……は、あなたの……」
+PRINTFORMW 一陣の風。雛と俺の頬を撫で……風と共に雛が集めてきた『厄』が千切れ飛ぶ……
+PRINTFORMW 雛は一度瞳を閉じ、再び息を吸い込むと目を開き、しっかりとこちらを見つめ……
+PRINTFORMW 「あなたの想いに応えさせてください」
+PRINTFORMW そして…一時の……別れのキスを最期に雛は息を引き取った……
+PRINTFORML 
+PRINTFORML 
+PRINTFORMW あの日を境に、俺は奴隷商としての仕事から足を洗った
+PRINTFORMW 仕事仲間からは「日和った」等とからかわれたがそれでももう、これ以上の罪を重ねる事は金輪際御免だ
+PRINTFORML ―――永劫の輪廻の果て、再び私とあなたの運命が交差する時
+PRINTFORML ―――その時はお互いに一介の男女として……その……時こそ……は、あなたの……
+PRINTFORMW ―――あなたの想いに応えさせてください
+PRINTFORMW 雛の最期の言葉。それを支えに今を俺は生きる。厄神である彼女からの『預言』
+PRINTFORMW どれほど先になるかは知らないが、それでもその言葉だけは魂に刻んで日々を送ろう………
+PRINTFORMW 庭の外れに建てた雛の墓。拍手を打って彼女に挨拶をした後、仕事場へと足を運んだ
+PRINTFORML 
+PRINTFORML 
+PRINTFORML 
+;こっから下はただでさえ長い話の後日談。全部入れると行数がアホなことになるのでデフォではアウトさせて頂いています。
+;PRINTFORMW ギィ…ギィ…
+;PRINTFORMW 大きな川を私は船に乗り、向こう岸へと向かう。この先は……彼岸。死した魂の一時の安息の場所
+;PRINTFORMW 『しかし、あたいも結構この仕事をしてきたけど……アンタみたいな死者は初めてだねぇ』
+;PRINTFORMW 船頭さんが話しかける…そう、私は神でありながら罰せられる。神でありながら罪を負ったが故に……
+;PRINTW 
+;PRINTFORMW 大きな扉が開き……でもその先の裁判所の長は想像していたよりずっと小柄の……
+;PRINTFORMW ……失礼な言い方になりますが少女とも言えるような外見の方でした。
+;PRINTW 
+;PRINTFORMW 『厄神、鍵山雛ですね』
+;PRINTFORMW 「…はい」
+;PRINTFORMW 『なぜ貴女がここにいるかはご存知ですね』
+;PRINTFORMW 「神として……罰せられるべき事を致しました……」
+;PRINTFORMW 見た目とは裏腹に、彼女の言葉の重みに私は逃げ出したくなりました…
+;PRINTFORMW 全て投げ出して逃げる事ができるならばどれ程楽だったでしょうか……
+;PRINTFORMW しかし……裁きを受け、その罪を償う事。それが輪廻への第一歩なのですから……
+;PRINTFORMW 逃げる事は赦されない……あの方との誓いを……裏切る事はしたくない………
+;PRINTFORML
+;PRINTFORML
+;PRINTFORMW 『……以上で裁きを終わらせますが、何か残す言葉はありませんか』
+;PRINTFORMW 「……裁きに従い、犯した罪を償います。ですが……一つだけ……わ…た……」
+;PRINTFORMW 言葉が続かない。声が出ない……怖い……泣きそうになる自分自身を必死で奮い立たせる
+;PRINTFORMW 脳裏に浮かぶのは私を愛してくれた一人の男性……お互い泣いてばかりでしたね……
+;PRINTFORMW 「…わたしの最期を看取ってくれた方がいます……数限りない罪を重ねてきたお方です」
+;PRINTFORMW すらすらと言葉が出た。今は…まだ想像でしか描けないあなたの笑顔をちゃんとこの目で見たいから
+;PRINTFORMW 私の笑顔を見せてあげたいから……今度は一緒に向き合って、笑いあって日々を送りたいから……
+;PRINTFORMW 「彼の罪に温情を頂きたいのです」
+;PRINTFORMW まっすぐ…閻魔様から視線を逸らさず……想いをぶつけた
+;PRINTFORMW 『……正気とは思えませんね。それに例え温情を与えたとしてもその者は今後も多くの罪を重ねるでしょう』
+;PRINTFORMW …きっと今、私は笑ってる。閻魔様も船頭さんも…誰も知らない。彼がもう罪を重ねない事を……私だけが知っている
+;PRINTFORML 
+;PRINTFORML 
+;PRINTFORML 
+;PRINTFORMW 「―――巡査、いきなり聞いた事もないような場所への異動で大変だと思うが、しっかりがんばってくれよ」
+;PRINTFORMW 上司に肩を叩かれ、僕は驚きながらも返事をする。
+;PRINTFORMW 調べてみると首都圏から片道で20時間程度もかかるような僻地……なんでもそちらで人員割れをしたんだとか……
+;PRINTFORMW 寮住いで一人身、ということでどうやら僕に白羽の矢が立ったらしい
+;PRINTFORMW まぁ住めば都とは言うし断る理由もなかったからいいんだけど……
+;PRINTFORML 
+;PRINTFORML 
+;PRINTFORMW 長い山道を延々と車を走らせる。カーナビの端にようやく目的の地名が見えてくる……
+;PRINTFORMW でも、この先のトンネルはどうもまっすぐ目的地には進まないみたいだ。まだ迂回する必要があるんだろうか……
+;PRINTFORMW ふと、歩道に日傘を差した婦人が見える。ヒラヒラとした…フリルといったかな？で装飾されたドレスを着ているようだ
+;PRINTFORMW ……この辺の流行なんだろうか
+;PRINTFORMW 婦人もこちらに気付いたようで、何故か手を振っている。…知り合いにあんな奇抜な衣装を着る人はいないはずだけど……
+;PRINTFORMW 婦人のすぐ傍に停車し、ウィンドウを下ろす。ウィンドウが降りるのを待たず、婦人はにこやかに話しかけてきた
+;PRINTFORMW 「新しいオマワリさんでしょう？だったらそこのトンネルの手前に下り坂があるからそちらから行けば早いですわよ」
+;PRINTFORMW なぜそんな事を知っているのかと尋ねたら小さい村だからすぐに噂は行き届くのだとか
+;PRINTFORMW つまり僕が、新しい巡査が村に来る事は事前に知っていたと言う事らしい
+;PRINTFORMW 近道を教えてくれた事に礼を述べ、僕は言われた通り、下り坂へと車を進める……
+;PRINTFORMW なぜか、その下り坂に差し掛かる辺りでたくさんの視線を感じた気がした…
+;PRINTW 
+;PRINTFORMW 下り坂はお世辞にも道というには厳しく、操作を誤れば脱輪して落下していたかもしれない
+;PRINTFORMW なんとか進めて行く内に不思議な感触が僕を襲った……
+;PRINTFORMW ……強い、既視感。僕はここを知っている…？そんなはずはないのは頭では理解している…でも
+;PRINTFORMW ……その不安を拭えなくて……僕は車を降りた
+;PRINTFORMW 周りを見渡す。とは言えこんな林道を見渡した所で知っているかどうかなんて判別できるわけもない。……なのに
+;PRINTFORMW ―――木が倒れ、迫り来るイメージ。そう、紛れもなく、この場所で……
+;PRINTFORMW 自分自身の記憶が酷く薄弱なものに思えて、僕は車に戻る。息は上がり、吐き気と眩暈に襲われる……
+;PRINTFORMW 落ち着くまで待って……再び車を走らせる。カーブを曲がった先で視界が開けた
+;PRINTFORMW 不思議な町、いや、不思議な村だった。随分昔の風景に思えてくる……そして何より……また、例の既視感に襲われた
+;PRINTFORMW …僕は…なんでここを知っているんだ？…僕…？……『俺』。いや、違う、そんな風に自分を呼んだ事なんてない……
+;PRINTFORMW 酷い眩暈に仕方なく民家の脇に停車する。ズキズキと痛む頭を抱え、車を降りた……
+;PRINTW 
+;PRINTFORMW ……民家の門をくぐる。……そうだ。ここに来たらまず何より最初にすべき事がある
+;PRINTFORMW この家の庭に『俺』は用があるんだ……
+;PRINTFORMW 庭の外れにある一つの墓。かなり劣化してはいるもののしっかりと手入れされた墓
+;PRINTFORMW 名前も何も見えないはずだが、俺はこれが誰の墓か知っている
+;PRINTFORMW 墓の前に立ち、忍び手で拍手を叩く。脳裏に一人の女性が浮かび上がる……
+;PRINTFORMW 背後で人の気配を感じ、振り返る。家の門に誰かが立っていた
+;PRINTFORMW …お互いに歩み寄る。一歩、二歩…三歩目は既にお互いに走り出していた
+;PRINTFORMW 無言で抱き合う。俺は今日、この日の為に今までを過ごしてきたのだ
+;PRINTFORMW ……彼女もそうであって欲しいと、心の隅でやや自惚れた願いを思いつつ……
+;PRINTFORMW 「……ご主人様……おかえりなさい」
+;PRINTFORMW 『雛』の声に思わず涙が流れそうになる。あの日からバラバラに動いていた二人の時計は再び一つの時を刻み始める…
+;PRINTFORMW だが……再会の涙を流す前に、一つ
+;PRINTFORMW 「雛……俺はもう、『ご主人様』じゃあない…… 俺も雛をもうあの時の雛だとは思ってない……俺の名前は―――」
+PRINTW 
+PRINTFORMW 　　　　　　　　―― Ending No.139 (雛エンド　『厄神様の預言』)
+;長々とお付き合いいただきましてありがとうございました。もう少し短く…と何度も読み返してましたが増える一方でしたorz
+;とりあえず仕様上では普通にプレイ続行されるはずですが……違和感ヤバイので続行される場合はこのED自体が夢オチとでも思ってくださいorz
+
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_39_MESSAGE_SINGLE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_39_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――奴隷エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+;PRINTFORMW 
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_39_MESSAGE_SLAVE_ENDING_AFTER
+;PRINTFORMW 
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_39_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K39, ARG, ARG:1
+;DRAWLINE
+;PRINTFORMW 　%CSVCALLNAME(39,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTFORMW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.39 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.39の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_39
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.39の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_39
+PRINTL [39] プロローグNo.39 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.39 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_39
+PRINTW 　　　　　　　　―― Prologue No.39 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.39に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.39に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_39
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.39に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_39
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;■　　　　　　　　　　　　　 以下EXTRAモード用　　　　　　　　　　　　　　　　　　■
+;■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+;EXTRAモードでは主人となったキャラの口上が読み込まれます
+;eratohoYM用とは違い、表示可能なのはデフォルトか主人口上のどちらかなので、選択肢の表示用の関数は存在しません
+;
+;例)○○はかねてから想いを寄せていた××を手中に収めるべく、行動を開始した……みたいな感じ?
+;
+;なおプロローグでキャラを追加したい場合、キャラIDの関係上直接「ADDCHARA Ｘ」を使うよりも
+;「CALL CHARA_STATE_BASIC, Ｘ」を使った方が望ましい。
+;その際、自動的に加入したキャラが調教対象として設定される。
+;また、「CALL CHARA_STATE_BASIC, Ｘ」の後に「CSTR:3 = ～～～～」を入力すると、
+;どのような方法で連れてこられたか記憶することができる。
+;=============================================================================
+;プロローグNo.39 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.39の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能(存在していると判断)になる
+@EXIST_PROLOGUE_EXTRA_39
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.39 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_EXTRA_39
+
+;………………………………………………
+;キャラ追加イベントを盛り込む場合
+;………………………………………………
+;製作者各人の判断でプロローグにキャラを追加することが可能です。
+;ただし、初期金額以上の値段のキャラを追加する場合、
+;最悪ゲームバランスが崩壊する可能性があります。そのことを踏まえてイベントを追加してください。
+;
+;特定のキャラを追加する場合(Ｘにはキャラ番号を入力)
+;CALL CHARA_STATE_BASIC, Ｘ
+;どのように連れてこられたかを記憶(例：CSTR:3 = 誘拐した。)
+;※あまり長過ぎると表示がずれる可能性あり
+;CSTR:3 = 
+;以下の行を解禁すると上で追加したキャラを購入したことに出来る(＝所持金が減る。ただし0未満にはならない)
+;MONEY = MIN(MONEY - ITEMPRICE:(NO:TARGET), 0)
+;………………………………………………
+
+PRINTW 　　　　　　　　―― EXTRA Prologue No.39 -(サブタイトル入力欄)-
+PRINTW  
+DRAWLINE
+PRINTL ------------------------------------LET’S ENJOY----------------------------------
+DRAWLINE
+PRINTW 

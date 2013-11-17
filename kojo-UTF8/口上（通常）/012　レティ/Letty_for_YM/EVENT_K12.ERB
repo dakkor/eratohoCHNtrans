@@ -1,0 +1,5887 @@
+;-------------------------------------------------
+;YM用レティ口上 (ver.1.00)
+;-------------------------------------------------
+;目標の200KBに届いたのでとりあえずうp。readmeも見てね。
+;まだ埋めたい部分も沢山あるので、今後徐々に書き足していきます(特にＢ系調教と触手関連)。
+;-------------------------------------------------
+;口上設定雛形
+;12とX2をキャラ番号に置換し、Y1を助手のキャラ番号に置換する。
+;ただし、キャラ番号が3桁未満のキャラの場合、12,Y1は1、X2は001のように変える必要がある
+;そしてコマンド内の適当な条件の下のPRINTFORMWの後ろに半角スペースを置いてセリフを追加してください。
+;テンプレートが更新された際には、新しいテンプレをベースにして、
+;該等する条件のPRINTFORMWの行をコピー＆ペーストしていくことをお勧めします。（手間はかかるが、エラーは起こりえない）
+;口上を追加しないコマンドには行頭に『;』をつけましょう。後で追加した際に初めての口上が出ないなどの弊害が起こります。
+;また、口上を追加したコマンドの『;』をきちんと外しましょう。これだと条件を満たしても口上がでません
+;条件の追加や変更は自由ですが、その際には随時テストをしていくとよいでしょう。（エラーの原因は、ほぼ確実に手を加えた部分にあるため）
+;最後にできればread meも読んで下さい
+;-------------------------------------------------
+
+;--------------------------------------------------
+;エキストラモード構文　CFLAG:5020を使用(暫定)
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------;
+;@KOJO_12_EXTRA_INITIALIZATION
+;IF CFLAG:5020 == 0
+;	PRINTL 処女モードに移行しますか？
+;	PRINTL [0] はい
+;	PRINTL [1] いいえ
+;	$INPUT_LOOP
+;	INPUT
+;	IF RESULT == 0
+;		PRINTFORMW ―処女モードに素質、能力を変更します―
+;		TALENT:TARGET:処女 = 1
+;		ABL:TARGET:Ｖ感覚 = 0
+;		EXP:TARGET: = Ｖ経験
+;	ELSEIF RESULT == 1
+;		PRINTFORMW ―通常モードで調教を開始します―
+;	ELSE
+;		GOTO INPUT_LOOP
+;	ENDIF
+;	CFLAG:5020 = 1
+;ENDIF
+
+;==================================================
+;調教開始口上部
+;==================================================
+@KOJO_12_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、12を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K12_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K12_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ（Y1を助手のキャラ番号にする）
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5021 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時 CFLAG5001
+;-------------------------------------------------
+
+IF CFLAG:5001 == 0
+	DRAWLINE
+	PRINTFORMW 「暗いし汚い部屋ね…。暑くないだけマシだけど」
+	PRINTFORMW 「で、何をする気？ 楽しいことじゃないのは分かるけどね」
+	PRINTFORMW レティは不審そうな顔でこちらを見ている
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG5001
+;-------------------------------------------------
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:屈服刻印 == 1 && TALENT:恋慕 == 0 && TALENT:服従 == 0
+	DRAWLINE
+	PRINTFORMW 「こんなことで思い通りになると思ってるの？」
+	PRINTFORMW レティは敵愾心を隠すつもりもないようだ
+	CFLAG:5001 = 2
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:屈服刻印 == 2 && TALENT:恋慕 == 0 && TALENT:服従 == 0
+	DRAWLINE
+	PRINTFORMW 「…何されたって心までは奪えないわ」
+	PRINTFORMW 気丈な言葉を吐くものの、以前ほどの覇気はなく、%CALLNAME:MASTER%がにらみつけると意気消沈してしまった
+	CFLAG:5001 = 3
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:屈服刻印 == 3 && TALENT:恋慕 == 0 && TALENT:服従 == 0
+	DRAWLINE
+	PRINTFORMW 「もう…諦めるしかないのかしら…」
+	PRINTFORMW か細い声で呟くと、レティは%CALLNAME:MASTER%の目の前で服を脱いだ
+	PRINTFORMW 白い肌はほのかに赤く色づいているが、目には涙を浮かべている
+	CFLAG:5001 = 4
+	RETURN 1
+
+;恋慕
+ELSEIF CFLAG:5001 < 5 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 部屋に入るや否や、レティがこちらに抱きついてきた。
+	PRINTFORMW %CALLNAME:MASTER%は咄嗟に身構えたものの、どうやら様子がおかしい。
+	PRINTFORMW 「私の負けよ」
+	PRINTFORMW 「体がね…言うこと聞いてくれないの」
+	PRINTFORMW レティの目線はこちらに真っ直ぐ向けられている。
+	PRINTFORMW 「心でどれだけ拒絶しても、体があなたを欲しがってしまう」
+	PRINTFORMW 「もう悩みたくないの。このまま流されたいの」
+	PRINTFORMW 「お願い…。私をあなた一色で染めて。身も心も全部捧げるから…」
+	PRINTFORMW そう言って%CALLNAME:MASTER%の頬を撫でるレティ
+	PRINTFORMW 悲愴なまでの訴えを聞き入れた%CALLNAME:MASTER%は、レティの腰に手を回し、
+	PRINTFORMW 懇願を承諾することを告げた
+	PRINTFORMW 「ありがとう…大好きよ、%CALLNAME:MASTER%」
+	CFLAG:5001 = 5
+	RETURN 1
+
+;淫乱+恋慕
+ELSEIF CFLAG:5001 < 6 && TALENT:淫乱 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「待ってたわ%CALLNAME:MASTER%」
+	PRINTFORMW 「もう我慢できないの…。体が疼いてたまらないの」
+	PRINTFORMW 「早く気持ちいいことして。溶けちゃうぐらい熱いのが欲しい…」
+	PRINTFORMW 豹変した態度に面食らう%CALLNAME:MASTER%をよそに、レティはいそいそと服を脱いでいった
+	CFLAG:5001 = 6
+	RETURN 1
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K12_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上（Y1を助手のキャラ番号に置換、12をキャラ番号に変更する) CFLAG5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;助手
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5002 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:TARGET:恋慕 == 1 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5002 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;恋慕
+;		IF TALENT:TARGET:恋慕 == 1
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5003 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:TARGET:恋慕 == 1 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5003 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;恋慕
+;		IF TALENT:TARGET:恋慕 == 1
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K12_KOJO2
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降、12をキャラ番号に変更する） CFLAGなし 
+;-------------------------------------------------
+@K12_KOJO2
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW 「寒気さえあればねぇ。すぐ息の根をとめてあげるのに」
+	PRINTFORMW 刺すような視線に、%CALLNAME:MASTER%は別の意味で寒気を覚えた
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:2 == 0
+	DRAWLINE
+	PRINTFORMW 「好きでもない男に触れられて、女が喘ぐとでも？」
+	PRINTFORMW 視線すら合わせず、レティは冷徹に言い放った
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:2 == 1
+	DRAWLINE
+	PRINTFORMW 「するならさっさとして。そしてさっさとどこかに行って」
+	PRINTFORMW 下手クソと言わんばかりに、軽蔑した表情が%CALLNAME:MASTER%に向けられた
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 「お願い、これ以上触らないで…」
+	PRINTFORMW わずかに抵抗するレティを押さえつけ、乱暴に服を脱がせていった
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「今日もするのね…。わかったわ」
+	PRINTFORMW 「その…、酷いことはしないでね」
+	PRINTFORMW もはや諦めたのか、自ら衣服を脱ぎ捨てていくレティ
+	PRINTFORMW その吐息はわずかに荒くなっていた
+	RETURN 1
+
+;淫乱+恋慕
+ELSEIF TALENT:淫乱 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「いやらしい女になったものだと自分でも思うわ」
+	PRINTFORMW 「でもいいの…もう%CALLNAME:MASTER%とエッチすることしか考えられない」
+	PRINTFORMW 「今日もいっぱい犯して…ぐちょぐちょにして欲しいの」
+	PRINTFORMW ベッドに押し倒されたレティの表情は、快楽に支配された牝そのものだった
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	DRAWLINE
+	;ランダムで口上が変化する（使わない場合はすべて同じにすればよい）
+	IF RAND:3 == 0
+		PRINTFORMW 「今日はどんなことされちゃうのかしら。ふふふ」
+		PRINTFORMW 柔和な笑みとともにレティは服を脱ぎ捨てた
+		PRINTFORMW 「いっぱい気持ちよくしてね、%CALLNAME:MASTER%」
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「来てくれたのね。待ってたわ」
+		PRINTFORMW 悩ましくベッドに寝そべりながら、嬉しそうに手招きするレティ
+		PRINTFORMW 「たまにはあなたに脱がせてほしいの…」
+		PRINTFORMW 「ん…がっつかないで。私はどこにも逃げないわ」
+	ELSE
+		PRINTFORMW 「あ、ちょっと待っててね」
+		PRINTFORMW 部屋に入ると、レティが丁寧に髪を乾かしていた。シャワーでも浴びていたのだろう
+		PRINTFORMW 手伝って欲しいと言うので、乾いた所から順に櫛で梳いてやる
+		PRINTFORMW 「…うん、うん。よし、綺麗になったわ」
+		PRINTFORMW 鏡の前でひとしきり確認すると、レティはこちらを見てにっこり微笑んだ
+		PRINTFORMW 「待たせちゃってごめんなさい。それじゃ始めましょ♪」
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_12_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、12を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K12_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K12_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;反発刻印Lv3
+IF MARK:9 == 3
+	DRAWLINE
+	PRINTFORMW 「力が発揮出来ないのが悔しいわ」
+	PRINTFORMW 「今なら背中がガラ空きなのに…」
+	PRINTFORMW 物騒な言葉を聞き流しながら、部屋のドアを強めに閉めた
+	RETURN 1
+
+;屈服刻印Lv1以下
+ELSEIF MARK:2 <= 1
+	DRAWLINE
+	PRINTFORMW 「さっさと出て行って。臭いわ」
+	PRINTFORMW 「せめてもう少し上手くなってから来ることね」
+	PRINTFORMW レティは無表情なまま、淡々と服を着なおした
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:2 == 2
+	DRAWLINE
+	PRINTFORMW 「はぁ…ん、はぁ…」
+	PRINTFORMW 荒く息をつきながらも、レティの目は屈した奴隷のそれではない
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:2 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「ダメ…。流されちゃだめなの…」
+	PRINTFORMW 服を着ることもせず、ベッドにだらりと体を預けながら独り言を呟いている
+	PRINTFORMW 熱っぽく%CALLNAME:MASTER%を見つめる瞳には、もはや抵抗の光は見えない
+	RETURN 1
+
+;恋慕＋体力500未満
+ELSEIF TALENT:恋慕 == 1 && BASE:0 < 500
+	DRAWLINE
+	PRINTFORMW 「ごめんね。ちょっと疲れちゃったかも…」
+	PRINTFORMW そう言って静かに眠りに落ちるレティの髪を、%CALLNAME:MASTER%は優しく撫でた。
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「まだ大丈夫だけど、あなたの言うことなら従うわ」
+	PRINTFORMW 「近いうちにまた来てね？ 約束よ？」
+	RETURN 1
+
+;淫乱+恋慕
+ELSEIF TALENT:淫乱 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「いやぁ…もっと、もっとしてよ…」
+	PRINTFORMW 「足りないの…。いやらしいこともっとしたい…」
+	PRINTFORMW 切なげな声を背に、%CALLNAME:MASTER%は部屋のドアに手をかけた
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係（12をキャラ番号に置換）
+;コマンド実行時に出力されます
+;--------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_12_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_12_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷があり、口枷をつけるコマンドでない場合も戻る
+SIF (TEQUIP:42 && (SELECTCOM != 226 && SELECTCOM != 229 && SELECTCOM != 506 && SELECTCOM != 509 && SELECTCOM != 583))
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、12を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K12_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K12_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG 9000～9999を使用（コマンド番号＋9000）
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG9000
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:9000 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			PRINTFORMW 「そこ…あふ、ぅん」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなことしたって…」
+			PRINTFORMW 「やめて、んぅっ」
+		ENDIF
+			CFLAG:9000 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｃ感覚Lv5
+		IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「んぁう！ あぁ…いい…いいのぉ！」
+			PRINTFORMW 「クリもおっぱいも触って！ いじりまわしてぇ！」
+			SIF SELECTCOM == 606
+				PRINTFORMW 「んちゅ…ちゅる…んはっ、キスも好きぃ…」
+			PRINTFORMW 体のあらゆる部位を責められ、レティは喜悦の表情で更なる快楽を求めている
+			CFLAG:9000 = 8
+		;恋慕+Ｃ感覚Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「そう、それがいいのっ！」
+			PRINTFORMW 「クリ、もっとコリコリしてぇっ！ んああんっ！」
+			PRINTFORMW 剥けた陰核に触れると、激しく身悶えしながら抱きついてきた
+			CFLAG:9000 = 7
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ああ…%CALLNAME:MASTER%に撫で回されてる」
+			PRINTFORMW 「凄く安心するわ…。ねぇ、もっと触って」
+			CFLAG:9000 = 6
+		;屈服刻印Lv3+Ｃ感覚3Lv以上
+		ELSEIF MARK:2 == 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「いっぱい触って…んんっ、いいの…」
+			PRINTFORMW 「クリこねられて気持ちいい…はっ、ああっ！」
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「あぁん！ そこ…やっ、んあっ！」
+			PRINTFORMW 体を仰け反らせ、激しく悶えるレティ
+			PRINTFORMW 抵抗する様子もなく、されるがままに快楽を受け入れているようだ
+			CFLAG:9000 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「はぁ…ん、ああ…違う、違うの…」
+			PRINTFORMW 嫌がる素振りは見せるが、快楽は確実に感じているらしい
+			CFLAG:9000 = 3
+		;それ以外
+		ELSEIF MARK:2 <= 1
+			PRINTFORMW 「そのまま凍傷にしてやりたいわ…んんっ」
+			PRINTFORMW まだまだ触れられることへの嫌悪感が強いようだ
+			CFLAG:9000 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG9001
+;岩清水 CFLAG9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9001 == 0
+		;屈服刻印Lv2以上
+		IF MARK:2 >= 2
+			PRINTFORMW 「舌と指ではまた感覚が違うわね」
+			PRINTFORMW 「変な臭いしない？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あさましいわね。犬みたい」
+			PRINTFORMW 「はいはい。濡れてきて良かったわね」
+		ENDIF
+			CFLAG:9001 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｃ感覚Lv5
+		IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「ふふっ、またクリもオマ○コもいじめてくれるのね」
+			PRINTFORMW 「はい、どうぞ」
+			PRINTFORMW 自ら秘唇を押し広げ、陰核の皮を剥いたレティの表情は、
+			PRINTFORMW 口からだらしなく漏れる唾液を気にかけることもなく、快楽を今か今かと待ちわびているようだ
+			PRINTFORMW %CALLNAME:MASTER%はその期待に応えるように、レティの股間にむしゃぶりついた
+			PRINTFORMW 「んああっ！ あ、はぁん！ 凄い、凄いのぉ！」
+			CFLAG:9001 = 8
+		;恋慕+Ｃ感覚Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「ん、クリが、ピリピリするの…あぁん！」
+			PRINTFORMW 「いい！ 舐められるの気持ちいい！」
+			PRINTFORMW 体全体に電撃が走ったような感覚に襲われ、
+			PRINTFORMW レティは思わず%CALLNAME:MASTER%の頭をフトモモで挟んでしまった
+			CFLAG:9001 = 7
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「舐めてくれるのね…」
+			PRINTFORMW 「でも顔があんまり見えなくて、ちょっと寂しいわ…あんっ」
+			CFLAG:9001 = 6
+		;屈服刻印Lv3+Ｃ感覚3Lv以上
+		ELSEIF MARK:2 == 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「いやっ、そこは敏感だからっ…！」
+			PRINTFORMW 「ふぁっ…あぁん！ んはぁ！」
+			PRINTFORMW 陰核を包み込むような感触に、レティはたまらず声をあげた
+			CFLAG:9001 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「また…舐めるの…？」
+			PRINTFORMW 「ひゃっ、ん…」
+			PRINTFORMW かなり舌の感触に慣れてきたようだが、声を出すまいと必死に口を押さえている
+			CFLAG:9001 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「飽きもせずに…んっ」
+			PRINTFORMW 「よくこんなことが、続けられる、ものね…！」
+			CFLAG:9001 = 3
+		;それ以外
+		ELSEIF MARK:2 <= 1
+			PRINTFORMW 「いい加減諦めればいいのに」
+			CFLAG:9001 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;岩清水
+IF SELECTCOM == 611 || (SELECTCOM == 1 && TEQUIP:56)
+	;恋慕+Ｃ感覚Lv5
+	IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 5
+		PRINTFORMW 「この体勢だとオマ○コが丸見えね」
+		PRINTFORMW 「奥まで見える？って、あぁん！」
+		PRINTFORMW レティが言い終わる前に、%CALLNAME:MASTER%は充血した秘唇に舌を挿し入れた
+		PRINTFORMW 「ん、もう、せっかちなんだから、ふぁぁぁん♪」
+		CFLAG:9611 = 8
+	;恋慕+Ｃ感覚Lv3以上
+	ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「オマ○コもいいけど…クリもいじめてほしい…」
+		PRINTFORMW レティの要求を承諾し、責めの重点を秘唇から陰核へと移す
+		PRINTFORMW 「あぅっ、んはぁぁぁ！」
+		PRINTFORMW 「吸って、もっとクリ吸ってぇぇぇ！」
+		CFLAG:9611 = 7
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「恥ずかしいわ…でも%CALLNAME:MASTER%が言うなら…」
+		PRINTFORMW 「あふ、ん…いっぱい舐めて…」
+		CFLAG:9611 = 6
+	;屈服刻印Lv3+Ｃ感覚3Lv以上
+	ELSEIF MARK:2 == 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「そんなにしちゃ…やんっ！」
+		PRINTFORMW 「見られて、舐められて、それで感じて…私も随分とあさましくなったものね…」
+		PRINTFORMW 「やぁ、んっ！ 音立てないでぇ…」
+		CFLAG:9611 = 5
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「いや…みないでよ…」
+		PRINTFORMW 「うぅん…！ そこ、だめぇ…」
+		CFLAG:9611 = 4
+	;屈服刻印Lv2
+	ELSEIF MARK:2 == 2
+		PRINTFORMW 「この体勢疲れるんだけど、聞き入れてはくれないんでしょうね」
+		PRINTFORMW 「わかってて言う私も私ね…あふっ」
+		CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW (このまま押し潰せないかしら…？)
+		CFLAG:9611 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG9002
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「ちょっと、そこは違う穴…」
+		PRINTFORMW 「痛っ！」
+		PRINTFORMW 経験したことのない感触と痛みから、レティは反射的に%CALLNAME:MASTER%から体を離した
+		CFLAG:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		P = PALAM:10 + UP:10
+	;恋慕+潤滑Lv2以上+Ａ感覚3Lv以上
+	IF P >= PALAMLV:2 && TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「いいっ…いいの…お尻がこんなにいいなんてぇ…」
+		PRINTFORMW 「もっと奥までいじって…！ あぁん！」
+		PRINTFORMW 「私、変態なの…お尻で感じる変態なのぉ♪ ふぁん！」
+		PRINTFORMW レティはこれ以上はないと言わんばかりの嬌声をあげ、アナルへの責めを喜んでいる
+		CFLAG:9002 = 9
+	;恋慕+潤滑Lv2以上
+	ELSEIF P >= PALAMLV:2 && TALENT:恋慕 == 1
+		PRINTFORMW 「お尻いじるのね？ わかったわ」
+		PRINTFORMW 「あっ……うんっ…」
+		PRINTFORMW 「大丈夫…痛くはないわ…、んん…」
+		CFLAG:9002 = 8
+	;恋慕+潤滑Lv2未満
+	ELSEIF P < PALAMLV:2 && TALENT:恋慕 == 1
+		PRINTFORMW 「お尻いじるの？ いいんだけど…」
+		PRINTFORMW 「その、痛くしないでほしいなって」
+		PRINTFORMW 「次からはちゃんと濡らしてね…？」
+		CFLAG:9002 = 7
+	;屈服刻印Lv3+潤滑Lv2以上+Ａ感覚3Lv以上
+	ELSEIF P >= PALAMLV:2 && MARK:2 == 3 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「はぅ、あぁ…そこは…」
+		PRINTFORMW アナルをいじられることに慣れたのか、時折甘い声を混ぜながら、指の感触を受け入れている
+		CFLAG:9002 = 6
+	;屈服刻印Lv3+潤滑Lv2以上
+	ELSEIF P >= PALAMLV:2 && MARK:2 == 3
+		PRINTFORMW 「やめてって言ってもするんでしょ？」
+		PRINTFORMW 「それならいっそ気持ちよくなれたほうがまだマシだわ」
+		PRINTFORMW そう言ってレティは自ら尻を差し出してきた
+		CFLAG:9002 = 5
+	;屈服刻印Lv3+潤滑Lv2未満
+	ELSEIF P < PALAMLV:2 && MARK:2 == 3
+		PRINTFORMW 「またお尻…？」
+		PRINTFORMW 「痛いのよ。せめて濡らしてからにしてくれない？」
+		PRINTFORMW レティは不満を口にしたが、%CALLNAME:MASTER%に凄まれるとしぶしぶ尻をこちらに向けた
+		CFLAG:9002 = 4
+	;潤滑Lv2以上
+	ELSEIF P >= PALAMLV:2
+		PRINTFORMW 「そんな汚いところ、よく触れるわね…！」
+		PRINTFORMW 「んうぅ！ いやっ…！」
+		CFLAG:9002 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめてっ！ ほんとに痛いの！」
+		PRINTFORMW 見る限り痛みは本物のようだ。開発には時間が掛かるだろう
+		CFLAG:9002 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG9003
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:9003 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「おっぱいには自身あるのよ？」
+			PRINTFORMW 「ん……じっくり触ってね…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW (胸がおかしくなってる…?)
+			PRINTFORMW (触られると、変なスイッチが入っちゃう…)
+			PRINTFORMW レティは無言で服をはだけたが、その表情はどこか困惑している
+		;それ以外
+		ELSE
+			PRINTFORMW 「手つきが気持ち悪いわ。さっさとして」
+		ENDIF
+			CFLAG:9003 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｂ感覚Lv5以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 5
+			PRINTFORMW 「ふふふっ…。さぁ、どうぞ♪」
+			PRINTFORMW 乳房をさらけ出し、自らの両手で妖しく上下させる
+			PRINTFORMW そんなレティの扇情的な仕草にたまらなくなり、%CALLNAME:MASTER%は眼前の乳房を鷲掴みにした
+			PRINTFORMW 「あふぅんっ…あ…うぁん！ おっぱい触られるの…好きなのぉ…！」
+			PRINTFORMW 「んはぁぁ！ もっとぉ…もっとおっぱい可愛がってぇ…♪」
+			PRINTFORMW 胸部への更なる刺激を求め、レティは熟れた乳房をグイグイと押し付けてきた
+			CFLAG:9003 = 8
+		;恋慕+Ｂ感覚Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「ひゃぁぁぁん…！ それいいの！ 乳首ギュッてしてぇ！」
+			PRINTFORMW 「もっと強くつねって…！ 引っ張ってもいいからぁ！」
+			PRINTFORMW 「おっぱい凄いよぉ…！ 気持ちいいのがとまんない…！」
+			PRINTFORMW 淫らに開発された乳首を立たせ、淫蕩に沈んだ表情で更なる刺激を求めてくる
+			CFLAG:9003 = 7
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「おっぱい触ってる%CALLNAME:MASTER%、なんだか赤ちゃんみたいね」
+			PRINTFORMW 「もっと甘えて…私のおっぱいに」
+			PRINTFORMW 一心不乱にレティの胸を揉む%CALLNAME:MASTER%の頭を、優しく撫でるレティ
+			PRINTFORMW その表情は、まるで子を慈しむ母親のような柔らかさをたたえていた
+			CFLAG:9003 = 6
+		;屈服刻印Lv3+Ｂ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「こんなことだけ、上手いんだから…！ あんっ」
+			PRINTFORMW 「揉むだけじゃ…なくてっ…乳首もっ！」
+			PRINTFORMW 「う、んっ…！ そこ、摘んで…っ！」
+			PRINTFORMW 揉まれるだけでは足りなくなったらしく、レティはしきりに乳首への接触を要求している
+			CFLAG:9003 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ん、くぅん…あふ…」
+			PRINTFORMW 「ひぅ……はぁ、ん…」
+			PRINTFORMW レティは反抗することもなく、胸部への刺激を受け入れている
+			CFLAG:9003 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「ぅん…勝手にすればいいじゃない」
+			PRINTFORMW 諦め半分の表情で、呆然と乳房を見つめている
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「胸触って楽しい？ 変なの…」
+			PRINTFORMW 「こんなもの邪魔なだけなのにね。いやらしい目で見られるし」
+			CFLAG:9003 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG9004
+;Ｇスポット刺激 CGLAG 9600
+;-------------------------------------------------
+IF SELECTCOM == 4 || SELECTCOM == 600
+	;Ｇスポット刺激
+	IF SELECTCOM == 600
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ、はっ…！ そ、そこ…そこが凄いの…」
+			PRINTFORMW 「もっと触って…！ んはぁぁん！！」
+			CFLAG:9600 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あっ…、そこは…！」
+			PRINTFORMW 「そこダメ、なのっ…！ 良すぎて…変になっちゃうのぉ…！！」
+			CFLAG:9600 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ、ダメっ…、そこ触んないで…！」
+			PRINTFORMW 「おかしくなっちゃうぅ…！！ あっ、んあぁぁあん！！」
+			CFLAG:9600 = 2
+		ENDIF
+			RETURN 0
+	;指挿入れ
+	ELSE
+		;初めて
+		IF CFLAG:9004 == 0
+			;処女（処女でないキャラの場合は無記入でよい）
+			IF TALENT:0 == 1 && EXP:Ｖ経験 == 1
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「雪女なんかと添い遂げるのは、嫌…？ やっぱり私じゃダメ…？」
+					PRINTFORMW 「ううん、いいの…。このほうが痛みは少ないもの…」
+					PRINTFORMW 「気遣ってくれてありがとう、%CALLNAME:MASTER%…」
+				;それ以外
+				ELSE
+					 PRINTFORMW 「初めての相手が指、ね…」
+					 PRINTFORMW うわ言をブツブツ呟くレティの目には、とめどなく涙が溢れていた
+				ENDIF
+					CFLAG:9004 = 1
+					RETURN 0
+			;非処女
+			ELSE
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 「んっ、入ってる…」
+					PRINTFORMW 「弄って…もっと奥まできて…」
+				;Ｖ感覚Lv3以上
+				ELSEIF ABL:Ｖ感覚 >= 3
+					PRINTFORMW 「感じてないっ、感じてなんかないのにぃ…！」
+					PRINTFORMW 「どうして頭…真っ白にっ…！！」
+				;それ以外
+				ELSE
+					PRINTFORMW 「爪は切ってあるんでしょうね…？」
+					PRINTFORMW 「中に傷つけたら許さないわよ」
+				ENDIF
+					CFLAG:9004 = 1
+					RETURN 0
+			ENDIF
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「もっと…かき回して…っ」
+				PRINTFORMW 「指…何本入れてもいいからっ…はぁぁん…！！」
+				CFLAG:9004 = 4
+			;Ｖ感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「もうっ、これ以上…しないでっ…」
+				PRINTFORMW 「中は弱いからっ…んぁぁあ！！」
+				CFLAG:9004 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 「うっ、くぅぅ…」
+				PRINTFORMW 「汚い指…入れられてる…っ」
+				PRINTFORMW 
+				CFLAG:9004 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG9005
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:9005 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん…なんだかゾクゾクするわね」
+			PRINTFORMW 「ねぇ、もっと舐めて…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あなたがわからないわ」
+			PRINTFORMW 「本来女にはついてないものなのよ？ こんなもの」
+		ENDIF
+			CFLAG:9005 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「私のオチ○チン、おいしい？ うぁん…」
+			PRINTFORMW 「あぁ…そこ、もっと…」
+			PRINTFORMW 「んぁぁぁぁ！ そんなに吸ったら…！ 我慢…出来なくなっちゃう！」
+			PRINTFORMW レティは全身を痙攣させながら、陰茎への心地良い刺激に身を委ねている
+			CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「んはっ、はぅぅ…」
+			PRINTFORMW 「先っぽが痺れるぅ…やっ、らめぇ…！」
+			PRINTFORMW カリ周りから先端を丹念にねぶると、レティはえもいわれぬ快感に身をよじった
+			CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「う、んっ…」
+			PRINTFORMW 「そんなに舐めたければ男とすればいいのに…んくっ」
+			PRINTFORMW 言葉とは裏腹に、レティの陰茎は%CALLNAME:MASTER%の口淫にピクピクと反応している
+			CFLAG:9005 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キス CFLAG9006
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:9006 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んむっ…ちゅっ…」
+			PRINTFORMW 「優しいキス…。大好きよ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「キス、ね…。今更だけど…」
+			PRINTFORMW 「わかってるわ……。んっ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「乙女の唇を何だと…んぷっ」
+			PRINTFORMW 抵抗される前に、問答無用で唇を重ねた
+		ENDIF
+			CFLAG:9006 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あむ…ん、ちゅ…くちゅ…うぅん…」
+			PRINTFORMW 「んふ…ぷはっ」
+			PRINTFORMW 「はぁ…はぁ…もうとろけちゃいそう…」
+			PRINTFORMW そっと唇を離すと、糸を引いた唾液が照明でテラテラと輝いている
+			PRINTFORMW レティはそれを掬い取り、愛しそうに口に含んだ
+			CFLAG:9006 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 調教の最中、レティがしきりに唇を舐めているので訊ねてみた
+			PRINTFORMW 「う…あ、あのね…」
+			PRINTFORMW 「キス…したいな、って…」
+			PRINTFORMW 容易いことだと応えると、レティは率先して唇を求めてくる
+			PRINTFORMW それどころか自ら舌を挿し入れ、%CALLNAME:MASTER%の口内を舐めまわした
+			CFLAG:9006 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2
+			PRINTFORMW 「ん、んむっ、ちゅっ……」
+			PRINTFORMW 視線は%CALLNAME:MASTER%から逸らしたままだったが、
+			PRINTFORMW 幾分従順に口付けを受け入れるようになってきた
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ…いやっ」
+			PRINTFORMW キスは抵抗が強いのか、レティは%CALLNAME:MASTER%から顔を逸らそうとしている
+			CFLAG:9006 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 CFLAG9007
+;バイブオナニー CFLAG8804
+;アナルバイブオナニー CFLAG8805
+;二穴バイブオナニー CFLAG8806
+;シャワーオナニー CFLAG8801
+;公開オナニー CFLAG8803
+;-------------------------------------------------
+;通常自慰（シャワー無し）
+IF SELECTCOM == 7 && TEQUIP:20 == 0 && TEQUIP:25 == 0 && TEQUIP:50 == 0 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:9007 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%に触ってもらいたいけど…」
+			PRINTFORMW 「見てるだけでいいの？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「どうしてこんなこと…」
+			PRINTFORMW 「やらないなんて言ってないわよ。乱暴されるよりはいいもの」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなの、人前ですることじゃないわ…」
+		ENDIF
+			CFLAG:9007 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:14 >= 3
+			PRINTFORMW 「あ、ああ♪ 見られてる♪」
+			PRINTFORMW 「オナニーしてるとこ%CALLNAME:MASTER%が見てるぅ♪」
+			PRINTFORMW 「もっと近くで見て！ オマ○コの奥までかき回してるの見てぇ♪」
+			PRINTFORMW ためらいなく開脚し、自慰を続ける姿に、もはや理性は見て取れなかった
+			CFLAG:9007 = 8
+		;恋慕+自慰中毒Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「あっ、はっ♪ くぅん…」
+			PRINTFORMW 「%CALLNAME:MASTER%の指も好きだけど…自分でするのもいいよぉ…」
+			PRINTFORMW レティは慣れた様子で秘部をいじりながら、うっとりと自涜の快楽に溺れている
+			CFLAG:9007 = 7
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぅっ…あふ、ん…」
+			PRINTFORMW 「自分で、するのも、いいけど…ふぁん…」
+			PRINTFORMW 「次は、%CALLNAME:MASTER%が、触ってね…？ んんっ」
+			CFLAG:9007 = 6
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 「これじゃだめ…こんなんじゃイけない…」
+			PRINTFORMW そう言うと、レティは恥ずかしそうにゆっくりと両足を開いた
+			PRINTFORMW 「こんな体にしたのはあなたよ…」
+			PRINTFORMW 「お願い、ここ見て…。いじってるとこ見て…」
+			CFLAG:9007 = 5
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「はぁ…はぁ…ん、うぅん」
+			PRINTFORMW 「ダメなのに…どうして指が止まらないのぉ…」
+			PRINTFORMW まだ心から堕ちた様子ではないが、快楽に抗う気力は失われつつあるようだ
+			CFLAG:9007 = 4
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「癖になっちゃう…だめぇ…」
+			PRINTFORMW 秘部をいじるレティの顔は沈んでいるが、白く細い指がとまる様子はない
+			CFLAG:9007 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん…くっ、んんっ」
+			PRINTFORMW 「見下げ果てた趣味ね…」
+			PRINTFORMW うんざりという視線を%CALLNAME:MASTER%に向けながら、悔しそうな表情で股間をまさぐっている
+			CFLAG:9007 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:8804 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「自分で、挿し挿れするの…？」
+			PRINTFORMW 「ふぁぁ…ぞわってする…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「する…するから…乱暴しないで…」
+			PRINTFORMW 膣に挿されたバイブに手を添え、レティはゆっくりと動かし始めた
+		;それ以外
+		ELSE
+			PRINTFORMW 「何考えてるのよ…」
+			PRINTFORMW 「んんっ、キツい…」
+		ENDIF
+			CFLAG:8804 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+自慰中毒Lv3以上＋Ｖ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「やぁ…うぁん♪ これ凄いぃ…」
+			PRINTFORMW 「太くて苦しいのに、いいの…！ オマ○コぎちぎちになって気持ちいい…！」
+			PRINTFORMW 「%CALLNAME:MASTER%見て…！ ここ、私が気持ちいいのはここなのぉ！」
+			PRINTFORMW 途方もない官能の渦に溺れながら、レティは夢見心地でバイブを操った
+			CFLAG:8804 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぁ…ん、くぅ…」
+			PRINTFORMW 「これ続けると…自分の気持ちいいとこがわかるの…」
+			PRINTFORMW 頬を朱に染めながら、バイブの快感がより強くなるようコントロールしているようだ
+			CFLAG:8804 = 5
+		;自慰中毒Lv3以上＋Ｖ感覚Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あんっ！んっ！ 太い…太いのぉ…！」
+			PRINTFORMW 「こんな玩具で…ふぁぁん！」
+			CFLAG:8804 = 4
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「ぅぅ…見ないでよぉ…、くふっ…ん…」
+			PRINTFORMW そう言いつつも、徐々にバイブを抜き挿しする速度は上がっていく
+			CFLAG:8804 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「…はぁ、ん…んんっ…」
+			PRINTFORMW 「こんなことさせて、楽しいの…？」
+			CFLAG:8804 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8805 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お尻で…？ うん…」
+			PRINTFORMW 「%CALLNAME:MASTER%にして欲しいなぁ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「え…？ 動かせって…」
+			PRINTFORMW 「切れたりしたらどうするのよ…」
+			PRINTFORMW レティはブツブツと文句を言っていたが、やがて嫌々ながらも注挿を開始した
+		ENDIF
+			CFLAG:8805 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+自慰中毒Lv3以上+潤滑Lv2以上+Ａ感覚3Lv以上
+		IF P >= PALAMLV:2 && TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「んはっ、いい、いいの！」
+			PRINTFORMW 「ぶっといバイブが、お尻で暴れてぇ…♪」
+			PRINTFORMW 「自分でズポズポするの、はぁん！ 気持ちいい！」
+			PRINTFORMW 濡れそぼった菊穴を自らバイブで埋めながら、
+			PRINTFORMW レティは電撃のような快感に全身を震わせている
+			CFLAG:8805 = 10
+		;恋慕+自慰中毒Lv3以上+潤滑Lv2以上
+		ELSEIF P >= PALAMLV:2 && TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「ぁ…うぁん…！ あっ、ああっ！」
+			PRINTFORMW 「うん…、気持ちいいわ…。イっちゃうかも…」
+			PRINTFORMW 「ん、ぁぁん…ふあっ！」
+			PRINTFORMW 尻穴への刺激に身をよじるも、手は絶えずアナルバイブを抜き挿ししていた
+			CFLAG:8805 = 9
+		;恋慕+潤滑Lv2以上
+		ELSEIF P > PALAMLV:2 && TALENT:恋慕 == 1
+			PRINTFORMW 「お尻はまだ怖いけど…」
+			PRINTFORMW 「でも%CALLNAME:MASTER%が見てくれるなら、頑張るわ」
+			PRINTFORMW 「ん、ぁぁ…お、奥まで、くるのぉ…」
+			PRINTFORMW 尻責めへの恐怖に葛藤しながらも、
+			PRINTFORMW %CALLNAME:MASTER%の目を愉しませようと、レティは必死にアナルバイブを挿し挿れた
+			CFLAG:8805 = 8
+		;恋慕+潤滑Lv2未満
+		ELSEIF P < PALAMLV:2 && TALENT:恋慕 == 1
+			PRINTFORMW 「まだ濡れてないから…」
+			PRINTFORMW 「その…気持ちよくなれなかったら、ごめんね…？」
+			PRINTFORMW レティはアナルバイブを挿し挿れながら、申し訳なさそうに%CALLNAME:MASTER%を見つめている
+			CFLAG:8805 = 7
+		;自慰中毒Lv3以上+潤滑Lv2以上+Ａ感覚3Lv以上
+		ELSEIF P > PALAMLV:2 && ABL:自慰中毒 >= 3 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あぁ♪ ふぁん…！ こんなので、気持ち、よく…！」
+			PRINTFORMW (自分でお尻いじめて感じるなんて…)
+			PRINTFORMW (もうすっかり変態ね、私も…)
+			CFLAG:8805 = 6
+		;自慰中毒Lv3以上+潤滑Lv2以上
+		ELSEIF P > PALAMLV:2 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「お尻が…んぁぁ…」
+			PRINTFORMW 「濡れてるだけまだマシだわ…。くふ…うぅ…」
+			CFLAG:8805 = 5
+		;自慰中毒Lv3以上+潤滑Lv2未満
+		ELSEIF P < PALAMLV:2 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「させるならさせるでちゃんと濡らしておいてよ…お願いだから…」
+			PRINTFORMW 「んんっ、痛い…」
+			PRINTFORMW レティは肛門や腸壁を傷つけないよう注意しながら、ゆっくりとアナルバイブを動かしている
+			CFLAG:8805 = 4
+		;潤滑Lv2以上
+		ELSEIF P >= PALAMLV:2
+			PRINTFORMW 「くっ…かふっ…」
+			PRINTFORMW 「あ、あなたがしろって言ったんでしょう！？」
+			CFLAG:8805 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅぅ…痛い」
+			PRINTFORMW 自分の体を気遣っているのか、レティは度々手を止めていた
+			CFLAG:8805 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;二穴バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8806 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%は動かしてくれないの…？」
+			PRINTFORMW 「自分でズコズコしてるのが見たい？ そういうことなら、頑張るわ…」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「二本入ってるだけでも大変なのに…」
+			PRINTFORMW 「動かしたりしたら、壊れちゃうわよぉ…。やぁぁん…！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「また疲れそうなことを…」
+			PRINTFORMW 「苦しいわ…んんっ」
+		ENDIF
+			CFLAG:8806 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「やっ、んあっ！ おかしく…おかしくなっちゃう！」
+			PRINTFORMW 「手がとまらないっ…！ オマ○コも、お尻も、気持ちいい！」
+			PRINTFORMW 「ふぁぁん！ 頭が、真っ白になるぅ…！」
+			PRINTFORMW だらんと舌を出しながら、レティは股間の快楽に酔いしれている
+			PRINTFORMW 両穴はレティ自らが操るバイブによって激しく責められ、
+			PRINTFORMW 脈々と熱い粘液をたたえていた
+			CFLAG:8806 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んんっ…くぁん！ 激しすぎて…！」
+			PRINTFORMW 「でも、%CALLNAME:MASTER%が愉しんでくれるなら、私はっ…！ ああっ！」
+			PRINTFORMW レティは熱っぽくこちらを見つめると、嬉しそうにバイブを動かすスピードを上げた
+			CFLAG:8806 = 5
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「だめぇ…！ どっちも良すぎるぅ…！」
+			PRINTFORMW 「快感に、体が、ついていけないのぉぉ！！」
+			PRINTFORMW 命じられるまでもなく、レティは恍惚の表情で両穴のバイブを上下させた
+			CFLAG:8806 = 4
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「うぁぁ…いやっ、ぁん…」
+			PRINTFORMW 命令に逆らうことが不可能だとわかっているのだろう
+			PRINTFORMW レティは首を横に振りながら、両穴のバイブを交互に動かしていた
+			CFLAG:8806 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お願い…苦しいから…」
+			PRINTFORMW 「せめて、動かすのは片方だけにさせて…あぅ、ふ…」
+			CFLAG:8806 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;シャワーオナニー
+IF SELECTCOM == 7 && TEQUIP:54
+	;初めて
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「シャワーより直に触ってほしいな…」
+			PRINTFORMW 「ちゃんと見ててね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お風呂でぐらいはゆっくりしたいんだけど」
+			PRINTFORMW 「ほんと色欲だけで出来てるのね、あなたの脳みそは」
+		ENDIF
+			CFLAG:8801 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「あぁ♪ はっ♪ とまらない、んあぁ！」
+			PRINTFORMW 「凄いわ…水の刺激がいいのっ！ ふぁぁん♪」
+			PRINTFORMW 「見えてる？ 愛液がシャワーで流されてるの見えてる？」
+			PRINTFORMW 全身に伝わる柔らかな水が、レティの性感を喚起しているようだ
+			CFLAG:8801 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んはっ、やぁ、ん…！」
+			PRINTFORMW 「これが終わったら、ふぁ…、%CALLNAME:MASTER%がいじってね、ぁん♪」
+			CFLAG:8801 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「ゾワゾワする…こんなことで感じるなんて…」
+			PRINTFORMW 「色んなとこが刺激されて、あぁ、はぁ…もどかしいのが、いいの…」
+			CFLAG:8801 = 3
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「ふぅ、んん…っ」
+			PRINTFORMW 「嫌ぁ…クチュクチュいっちゃ嫌ぁ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「このシャワーを作った人はなんて思うかしらね」
+			PRINTFORMW 「こんなことに使われて、さぞかし不本意だと思うわ。くふぅ…」
+			CFLAG:8801 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;公開オナニー
+IF SELECTCOM == 7 && TEQUIP:50 == 1
+	;初めて
+	IF CFLAG:8803 == 0
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%以外にオナニー見られちゃうのね…」
+			PRINTFORMW 「ええ、期待に添えるように頑張るわ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何を…言ってるの…？」
+			PRINTFORMW 「嫌！ そんなの絶対おかしい！」
+			PRINTFORMW 激しく暴れるレティを押さえつけ、自慰を強要した
+			PRINTFORMW 
+		ENDIF
+			CFLAG:8803 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:14 >= 3
+			PRINTFORMW 「撮って…。私の変態オナニー、じっくり撮影して…」
+			PRINTFORMW 「そう、もっと近付いてほしいの…。オマ○コの奥までビデオに収めて…♪」
+			PRINTFORMW 「おっぱいも…自分でいじっていやらしく立った乳首も、クリも、だらしない顔も…」
+			PRINTFORMW 「エッチな私の姿、全部記録して！ふぁぁぁんっ…！」
+			PRINTFORMW 自らを変態と呼び、数多の男に視姦されることを想像しながら自慰を続けるレティの様子が、
+			PRINTFORMW 今日もビデオに刻一刻と記録されていく
+			PRINTFORMW その姿は恐るべき雪女ではなく、まさに痴女と呼ぶにふさわしいものだった
+			CFLAG:8803 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぁ…オナニー見られる…色んな人に見られちゃう…」
+			PRINTFORMW 「%CALLNAME:MASTER%にしか見せたくないのに、いやらしい姿晒してる…」
+			PRINTFORMW 「撮影終わったら、ご褒美頂戴ね…。%CALLNAME:MASTER%…」
+			PRINTFORMW 命じられるまま懸命に自慰を晒し続けるレティだが、羞恥心からか、なかなか集中できないようだ
+			CFLAG:8803 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:14 >= 3
+			PRINTFORMW 「んぁん！ いいわ…気持ちいい…」
+			PRINTFORMW 「こんなこと、いけないことなのに、気持ちよくてたまらなくなっちゃう…」
+			PRINTFORMW 「見られてるのに、オナニー撮られちゃってるのにっ、あぁ…ん…♪」
+			PRINTFORMW 秘唇をまさぐる指を本心ではとめたいようだが、愛液で溢れた秘唇を見る限り、とめられそうにはない
+			CFLAG:8803 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんな姿撮って喜ぶなんて…、変態にも程があるでしょう！？」
+			PRINTFORMW 「いつか必ず凍え死にさせてやるわ…！」
+			PRINTFORMW 背筋が凍りつくような視線をこちらに向け、レティは嫌々ながら自慰を開始した
+			CFLAG:8803 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG9009
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:9009 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちょっと休憩ね」
+			PRINTFORMW レティは%CALLNAME:MASTER%に擦り寄り、そっと頭を肩に乗せた
+			PRINTFORMW 「こうしてると落ち着くわ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 何かしでかすと思っているのか、レティは警戒してこちらに近付こうとしない
+		ENDIF
+			CFLAG:9009 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「私なら大丈夫だから…」
+			PRINTFORMW 「ねぇ、して…。体が熱くてしょうがないの…」
+			PRINTFORMW 「あなたの手で冷まして…」
+			CFLAG:9009 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+				PRINTFORMW 「うーん。何だか落ち着かないわ」
+				PRINTFORMW 「でも%CALLNAME:MASTER%がそばに居てくれるから退屈じゃないわよ」
+				PRINTFORMW 「そうね…。膝枕なんかどう？」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 手持ち無沙汰なのでレティのお腹をつついてみた。
+				PRINTFORMW 「んっ、どうしたの？ もしかして痩せろとか思ってる？」
+				PRINTFORMW レティのお腹はぷにぷにと弾力があり、つついているだけで楽しい
+				PRINTFORMW しかしその体系は、太ましいというよりむしろ乳ましいと言える
+				PRINTFORMW 今のままで良いと告げると、レティは嬉しそうな笑みを浮かべた
+			ELSE
+				PRINTFORMW 「こうしてボーッと過ごすのも悪くないわね」
+				PRINTFORMW 「ねえ、もうちょっと近くに行ってもいい？」
+				PRINTFORMW 二人で並んでベッドに座っているだけで、レティは幸せそうな顔をしていた
+			ENDIF
+			CFLAG:9009 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「意図を掴みかねるわ」
+			PRINTFORMW 「休憩を与えようなんて善意、あなたにあるはずがないもの」
+			CFLAG:9009 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG9010
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:9010 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「小さい道具ね。これもエッチに使うものなの？」
+			PRINTFORMW 「あっ、震えてる…」
+			PRINTFORMW 初めて見るローターに、レティは興味津々のようだ
+		;それ以外
+		ELSE
+			PRINTFORMW 「何それ」
+			PRINTFORMW 「ふぅん…。変な物作る人もいたものね」
+		ENDIF
+			CFLAG:9010 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｃ感覚Lv5
+		IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 5
+			PRINTFORMW 「ローター当ててくれるのね。うん、して欲しい…♪」
+			PRINTFORMW 自ら陰核の皮を剥き、レティはローターの振動を要求した
+			PRINTFORMW 要求通りにすると、嬉々とした表情で陰核に与えられる快楽に悶えた
+			PRINTFORMW 「あ…あぁん♪ もっと震えて…！ エッチなクリいっぱいいじめてぇ…！」
+			PRINTFORMW レティは自分の人差し指を咥えながら、ひたすらローターの刺激を味わっていた
+			CFLAG:9010 = 8
+		;恋慕+Ｃ感覚Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「それ当ててっ…！ 早くクリに当ててぇっ…！」
+			PRINTFORMW 「んっ、はあっ…ブルブルしてて気持ちいい…！」
+			PRINTFORMW 「%CALLNAME:MASTER%の手じゃないにぃ…、ローターだけでイっちゃうかも…ふぁぁん！」
+			PRINTFORMW レティはこの小さな道具をたいそう気に入ったようで、出力を最大にしても絶え間なく嬌声を上げ続けた。
+			CFLAG:9010 = 7
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃん！ 震えてるぅ…」
+			PRINTFORMW 「でも…慣れると、ふあ…！ 気持ち良くなってくる…！」
+			PRINTFORMW 「%CALLNAME:MASTER%にして欲しいのに…んあぅ！ いいの…！」
+			CFLAG:9010 = 6
+		;屈服刻印Lv3+Ｃ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「…ぁん、んっ、ふぁぁ…！」
+			PRINTFORMW 「そこ気持ちいい…！ 痺れるのぉ…！」
+			PRINTFORMW もはや完全に抵抗をやめたレティは、陰核に与えられる刺激に身悶えしている
+			CFLAG:9010 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「そこダメ…！ ん、あぁん！」
+			PRINTFORMW 口では拒むものの、特に抵抗することもなく、ローターの刺激を受け入れている
+			CFLAG:9010 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:2 == 2
+			PRINTFORMW 「んっ、くっ、うんんっ……」
+			PRINTFORMW 「ダメ…そんなとこに当てないで…」
+			PRINTFORMW 声を押し殺してはいるが、陰核への刺激は確実に伝わっているようだ
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんっ…冷たい…」
+			PRINTFORMW 「この冷たさを寒気に変えられないのが口惜しいわ…」
+			CFLAG:9010 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG9011
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:9011 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「凄く震えてるわね、これ」
+			PRINTFORMW 「え？ お、お股に当てるの？」
+			PRINTFORMW 「やっ…ふぁぁぁぁぁぁん！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何？ 肩でもほぐしてくれるのかしら？」
+			PRINTFORMW 「そんなわけない、か…」
+			PRINTFORMW 「え、ちょ、やぁぁぁぁぁ！！」
+		ENDIF
+			CFLAG:9011 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｃ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「ク、クリがぁぁぁっ！ だめになっちゃうぅぅぅうう！」
+			PRINTFORMW 「っああああぁぁ！！ すごいぃぃぃ、すごいのぉぉぉおおお！！」
+			PRINTFORMW レティは獣の咆哮のような嬌声をあげ、悦楽に呑まれていった
+			CFLAG:9011 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぁぁぁ゛ぁ゛ぁ゛！ 強すぎっ、てっ、んはぁぁぁああん！！」
+			PRINTFORMW 「やぁっ…！ やめちゃだめっ！ そのまま当ててえぇぇぇぇ！！」
+			CFLAG:9011 = 4
+		;Ｃ感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「やっ、めぇっ…！ だめなのぉっ！ ふぁぁぁぁああぁぁん！」
+			PRINTFORMW 無視して陰核に強く押しつけると、レティは仰け反りながら悶えた
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「待って…お願い、当てないでっ」
+			PRINTFORMW 「激しすぎっ、うぁぁぁぁああ！」
+			CFLAG:9011 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG9012　CFLAG8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20
+	;初めて
+	IF CFLAG:9012 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「初めては%CALLNAME:MASTER%に貰って欲しかったな…」
+				PRINTFORMW 「ううん、いいの。%CALLNAME:MASTER%が望むなら…」
+				PRINTFORMW こちらへの気遣いを見せてくれるが、レティの表情は曇っていた
+				PRINTFORMW 「ん、くぁぁぁぁぁ！！ 痛い…！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「初めての相手がこんな玩具とはね…」
+				PRINTFORMW 「するならさっさとしなさいよ。あなたの粗末なものよりは楽しめそうだわ」
+				PRINTFORMW 気丈な言葉を吐くレティ
+				PRINTFORMW しかし顔はこちらから逸らしており、流れ出る涙がベッドのシーツを濡らしていた
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「これは見た目でわかるわ。ここに入れるのね？」
+				PRINTFORMW 「んっ、結構大きいのね…。あふ…」
+			;それ以外
+			ELSE
+				PRINTFORMW 「変な玩具…」
+				PRINTFORMW 「でもあなたに挿れられるよりはマシかもね」
+			ENDIF
+		ENDIF
+			CFLAG:9012 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ｖ感覚Lv5
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 5
+			PRINTFORMW 「ああ…それ好きぃ♪ 早く、早くぅ…」
+			PRINTFORMW 「きったぁぁぁ…！ いっぱい動かして…オマ○コもっとジュブジュブしてぇ！」
+			PRINTFORMW 「オマ○コ埋まってないと寂しいの…！ んはぁぁぁっ、いい…！」
+			PRINTFORMW 卑猥な嬌声をあげながら、レティはバイブの責めを心ゆくまで味わっている
+			PRINTFORMW バイブに絡みついた愛液が、快楽の深さを物語っていた
+			CFLAG:9012 = 6
+		;恋慕+Ｖ感覚Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あ…バイブ」
+			PRINTFORMW そそり立ったバイブを見ると、レティは目を輝かせた
+			PRINTFORMW 「うん。挿れて…。オマ○コも欲しがってるの…」
+			PRINTFORMW 「ふぁぁ…！ 中でゴリゴリするっ…！ もっと動かしてぇ！」
+			CFLAG:9012 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%のオチ○チンのほうがいい…」
+			PRINTFORMW 「ごめんなさい、我侭よね…。バイブも好きよ…」
+			PRINTFORMW 「んぁっ、くぅぅん…。奥まできちゃってる…」
+			CFLAG:9012 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふ、んぁぁ！ 中が…熱いの！」
+			PRINTFORMW 「こんな玩具で感じさせられてる…、やぁっ、あぁん…！」
+			PRINTFORMW ゴリゴリとした感触に、レティはたまらず体をのけぞらせた
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「女に玩具突っ込んで満足？」
+			PRINTFORMW 「これが入ってる限り、あなたに犯されることはないもの…」
+			PRINTFORMW 「そう考えれば、んっ、ふぅ、ん…可愛いものよ…」
+			PRINTFORMW 刺激は伝わっているようだが、レティは嘲笑を浮かべた
+			CFLAG:9012 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0
+	;恋慕+Ｖ感覚Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「やぁ…抜いちゃうのぉ…？」
+		PRINTFORMW 「あぁぁぁん…！ 抜かれるだけで、気持ちいい…」
+		PRINTFORMW 「んっ、ふふっ。次は何を突っ込んでくれるのかしら…？」
+		PRINTFORMW レティは期待に満ちた表情で、自ら秘唇を押し広げた
+		CFLAG:8811 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「ふぁぁ…あぁ…ん…」
+		PRINTFORMW 「気持ち良かったけど…」
+		PRINTFORMW 「次は%CALLNAME:MASTER%のオチ○チン頂戴…」
+		PRINTFORMW レティの膣は次の調教を待ちわびるように、赤く輝いていた
+		CFLAG:8811 = 3
+	;Ｖ感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁ、ふぅぅ…」
+		PRINTFORMW バイブを抜くと、ぽっかり空いた膣がヒクヒクと蠢いていた
+		PRINTFORMW レティは喪失感を感じているらしく、しきりに股間付近をもじもじとよじっている
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ん、はぁ…終わっ…た…？ はぁ…」
+		PRINTFORMW バイブを引き抜かれたレティは、なんとか呼吸を整えようとしている
+		CFLAG:8811 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG9013　CFLAG8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25
+	;初めて
+	IF CFLAG:9013 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これ、お尻に挿すものなんだ…」
+			PRINTFORMW 「んっ…ゆっくりね…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、やめて…そんなの入らない…！」
+			PRINTFORMW 嫌がるレティを押さえ付け、菊穴に無理矢理挿し込んだ
+		ENDIF
+			CFLAG:9013 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+潤滑Lv2以上+Ａ感覚3Lv以上
+		IF P >= PALAMLV:2 && TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あ、それは……挿れてくれるの？」
+			PRINTFORMW 「うん、欲しい…。お尻が寂しくてしょうがなかったから…」
+			PRINTFORMW 自ら菊穴を押し広げたレティに、ためらいなくアナルバイブを挿しこんだ
+			PRINTFORMW 「あぁ…！ きたっ、入ってきたぁ…♪」
+			CFLAG:9013 = 7
+		;恋慕+潤滑Lv2以上
+		ELSEIF P >= PALAMLV:2 && TALENT:恋慕 == 1
+			PRINTFORMW 「んんっ…お尻にバイブが…尻尾みたい…」
+			PRINTFORMW 「私、%CALLNAME:MASTER%のペットになっちゃったのかなぁ…」
+			PRINTFORMW 「でも、それも悪くないわね…、ふふふっ♪」
+			PRINTFORMW バイブの先に動物の毛でも張りつけて、本当に尻尾のようにしてやるのも良いかもしれない
+			CFLAG:9013 = 6
+		;恋慕+潤滑Lv2未満
+		ELSEIF P < PALAMLV:2 && TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%が挿れたいのなら…」
+			PRINTFORMW 「う、あぁぁ…！ い、たい…！！」
+			PRINTFORMW ベッドのシーツを噛みながら、レティは健気に耐えていた
+			CFLAG:9013 = 5
+		;潤滑Lv2以上+Ａ感覚3Lv以上
+		ELSEIF P > PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ふぁぁあ…どうして…どうしてぇ…？」
+			PRINTFORMW 「なんで痛くないのぉ…なんでこれが気持ちいいのよぉ…」
+			PRINTFORMW アナルバイブから与えられる快楽に戸惑い、レティは自問自答している
+			PRINTFORMW 順調にアナルは開発されているようだ
+			CFLAG:9013 = 4
+		;潤滑Lv2以上
+		ELSEIF P >= PALAMLV:2
+			PRINTFORMW 「そんなに、痛くは…ないけど…」
+			PRINTFORMW 「出来ることなら、やめて、くれない…かしらっ…！」
+			PRINTFORMW 粘ついた液体によって負担は軽減されているようだが、
+			PRINTFORMW 異物感には慣れないらしい
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、ぎぃぃ…んあっ…」
+			PRINTFORMW レティの狭い菊穴を冷たい機械が押し開き、蹂躙している
+			CFLAG:9013 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0
+	;恋慕+Ａ感覚Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「ひゃう…ふぁぁぁ…♪」
+		PRINTFORMW 菊穴での快楽を存分に堪能したレティは、とても幸せそうな顔をしていた
+		CFLAG:8812 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「大丈夫？ 私のお尻、切れてない？」
+		PRINTFORMW 「早く%CALLNAME:MASTER%が満足出来るお尻になりたいなぁ…」
+		CFLAG:8812 = 3
+	;Ａ感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「んぁっ…抜けてく…うぅ、ん…」
+		PRINTFORMW 喪失感からだろうか
+		PRINTFORMW 菊穴を撫でさするレティの顔は、名残惜しそうに見えた
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「や、やっと、抜けた…」
+		PRINTFORMW かなりの負担だったのだろう
+		PRINTFORMW アナルバイブが抜けた瞬間、レティはぐったり倒れ込んでしまった
+		CFLAG:8812 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG9014　CFLAG8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30
+	;初めて
+	IF CFLAG:9014 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これ何？ お裁縫の指貫みたい」
+			PRINTFORMW 「そ、そんな使い方なんだ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「それをどうする気…？」
+			PRINTFORMW 「やっ、そんなとこ…付けないで…っ」
+		ENDIF
+			CFLAG:9014 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これ付けると頭が真っ白になっちゃうのよねぇ…」
+			PRINTFORMW 「キャップの刺激に負けないぐらい、%CALLNAME:MASTER%も気持ち良くしてね？」
+			CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また、これ…」
+			PRINTFORMW レティの表情は不安げだが、ゴクリと唾を飲み込んだのを%CALLNAME:MASTER%は見逃さなかった
+			CFLAG:9014 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「んぁあ…外されちゃった…」
+		PRINTFORMW 「クリ吸われるの…癖になっちゃいそう…」
+		CFLAG:8813 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ…はぁ…んっ、はぁ…」
+		PRINTFORMW 「強力過ぎるわ…それ…」
+		CFLAG:8813 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG9015　CFLAG8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35
+	;初めて
+	IF CFLAG:9015 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「感度もちゃんと上げないとね」
+			PRINTFORMW 「折角大きめのを持ってるんだし、これで気持ち良くなれれば最高だわ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふ、うぁ…」
+			PRINTFORMW 「早く…外して、くれないっ…？」
+		ENDIF
+			CFLAG:9015 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ、んんっ…締め付けられて…」
+			PRINTFORMW 「胸の奥からキュンってしてくるの…」
+			CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「乳首ばっかりされても…」
+			PRINTFORMW 「うぅん？ 何言ってるのかしら、私」
+			CFLAG:9015 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ふふっ、乳首が凄く立ってる…」
+		PRINTFORMW 「触る？ 立ってる上に硬くなって…ぁん♪」
+		CFLAG:8814 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふぅぅ…んっ」
+		PRINTFORMW 「機械でも、怪我しないだけマシだわ…」
+		CFLAG:8814 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG9016　CFLAG8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30
+	;初めて
+	IF CFLAG:9016 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これは何に使うの？ うーん、筒状になってる」
+			PRINTFORMW レティは初めて見る器具に関心を持ったらしく、中の空洞をジロジロと覗いている
+			PRINTFORMW 用途を説明すると顔を真っ赤にして俯いてしまったので、
+			PRINTFORMW 今回だけは%CALLNAME:MASTER%が優しくつけてやることにした
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなものがついてるだけでも異常事態なのに…」
+			PRINTFORMW 「まぁ、あなたにとっては女も玩具も一緒よね」
+			PRINTFORMW 「じゃなきゃイタズラにこんなもの生やしたりしないわ…」
+			PRINTFORMW レティがいつまでも不満を言って調教が進まないので、
+			PRINTFORMW %CALLNAME:MASTER%は強引にレティの陰茎にオナホールを被せた
+		ENDIF
+			CFLAG:9016 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はっ、あっ♪ んんっ…オチ○チン気持ちいい…！」
+			PRINTFORMW 「病み付きに…なりそうっ…んっ、ふぁ…♪」
+			CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっ、ぁうっ…中が、凄い…！」
+			PRINTFORMW 「にゅるにゅるで…擦れるっ…！！」
+			CFLAG:9016 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ね、ねぇ…？ それ、貸してくれたりしない…？」
+		PRINTFORMW 「ダメ？ うぅ～、けちー」
+		PRINTFORMW こちらにも調教のプランがあるので断ると、レティは名残惜しそうにオナホールに別れを告げた
+		CFLAG:8815 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「…はぁ…はぁ、こんな玩具で…」
+		PRINTFORMW 「でも…私はっ、それに狂うほど、落ちぶれちゃ…いないわよっ…！」
+		PRINTFORMW 息も絶え絶えでそんなこと言われても説得力がない
+		CFLAG:8815 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG9020
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:9020 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁ…そう言ってくれるのを待ってたわ…♪」
+				PRINTFORMW 「いつになったら抱いてくれるんだろうって、ずっと待ってたから…」
+				PRINTFORMW 「それじゃ……優しくしてね？」
+			;それ以外
+			ELSE
+				PRINTFORMW 「この時が来てしまったのね…」
+				PRINTFORMW 「覚悟なんてここに来た時から出来てたわ。いっそ一思いにやって」
+				PRINTFORMW 「ん、い、んはぁぁぁぁぁぁああ！！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あっ…ふぅっ、うん…」
+				PRINTFORMW 「わかるよ…。今、%CALLNAME:MASTER%が私の中にいるのね…」
+				PRINTFORMW 「お願い、動いて…。もっと%CALLNAME:MASTER%を感じさせて…！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「いつか言うと思ってたわよ…」
+				PRINTFORMW 「せいぜい大事なところが凍傷にならないように注意することね」
+				PRINTFORMW 口ではそう脅していたが、膣内は予想に反して温かかった
+			ENDIF
+		ENDIF
+			CFLAG:9020 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+				PRINTFORMW 「もっと、もっと深く突いて…！」
+				PRINTFORMW 「ふぁぁ…！ いいっ！ ズンズンきてるの…♪」
+				PRINTFORMW 「優しいのに…激しい…！ あ、あぁん！！」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 膣の快楽に陶酔しているレティを見て、%CALLNAME:MASTER%は少し腰の動きを緩めた
+				PRINTFORMW 「いやっ…！ やめないで…！」
+				PRINTFORMW 「オマ○コもっとジュプジュプして…！ 私を溶かしてぇ…！！」
+				PRINTFORMW いやらしくおねだりで出来た褒美にとりわけ深く突いてやると、
+				PRINTFORMW レティはあられもない声をあげて喜んだ
+			ELSE
+				PRINTFORMW 「あ…またオマ○コ埋めてくれるのね…♪」
+				PRINTFORMW 「道具も良いけど、やっぱり%CALLNAME:MASTER%のオチ○チンが一番だわ」
+				PRINTFORMW 「さぁ…今日もゆっくり可愛がってね…大好きよ…」
+			ENDIF
+			CFLAG:9020 = 5
+		;屈服刻印Lv3＋Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふぁぁああ！！ やっ、んぁ…！」
+			PRINTFORMW 「違うのっ、体が勝手に…！ あっ、こんなの私じゃ…、やぁん！」
+			PRINTFORMW 口では嫌がっているものの、レティの両足は%CALLNAME:MASTER%をがっちりとホールドしていた
+			CFLAG:9020 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ふんっ…あっ、はぁっ…」
+			PRINTFORMW 逆らえないことを自覚してか、性交中のレティは驚くほどおとなしかった
+			CFLAG:9020 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、いくら、突いたって…」
+			PRINTFORMW 「好きな人とじゃないとっ、良くなんかならないわっ…！」
+			CFLAG:9020 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG9021
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:9021 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「ぅう…怖いわ…」
+				PRINTFORMW 「%CALLNAME:MASTER%の顔が見えなくて、不安なの…」
+				PRINTFORMW 「ん、くる…あっ、んあぁぁぁああ！！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「初めてがこんな格好なんて…っ」
+				PRINTFORMW 「畜生以下のあなたにはお似合いだわっ…。ん、くっあああぁぁぁ！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「あぁっ…深いっ…」
+				PRINTFORMW 「犬みたいに犯されて…それがいいの…！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「こんな後ろから…」
+				PRINTFORMW 「屈辱を与えれば屈服すると思ってるのね…。浅はかだわ…」
+			ENDIF
+		ENDIF
+			CFLAG:9021 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この体位、獣みたいで好きよ…」
+			PRINTFORMW 「%CALLNAME:MASTER%に支配されてる感じがして…ふぁ、きたぁ…♪」
+			PRINTFORMW 「奥まで、んっ、ふぁっ♪ 深いのぉ…！」
+			CFLAG:9021 = 5
+		;屈服刻印Lv3＋Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「はぁぁ…！ やっ、あぁん！」
+			PRINTFORMW 「交尾みたいで…っ！ でもそこ、いいのっ…！！」
+			PRINTFORMW レティは時折こちらを振り向きながら、膣で暴れる陰茎の感触を味わっている
+			CFLAG:9021 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ん、くっ…う、んんっ…」
+			PRINTFORMW 辱めに対して反発するよりも、時が過ぎるのを待つことを選択したようだ
+			CFLAG:9021 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「負けない…っ！ 絶対負けないから…っ！！ 嫌っ、くはぁぁ！！」
+			PRINTFORMW レティは心底悔しそうに%CALLNAME:MASTER%を睨んだ
+			CFLAG:9021 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG9022
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:9022 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁぁ…素敵…」
+			PRINTFORMW 「%CALLNAME:MASTER%と繋がったまま、抱きしめてもらえるなんて…」
+			PRINTFORMW レティはゆっくり腰をグラインドさせながら、%CALLNAME:MASTER%の頬を優しく撫でた
+			PRINTFORMW 目一杯甘えられるこの体位を完全に気に入ったらしい
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぁ…うん、はっ…」
+			PRINTFORMW 「顔が近すぎるわ…やっ、迫ってこないで…」
+			PRINTFORMW レティは隙あらば逃げ出そうとしているのか、%CALLNAME:MASTER%とは反対方向に力を入れている
+		ENDIF
+			CFLAG:9022 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%のが中に入ってて…」
+			PRINTFORMW 「こんなに顔が近くて…キスだってし放題で…」
+			PRINTFORMW 「んぁ…♪ これが一番好きかも…あむっ、んちゅ…♪」
+			PRINTFORMW レティは蕩けるような視線で甘え、キスをねだってきた
+			CFLAG:9022 = 5
+		;屈服刻印Lv3＋Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「グチュグチュいってる…んっ、いやらしい…だめぇ…！」
+			PRINTFORMW そうは言いつつも体が欲しがってしまうのか、
+			PRINTFORMW レティは赤面しながら胸を%CALLNAME:MASTER%の胴に押し付けてきた
+			CFLAG:9022 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「あっ、ぁあ…はぁ…はっ…」
+			PRINTFORMW レティは何も喋らずされるがままになっているが、視線は%CALLNAME:MASTER%から離れなかった
+			CFLAG:9022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅっ…んっ、やぁ…ちゅ、んちゅ…」
+			PRINTFORMW 「ぷはっ、うぅ…キス嫌ぁ…」
+			CFLAG:9022 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG9023
+;乱れ牡丹 CFLAG9612
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:9023 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あぁん…これ、切ない…」
+			PRINTFORMW 「抱きしめてあげたいのに…ふぁん…っ！」
+			PRINTFORMW 「%CALLNAME:MASTER%の顔、見えないよぉ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「まだいいわ…このほうが…」
+			PRINTFORMW 「見つめ合わなくて済むし、獣みたいに犯されることもないもの…」
+			PRINTFORMW 「ん、くぁぁああ…！ 入ってくる…っ」
+		ENDIF
+			CFLAG:9023 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「オマ○コ…気持ち良くて…っ！ んはぁぁ！」
+			PRINTFORMW 「おっぱいも揉まれて…ふぁぁああっ、いいよぉ…！」
+			PRINTFORMW レティは快楽を訴えながら、腕を%CALLNAME:MASTER%の首の後ろに回してきた
+			CFLAG:9023 = 5
+		;屈服刻印Lv3＋Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふぁっ…あっ！ 感じちゃう…っ！」
+			PRINTFORMW 「こんなの、だめなのにぃ…っ！ 気持ちいい…！」
+			CFLAG:9023 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「やぁ…突かないで…」
+			PRINTFORMW 「胸そんなギュッてしちゃ…くはぁん…！」
+			CFLAG:9023 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お願い…早く、終わって…くっ、んんっ…」
+			CFLAG:9023 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612 || (SELECTCOM == 23 && TEQUIP:56)
+	;初めて
+	IF CFLAG:9612 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「み、見ながら…？ あれに映っちゃうの？」
+			PRINTFORMW 「もう、エッチなんだから。でも%CALLNAME:MASTER%がしたいならいいよ…きて…」
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「ぁあ…アソコに入ってる…」
+			PRINTFORMW 「こんなにエッチなことしてたんだ…凄い…」
+			PRINTFORMW レティは鏡に映った接合部から目が離せないようだ
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなの、わざわざ見せないでよぉ…っ！」
+			PRINTFORMW レティは羞恥に耐え切れず、手で顔を覆ってしまった
+		ENDIF
+			CFLAG:9612 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+Ｖ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「見えてる…繋がってるの見えてるぅ…！」
+			PRINTFORMW 「濡れ濡れのオマ○コ、オチ○チンがズブズブしてるの…っ！」
+			PRINTFORMW 「%CALLNAME:MASTER%も見てっ…！ 私達、繋がってるよぉ…！」
+			CFLAG:9612 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:9612 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「こんな格好で、突かれて…んっ、はぁん！」
+			PRINTFORMW 「私こんないやらしい顔してよがってたのね…！ あぁっ、いい！」
+			PRINTFORMW レティは恥ずかしそうだが、鏡に映る自分の痴態から目を離さなかった
+			CFLAG:9612 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「やっ、いやぁ…恥ずかしい…」
+			PRINTFORMW 「んっ、あっ、突いちゃだめっ…！」
+			CFLAG:9612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「わ、私は見ないわよ…」
+			PRINTFORMW 両目を覆う手を外すと、レティは顔を真っ赤にして抗議した
+			CFLAG:9612 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG9024
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:9024 == 0
+		;処女
+		IF TALENT:0 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「怖い…でも…」
+				PRINTFORMW 「それ以上に、あなたと一つになりたいから…」
+				PRINTFORMW 「んっ、んくっ、うああぁぁぁ！！」
+			;それ以外
+			ELSE
+				PRINTFORMW 「嫌ぁ…なんで自分で…」
+				PRINTFORMW 「これならまだ、一思いにやってくれるほうがマシよ…」
+				PRINTFORMW レティはポロポロと涙を流しながら、ゆっくりと腰を下ろしていった
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「新鮮な視点ね…」
+				PRINTFORMW 「ふふっ。なんだか私が%CALLNAME:MASTER%を犯してるみたい…」
+				PRINTFORMW レティは妖しい目で照準を定め、その秘部で一気に陰茎をくわえ込んだ
+			;それ以外
+			ELSE
+				PRINTFORMW 「この体勢、あなたの首を絞めるには好都合だってわかってる？」
+				PRINTFORMW 「わかっててやらせてるって…」
+				PRINTFORMW 「ほんと度胸だけは座ってるわね…。そこだけは認めてあげるわ…あっ、うんっ…」
+			ENDIF
+		ENDIF
+			CFLAG:9024 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ…っ、あんっ…いいの…もっと突き上げて…！」
+			PRINTFORMW 「もっと感じて…！ 私がイかせてあげるからっ…！！」
+			PRINTFORMW ギラついた目でひたすら腰を打ち付けてくるレティ
+			PRINTFORMW 口からはダラダラと涎を垂らし、淫らな行為を心から楽しんでいるようだ
+			CFLAG:9024 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上＋Ｖ感覚Lv3以上
+		ELSEIF MARK:2 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んはっ、あっ、はっ…いい？ 気持ちいい…？」
+			PRINTFORMW 「うんっ…私もいいわ…、んっ…はぁん！」
+			PRINTFORMW レティは恥じることなく快感を貪り続けている
+			CFLAG:9024 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「私…こんなやらしいことしてる…」
+			PRINTFORMW 「んはぁぁ…！ いきなり突き上げないで、ふぁん！」
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふっ、んっ…くふっ…」
+			PRINTFORMW 「あなたが…動けって、言うから…！」
+			PRINTFORMW 口答えが多いので、その度に突き上げて中断させてやった
+			CFLAG:9024 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG9025
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:9025 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%の、中に…？」
+			PRINTFORMW 「ふぁぁあ…、うっ、んっ…」
+			PRINTFORMW 「オマ○コに挿れるのって、こんなに気持ちいいんだ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「変なもの生やされた挙句、こんなことまで…」
+			PRINTFORMW 「んあっ…はっ、自然の摂理にっ…歯向かい過ぎよっ…！」
+			PRINTFORMW 初めて味わう快感に、レティは戸惑いを隠せないらしい
+		ENDIF
+			CFLAG:9025 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これっ…いいわっ…！」
+			PRINTFORMW 「犯されてる%CALLNAME:MASTER%の顔…凄くっ、素敵よっ！！」
+			PRINTFORMW 野獣のように一心不乱に陰茎を押し込んでくるレティは、
+			PRINTFORMW この上なく満足そうだった
+			PRINTFORMW 「私の精液っ…いっぱい流し込んであげるっ…！」
+			CFLAG:9025 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぬめぬめしてて…絡み付いて…」
+			PRINTFORMW 「暴漢がっ、いなくならないのはっ、こういうわけなのねっ…！！」
+			PRINTFORMW レティの顔は責める快感に支配されており、腰の動きをとめる気配は全くない
+			CFLAG:9025 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル CFLAG9030
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:9030 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「オチ○チン入るかなぁ…？」
+			PRINTFORMW 「%CALLNAME:MASTER%は上手だから、大丈夫だよね…？」
+			PRINTFORMW すぼまりの狭さを気にしつつ、レティはアナルセックスを了承した
+		;それ以外
+		ELSE
+			PRINTFORMW 「ま、待って！ そこは挿れるための場所じゃないでしょ！？」
+			PRINTFORMW 「んっ、ぐ、んぁぁぁああ！」
+		ENDIF
+			CFLAG:9030 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「熱いオチ○チンが、中で…！」
+			PRINTFORMW 「お尻えぐって…暴れて…！ ふぁぁん！！」
+			CFLAG:9030 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ、つぅ…！」
+			PRINTFORMW 「好きに動いて…！ %CALLNAME:MASTER%が気持ちいいなら、私は嬉しいからっ…！」
+			PRINTFORMW 一身を投げうったレティの言葉には、苦痛と共に心からの愛情がこもっていた
+			CFLAG:9030 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「くっ、はぁ…ふぁん…」
+			PRINTFORMW 「お尻…どうしてぇ…？」
+			PRINTFORMW ゆっくり陰茎を差し入れると、レティは甘さの混じった声を発した
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「い、痛い…痛いのぉ…」
+			PRINTFORMW 「お願いだから抜いて…苦しくて辛いの…！！」
+			PRINTFORMW 泣きじゃくるレティを無視し、%CALLNAME:MASTER%は腰を動かし続けた
+			CFLAG:9030 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG9031
+;-------------------------------------------------
+IF SELECTCOM == 31
+	;初めて
+	IF CFLAG:9031 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うぅ…お尻だから交尾とも違うし…んぁ…！」
+			PRINTFORMW 「%CALLNAME:MASTER%は気持ちいい…？ それなら良かった…」
+			PRINTFORMW 不安と痛みで張り裂けそうな顔をしていたレティだが、
+			PRINTFORMW %CALLNAME:MASTER%が心地良い快楽を伝えると、少し安堵の表情が混じった
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ、ぎっ…くはぁぁぁ！」
+			PRINTFORMW 「やぁっ…やめ、痛いっ！」
+		ENDIF
+			CFLAG:9031 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「お尻が寂しいわ…見て、こんなに欲しがってる…」
+			PRINTFORMW レティは尻を突き出し、誘うようにくねらせている
+			PRINTFORMW 要望通り陰茎で激しく穿ってやると、それだけでレティは達してしまいそうだった
+			PRINTFORMW 「嬉しい…！ 熱いオチ○チン欲しかったのっ、あっ、あぁっ！」
+			CFLAG:9031 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぐぅっ…奥まで、きてる…！」
+			PRINTFORMW 「続けていいから…！ お尻から腸まで、%CALLNAME:MASTER%のものにしてぇ！」
+			CFLAG:9031 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「やめて…もうお尻でしないで…」
+			PRINTFORMW 「戻れなく、なっちゃうっ…！ ふぁぁあ！ 」
+			CFLAG:9031 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「後ろからお尻突かれて…んくっ、痛い…」
+			PRINTFORMW 「もう嫌っ…いっそ殺してよぉ…！！」
+			PRINTFORMW レティの悲痛な叫びを放置しながら、細い菊穴を怒張で犯し続けた
+			CFLAG:9031 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG9032
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:9032 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふ、ぁあ…」
+			PRINTFORMW 「大丈夫、%CALLNAME:MASTER%に抱きついてられるから…怖くないよ…」
+			PRINTFORMW アナル挿入の感覚を不安がるレティを、%CALLNAME:MASTER%は強く抱きしめた
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻でなんて嫌ぁ…離して…」
+			PRINTFORMW 「あうっ…！ んぷっ、ちゅ…」
+			PRINTFORMW このままでは不満を並べさせるだけなので、強引に唇を塞ぎ、黙らせることにした
+		ENDIF
+			CFLAG:9032 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「お尻に挿れてもらえて…あなたとこんなに近くに居れて…」
+			PRINTFORMW 「キスもいっぱい…ん、最高…♪ はぁ、ふぁん…！」
+			PRINTFORMW %CALLNAME:MASTER%にぴったり密着しながら、レティはアナルへの更なる刺激を求めている
+			CFLAG:9032 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+			PRINTFORMW 「んあむっ、んちゅ、ちゅう…はむっ…」
+			PRINTFORMW 菊穴の痛みを誤魔化すためか、レティはしきりに唇を求めてきた
+			CFLAG:9032 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んっ、んんっ、うくっ、ふ、ぅん…！」
+			PRINTFORMW 確実に快楽は感じているようだが、レティの理性が声を上げるのを邪魔していた
+			CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふっ、くぅぅ、はっ、はっ、んんっ……」
+			PRINTFORMW アナルを突き上げる度に、%CALLNAME:MASTER%を抱きしめるレティの力が強くなっている
+			CFLAG:9032 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG9033
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:9033 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%が気持ちいいなら一向に構わないわ…」
+			PRINTFORMW 「でも、出来れば私も感じられたらいいな…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「かっ…くふっ、い゛っ…んんんっ！」
+			PRINTFORMW レティは菊穴の痛みに歯を食いしばりながら耐えている
+		ENDIF
+			CFLAG:9033 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「はぁ…ふぅ、気持ちいい…」
+			PRINTFORMW 「お尻だけじゃなくて、他のところも触ってもらえるのがいいわ…」
+			PRINTFORMW レティはアナルを突き上げられながら、%CALLNAME:MASTER%に体をまさぐらせた
+			CFLAG:9033 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+			PRINTFORMW 「う、んっ…まだちょっと痛い…」
+			PRINTFORMW 「お願い、おっぱい揉んで…。そのほうがきっといいから…」
+			PRINTFORMW 「折角%CALLNAME:MASTER%がしてくれてるのに、気持ち良くなれないのは嫌なの…」
+			CFLAG:9033 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ふぁぁ…やっ、お尻ジンジンしちゃうのぉ…！」
+			PRINTFORMW (もう…ダメかも…)
+			CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぎっ、い、ぅ…ああ…」
+			PRINTFORMW 痛みを和らげてやろうと他の部分を触ろうとすると、ペシッと払いのけられてしまった
+			PRINTFORMW しかし突き上げられているうちに抵抗する気力も無くなったのか、次第に押しのけようとする力も弱まっていった
+			CFLAG:9033 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG9034
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:9034 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「じ、自分のペースで挿れるわね…。あぁ…うぁ、んっ…！」
+			PRINTFORMW 「どう…？ ちゃんと感じてる…？」
+			PRINTFORMW 肯定するとレティは顔をほころばせ、腰をゆっくり上下させた
+		;それ以外
+		ELSE
+			PRINTFORMW 「下劣よ、こんなのっ…」
+			PRINTFORMW アナルへの挿入は何とか出来たが、レティはその後動きを止めて泣き出してしまった
+		ENDIF
+			CFLAG:9034 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「私が上になれるだけでも興奮するわ…」
+			PRINTFORMW 「ふふっ…今日もお尻でいっぱいイかせてあげる…」
+			PRINTFORMW 妖艶な笑みと共に、レティの菊穴に陰茎が収まっていった
+			CFLAG:9034 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+			PRINTFORMW 「私なら、大丈夫だから…っ」
+			PRINTFORMW 「お尻で気持ち良くなって…！ %CALLNAME:MASTER%の感じてる顔、もっと見せて…っ！」
+			CFLAG:9034 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んぁ…っ お尻、入って…！」
+			PRINTFORMW 「腰が勝手に…、はぁっ…！ 動いちゃうぅ！」
+			CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「誰が好んでこんなこと…！」
+			PRINTFORMW 「くぁっ…！ 痛いだけ、なのにっ…！」
+			CFLAG:9034 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG9040
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:9040 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「凄い…擦るとこんなになるんだ…」
+			PRINTFORMW 「熱くて…ビクビクして…」
+			PRINTFORMW レティはまるで実験でもしているかのように、まじまじと陰茎を見つめている
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「あ、今ピクッてした…」
+			PRINTFORMW 「ここね…？ ここいじられると気持ちいいのね…？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぅう…触りたくない…汚いわ…」
+			PRINTFORMW 手淫を渋るレティの手を掴み、無理矢理しごかせた
+		ENDIF
+			CFLAG:9040 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「任せて。いっぱい気持ち良くしてあげる…」
+			PRINTFORMW 細く滑らかな手の感触が、%CALLNAME:MASTER%の陰茎を包み込むように擦りあげる
+			PRINTFORMW 「あ、先走りが…。しょうがないわねぇ」
+			PRINTFORMW レティは指先で先走りの粘液を絡めとると、
+			PRINTFORMW %CALLNAME:MASTER%の亀頭に擦り込むように塗りたくった
+			PRINTFORMW 「これでもっと気持ちいいでしょ？ いつイってもいいからね…♪」
+			CFLAG:9040 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「このままイきたい？ どうしよっかな…♪」
+			PRINTFORMW 「後でちゃんと気持ち良くしてくれるなら、いいよ…」
+			PRINTFORMW 意地悪な笑顔で陰茎を弄ぶレティは、とても楽しそうだ
+			CFLAG:9040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「えっと…ここを、こう…」
+			PRINTFORMW 「たまらないの…？ 手でそんなに感じる…？」
+			PRINTFORMW 「やっぱりよくわからないわね。男の体って」
+			CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「顔に近付けないでよ…」
+			PRINTFORMW 「捻り潰されたくなければ、おとなしくしてなさい」
+			PRINTFORMW レティは仏頂面のまま、黙々と陰茎を擦っている
+			CFLAG:9040 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG9041
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:9041 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「こう…かな？」
+			PRINTFORMW 「あっ…今ビクってなった。ここなのね…？ ふむっ…ちゅる…」
+			PRINTFORMW レティは満足そうに陰茎を咥えていた
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「典型的な『ご奉仕』ね」
+			PRINTFORMW 「ん、あむ…ちゅ、ちゅば…んんっ…！」
+			PRINTFORMW (不思議と嫌じゃないのよね…おしゃぶりするの…)
+		;それ以外
+		ELSE
+			PRINTFORMW 「これもありきたりね…」
+			PRINTFORMW 「別に何とも思わないわ。噛み千切られたくなければさっさと終わらせて」
+		ENDIF
+			CFLAG:9041 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「いつも私をいじめるオチ○チン…」
+			PRINTFORMW 「お仕置きがしないと…あむっ…」
+			PRINTFORMW 「むぅっ…ぢゅるるる…ちゅ、んちゅう…」
+			PRINTFORMW 舌と口腔を使ったレティの巧みな技に、%CALLNAME:MASTER%は早くも達しそうになった
+			CFLAG:9041 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「また気持ち良くしてあげられるのね…？」
+			PRINTFORMW 「私の口でいっぱいイって…ちゅ、ちゅぴ…」
+			PRINTFORMW レティは陰茎に舌を這わせながら、こちらの様子をうかがっている
+			CFLAG:9041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「はぁ、はぁ、あっ…はむっ…」
+			PRINTFORMW レティは陰茎を見た段階で顔を紅潮させており、頬をイチモツでペシペシと叩いてやると、
+			PRINTFORMW 命じられるまでもなくイチモツを口に含んだ
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぅ、む…臭い…」
+			PRINTFORMW 「せめてちゃんと洗ってくれる？ 鼻が曲がりそう」
+			PRINTFORMW 不平不満を述べながら、レティは抑揚なく陰茎に舌を這わせていた
+			CFLAG:9041 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG9042
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:9042 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちゃんと出来るかな…んっ、と」
+			PRINTFORMW 「挟み易いのはいいんだけど、技術がね…」
+			PRINTFORMW レティはおずおずと胸での奉仕を開始した
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「ん、よいしょ」
+			PRINTFORMW 「あ…胸の間が熱い…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「酷い臭いね…本当なら肌に触れさせるのも嫌」
+			PRINTFORMW 「でも言い出したら聞かないでしょ？ だったら早く終わらせるわ」
+		ENDIF
+			CFLAG:9042 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「こうして気持ち良くしてあげるのも慣れたものね」
+				PRINTFORMW 「ふふっ。んぁ…」
+				PRINTFORMW レティは胸の谷間から顔を出した陰茎に唾液を落とし、ぬめりを加えていた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「こう、ギュッてしてると…」
+				PRINTFORMW 「胸の間が熱くなって…濡れてきちゃう…」
+				PRINTFORMW 「オチ○チンの熱さでオーバーヒートしてるのかしら。くすっ」
+				PRINTFORMW そう言って笑みをこぼしたレティの乳首はすっかり硬くなっていた
+			ELSE
+				PRINTFORMW 「おっぱいだけでいいの？」
+				PRINTFORMW 「言ってくれれば舐めてあげるのに…」
+				PRINTFORMW その実、自分が舐めたいだけじゃないのかと思ったが、口には出さなかった
+			ENDIF
+			CFLAG:9042 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「まだあんまり上手くないから…んっ…」
+			PRINTFORMW 「下手だと思ったら言ってね？ 他の方法考えるから…」
+			PRINTFORMW ちゃんと快感を与えられているか、レティは度々心配していた
+			CFLAG:9042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「…ん…あぁ…」
+			PRINTFORMW 無意識のうちに舐めようとしていたので、胸での奉仕に集中するよう注意した
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「胸は汚さないでくれると助かるわ…」
+			PRINTFORMW 「既に汚いから無理？ 言えてるわね。もちろんあなたのそれが、だけど」
+			CFLAG:9042 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG9043
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:9043 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「こんなの…切ないよぉ…」
+			PRINTFORMW 「セックスのほうが気持ちいいと思うけどなぁ…」
+			PRINTFORMW それでも%CALLNAME:MASTER%が言うのなら、と奉仕を続けるレティの姿は、とても甲斐甲斐しかった
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「挿れるわけでもなく、口や胸を使うわけでもなく」
+			PRINTFORMW 「こんなところでシゴかれるのがいいの？ ふぅん、そう…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「もしかしてためらってるの？ 今更じゃない」
+			PRINTFORMW 一見ノリ気に見えるが、中を犯されるわけではないとわかって実はホッとしているらしい
+		ENDIF
+			CFLAG:9043 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「ほんとにこれで満足…？」
+			PRINTFORMW 「%CALLNAME:MASTER%がいいなら、私もやり甲斐があるけど…」
+			PRINTFORMW レティは擦りつけ自慰でもするかのように、股間を刺激し続けた
+			CFLAG:9043 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「擦ってるだけじゃ、もどかしいの…」
+			PRINTFORMW 「挿れて…中に頂戴…！」
+			CFLAG:9043 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「変な趣味ね、んっ、ふぅ…」
+			PRINTFORMW 「でもその趣味を満たしてあげるのも、悪くは、ないかもっ…」
+			CFLAG:9043 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「これ、擦れて…」
+			PRINTFORMW 「感じてなんか、んぁあ…」
+			CFLAG:9043 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルおねだり CFLAG9045
+;-------------------------------------------------
+IF SELECTCOM == 45
+	;初めて
+	IF CFLAG:9045 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お尻のおねだりってどうすればいいのかしら…」
+			PRINTFORMW 「こう…するのね、これでいい？」
+			PRINTFORMW 菊穴を広げながら、レティは恥ずかしそうにこちらを見ている
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんな屈辱…いつか絶対っ…」
+			PRINTFORMW 体を小刻みに震えさせたレティは、涙ながらに菊穴を開いた
+		ENDIF
+			CFLAG:9045 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:従順 >= 3
+			PRINTFORMW 「お尻が空っぽで…もう狂っちゃいそうなの…」
+			PRINTFORMW 「バイブでもオチ○チンでも何でもいいから…。挿れて欲しい…」
+			PRINTFORMW レティは尻を突き出し、それで弧を描きながらゆっくりとおねだりを始めた
+			CFLAG:9045 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「お尻もいいんだけど、オマ○コにも欲しいな…」
+			PRINTFORMW 「どっちも%CALLNAME:MASTER%のものだもの。おねだりなんかなくても自由に使って良いよ…」
+			CFLAG:9045 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW (お尻がこんなになっちゃったもの…どうしようもないわ…)
+			PRINTFORMW 「私のお尻…いやらしくした責任、とって…」
+			PRINTFORMW レティは思いつめたように恐る恐る尻を突き出すと、自ら菊穴を広げてみせた
+			CFLAG:9045 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「…うぅ、欲しくもないのにどうしておねだりなんか…」
+			PRINTFORMW 屈辱と恥辱の間で、レティは泣き崩れそうになるのを必死に堪えていた
+			CFLAG:9045 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;玉揉み強制 CFLAG9053
+;-------------------------------------------------
+IF SELECTCOM == 53
+	;初めて
+	IF CFLAG:9053 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「袋だけでいいの？ 棹は？」
+			PRINTFORMW 「遠慮しなくてもいいのに…」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「柔らかい…力加減が難しそう…」
+			PRINTFORMW 「その…痛かったら言うのよ？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「握り潰したらあなたはどんな顔するのかしら」
+			PRINTFORMW 「……しないわよ。どうせ対策は出来てるんでしょ」
+		ENDIF
+			CFLAG:9053 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「ふにふに、っと。気持ち良さそうな顔しちゃって…くすっ」
+			PRINTFORMW 「はぁ…揉んでたらオチ○チン舐めたくなってきちゃった…」
+			PRINTFORMW レティは舌なめずりしながら、うっとりと陰嚢を揉みしだいている
+			CFLAG:9053 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「いつも棹の方にお世話になってるけど…」
+			PRINTFORMW 「袋もこうすると可愛いものね、ふふっ♪」
+			CFLAG:9053 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「ちょっとコツが掴めてきた気がするわ」
+			PRINTFORMW 「こうかな…うぅん、こっちだったかも…」
+			PRINTFORMW レティは日々研鑽を重ねているようで、首を捻りながら奉仕に集中している
+			CFLAG:9053 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「もう…袋なのに湿ってる…」
+			PRINTFORMW 「触らせるなら汗ぐらい拭き取っておいてよ。うっ、鼻にくる…」
+			PRINTFORMW レティは心底嫌そうな顔で鼻を摘んだ
+			CFLAG:9053 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローション CFLAG9060
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:9060 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ…凄い粘り気ね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「何なのこれ、気持ち悪い…」
+		ENDIF
+			CFLAG:9060 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「よく見るとちょっと面白いかも…」
+			PRINTFORMW レティは体についたローションを伸ばして遊んでいる
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「塗るのを口実に触りたいだけなんじゃないの？」
+			CFLAG:9060 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG9061
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:9061 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「もっと気持ち良くなれる薬？ ふぅん」
+			PRINTFORMW (こんなのより、%CALLNAME:MASTER%に良くしてもらいたいなぁ…)
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、何する気…んぶっ」
+		ENDIF
+			CFLAG:9061 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%がそばにいるだけで、私には媚薬みたいなものよ…」
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「飲めばいいんでしょう？」
+			PRINTFORMW レティはこちらを冷たく睨みながら、淡々と媚薬を口に含んだ
+			CFLAG:9061 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG9062
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;恋慕+おもらし癖
+	IF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 「こんな薬なくても…」
+		PRINTFORMW 「%CALLNAME:MASTER%が言ってくれれば、いつでも出せるのに…」
+		CFLAG:9062 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 「%CALLNAME:MASTER%の前で漏らしちゃうんだ…恥ずかしい…」
+		CFLAG:9062 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「得体の知れないものに比べたら、おしっこぐらい…」
+		CFLAG:9062 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「…この変態」
+		CFLAG:9062 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン CFLAG9090 解除 CFLAG8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:9090 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ほらほら、見て♪」
+			PRINTFORMW レティは自ら豊かな胸の谷間にエプロンの布地を寄せ、恥ずかしげもなく胸部を晒している
+			PRINTFORMW その肩をポンポンと叩いた%CALLNAME:MASTER%は、裸エプロンの何たるかを切々と語った
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「………」
+			PRINTFORMW 無言でエプロンをつけたレティの顔は、ほのかに赤くなっていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「こういうことは愛しい人の前ですることでしょう…？」
+			PRINTFORMW 「生憎あなたはそういう対象じゃないわ」
+		ENDIF
+		CFLAG:9090 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふっ。新婚気分ね♪」
+			PRINTFORMW 「これが似合えば一人前のお嫁さんかなぁ…」
+			PRINTFORMW 今でも充分似合っていると告げると、レティは嬉しそうに抱き付いてきた
+			CFLAG:9090 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「胸の部分が狭いわ…これじゃ見えちゃう…」
+			PRINTFORMW レティはエプロンから乳首が出ないように必死だが、
+			PRINTFORMW 豊かな胸が災いし、横乳だけは隠し切れていなかった
+			CFLAG:9090 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「虚しくない？ 全然気分が乗らないんだけど」
+			PRINTFORMW 「なんか裸よりいやらしいし…」
+			CFLAG:9090 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:8823 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うぅ～、もうちょっと…」
+			PRINTFORMW もう少し夫婦気分を味わいたかったかったのか、レティは残念そうにしていた
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「結局外されたほうが見える面積増えちゃうのよね…」
+			PRINTFORMW 「着エロ？ 理解し難いわね…」
+			PRINTFORMW 「着るだけなら着てあげるけど…何か釈然としないわね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうでもいいわ…」
+			PRINTFORMW レティは冷めた目でこちらを見ながら、さっさとエプロンを脱いでしまった
+		ENDIF
+			CFLAG:8823 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「また着せてね…？」
+			PRINTFORMW 「うぅ～ん、なんというか、凄く幸せな気分になれるから…」
+			CFLAG:8823 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「この衣装好きなの？ 何度も着せるけど」
+			PRINTFORMW 「ふぅん、そう…」
+			PRINTFORMW 裸エプロンが好きだと答えると、レティはジーッとエプロンを見つめた
+			CFLAG:8823 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「飽きないわね…あなたも」
+			PRINTFORMW 「わからない？ 溜息交じりでエプロンをたたむ気持ちが」
+			CFLAG:8823 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ CFLAG9091 解除 CFLAG8825
+;遂に念願のスク水レティさんを手に入れたぞ！
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 91 && TEQUIP:59 == 2
+	;初めて
+	IF CFLAG:9091 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「むー、ちょっと小さいわ」
+			PRINTFORMW 「特に胸とお尻が…キツキツで…」
+			PRINTFORMW 「それがいい？ もう、馬鹿…」
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「んぅっ…意外に締め付けキツいわね…」
+			PRINTFORMW 胸元を収めるのに苦労していたが、なんとか着ることが出来たようだ
+		;それ以外
+		ELSE
+			PRINTFORMW 「これって小さい子が着るものじゃないの？」
+			PRINTFORMW 「それをなんでわざわざ私に…」
+		ENDIF
+			CFLAG:9091 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+				PRINTFORMW 「やだ…乳首の形が見えちゃう…」
+				PRINTFORMW どうやらレティはスク水を着ただけで興奮し、乳首を立たせてしまったようだ
+				PRINTFORMW 「こ、これが見たいの？ うん、好きなだけどうぞ…」
+				PRINTFORMW レティはそう言うと、ただでさえ豊かな胸をより強調させるポーズをとった
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「布地が薄くて、ここの場所がわかっちゃうわね」
+				PRINTFORMW レティの言う通り、股間の布越しに秘唇のスジが見て取れる
+				PRINTFORMW そこを何度かなぞってやると、早くも新たな粘液がにじみ、%CALLNAME:MASTER%の指を汚した
+				PRINTFORMW 「ぁん…♪ オマ○コの準備ならとっくに出来てるよ…」
+			ELSE
+				PRINTFORMW スク水に包まれたレティの尻はパツパツで、今にもはちきれそうだ
+				PRINTFORMW グラマラスなその肢体に見惚れていると、レティは尻をこちらに向け、悩ましげに振っている
+				PRINTFORMW 「お尻凄いでしょ？ 揉んでも、しゃぶっても、叩いてもいいよ…」
+			ENDIF
+			CFLAG:9091 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「これ、体のラインが殊更強調されちゃうのは仕様なの？」
+			PRINTFORMW 「そうね。いやらしいもの好きなあなたらしい選択だわ」
+			PRINTFORMW (これで興奮する私も、どうかしてるわね…)
+			CFLAG:9091 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「着て早々だけど、さっさと脱ぎたいわ。布地が擦れて赤くなっちゃうから」
+			PRINTFORMW 「嫌なら普通の水着でも買って来れば？ 着るかどうかは別問題だけど」
+			PRINTFORMW 普通の水着じゃ意味が無いことを述べると、レティは心底呆れ返り、冷たい視線を向けてきた
+			CFLAG:9091 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 91 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:8825 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「やっぱり直に見てもらいたいわ」
+			PRINTFORMW 「ありのままの私を、ね…？」
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「普段より露出面積少ないはずなのに、いつにも増して恥ずかしいわね…」
+			PRINTFORMW 「えっ、気に入っちゃったの…？ わかったわよ…」
+			PRINTFORMW 不承不承といった面持ちだが、どうやらまんざらでもないらしい
+		;それ以外
+		ELSE
+			PRINTFORMW 「…お肌が荒れたらどうしてくれるのよ、まったく…」
+			PRINTFORMW レティはスク水の布地跡をしきりに気にしている
+		ENDIF
+			CFLAG:8825 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 脱衣後のスク水を眺めると、股間の部分の湿り気が際立っていた
+			PRINTFORMW 「オマ○コの部分、凄いことになってるでしょ？」
+			PRINTFORMW 「その…、それ着ただけで濡れちゃって…」
+			PRINTFORMW 「いやらしい格好でエッチすること考えたら、たまらなくなっちゃったの…」
+			PRINTFORMW レティは恥ずかしそうにもじもじしていたが、それを素直に報告するところが愛らしい
+			CFLAG:8825 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「で、全裸とあの格好、どっちが興奮するの…？」
+			PRINTFORMW 「どっちも魅力的？ ほんと馬鹿ね…」
+			PRINTFORMW (魅力的だなんて…、恥ずかしいことサラッと言うのね…)
+			CFLAG:8825 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「この格好は嫌だって言ってるでしょう？」
+			PRINTFORMW 素早くスク水を脱ぐと、気に入らないとばかりに後ろの方に放り投げてしまった
+			CFLAG:8825 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:9100 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これで映像として記録出来るんだ…便利なものもあるのね」
+			PRINTFORMW 「えっ、売っちゃうの？ そんなぁ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ、そんなのダメ、絶対ダメぇ！」
+			PRINTFORMW 「撮らないで…嫌ぁ…」
+		ENDIF
+			CFLAG:9100 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「いっぱいの人に見られると思うと興奮するし…」
+			PRINTFORMW 「残しておいて一緒に見たい気もするし…うぅ～ん」
+			PRINTFORMW 悩んでるところ悪いが、生憎テープをどうするか決めるのはこちらである
+			CFLAG:9100 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「売らないで残して欲しいなぁ…」
+			PRINTFORMW 「2人の愛の記録よ？ 一緒に見たいわ…」
+			CFLAG:9100 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「これが出回っちゃうんだ…」
+			PRINTFORMW 「そう考えたら、なんだかたくさん視線を感じる…。ぁあ…♪」
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「1つ出回ったらもうおしまいね…」
+			PRINTFORMW 「今更抵抗しても遅い、か…」
+			CFLAG:9100 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG9103 解除 CFLAG8822
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:9103 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「こんな大きい鏡で映されちゃうんだ…」
+			PRINTFORMW 「エッチな顔してるの、見えちゃうね」
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「これじゃ丸見えだわ…」
+			PRINTFORMW レティは恥ずかしそうにしていたが、足を閉じようとはしなかった
+		;それ以外
+		ELSE
+			PRINTFORMW 「このためだけにわざわざ買ったの？ ご苦労なことね」
+			PRINTFORMW 「私は見ないわよ…って、ちょっと、やめてっ…」
+			PRINTFORMW 顔を逸らそうとするレティの頭を、強引に鏡の方へ向けさせた
+		ENDIF
+			CFLAG:9103 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「%CALLNAME:MASTER%には感謝しなきゃね」
+			PRINTFORMW 「見ながらするのが気持ちいいってこと、教えてくれたんだもの」
+			CFLAG:9103 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「またエッチな顔してるの見せたい？」
+			PRINTFORMW 「もう…恥ずかしいんだからね…」
+			CFLAG:9103 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「鏡にモロに映っちゃうわね…」
+			PRINTFORMW (でもどうしてだろう…いつもより興奮する…)
+			CFLAG:9103 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こっちに向けないで…」
+			PRINTFORMW レティはせめてもの抵抗として、両手で目を覆っている
+			CFLAG:9103 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 103 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:8822 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「やっぱり%CALLNAME:MASTER%の顔に集中したいかな」
+		;それ以外
+		ELSE
+			PRINTFORMW 「そう、あなたは少し卑猥過ぎる」
+			PRINTFORMW 「って言うでしょうね。どこぞの閻魔様なら」
+			PRINTFORMW 冗談を言う余裕があるのなら、次回は更に激しくしても大丈夫だろう
+		ENDIF
+			CFLAG:8822 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「次はもっといやらしい顔しちゃうかも…」
+			CFLAG:8822 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやだわ…何かこそばゆい…」
+			PRINTFORMW レティは顔を紅潮させながら、片付けられていく鏡をチラッと一瞥した
+			CFLAG:8822 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52
+	;初めて
+	IF CFLAG:9104 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「本当は2人で楽しみたいんだけど…」
+			PRINTFORMW レティは初めての野外に少し当惑していたようだが、
+			PRINTFORMW 首輪を付けてやると少し肩の力が抜けたようだ
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「遂に見世物にまで落ちちゃったか」
+			PRINTFORMW 「仕方ないわね…ほら、さっさと付けて」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ほんと、自分以外は全部畜生扱いなのね…」
+			PRINTFORMW 「その驕り、いつか身を滅ぼすわよ」
+			PRINTFORMW レティは怒りと憎しみの混じった目で、キッとこちらを睨んでいる
+		ENDIF
+			CFLAG:9104 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「またエッチなお散歩ね♪」
+			PRINTFORMW 「四つんばいで歩いてあげよっか？ ペットみたいに」
+			PRINTFORMW 顔を赤らめながらそう言ったレティの首輪が、キラリと光った
+			CFLAG:9104 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「誰かに見られちゃうかな…」
+			PRINTFORMW 「ううん、でも%CALLNAME:MASTER%がそばにいるから不安はないわ」
+			CFLAG:9104 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW (見られてするのが…癖になっちゃう…)
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また外…？ 飽きないわね」
+			PRINTFORMW 既に諦観の境地に至っているレティは、げんなりとした様子で首輪を受け入れた
+			CFLAG:9104 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「外で見せ付けてあげるのも楽しいけど」
+		PRINTFORMW 「屋内でも同じぐらいたくさん愛してね…」
+		CFLAG:8821 = 2
+	;露出癖Lv3以上
+	ELSEIF ABL:露出癖 >= 3
+		PRINTFORMW 「視線、集まってたわね…」
+		PRINTFORMW 行為を見られたことを思い出したのか、レティは恥ずかしそうに顔を押さえている
+		CFLAG:8821 = 1
+	;それ以外
+	ELSE
+		PRINTFORMW 「まだ屋内の方がマシに思えてくるから怖いわ」
+		PRINTFORMW 「どこであってもされること自体は変わらないけど…」
+		CFLAG:8821 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;秘貝開帳 CFLAG9110
+;-----------------------------------------------
+IF SELECTCOM == 110
+	;射精後
+	IF TFLAG:103 > 0
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「精液と愛液グチャグチャになって、溢れちゃう…」
+			PRINTFORMW 「勿体無いわ…。んっ、ふ…ぁ…」
+			PRINTFORMW 秘部から流れ落ちる粘液をレティは掬い取り、見せ付けるようにしてゆっくりと膣内へと戻していった
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「いっぱい出したわね。凄いことになってそう…」
+			PRINTFORMW レティの秘部では2つの粘液が混じり合い、卑猥な香りを醸し出していた
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「ぁあ…精液、垂れてくる…」
+			PRINTFORMW 「そんなに見つめて…。よっぽど卑猥な光景になってるんでしょうね…」
+			PRINTFORMW (想像したら…体がうずいてくる…)
+		;それ以外
+		ELSE
+			PRINTFORMW 「中で出された上に、こんな…」
+			PRINTFORMW レティは茫然自失となりながら、秘唇を開いている
+		ENDIF
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「はぁ…はぁ…オマ○コ直視されて…」
+			PRINTFORMW 「んっ、これだけで、もう…」
+			PRINTFORMW 「エッチなお汁出ちゃうの…いやらしい穴見られて、感じるの…！」
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%のオチ○チン欲しくて、トロトロになっちゃった…」
+			PRINTFORMW 「好きなだけ見ていいけど…満足したら挿れてね…？」
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「おツユが滲んでいやらしいって？」
+			PRINTFORMW 「誰のせいでこんな体になったと思ってるのよ…」
+			PRINTFORMW (見られるだけで、興奮するなんて…)
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなところジロジロ見たって、何もないわよ」
+			PRINTFORMW 「もういい？ さすがに雪女でもここは晒したままじゃ冷えちゃうわ」
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG9111
+;強制放尿 CFLAG9620
+;-------------------------------------------------
+IF SELECTCOM == 111 || SELECTCOM == 620
+	;強制放尿
+	IF SELECTCOM == 86 || SELECTCOM == 85 && ((TALENT:おもらし癖 == 0 && ABL:従順 >= 4 && ABL:精液中毒 >= 3 && ABL:マゾっ気 >= 3) || (TALENT:おもらし癖 && TEQUIP:22 == 0))
+		;恋慕+おもらし癖+野外プレイ
+		IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+			PRINTFORMW 「ああっ、くる、おしっこくるっ！」
+			PRINTFORMW 「んっ、んぁぁぁ、はぁ…はぁ……終わっちゃった」
+			PRINTFORMW もっと出したかったのか、レティは少し残念そうだ
+			CFLAG:9620 = 5
+		;恋慕+おもらし癖
+		ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+			PRINTFORMW 「ふぁんっ、ぁあ…ジョロジョロって音が…」
+			PRINTFORMW 「後で掃除が大変だけど、%CALLNAME:MASTER%の前で出す気持ち良さには敵わないわねぇ」
+			CFLAG:9620 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「ふっ、くぅっ…ふぁ、あぁぁぁぁ♪」
+			PRINTFORMW 人前で放尿する快楽に、レティはすっかり心を奪われてしまったようだ
+			CFLAG:9620 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「もう…限界っ、くぁぁああ…」
+			PRINTFORMW もう辛抱たまらなかったのだろう。レティから放出される尿は、一段と勢いが強かった
+			CFLAG:9620 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ…出る、出ちゃう！」
+			PRINTFORMW 「こんなとこ見ないで…お願いだから…んはぁぁっ！」
+			CFLAG:9620 = 1
+		ENDIF
+	;放尿
+	ELSE
+		;恋慕+おもらし癖+野外プレイ
+		IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+			PRINTFORMW 「跪いて、犬みたいにするのもいいかもね」
+			PRINTFORMW 「嫌じゃないわよ？ 外でする時の私は%CALLNAME:MASTER%のペットだもの」
+			PRINTFORMW 「あっ、出ちゃう…ふぁぁ♪」
+			CFLAG:9111 = 5
+		;恋慕+おもらし癖
+		ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+			PRINTFORMW 「んんっ…おしっこ、臭くない？」
+			PRINTFORMW 「またいっぱい出てる…汚いおしっこがこんなに…」
+			CFLAG:9111 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「おしっこするとこ見られて…んっ、ふぁ…」
+			CFLAG:9111 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW (ただの生理現象だもの…仕方ないことなのよ…)
+			PRINTFORMW レティは自分に何かを言い聞かせ、遠慮がちに放尿を始めた
+			CFLAG:9111 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「いくらあなたが変態でも…」
+			PRINTFORMW 「これはちょっと、度が過ぎるわ…！」
+			CFLAG:9111 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;秘貝開帳見せつけ CFLAG9117
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 117
+	;初めて
+	IF CFLAG:9117 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%もこんなになっちゃうのね…」
+			PRINTFORMW 「見てるだけなのも辛いわ…早くいじらせて…？」
+		;レズっ気Lv3以上
+		ELSEIF ABL:レズっ気 >= 3
+			PRINTFORMW 「凄い…ヒクヒクしてる…」
+			PRINTFORMW 「わわっ、そんなに開いて大丈夫？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「そんなもの見せられてもねぇ…」
+			PRINTFORMW 「私も持ってるものだし、反応に困るわ」
+		ENDIF
+			CFLAG:9117 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%のオマ○コ…何か欲しがってるみたいよ…？」
+			PRINTFORMW 「ゆ、指でも入れてあげようか？」
+			PRINTFORMW 今回は見せるだけだと言って、こちらに擦り寄るレティを制止した
+			CFLAG:9117 = 4
+		;レズっ気Lv3以上
+		ELSEIF ABL:レズっ気 >= 3
+			PRINTFORMW 「匂いが漂ってきて…んっ、はぅ…」
+			PRINTFORMW レティは%CALLNAME:MASTER%の秘部から放たれる香りにうっとりとしている
+			CFLAG:9117 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あなた、見られて興奮するタイプなの？」
+			PRINTFORMW 「外で同じことしてくれば？ すぐ襲ってもらえると思うわよ」
+			CFLAG:9117 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クスコ CFLAG9150 終了時 CFLAG8851
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 150 && TEQUIP:21
+	;初めて
+	IF CFLAG:9150 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なんだか痛そう…」
+			PRINTFORMW 「怪我だけは避けてね…？ うん、しょ」
+			PRINTFORMW 足を開いたレティの顔は不安そうだ
+		;それ以外
+		ELSE
+			PRINTFORMW 「んうぅぅ…！ 痛いっ…」
+			PRINTFORMW 「や、やめて…見ないで、そんなとこ見ないでよぉ…！」
+		ENDIF
+			CFLAG:9150 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3 && ABL:露出癖 >= 3
+			PRINTFORMW 「あぁ…またオマ○コ診察してくれるのね…♪」
+			PRINTFORMW 「どう、かな…？ オマ○コ、奥の奥までっ…ちゃんと、見えてるっ…？」
+			PRINTFORMW レティはもはや視姦だけで切羽詰っており、溢れ出る愛液でクスコまで濡らしていた
+			CFLAG:9150 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「うぅ…痛いし、恥ずかしいし…」
+			PRINTFORMW 「%CALLNAME:MASTER%じゃなかったら、こんなこと許さないんだからぁ…」
+			PRINTFORMW レティは泣くのを必死に堪え、自分の秘部が開かれていくのを見つめていた
+			CFLAG:9150 = 4
+		;マゾっ気Lv3以上+露出癖Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3 && ABL:露出癖 >= 3
+			PRINTFORMW 「んぅっ…あぁ…」
+			PRINTFORMW (また見られちゃう…奥までじっくり観察されちゃうのね…)
+			PRINTFORMW 見ているだけだというのに、レティの秘部からは愛液がとめどなく溢れていた
+			CFLAG:9150 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなこと…うぅ…もう、やめて…ひくっ…うぁぁぁ…！！」
+			PRINTFORMW クスコをねじ込まれる痛みからか、それとも秘部を視姦される羞恥からか、
+			PRINTFORMW レティは声をあげて泣き出してしまった
+			CFLAG:9150 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 150 && TEQUIP:21 == 0
+	;恋慕+マゾっ気Lv3以上+露出癖Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3 && ABL:露出癖 >= 3
+		PRINTFORMW 「やぁ…もう見てくれないの…？」
+		PRINTFORMW 「もっと見て欲しいんだけどなぁ…ほら、こんなになってる…」
+		PRINTFORMW レティは秘部に自ら指を入れ、押し広げようとする
+		PRINTFORMW 大事なところに怪我でもされたらかなわないので、%CALLNAME:MASTER%はそっとなだめておいた
+		CFLAG:8851 = 5
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「中がヒリヒリする…。ね、ちょっと休憩しない？」
+		PRINTFORMW クスコが抜かれてホッとしたのか、レティは安堵の溜息をついていた
+		CFLAG:8851 = 4
+	;マゾっ気Lv3以上+露出癖Lv3以上
+	ELSEIF ABL:マゾっ気 >= 3 && ABL:露出癖 >= 3
+		PRINTFORMW 「お、終わり…？」
+		PRINTFORMW レティは物足りなさそうに、クスコが片付けられるのを見つめていた
+		CFLAG:8851 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「ぐすっ…こんなの…あんまりよ…」
+		PRINTFORMW 泣き止まないレティを尻目に、%CALLNAME:MASTER%は次の調教の準備を始めた
+		CFLAG:8851 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG9172 終了時CFLAG8852
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25
+	;初めて
+	IF CFLAG:9172 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「バイブよりは入り易そうだけど…」
+			PRINTFORMW 「んっ…そっと挿れて…ぁぁあ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お腹、苦し…んんっ…」
+			PRINTFORMW 「これ以上は…無理よっ、あうぅ…」
+		ENDIF
+			CFLAG:9172 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「これ、あはっ…抜くときが凄くて…」
+			PRINTFORMW 「だから、んふっ…はぁ…いっぱい入れてね…」
+			CFLAG:9172 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「これ挿れると苦しくて…」
+			PRINTFORMW 「お腹まで、ゴリゴリしちゃうのぉ…ふぁぁあ！」
+			CFLAG:9172 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あっ、んっ、んんっ…」
+			PRINTFORMW 「丸いのが、お尻犯してるぅ…」
+			CFLAG:9172 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて、お尻壊れちゃ…はぐ、んっ」
+			CFLAG:9172 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+	;恋慕+Ａ感覚Lv3以上
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ふあぁぁぁ！ 凄い、抜けてくぅぅぅぅ！！」
+		PRINTFORMW 「はぁ…うぅん…この瞬間、最高…♪」
+		CFLAG:8852 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「ふぁっ、んあぅぅぅぅうう！！」
+		PRINTFORMW 「ん…ふぅ…ふぅ…お尻広がっちゃいそう…」
+		CFLAG:8852 = 3
+	;Ａ感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「や、だめっ…そんなに引っ張らないでぇぇぇぇぇ！！」
+		PRINTFORMW 「はぁ…はぁ…これ、凄い…」
+		CFLAG:8852 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「くぁぁぁぁああ！ はっ…あぁ…」
+		PRINTFORMW 勢い良く引き抜かれたアナルビーズが、レティの肛門から腸まで一気に擦り上げた
+		CFLAG:8852 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め CFLAG9180
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:9180 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちゃんと綺麗にしてるつもりだけど…」
+			PRINTFORMW 「変な臭いがしたら言ってね？ 洗ってくるから」
+		;それ以外
+		ELSE
+			PRINTFORMW 「わかってればわざと汚くしておいたのに」
+			PRINTFORMW 「……やっぱりダメ。そんなの私が耐えられそうにないわ」
+		ENDIF
+			CFLAG:9180 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「はぁ…あぁん…」
+			PRINTFORMW 「もっと舐めて…舌が気持ちいいの…」
+			CFLAG:9180 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「うっ…ひゃぁ…」
+			PRINTFORMW 「舌が柔らかくて、くすぐったい…」
+			CFLAG:9180 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「そんなとこ舐めちゃ…やぁ…」
+			PRINTFORMW 「お尻が痺れて…どんどん熱くなって…あ、ふぁ…」
+			CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「…んっ、変な感触」
+			PRINTFORMW 「大した趣味ね。もちろん褒めてないけど」
+			CFLAG:9180 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;尻愛撫 CFLAG9186
+;-------------------------------------------------
+IF SELECTCOM == 186
+	;初めて
+	IF CFLAG:9186 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「柔らかいでしょ？ 自慢のお尻よ」
+			PRINTFORMW 「ん、そんなに揉みしだいちゃ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「穴をいじられるよりはマシね…」
+			PRINTFORMW レティは呆れ顔でこちらの行為を見つめている
+		ENDIF
+			CFLAG:9186 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「う、ん…お尻揉まれるのも気持ちいいよ…」
+			PRINTFORMW 「でも…そろそろ穴のほうもいじって欲しいなって…」
+			CFLAG:9186 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「やだ…安産型だなんて…」
+			PRINTFORMW レティは顔を赤くして照れている。%CALLNAME:MASTER%との子供でも想像したのだろう
+			CFLAG:9186 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ん、ふ…あぁ…」
+			PRINTFORMW (物足りない…これじゃ生殺しよ…)
+			CFLAG:9186 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻触れて嬉しい？」
+			PRINTFORMW 「そう。私はちっとも楽しくないわ」
+			CFLAG:9186 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首ローター CFLAG:9190
+;-------------------------------------------------
+IF SELECTCOM == 190
+	;初めて
+	IF CFLAG:9190 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ…気持ちいい…」
+			PRINTFORMW 「ブルブル震えて、乳首が…あんっ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ…そんなの当てないで…」
+			PRINTFORMW 「くぅっ、ん…」
+		ENDIF
+			CFLAG:9190 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「あぁぁ…ローター凄い…」
+			PRINTFORMW 「もっと強くして…ギュッて押さえつけて…！」
+			PRINTFORMW 「んあぁぁぁ…！ 乳首いい、いいの！！」
+			CFLAG:9190 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%にしてもらう方が…」
+			PRINTFORMW 「これ、もどかしくて…歯痒いの…」
+			PRINTFORMW レティは潤んだ瞳でジーッとこちらを見ながら訴えてくる
+			CFLAG:9190 = 4
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「はぁ…あっ、んぁっ…」
+			PRINTFORMW 乳首に与えられる絶妙な刺激に、レティは甘い声を漏らした
+			CFLAG:9190 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またローター…」
+			PRINTFORMW 「んくっ…道具に頼るなんて、自信が無い証拠だわ…っ」
+			CFLAG:9190 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG9191　CFLAG8861
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35
+	;初めて
+	IF CFLAG:9191 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お乳搾られちゃうの…？」
+			PRINTFORMW 「%CALLNAME:MASTER%が直に飲んでくれればいいのに…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「もはや家畜扱いね…」
+			PRINTFORMW 「あなたが私をどう見てるかはよくわかったわ…」
+		ENDIF
+			CFLAG:9191 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んん…いっぱい搾られてる…とまらない…」
+			PRINTFORMW 「%CALLNAME:MASTER%が飲む分、ちゃんと残しておいてね…？」
+			CFLAG:9191 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「母乳集めて喜ぶなんて…」
+			PRINTFORMW 「思った通り。精神的に子供なのね」
+			CFLAG:9191 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 16 && TEQUIP:35 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ふぁぁ…いっぱい出たわね…♪」
+		PRINTFORMW 「まだ溢れてる…。さぁ、次は%CALLNAME:MASTER%が吸う番よ」
+		CFLAG:8861 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「で、そんなに集めてどうする気？」
+		PRINTFORMW 「売る…？ 母乳なんて買い手が付くわけないじゃない…」
+		PRINTFORMW 世の中にはマニアックな人間が存在することを知らないらしい
+		CFLAG:8861 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;胸揉み CFLAG:9200
+;搾乳 CFLAG:9626
+;-------------------------------------------------
+;胸揉み
+IF SELECTCOM == 200
+	;初めて
+	IF CFLAG:9200 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%の手、優しくて…心が温まってくるみたい…」
+			PRINTFORMW 「うん、大丈夫。こういう温かさならむしろ大歓迎よ♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっぱりこれが気になるのね」
+			PRINTFORMW 「男ってそんなのばっかりなのかしら…？」
+		ENDIF
+			CFLAG:9200 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「%CALLNAME:MASTER%の手は魔法の手ね…」
+			PRINTFORMW 「ほら、おっぱい揉まれるだけでこんなに…」
+			PRINTFORMW レティが指差す方を見ると、確かに一部が熱い粘液でぐっしょりと濡れていた
+			CFLAG:9200 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「手に収まり切らないでしょ？」
+			PRINTFORMW 「こうやって揉んでもらえば、もっと大きくなっちゃうかもね。くすっ」
+			PRINTFORMW レティは微笑みを浮かべ、嬉しそうに手の感触を楽しんでいる
+			CFLAG:9200 = 4
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「んっ…ふぁぁ…、そこ…」
+			PRINTFORMW (最初からこれぐらい優しければね…)
+			PRINTFORMW やわやわと胸を揉みしだかれ、レティは心地良さそうに甘ったるい声を出した
+			CFLAG:9200 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなことされるために大きくなったんじゃないんだけど…」
+			PRINTFORMW 「大きくなった理由？ 知らないわ」
+			CFLAG:9200 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;搾乳
+IF SELECTCOM == 626
+	;初めて
+	IF CFLAG:9626 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あんまり出しちゃだめよ…？」
+			PRINTFORMW 「これは%CALLNAME:MASTER%が吸う分なんだから…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめっ…搾っちゃ、ふぁっ…！」
+			PRINTFORMW 「うぅ…出てる…こんなに…」
+		ENDIF
+			CFLAG:9626 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋噴乳中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:噴乳中毒 >= 3
+			PRINTFORMW 「もっとおっぱい搾って、ギュッってして！」
+			PRINTFORMW 「お乳出すの気持ちいい！！ あぁん！！」
+			PRINTFORMW 母乳を噴き出す度、レティは快楽交じりの嬌声をあげた
+			CFLAG:9626 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ふあぁぁ…いっぱい出てる…」
+			PRINTFORMW 「%CALLNAME:MASTER%の分が無くなっちゃう…」
+			PRINTFORMW レティは無意識のうちに指先に母乳を絡め、%CALLNAME:MASTER%の口元に持っていこうとしている
+			CFLAG:9626 = 4
+		;噴乳中毒Lv3以上
+		ELSEIF ABL:噴乳中毒 >= 3
+			PRINTFORMW 「こんなことで…ぁあっ、良くなってたら…」
+			PRINTFORMW 「…これから先、どうするのよぉ…んんっ！」
+			PRINTFORMW 体が母乳を出して感じるようになった一方、心はまだ快楽を受け入れきれていないようだ
+			CFLAG:9626 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「母乳が勿体無いわね…って、そういう意味じゃないわ」
+			PRINTFORMW 「そもそもこんな体にしなければ済んだ話でしょ？」
+			CFLAG:9626 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首責め CFLAG:9201
+;-------------------------------------------------
+IF SELECTCOM == 201
+	;初めて
+	IF CFLAG:9201 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「おっぱいはちょっと鈍感だから…」
+			PRINTFORMW 「うん、気持ち良くなれるように開発して…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ここ触れば感じると思ってるの…？」
+			PRINTFORMW 「浅知恵ね……んっ」
+		ENDIF
+			CFLAG:9201 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「ぁあ…んっ！ それいい…乳首が凄いの…」
+			PRINTFORMW 「もっとコリコリして…引っ張って…ん、はぁ！」
+			PRINTFORMW リクエストに応えると、レティは媚びるような目つきで更なる責めを求めた
+			CFLAG:9201 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぁ…先っぽジンジンしてくる…」
+			PRINTFORMW 「そんなに弾いちゃ…あっ、んぅ…」
+			CFLAG:9201 = 4
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「だ、めぇ…それ以上いじらないで…」
+			PRINTFORMW 「感じたくないのに…っ、ふぁん！」
+			CFLAG:9201 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「乳首が硬くなってる？」
+			PRINTFORMW 「勝手になるんだもの。仕方ないじゃない」
+			CFLAG:9201 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首吸い CFLAG:9203
+;-------------------------------------------------
+IF SELECTCOM == 203
+	;初めて
+	IF CFLAG:9203 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「甘えんぼさんね…ふふっ」
+			PRINTFORMW レティの表情は%CALLNAME:MASTER%を慈しむように柔らかくなっている
+		;それ以外
+		ELSE
+			PRINTFORMW 「か、噛んだりしないでしょうね…？」
+			PRINTFORMW レティは警戒しながら、恐る恐る胸元をさらけ出した
+		ENDIF
+			CFLAG:9203 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「う、んっ…%CALLNAME:MASTER%の頭撫でてあげたいのに…」
+			PRINTFORMW 「気持ち良くて…集中出来ないわ…ふぁっ、あっ！」
+			PRINTFORMW レティは時折快楽に仰け反ったが、それでも%CALLNAME:MASTER%の頭から手を離すことはなかった
+			CFLAG:9203 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW (あぁ…%CALLNAME:MASTER%がおっぱい吸ってる…)
+			PRINTFORMW レティはまるで母親のような優しい笑みで、%CALLNAME:MASTER%の頭を撫で続けている
+			CFLAG:9203 = 4
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「そんなに強く吸ったら…んぁぁ！」
+			PRINTFORMW 「せめて…音立てないで、はぁ、んっ！」
+			CFLAG:9203 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ…胸が汚れちゃう…」
+			CFLAG:9203 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;母乳飲み CFLAG:9204
+;-------------------------------------------------
+IF SELECTCOM == 204
+	;初めて
+	IF CFLAG:9204 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「折角お乳が出るようになったんだもの」
+			PRINTFORMW 「まずは%CALLNAME:MASTER%に味見してもらわないと…」
+			PRINTFORMW レティはタプタプになった乳房を、惜しげもなく%CALLNAME:MASTER%の口元に持っていった
+		;それ以外
+		ELSE
+			PRINTFORMW 「物好きね…大人が飲むものじゃないでしょうに…」
+		ENDIF
+			CFLAG:9204 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋噴乳中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:噴乳中毒 >= 3
+			PRINTFORMW 「啜る音、凄くエッチね…」
+			PRINTFORMW 「ぁあ…♪ ねぇ、もっと強く吸って…」
+			PRINTFORMW レティは%CALLNAME:MASTER%の頭を抱え込み、乳首を押し付けてきた
+			CFLAG:9204 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ、おいしそうに吸っちゃって…」
+			PRINTFORMW 「でも%CALLNAME:MASTER%に飲んでもらえて嬉しいわ」
+			CFLAG:9204 = 4
+		;噴乳中毒Lv3以上
+		ELSEIF ABL:噴乳中毒 >= 3
+			PRINTFORMW 「うぁ…ジュルジュルいってる…」
+			PRINTFORMW 「良くなんてないのに…どうして止まらないのよぉ…！」
+			PRINTFORMW 心と完全に乖離してしまった体に、レティの悲愴な叫びが浴びせられる
+			CFLAG:9204 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「つまらないわ…私はあなたの母親じゃないのよ？」
+			PRINTFORMW レティの目は明らかに冷めていた
+			CFLAG:9204 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縦パイズリ CFLAG:9208
+;-------------------------------------------------
+IF SELECTCOM == 208
+	;初めて
+	IF CFLAG:9208 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「普通にオマ○コに挿れるほうが気持ちいいと思うけどなぁ…」
+			PRINTFORMW 「おっぱいだからいい？ そういうものなの…？」
+			PRINTFORMW レティは多少驚いたようだが、言われるままに胸を寄せた
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんなやり方もあるのね…」
+			PRINTFORMW 「何？ 私が楽だからいいと思ってるだけよ」
+		ENDIF
+			CFLAG:9208 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上+奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「おっぱいが…オマ○コみたいになって…」
+			PRINTFORMW 「なんか複雑だけど…あぁっ、こっちも気持ちいい…」
+			CFLAG:9208 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「未だによくわからないけど…」
+			PRINTFORMW 「私で気持ち良くなってくれてるなら、それだけで充分よ…」
+			CFLAG:9208 = 4
+		;Ｂ感覚Lv3以上+奉仕精神Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「ほんとにこれだけでいいの…？」
+			PRINTFORMW 「んっ…あなたがそう言うなら、いいけど…」
+			PRINTFORMW (胸の間が熱くて、私も…)
+			CFLAG:9208 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW (早く終わらないかしら…)
+			PRINTFORMW レティはやれやれ、と言った表情で胸を差し出している
+			CFLAG:9208 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリフェラ CFLAG:9209
+;-------------------------------------------------
+IF SELECTCOM == 209
+	;初めて
+	IF CFLAG:9209 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これはいいかもね」
+			PRINTFORMW 「いっぱい気持ち良くしてあげられそうだもの…はむっ、んんっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「私の胸も大きい方だと思うけど、まさかそれでも飛び出てくるなんて…」
+			PRINTFORMW 「えっ、舐めるの？ 欲張りね…」
+		ENDIF
+			CFLAG:9209 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋Ｂ感覚Lv3以上+奉仕精神Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「気持ち良さそうね…私のおっぱい気に入ってくれてるんだ…」
+			PRINTFORMW 「かくいう私も…、んっ。ちゅ、じゅるるる…」
+			CFLAG:9209 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「オチ○チン窮屈じゃない…？」
+			PRINTFORMW 「舌の感触だけで言えば…このままでも良さそうね…くちゅ、ちゅぅぅぅ…」
+			CFLAG:9209 = 4
+		;Ｂ感覚Lv3以上+奉仕精神Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「どっちに集中すればいいのかしら…」
+			PRINTFORMW 「両方なんて…。難しい注文ね。んんっ、じゅ、ちゅる…」
+			CFLAG:9209 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「これ結構疲れるのよ…早めに切り上げてね」
+			PRINTFORMW 「ん、ぶっ…むぅ…、ちゅ」
+			CFLAG:9209 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG9220
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:9220 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%が叩きたいって言うなら…」
+			PRINTFORMW 「でも、ちょっと怖いかな」
+		;それ以外
+		ELSE
+			PRINTFORMW 「暴力で従わせようとする……下衆ね」
+			PRINTFORMW 「生憎だけど、私は痛みでは折れないわよ？」
+		ENDIF
+			CFLAG:9220 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「最初はヒリヒリ痛かっただけなのに…」
+			PRINTFORMW 「くぁん！ 今はもう、これがたまらないの…んっ！」
+			PRINTFORMW 「痛いの好きぃ…もっと、もっと叩いて！ ふぁぁ！！」
+			CFLAG:9220 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「こんなことより、もっと気持ちいいことしたいなぁ…ひぅっ」
+			CFLAG:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「くっ、はぁ…はぁ…んくっ」
+			PRINTFORMW 「屈してない…私は屈してない…っ」
+			PRINTFORMW 口とは裏腹に、レティの秘部はじっとりと湿っていた
+			CFLAG:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅっ！ ま、まだまだね…」
+			PRINTFORMW レティは余裕の笑みを浮かべている
+			CFLAG:9220 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG9221
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:9221 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そういう趣向は聞いたことあるわ」
+			PRINTFORMW 「でもそれってそんなに痛…んああ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「また変な物持ってきて…」
+			PRINTFORMW 「言われなくてもそれの使い道ぐらいわかるわよ」
+		ENDIF
+			CFLAG:9221 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あっ、あぁっ…♪ パシンパシンいって…」
+			PRINTFORMW 「鞭、凄い…！ 痛いのに…それが気持ちいいのぉ！」
+			PRINTFORMW 「止めないで…もっとぶって、このどうしようもない変態に、もっとお仕置きしてぇ！！」
+			CFLAG:9221 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「痛い…痛いから…」
+			PRINTFORMW 「悪いことしたなら謝るわ…だからもう、許して…あぅ…！」
+			PRINTFORMW %CALLNAME:MASTER%はレティの涙目の懇願を無視し、鞭を振るい続けた
+			CFLAG:9221 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「だめ、はぁっ…それ以上叩いたら、んぁ…！」
+			PRINTFORMW 「気持ち良くなっちゃう…！ ふあぁぁ！！」
+			CFLAG:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、ぐっ…うぅ…！」
+			PRINTFORMW レティはベッドのシーツを握り締めながら、鞭の激痛に懸命に耐えている
+			CFLAG:9221 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG9222
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:9222 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「さすがにそれは冗談…よね？」
+			PRINTFORMW 「%CALLNAME:MASTER%の目、凄く怖いわ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ、それは絶対嫌っ！」
+			PRINTFORMW 「離してっ、やめてっ！！ くっ、ああぁぁぁぁっ！！」
+		ENDIF
+			CFLAG:9222 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「体中穴だらけ……あぅ、はぁ…ん、はぁ…」
+			PRINTFORMW 「%CALLNAME:MASTER%がつけてくれた痕…ぁ、んあ…」
+			PRINTFORMW レティは股を濡らしながら、針の傷痕を愛しそうに眺めている
+			CFLAG:9222 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「い、ぎぃ…んんっ…やぁ…」
+			PRINTFORMW 「お願い…優しい%CALLNAME:MASTER%に戻って…くはぁぁ！！」
+			CFLAG:9222 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「針が…いっぱい、くふっ、あぁん…」
+			PRINTFORMW (体が慣れちゃったのかな…もう、戻れないかも…)
+			CFLAG:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こんな生き地獄、もう嫌ぁ…」
+			PRINTFORMW 「死んだほうがマシよ…うぅ…」
+			CFLAG:9222 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG9224　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:9224 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「わざわざ縛らなくても、私は逃げたりしないのに…」
+			PRINTFORMW 「でも…今から好きなようにされると思うと…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「縄ねぇ…正統派と言えば正統派だわ」
+			PRINTFORMW 「やっぱり体を自由にしておくのは不安？ 小心者ね」
+		ENDIF
+			CFLAG:9224 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「%CALLNAME:MASTER%に身も心も束縛されて…」
+			PRINTFORMW 「そう考えると、この感触の虜かも…」
+			CFLAG:9224 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「固結びはしないほうがいいわよ？」
+			PRINTFORMW 「解くのが大変だしね。%CALLNAME:MASTER%も面倒は嫌でしょう？」
+			PRINTFORMW キツく結ばれると痛みが強いので、どうにかそれを避けようとしているらしい
+			CFLAG:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「間抜けな絵面よね…。こうやって縛られるのをじっと待ってるのって」
+			PRINTFORMW (どうして抵抗しないんだろう、私…)
+			CFLAG:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んんっ…食い込んでくる…」
+			PRINTFORMW 「キツいわ。もうちょっと緩めてくれない？」
+			PRINTFORMW それでは縄で縛る意味が無いので無視した
+			CFLAG:9224 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「…ふぅ。これはこれで、ありなのかも…」
+		PRINTFORMW レティは解いた縄を見つめてブツブツ言っている
+		PRINTFORMW 「でもやっぱり自由が一番ね。いつでも抱きしめてあげられるし」
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「縄の痕がくっきり残ってる…」
+		PRINTFORMW 「この痛みはしばらく残りそうね…いたた…」
+		CFLAG:8872 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41
+	;初めて
+	IF CFLAG:9225 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「愛しい人の顔を見えなくするなんて、意地悪ね」
+			PRINTFORMW 「でもちょっと、ゾクゾクしてきたわ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あなたの顔を見なくて済むなら良いわ」
+		ENDIF
+			CFLAG:9225 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「何されちゃうのかしら…はぁ…はぁ…」
+			PRINTFORMW 目隠ししただけでも興奮しているらしい
+			CFLAG:9225 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「視界を奪われると感覚が研ぎ澄まされるわね」
+			PRINTFORMW 「%CALLNAME:MASTER%の気配も息遣いも、敏感に感じ取れそう」
+			CFLAG:9225 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「心の準備が出来ないわね…」
+			PRINTFORMW レティは何をされるのかと身構えてはいるが、その吐息は荒くなっている
+			CFLAG:9225 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「何も見えなくなった方が幸せなのかもね…」
+			CFLAG:9225 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「やっぱり見つめ合いながらする方が好きかな」
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「視界が開けると日常が戻ってきていた…」
+		PRINTFORMW 「そんなわけない、か…」
+		CFLAG:8871 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG9230
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:9230 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んっ…うぅ…、むぅ、んぶっ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、ぶぅっ！？ んん～っ！！」
+			PRINTFORMW 「ぷはっ…けほっ、けほっ。いきなりなんてことするのよ…」
+		ENDIF
+			CFLAG:9230 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「んんっ…！ んむぅ…じゅる、ずじゅるるるるる…」
+			CFLAG:9230 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぶっ…むっ、ふんん…。むぅ？」
+			PRINTFORMW 「んはっ。遠慮しないで良いよ…？ 好きなように突き入れて…」
+			CFLAG:9230 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んじゅ…ちゅるる…んむぅっ！ ん、ぐっ…」
+			CFLAG:9230 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ～！ ん、ふむっ、んはぁ…」
+			PRINTFORMW 「相変わらず酷い人ね…」
+			CFLAG:9230 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;優しくする CFLAG9320
+;-------------------------------------------------
+IF SELECTCOM == 320
+	;初めて
+	IF CFLAG:9320 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん…ダメよ…」
+			PRINTFORMW 「もっと好きになっちゃうわ…ふふっ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「こ、こんなことで女が落ちると思ったら…」
+			PRINTFORMW (ドキドキがとまらない…どうしちゃったの…？)
+		;それ以外
+		ELSE
+			PRINTFORMW 「何する気…？」
+			PRINTFORMW 優しく接したつもりが、かえって警戒を招いたようだ
+		ENDIF
+			CFLAG:9320 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+			PRINTFORMW 「抱いてくれるだけでも満足なのに…」
+			PRINTFORMW 「こんなに愛してもらったら、どうにかなっちゃうわ…」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「こんなに幸せでいいのかしら…」
+			PRINTFORMW 「たまにこの幸せが逃げていっちゃうんじゃないかって、不安になる時があるの」
+			PRINTFORMW 「おかしいよね…？ %CALLNAME:MASTER%はこんなに近くに居るのにね…」
+		ELSE
+			PRINTFORMW 「初めて会った時はあんなに嫌いだったのに…」
+			PRINTFORMW 「今じゃ%CALLNAME:MASTER%がいない生活が考えられなくなったわ…」
+			PRINTFORMW 「私の心まで奪った責任、とってくれなきゃ嫌よ…？」
+		ENDIF
+			CFLAG:9320 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「んもぅ、好きにしなさい」
+			PRINTFORMW (胸の奥がキュンとする…この人が近くにいるって思うだけで…)
+			CFLAG:9320 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「アメとムチのつもり？ 残念だけど、その目論見は外れるわよ」
+			PRINTFORMW 厚い氷で閉ざされたように、レティの心は溶けない
+			CFLAG:9320 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指チュパ CFLAG9327
+;-------------------------------------------------
+IF SELECTCOM == 327
+	;初めて
+	IF CFLAG:9327 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「男のロマン…？ な、なんだかわからないけど…」
+			PRINTFORMW 「%CALLNAME:MASTER%がして欲しいなら、喜んでするわ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「他の恥ずかしいことに比べればマシね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「自分で舐めてれば…？」
+		ENDIF
+			CFLAG:9327 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちゅ、ちゅぴ…んっ、なんだか%CALLNAME:MASTER%にマーキングしてるみたい…」
+			CFLAG:9327 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「安いものね…。あなたの楽しみも、私のプライドも…」
+			PRINTFORMW 「ん、ちゅ…」
+			CFLAG:9327 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW (人に指なんか舐めさせて、楽しいのかしら…)
+			CFLAG:9327 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;首筋耳裏舐め CFLAG9328
+;-------------------------------------------------
+IF SELECTCOM == 328
+	;初めて
+	IF CFLAG:9328 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃう…！ もう、いきなりはズルいわよ？」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「んぁ…！ これ、だめぇ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ナメクジが這ってるようにしか思えないわ」
+		ENDIF
+			CFLAG:9328 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「隅から隅まで味わってね…ふぁ……♪」
+			PRINTFORMW 「キスマークでもつけてみる？」
+			CFLAG:9328 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「ぁ… 力が抜けちゃう…」
+			PRINTFORMW レティの強張った筋肉が少しずつ緩慢していくのが見て取れた
+			CFLAG:9328 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「止めてよ、気持ち悪い」
+			CFLAG:9328 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ぱふぱふ CFLAG9340
+;レティさんは包容力に満ちた女性だと信じてる
+;-------------------------------------------------
+IF SELECTCOM == 340
+	;初めて
+	IF CFLAG:9340 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「甘えるのも良いけど、甘えられるのも嬉しいわね」
+			PRINTFORMW レティは幸せそうに%CALLNAME:MASTER%の頭を撫でている
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「このスペースが気に入っちゃった？ そう、落ち着くのね…」
+			PRINTFORMW (案外優しさに飢えてるのかしら…？)
+		;それ以外
+		ELSE
+			PRINTFORMW (このまま窒息させれば…)
+			PRINTFORMW 何か嫌な予感がしたので、すぐに胸から顔を離した
+		ENDIF
+			CFLAG:9340 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「%CALLNAME:MASTER%ってほんと、おっぱい大好きなのね」
+			PRINTFORMW 「ふふっ。よしよし、いつでも飛び込んで来てね」
+			PRINTFORMW 愛でるつもりが思いっきり愛でられてしまったらしい
+			CFLAG:9340 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「こ、このほうが良いんでしょう？」
+			PRINTFORMW レティは双丘を、%CALLNAME:MASTER%の頭を挟むように寄せた
+			CFLAG:9340 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「私の胸はオモチャじゃないっていうのに…」
+			CFLAG:9340 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸枕 CFLAG9341
+;-------------------------------------------------
+IF SELECTCOM == 341
+	;初めて
+	IF CFLAG:9341 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「こうやってのんびりするのも悪くないわね」
+			PRINTFORMW 「柔らかい？ くすっ、お役に立てて光栄よ」
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「そりゃ、サイズ的に出来なくはないけど…」
+			PRINTFORMW 「もぅ…わかったわよ。さっさと来なさい」
+		;それ以外
+		ELSE
+			PRINTFORMW 「実質何もしなくていいんだもの。楽だわ」
+			PRINTFORMW 「胸の上の重みが無ければもっとくつろげるんだけどね」
+		ENDIF
+			CFLAG:9341 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「寝ちゃだめよ？ お楽しみはこれからなんだから」
+			PRINTFORMW 「添い寝は愛してもらった後で、ね？」
+			PRINTFORMW レティは口元にちょこんと指を当て、穏やかに微笑んだ
+			CFLAG:9341 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW 「随分気持ち良さそうね。朗らかな顔しちゃって」
+			PRINTFORMW 「子守唄でも歌いましょうか？」
+			CFLAG:9341 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「このまま寝てくれれば、隙の1つも出来るのかしら…」
+			CFLAG:9341 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お嫁さんで楽しむ CFLAG9347
+;-------------------------------------------------
+IF SELECTCOM == 347
+	;初めて
+	IF CFLAG:9347 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この時は旦那様って呼んだ方が良いのかな？」
+			PRINTFORMW 「普段通りじゃ気分が出ないし…どうしよう。ダ、ダーリンとか…？」
+			PRINTFORMW それはかなり気恥ずかしいので勘弁して欲しい
+		;屈服刻印Lv2以上
+		ELSEIF MARK:2 >= 2
+			PRINTFORMW 「お、お嫁さんだなんて…いやね、もう…」
+			PRINTFORMW (それじゃこの人は、私をお嫁さんにしたがってるってこと…？)
+		;それ以外
+		ELSE
+			PRINTFORMW (なんでこんな恥ずかしいこと…)
+			PRINTFORMW レティは顔を真っ赤にしてワナワナと震えている
+		ENDIF
+			CFLAG:9347 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「幸せすぎてクラクラしてきたわ…」
+			PRINTFORMW 「ずっと大切にしてね、大好きよ…」
+			CFLAG:9347 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 >= 3
+			PRINTFORMW レティは両頬を押さえてじっとこちらを見ていた。よく見ると頬が赤く染まっている
+			PRINTFORMW (お嫁さん…。私がお嫁さん…)
+			CFLAG:9347 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いつか本当のお婿さんにしてもらいたいわね…」
+			PRINTFORMW 「あなたは間違いなく候補に入らないから想像しても無駄よ」
+			CFLAG:9347 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG9350 解除 CFLAG8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:9350 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お風呂場かぁ。ちょっと不安ね。ツルツル滑るし」
+			PRINTFORMW 「ちゃんと支えてね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ、お風呂？ それはありがたいわ」
+			PRINTFORMW 「……なんでついてくるの？」
+		ENDIF
+			CFLAG:9350 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「背中流してあげるわね」
+			PRINTFORMW 「それだけじゃ済まないだろうって？ さぁ、どうかしら♪」
+			PRINTFORMW 最近レティに主導権を奪われてる気がしてならない
+			CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「一人でゆっくり入りたいわ…」
+			PRINTFORMW 「あなたと一緒だと体を洗う意味があまり無いのよ」
+			CFLAG:9350 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 58 && TEQUIP:53 == 0
+	;初めて
+	IF CFLAG:8824 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「意外と怖くないものね。また一緒に入りたいな…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「一人になれる空間が欲しい…」
+		ENDIF
+			CFLAG:8824 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「さっぱりしたわね。それじゃ続きをしましょうか」
+			CFLAG:8824 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「結局入った意味が無かったわね」
+			CFLAG:8824 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG9351 終了時CFLAG8826
+;-------------------------------------------------
+IF SELECTCOM == 351 && TEQUIP:54
+	;初めて
+	IF CFLAG:9351 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うんと綺麗にしておかないと…」
+			PRINTFORMW 「私だって女よ。好きな人の前ではいつだって綺麗でいたいじゃない」
+		;それ以外
+		ELSE
+			PRINTFORMW 「シャワーを浴びてる時ぐらいじっとしててよ…」
+		ENDIF
+			CFLAG:9351 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁぁ…気持ちいい…」
+			PRINTFORMW 「%CALLNAME:MASTER%の愛の証が落ちちゃうのが残念だけど…」
+			CFLAG:9351 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ちょっと、どこに当ててるのよ…！」
+			CFLAG:9351 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 351 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:8826 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 水がレティの白い肌を伝い、ポトリと落ちる
+			PRINTFORMW 髪は水分を含んでいつもよりしなやかになり、レティの姿をまた違う趣に変えていた
+			PRINTFORMW その様子がやけに扇情的で、思わず水も滴る良い女だと言ってしまう
+			PRINTFORMW 「もう…褒め過ぎよ？ でもそう思ってもらえたなら嬉しいわ」
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうせまた汚されるんでしょうね…」
+		ENDIF
+			CFLAG:8826 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「さて、綺麗に洗い流したし」
+			PRINTFORMW 「またたくさん付けてくれる？ %CALLNAME:MASTER%の愛の証…」
+			CFLAG:8826 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「このままあなたとの関係も洗い流したかったわ」
+			PRINTFORMW 「一時的にでもすっきり出来た事を喜ぶしかないのかしら…」
+			CFLAG:8826 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG9352
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:9352 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「何かその手のお店みたいね」
+			PRINTFORMW 「でも私ならお金もかからないし、遠慮も要らないし、お得よ？ ふふっ」
+			PRINTFORMW 
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「私はタオルじゃないのに…もぅ…」
+			PRINTFORMW レティはそう言いながらも、体中に泡の素を塗りつけ、奉仕を開始した
+		;それ以外
+		ELSE
+			PRINTFORMW 「今だけ体をコチコチに固められたらいいのにね」
+			PRINTFORMW 「それなら存分に擦り付けてあげるんだけど」
+		ENDIF
+			CFLAG:9352 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「体中擦れて…私もなんだか…あんっ…」
+			PRINTFORMW %CALLNAME:MASTER%の体には泡のほかに、明らかな異質な粘液が擦り付けられている
+			PRINTFORMW そんな行為に夢中になっているレティは、見る見るうちに興奮の度合いを高めていった
+			CFLAG:9352 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「はぁ…はぁ…これが気持ちいいの…？」
+			PRINTFORMW 「んっ、んっ…全身が撫で回されてるみたいで…ぁあ…」
+			CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「泡じゃなくて血でいっぱいにしてやりたいわ…」
+			PRINTFORMW 後ろから聞こえてくる恨み節に聞き耳を立てることもなく、レティの体の柔らかさを楽しんだ
+			CFLAG:9352 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG9500　終了時CFLAG8901
+;触手関係は後日必ず加筆します
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:9500 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「何この子？ えっ、この子とするの？」
+			PRINTFORMW 「うぅ～ん、怖いわ。ちゃんと制御しておいてね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「遂に変な生き物まで出たわね…」
+			PRINTFORMW 「あなたより気持ち良くしてくれそうだわ」
+			PRINTFORMW 強がってはいるが、レティの顔は恐怖で震えている
+		ENDIF
+			CFLAG:9500 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+触手中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:触手中毒 >= 3
+			PRINTFORMW 「何か可愛く見えてきたかも…」
+			PRINTFORMW 「よしよし。ちゃんと気持ち良くしてね？」
+			PRINTFORMW レティはそう言って触手の一部を優しく撫でた
+			CFLAG:9500 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「まだ少し怖いから…」
+			PRINTFORMW 「手、握ってて欲しいなぁ…」
+			CFLAG:9500 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あなたの隣にその子がいると、何か似合うわね」
+			PRINTFORMW 「性欲の塊同士、一人と一匹で仲良く絡み合ってればいいのに」
+			CFLAG:9500 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;恋慕+触手中毒Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:触手中毒 >= 3
+		PRINTFORMW 「今日はこれで終わり？ あ、触手が…」
+		PRINTFORMW レティは少し名残惜しそうにしたが、気持ちを切り替えたらしく、こちらを向きなおした
+		PRINTFORMW 「さぁ、%CALLNAME:MASTER%もあの子に負けてられないわよ。いっぱい可愛がってね」
+		CFLAG:8901 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW レティは触手から解放されると、一目散に%CALLNAME:MASTER%のもとに駆け寄り、抱きついてきた
+		PRINTFORMW 「ぐすっ…怖かった…凄く怖かったよぉ…」
+		PRINTFORMW 胸に顔をうずめて泣きじゃくるレティを、%CALLNAME:MASTER%は強く抱きしめた
+		CFLAG:8901 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「こんな下等な生き物にまでいい様にされちゃうなんて…」
+		PRINTFORMW 「あなたには鬼畜外道の称号がお似合いだわ」
+		CFLAG:8901 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係（12をキャラ番号に置換）
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_12_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、12を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K12_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K12_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG 221～260を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG8001
+;-------------------------------------------------
+P = PALAM:10 + UP:10
+IF P > PALAMLV:2 && CFLAG:TARGET:8001 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「うぅん…ちょっといじってくれればすぐ濡れるのに…」
+			PRINTFORMW 「ふぁ…ぬるぬるする…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「%CALLNAME:MASTER%が可愛がってくれるから…」
+			PRINTFORMW 「ねばねばのおツユ…いっぱい出ちゃったわ…」
+		ENDIF
+	;それ以外
+	ELSE
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORMW 「女一人濡らす自信が無いのね」
+			PRINTFORMW 「賢明だわ。乾いたまま突っ込まれるよりは」
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ…濡れちゃってる…」
+			PRINTFORMW 「勝手に出てくるだけよ…勘違いしないほうがいいわ…」
+		ENDIF
+	ENDIF
+		CFLAG:TARGET:8001 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG8002
+;-------------------------------------------------
+P = PALAM:13 + UP:13
+IF P > PALAMLV:2 && CFLAG:8002 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「こんなの使わなくても…」
+			PRINTFORMW 「でも、はぁ…はぁ…、嫌いじゃないわ…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぁっ…あぁ…体の準備は出来たみたい…」
+			PRINTFORMW 「きて…。もう我慢できないの…」
+		ENDIF
+	;それ以外
+	ELSE
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORMW 「んん…変な気分に…」
+			PRINTFORMW 「こんな気持ち…知らない…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「熱いの…体が熱い…」
+			PRINTFORMW 「はぁ…はぁ…雪女を火照らせるなんて…」
+			PRINTFORMW レティは潤んだ瞳で、放心したようにこちらを見つめている
+		ENDIF
+	ENDIF
+		CFLAG:8002 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG8003
+;-------------------------------------------------
+P = PALAM:15 + UP:15
+IF P > PALAMLV:2 && CFLAG:8003 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んふっ…エッチな姿、いっぱい見られちゃったわね…」
+		PRINTFORMW 「もっと恥ずかしくしてもいいよ…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「何…？ この感じ…」
+		PRINTFORMW 「恥ずかしいことされてるのに…」
+	ENDIF
+		CFLAG:8003 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG8004
+;-------------------------------------------------
+P = PALAM:17 + UP:17
+IF P > PALAMLV:2 && CFLAG:8004 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「お願い…許して…」
+		PRINTFORMW 「もっと頑張るから…酷いことしないで…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「…うぅ…誰か、誰か助けて…もう嫌…」
+	ENDIF
+		CFLAG:8004 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてC絶頂 CFLAG8005
+;-------------------------------------------------
+IF NOWEX:0 > 0 && CFLAG:8005 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んあっ！ クリがっ、クリがおかしくなっちゃう！」
+		PRINTFORMW 「イっちゃう！  ひゃぁぁぁぁああん！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やだっ…イっちゃだめ！ このままじゃ…ふぁぁぁぁん！」
+	ENDIF
+		CFLAG:8005 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてV絶頂 CFLAG8006
+;-------------------------------------------------
+IF NOWEX:1 > 0 && CFLAG:8006 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「オマ○コくるっ、くるのぉぉぉぉ！」
+		PRINTFORMW 「凄いのきたのっ！ん、ふぁ、あぁぁぁぁああん！！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「中で…！ 中でイかされちゃう…！ ん、くぁぁぁぁああ！！」
+	ENDIF
+		CFLAG:8006 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてA絶頂 CFLAG8007
+;-------------------------------------------------
+IF NOWEX:2 > 0 && CFLAG:8007 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あんっ、ん、くっ、凄いの！ 熱いのぉっ！」
+		PRINTFORMW 「お尻でイくぅっ！ ひ、んぁぁぁぁぁぁああ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「お尻なんかで…！ いやっ、こんなところでイきたくない！！」
+		PRINTFORMW 「んはあああぁぁぁぁぁ！！」
+	ENDIF
+		CFLAG:TARGET:8007 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてB絶頂 CFLAG8008
+;-------------------------------------------------
+IF NOWEX:3 > 0 && CFLAG:8008 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「ん、はぁっ…！ おっぱいでイきそう…！！」
+		PRINTFORMW 「いい…！ 先っぽ痺れて…！ んはっ、んぁぁぁぁああん！！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「きちゃう！ 胸の奥からきちゃう！」
+		PRINTFORMW 「だめっ、こないでっ、こないでぇぇぇ！！」
+	ENDIF
+		CFLAG:TARGET:8008 = 1
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG8009
+;-------------------------------------------------
+A = UP:20 + UP:21
+IF TFLAG:0 > 0 && CFLAG:8009 == 0
+	;恋慕かつ主人のセックスによる処女喪失
+	IF TFLAG:18
+		;恋慕かつ反発刻印未取得
+		IF TALENT:TARGET:恋慕 == 1 && (A < 500 || TFLAG:150 == 1)
+			PRINTFORMW 「んくっ、はぁ…ふぁぁ…」
+			PRINTFORMW 「これで…本当に、あなたの女になれたのね…」
+			PRINTFORMW 「ねぇ、もうちょっと繋がったままでいい？ この感触を刻み込みたいの…」
+			PRINTFORMW 「…んっ、ちゅっ。好きぃ…大好きぃ…♪」
+		;恋慕かつ反発刻印取得
+		ELSE
+			PRINTFORMW 「初めてだから…優しくして欲しかったのに…」
+			PRINTFORMW 「うぅ…馬鹿ぁ…」
+			PRINTFORMW レティはさめざめと泣きながら、そっぽを向いてしまった
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ん、ちょっと残念だけど…」
+			PRINTFORMW 「初めてを捧げられたのが…%CALLNAME:MASTER%なことには変わりないわ…」
+			PRINTFORMW こちらを気遣ってか、辛そうながらも笑顔で語りかけるレティ
+			PRINTFORMW 初体験をセックスで奪わなかったことに、%CALLNAME:MASTER%は少し罪悪感を感じた
+		;それ以外
+		ELSE
+			PRINTFORMW 「いつか奪われると思ってたわ…。 覚悟はしてた…」
+			PRINTFORMW 「ただその方法を考えると、忘れることは無理そうね…」
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「私なんかには、挿れたくないってこと…？」
+			PRINTFORMW そうではないことを伝えたが、レティは終始寂しそうな顔をしていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「…うぅ、こんなことで…」
+			PRINTFORMW 「覚悟してたとはいえ、あんまりな仕打ちよ…」
+		ENDIF
+	ENDIF
+		CFLAG:TARGET:8009 = 1
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精させた CFLAG8010 CFLAG8011
+;-------------------------------------------------
+IF TFLAG:12 > 0 || TFLAG:11 > 0
+	;アナルセックスか？
+	IF TFLAG:12 > 0
+		;恋慕+Ａ感覚Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あぁ…♪ お尻にいっぱい…精液が…」
+			PRINTFORMW 「熱くて…溶けちゃいそうよ…」
+			CFLAG:8011 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「凄い…いっぱい出したわね」
+			PRINTFORMW 「%CALLNAME:MASTER%が気持ち良いいなら…お尻も悪くないわね」
+			CFLAG:8011 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「お尻…凄く熱くなってる…」
+			PRINTFORMW 「んんっ…精液がお腹に染み込んでいくみたい…」
+			CFLAG:8011 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「はぁ…はぁ…」
+			PRINTFORMW 「こんなに出して…。私のお尻、気持ち良かったんだ…？」
+			CFLAG:8011 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ～…気持ち悪い…」
+			PRINTFORMW 「お腹がパンパンで…苦しいよぉ…」
+			CFLAG:8011 = 1
+		ENDIF
+	;それ以外（膣内射精）
+	ELSE
+		;恋慕+Ｖ感覚Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「オマ○コいっぱい…。やっ、漏れちゃう…」
+			PRINTFORMW 「勿体無いわ…。んぅっ、くぅん…」
+			PRINTFORMW 膣腔から溢れそうな精液をレティは指先に絡め、また膣内に戻そうとしている
+			CFLAG:8010 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ん…赤ちゃん出来ちゃうかも…」
+			PRINTFORMW 「その…もし出来ちゃったら…一緒に育ててくれる？」
+			CFLAG:8010 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あ、出てる…。中に熱いの出されてる…」
+			PRINTFORMW 「愛液と混ざって…中でぬるぬるしてるの…んぁ…♪」
+			CFLAG:8010 = 3
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「さすがに出しすぎよ？」
+			PRINTFORMW 「赤ちゃん出来たら責任とってくれるんでしょうね？」
+			CFLAG:8010 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぅ…中に出されちゃった…」
+			PRINTFORMW 「嫌…こんな奴の赤ちゃん出来ちゃ嫌ぁ…」
+			PRINTFORMW レティは必死に膣内の精液をかき出そうとしている
+			CFLAG:8010 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG8012
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;恋慕+奉仕精神Lv3以上+精液中毒Lv3以上
+	IF TALENT:TARGET:恋慕 == 1 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+		PRINTFORMW 「…あ♪ 出てる…。凄い量ね…」
+		PRINTFORMW 「言ってくれればいつでもシゴいてあげるわ…。(すぅ…) んはぁぁ…」
+		PRINTFORMW 先ほどの精液の臭いを嗅いで恍惚としながら、レティは盛んに次の射精を促している
+		PRINTFORMW 「この臭い、たまらない…。ねぇ、今度は飲ませて…♪」
+		CFLAG:8012 = 5
+	;恋慕
+	ELSEIF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「ん…、こんなに出して…」
+		PRINTFORMW 「ぬるぬるしてる…赤ちゃんの素がいっぱい…」
+		PRINTFORMW 興味深そうに精液を眺めると、レティは優しい笑みをのぞかせた
+		CFLAG:8012 = 4
+	;精液中毒Lv3以上
+	ELSEIF ABL:精液中毒 >= 3
+		PRINTFORMW 「うっ…たくさん出てる…」
+		PRINTFORMW 「白くて、臭くて、ねばねばの精液が…」
+		PRINTFORMW 言うや否や、レティは手の平に溜まった精液を舐め取り始めた
+		PRINTFORMW その表情には徐々に朱が差し、嬉しそうに全てを飲み干した
+		CFLAG:8012 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「あっ…」
+		PRINTFORMW 「出たってことは、気持ち良かったってことよ、ね…？」
+		PRINTFORMW %CALLNAME:MASTER%が曖昧に頷くと、レティは満足そうに微笑んだ
+		CFLAG:8012 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ひゃっ…！？ もう、せめて予告ぐらいしてよ」
+		PRINTFORMW 「うぅ…粘つく…。気色悪いわ…。うぷっ」
+		PRINTFORMW 身近で充満してくる精液の臭いに、思わずえづいてしまったようだ
+		CFLAG:8012 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG8013 CFLAG8014 CFLAG:8208 CFLAG:8209
+;-------------------------------------------------
+IF TFLAG:15 > 0
+	;パイズリフェラの場合
+	IF SELECTCOM == 209
+		;恋慕+奉仕精神Lv3以上+精液中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+			PRINTFORMW 「んぅぅうう！ んちゅっ、ぢゅるる…」
+			PRINTFORMW 「ふぁ…くひのらか、いっふぁいぃぃ…♪」
+			PRINTFORMW 口を大きく開け、口内に詰まった精液を%CALLNAME:MASTER%に見せつけるレティ
+			PRINTFORMW そのまま全て飲み込むかと思いきや、一部を指先に絡め、硬くなった乳首に擦り付けていた
+			CFLAG:8209 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ちゅ…んちゅ…(れろっ)」
+			PRINTFORMW 精液を出し切った後も、レティは胸元から陰茎を離そうとしない
+			PRINTFORMW 「…やぁ…もうちょっとオチ○チンの感触楽しませて…」
+			PRINTFORMW そう言いながら、名残惜しそうに亀頭をチロチロと舐めていた
+			CFLAG:8209 = 4
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3
+			PRINTFORMW 「ぢゅる…んっ、ちゅ、んくっ…」
+			PRINTFORMW 「ぷはっ、もう打ち止め…？ そう…」
+			PRINTFORMW 残念そうな顔をしたレティだが、陰茎を挟んだままの胸を突然上下させ始めた
+			PRINTFORMW 「また硬くなってきた…。もう一回舐めてもいい？」
+			CFLAG:8209 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「あぅ…んー、ちゅ…」
+			PRINTFORMW 「気持ち良かったなら構わないけど…この味はまだ慣れないわ…」
+			PRINTFORMW レティは涙目で懸命に飲み干そうとしたが、大半は零れ落ちてしまった
+			CFLAG:8209 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ…。出し終わったようね」
+			PRINTFORMW 「どう？ 薄っぺらい征服欲を満たした気分は」
+			PRINTFORMW 口と胸を精液にまみれさせながら、レティは淡々と言い放った
+			CFLAG:8209 = 1
+		ENDIF
+	;パイズリフェラ以外
+	ELSE
+		;恋慕+奉仕精神Lv3以上+精液中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+			PRINTFORMW 「んんっ♪ んぢゅるるるる…ずぢゅうぅぅぅぅ…」
+			PRINTFORMW 「やぁ…とまんないでっ…！」
+			PRINTFORMW 「精液好きなのぉ…。もっと、じゅる…、もっと飲ませて…」
+			CFLAG:8013 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ちゅる…ん、んくっ」
+			PRINTFORMW 「ふふっ。口の中、%CALLNAME:MASTER%の精液でいっぱいよ…」
+			PRINTFORMW 「綺麗にしてあげるわね…。ぅ、ん…」
+			PRINTFORMW レティは白濁で汚れた陰茎を再び口に含み、舌先で粘液を綺麗に舐め取った
+			CFLAG:8013 = 4
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3
+			PRINTFORMW 「んん゛っ…ずじゅるるる…ちゅうぅぅぅ…」
+			PRINTFORMW 「んはぁ…この味、この臭い、たまらない…」
+			PRINTFORMW もっとくれと言っているのか、レティは尚も陰茎にしゃぶりついている
+			CFLAG:8013 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んむうぅぅ！ う、ん…」
+			PRINTFORMW 「ぷあぁっ！ はぁ…はぁ…」
+			PRINTFORMW 「ちゃんと出し切った？ 我慢は体に毒よ？」
+			PRINTFORMW 口内に残る精液を気にしながらも、レティは悩ましげな視線でこちらを見つめている
+			CFLAG:8013 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん、んぶっ！？ んん～っ！！」
+			PRINTFORMW 「口の中ねばねばして…臭いわ…」
+			CFLAG:8013 = 1
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸で射精させた CFLAG8013 CFLAG8014 CFLAG:8208 CFLAG:8209
+;-------------------------------------------------
+IF TFLAG:16 > 0
+		;恋慕+奉仕精神Lv3以上+精液中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:奉仕精神 >= 3 && ABL:精液中毒 >= 3
+			PRINTFORMW 「ん、出して…！ いっぱい出してぇ！！」
+			PRINTFORMW 「かけてぇ…精液いっぱい…あぁ…素敵…」
+			PRINTFORMW レティはべっとりと絡みついた精液を舐めとっているが、
+			PRINTFORMW 一部は胸に練りこむように塗りたくっている
+			PRINTFORMW 「いつまでも精液に囲まれてたいの…%CALLNAME:MASTER%の精液に…」
+			CFLAG:8014 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 大量に射精された白濁を、レティは嬉々として受け止めた
+			PRINTFORMW 濃厚な精液がレティの柔肌に絡みついている
+			PRINTFORMW 「ん、嬉しい…♪ 私は%CALLNAME:MASTER%のモノなんだって感じられて…」
+			PRINTFORMW 「おっぱい、いつでも使っていいからね…♪」
+			CFLAG:8014 = 4
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3
+			PRINTFORMW 「んんっ、出た…。精液出たぁ…」
+			PRINTFORMW レティの表情は熱に浮かされたようトロンとしており、
+			PRINTFORMW 指先に絡めた精液の臭いを嗅ぐと、そのまま口に運んだ
+			PRINTFORMW (もっと胸で頑張れば、たくさん出してくれるのかな…)
+			CFLAG:8014 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「いっぱい出てる…。胸の間からこんなに…」
+			PRINTFORMW 「挟まれるの好きなの？ そうなんだ…」
+			PRINTFORMW レティの中で何かが納得出来たらしい
+			CFLAG:8014 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひゃっ…もう、ベトベトじゃない…」
+			PRINTFORMW 「とりあえずシャワー浴びたいわ…」
+			PRINTFORMW レティは精液にまみれながら、屈辱に満ちた表情をしている
+			CFLAG:8014 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG8015
+;-------------------------------------------------
+IF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:8015 == 0
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「やっ、はっ…何かくるぅ！変なのくるよぉ！」
+			PRINTFORMW 「くっ、ふああぁぁぁぁん！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ、どうして…！ くはっ…！」
+			PRINTFORMW 「ダメぇっ…！ こんなの違うのおおぉぉぉぉ！」
+		ENDIF
+			CFLAG:8015 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「あ、また出ちゃう…！ オチ○チンきちゃううぅぅぅぅ！！」
+			CFLAG:8015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やだぁ…！ 出したくないのにぃ…！」
+			PRINTFORMW 「出ないでよぉぉ…！ んくっ、んはぁぁぁぁぁああん！！」
+			CFLAG:8015 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG8016
+;-------------------------------------------------
+IF TFLAG:31 > 0
+	;初めて
+	IF CFLAG:8016 == 0
+		;従順Lv4以上
+		IF ABL:従順 >= 4
+			PRINTFORMW 「お乳が…出るなんて…」
+			PRINTFORMW 「な、舐めてみる…？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ？ どうして母乳が…」
+			PRINTFORMW 「まさか…妊娠…！？」
+			PRINTFORMW ただでさえ色白なレティの顔から、更に血の気が引いていった
+		ENDIF
+			CFLAG:8016 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ…いっぱい出てるわ…」
+			PRINTFORMW 「お願い…吸って…チュウチュウして…」
+			CFLAG:8016 = 5
+		;従順Lv4以上
+		ELSEIF ABL:従順 >= 4
+			PRINTFORMW 「凄い…いっぱい出てる…」
+			PRINTFORMW 「飲みたいの？ いいけど…優しく吸ってね…」
+			CFLAG:8016 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:2 == 3
+			PRINTFORMW 「もう今更驚かないわよ…」
+			PRINTFORMW 「母乳はどうするの？ 好きにしてくれて構わないけど」
+			CFLAG:8016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ…嫌ぁ…」
+			CFLAG:8016 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｃ感覚Lv5でＣ絶頂50以上 CFLAG8017
+;-------------------------------------------------
+IF ABL:Ｃ感覚 >= 5 && EX:0 >= 50 && NOWEX:0 > 0
+	;初めて
+	IF CFLAG:8017 == 0
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「そこ、そこいいっ！ はぁっ、やっ、ふぁぁぁぁああ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「クリいじめないでっ、そこ、まただめに！ んああぁぁぁ！！」
+		ENDIF
+			CFLAG:8017 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「そこ、そこいいっ！ はぁっ、やっ、ふぁぁぁぁああ！！」
+			CFLAG:8017 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「クリいじめないでっ、そこ、まただめに！ んああぁぁぁ！！」
+			CFLAG:8017 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ感覚Lv5でＶ絶頂50以上 CFLAG8018
+;-------------------------------------------------
+IF ABL:Ｖ感覚 >= 5 && EX:1 >= 50 && NOWEX:1 > 0
+	;初めて
+	IF CFLAG:8018 == 0
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「オマ○コ、ぐちゃぐちゃになって…！」
+			PRINTFORMW 「何回もイっちゃう！ ああっ、イくうぅぅぅぅ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「中が、おかしくなるっ！ だめ、いやぁっ！ んあぁぁぁぁ！！」
+		ENDIF
+			CFLAG:8018 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「オマ○コ、ぐちゃぐちゃになって…！」
+			PRINTFORMW 「何回もイっちゃう！ ああっ、イくうぅぅぅぅ！！」
+			CFLAG:8018 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「中が、おかしくなるっ！ だめ、いやぁっ！ んあぁぁぁぁ！！」
+			CFLAG:8018 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ感覚Lv5でＡ絶頂50以上 CFLAG8019
+;-------------------------------------------------
+IF ABL:Ａ感覚 >= 5 && EX:2 >= 50 && NOWEX:2 > 0
+	;初めて
+	IF CFLAG:8019 == 0
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「お尻イく！ このままイっちゃう、あんっ、んはぁぁぁぁああ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻気持ち良くしないでっ！ もうお尻は嫌なのぉぉぉおおお！！」
+		ENDIF
+			CFLAG:8019 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「お尻イく！ このままイっちゃう、あんっ、んはぁぁぁぁああ！！」
+			CFLAG:8019 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻気持ち良くしないでっ！ もうお尻は嫌なのぉぉぉおおお！！」
+			CFLAG:8019 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ感覚Lv5でＢ絶頂50以上 CFLAG8020
+;-------------------------------------------------
+IF ABL:Ｂ感覚 >= 5 && EX:3 >= 50 && NOWEX:3 > 0
+	;初めて
+	IF CFLAG:8020 == 0
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ん、やっ、おっぱいジンジンするのっ！」
+			PRINTFORMW 「イく、イくのっ、んはぁぁぁん！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌っ、もう胸いじらないでっ、いやぁぁぁ！！」
+		ENDIF
+			CFLAG:8020 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「もっと、おっぱいいじめてっ！ 乳首触ってぇっ！」
+			PRINTFORMW 「またイくの！ おっぱいイっちゃうぅぅぅ！！」
+			CFLAG:8020 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ダメェッ！胸なんかでイっちゃダメぇ！！」
+			PRINTFORMW (うぅ…私の胸、どうなっちゃったのぉ…？)
+			CFLAG:8020 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係（12をキャラ番号に置換）
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_12_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、12を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K12_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K12_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG8097
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8097 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「ぅぅ…」
+		PRINTFORMW 「%CALLNAME:MASTER%からの痛みなら…耐えてみせるわ…ぐすっ…」
+	ELSE
+		PRINTFORMW 「んぅぅ…痛い…痛いぃ…」
+		PRINTFORMW 「お願い…もう酷いことしないで…何でもするからぁ…」
+	ENDIF
+		CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG8098
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8098 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「はぁ、ん…はぁ」
+		PRINTFORMW 「%CALLNAME:MASTER%が気持ち良くしてくれた…」
+		PRINTFORMW 「もっとして…この体に全部刻み込んで…」
+	ELSE
+		PRINTFORMW 「はぁ…はぁ…いいの…凄く気持ちいい…」
+		PRINTFORMW 「もっと欲しい…何も考えられないぐらいの快楽が欲しい…」
+	ENDIF
+		CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG8299
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8099 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「どうして今まで言うこと聞けなかったんだろう…」
+		PRINTFORMW 「大好きな%CALLNAME:MASTER%の命令なのにね」
+	ELSE
+		PRINTFORMW 「もう、逆らえないわね…。こんなにされちゃって…」
+		PRINTFORMW (このままこの人の物になるのも、いいかな…)
+	ENDIF
+		CFLAG:8099 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG8100
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8100 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「%CALLNAME:MASTER%のことは好きよ。でもね…」
+		PRINTFORMW 「あんまり酷いことされると、私だって距離を置こうって思っちゃうわ」
+	ELSE
+		PRINTFORMW 「私がここから出た時があなたの最後よ。凍死の恐怖に戦慄するといいわ」
+		PRINTFORMW 「せいぜい今のうちに、残り短い人生を楽しんでおきなさい」
+	ENDIF
+		CFLAG:8100 = 1
+ENDIF
+
+;-------------------------------------------------
+;イベント口上集（12、X2をキャラ番号に置換する） FLAG(TFLAG200の中身＋8100)
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_BEFORE
+;-------------------------------------------------
+;調教後自慰 CFLAG8251
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 ==1
+		PRINTFORMW 「ああ…気持ちいい…」
+		PRINTFORMW 「でも、もっと欲しい…こんなんじゃ足りない…」
+		PRINTFORMW レティは頭に%CALLNAME:MASTER%の顔を思い浮かべながら、
+		PRINTFORMW 誰に聞かれるわけでもないおねだりを続けていた
+		CFLAG:8251 = 3
+	;自慰中毒Lv3以上
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 「あっ、あんっ…ここ気持ちいい…。んあぁぁんっ！！」
+		PRINTFORMW (自分でするのも、悪くないかも…)
+		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ…はぁ、うん…」
+		PRINTFORMW 自慰ぐらいしかすることがないらしく、レティはただただ股間をまさぐっていた
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後アナニー CFLAG8252
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE152
+IF 1
+	;恋慕＋Ａ感覚Lv3以上
+	IF TALENT:恋慕 == 1 && ABL:2 >= 3
+		PRINTFORMW 「うぅん…はっ…ぁふ…お尻が寂しい…」
+		PRINTFORMW 「自分の指よりも…あの人にいじって貰いたいのに…くぁぁん！！」
+		CFLAG:8252 = 3
+	;Ａ感覚Lv3以上
+	ELSEIF ABL:2 >= 3
+		PRINTFORMW 「ぁん…んはっ、はぁ…はぁ…」
+		PRINTFORMW 「お尻でこんなに感じるなんて…」
+		PRINTFORMW 開発されてしまった菊穴をいじりながら、何度も「違う、違う」と訴えていた
+		CFLAG:8252 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ、ふ…んんっ」
+		PRINTFORMW 「こんなこと、してる場合じゃ…ないのに…」
+		CFLAG:8252 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG8240
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 ==1
+		PRINTFORMW 「ふふふっ。朝からここは元気だわ…」
+		PRINTFORMW 「たまには私がいじめてあげるわね…。ふーっ」
+		PRINTFORMW 楽しそうに陰茎を弄んでいたレティだが、
+		PRINTFORMW 何度も吹きかけられた息のせいで%CALLNAME:MASTER%が起きてしまった
+		PRINTFORMW 「あぁん…。もうちょっと寝ててよぉ…」
+		PRINTFORMW 「ん、あむっ。れろっ…ちゅるぅぅ…れるっ」
+		PRINTFORMW 無理矢理寝かされ、いい様にされてしまった
+		CFLAG:8240 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「…んぅ、やっぱり大きいわね」
+		PRINTFORMW 「はむっ、んん…ちゅぱ…ぴちゅ…ちゅるる」
+		PRINTFORMW 「ん、おはよう。ちょっと借りてるわよ」
+		CFLAG:8240 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ちゅる…んっ、んちゅっ、ちゅ…」
+		PRINTFORMW 「何？ 朝っぱらから勃ててる人に文句言う権利なんか無いわ…はむっ」
+		CFLAG:8240 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝パイズリ CFLAG8241
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE141
+IF 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 ==1
+		PRINTFORMW 「ん、しょ。あ、熱い…」
+		PRINTFORMW 「おっぱい大きくて良かったと思える瞬間ね」
+		PRINTFORMW 柔らくたわわな双丘に包まれる感覚で、%CALLNAME:MASTER%は目を覚ました
+		PRINTFORMW 「あ、おはよう。オチ○チン苦しそうだったから鎮めてあげたくて…」
+		CFLAG:8241 = 3
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「んぅ～…相変わらず長いなぁ…」
+		PRINTFORMW 「全部包みきろうとしても先っぽが…」
+		PRINTFORMW 「えっ？ あ…お、おはよう」
+		PRINTFORMW 特訓の様子を見られたレティは、なんとなくバツが悪そうにしている
+		CFLAG:8241 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「おはよう。目覚めはいかが？」
+		PRINTFORMW 「何してるんだって？ 見ればわかるじゃない」
+		PRINTFORMW 「やめて欲しいならやめるけど」
+		CFLAG:8241 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG8250
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;Ｖ感覚Lv3以上
+	IF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「あぁん…！！ んはっ、いい…！」
+		PRINTFORMW 「もっと突いて…！ 奥まできてぇ…！！ ふぁぁああん！！」
+		CFLAG:8250 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっ、はっ、あぁ…！！ とまんないっ…！！」
+		CFLAG:8250 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG8258
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;Ｖ感覚Lv5以上
+	IF ABL:Ｖ感覚 >= 5
+		PRINTFORMW 「見て…まだこんなにグショグショ…」
+		PRINTFORMW 「さっきから溢れてとまらないの…もっと欲しいってオマ○コが言ってるの…」
+		PRINTFORMW 「どんなに激しくてもいいからっ…！！ お願い、オチ○チン頂戴…！！」
+		PRINTFORMW %CALLNAME:MASTER%が返答する前に、レティは欲望のままに腰を落とした
+		PRINTFORMW 「んぁぁ…！ これ、これなのぉ！！ オチ○チン気持ちいいっ！！」
+		CFLAG:8258 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「その気にさせといて…中途半端のままなんて酷いじゃない…」
+		PRINTFORMW 「せめて火照りが鎮まるまで、ちゃんとしてくれないと…」
+		PRINTFORMW 寝転んだまま目をパチクリさせている%CALLNAME:MASTER%を尻目に、
+		PRINTFORMW レティは濡れそぼった秘裂を%CALLNAME:MASTER%の陰茎に導いた
+		CFLAG:8258 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;売却
+;長ぇよ…
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;恋慕+反発刻印Lv3未満
+	IF TALENT:TARGET:恋慕 && MARK:9 < 3
+		PRINTFORMW 新たな買い手が付いたことを告げると、レティは静かに立ち上がり、黙って手を差し出す
+		PRINTFORMW %CALLNAME:MASTER%に手を引かれ、もう二度と目にすることがない廊下を歩く道中、
+		PRINTFORMW レティはか細い声で今の心情を吐露し始めた
+		PRINTFORMW 
+		PRINTFORMW 「この温かい手の感触も今日で最後。いつかこの日が来るって思ってたし、覚悟もしてた…」
+		PRINTFORMW 「それでも…楽しかったわ。短い間だったけど、たくさん愛してもらえた。大切にしてもらえた…」
+		PRINTFORMW 「%CALLNAME:MASTER%のお仕事はわかってるから、恨んでなんていない」
+		PRINTFORMW 「ただ、ただね…。もう少しだけ、%CALLNAME:MASTER%の傍にいたかったかな…」
+		PRINTFORMW レティはこみ上げてくる涙を堪え、必死に笑顔を作っていた
+		PRINTFORMW %CALLNAME:MASTER%の腕の中で見せていたあの満面の笑顔とは似ても似つかない、クシャクシャの笑顔だ
+		PRINTFORMW 歩みを止めずについてきたのは、迷惑を掛けないようにという最後の忠誠だったのかもしれない
+		PRINTFORMW 
+		PRINTFORMW 仲買人に新たな首輪を付けられ、最後に何か言うことはあるかと問われたレティ
+		PRINTFORMW %CALLNAME:MASTER%に歩み寄り、そっと最後のキスを交わす
+		PRINTFORMW 「次に幻想郷が雪に覆われた時、一面に白銀の世界が広がった時」
+		PRINTFORMW 「ほんの少しでもいい。私みたいな不出来な女がいたこと、思い出してね…」
+		PRINTFORMW 「好きよ…。今までも、これからも…ずっとずっと、大好き…」
+		PRINTFORMW そこまで言って、レティは%CALLNAME:MASTER%から身を引いた
+		PRINTFORMW 
+		PRINTFORMW 「今まで、お世話になりましたっ！！」
+		PRINTFORMW 最後にレティはこちらに深々と頭を下げ、やがて仲買人に連れられていった
+		PRINTFORMW ''さよなら''の一言を発さなかったのは一縷の希望の表れか……
+		PRINTFORMW しかしその姿が見えなくなる瞬間まで、彼女がこちらを振り返ることは、無かった――――
+	;反発刻印Lv3
+	ELSEIF MARK:9 == 3
+		PRINTFORMW 「ここ以外ならどこでも良いわ。ここまで酷い人もそうそういないだろうしね」
+		PRINTFORMW 「じゃあね。いつか私が殺しに来るその日まで、女を泣かせる罪の重さを知らずに生きてなさい」
+	;淫乱
+	ELSEIF TALENT:淫乱
+		PRINTFORMW 「%CALLNAME:MASTER%のもとを離れても、する事は同じ。快楽を求めて男に跨るだけ」
+		PRINTFORMW 「それもいいかなって思ってるのよ？ あなたとの別れが寂しくない訳ではないけど」
+		PRINTFORMW 「でもまぁ、今更何を言っても仕方ないわよね。買い手は個人か、それともお店か、それもわからないし」
+		PRINTFORMW 「もしお店だったら、たまには顔出してね？ サービスしてあげるわ」
+		PRINTFORMW そうこう話している間に、仲買人の居る玄関先までたどり着いた
+		PRINTFORMW 
+		PRINTFORMW 「お別れね。まぁ精々頑張りなさい」
+		PRINTFORMW 最後に%CALLNAME:MASTER%のおでこをコツンと叩いたレティは、仲買人に連れられ、家を出た
+		PRINTFORMW あの調子なら、きっと新たな買い手のもとでも上手くやっていけるに違いない
+		PRINTFORMW そう確信した%CALLNAME:MASTER%は、満足気に売却料金の勘定を始めた
+	;それ以外
+	ELSE
+		PRINTFORMW 「解放されたわけではなさそうね…」
+		PRINTFORMW 「いつか本当の意味で解放された年の冬、ここの周辺だけ山ほど雪を降らせてあげるわ」
+		PRINTFORMW 「楽しみにしてなさい、ふふっ」
+		PRINTFORMW 
+		PRINTFORMW レティは足早に家から去っていく
+		PRINTFORMW 凍てつくような冷たい笑顔と、不気味な不安を残して……
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	PRINTFORMW 「えっ、これ…」
+	PRINTFORMW 「も、貰ってもいいの？」
+	PRINTFORMW %CALLNAME:MASTER%は首を縦に振り、指輪の真意を伝えた
+	PRINTFORMW こみ上げてくる気持ちを我慢出来なくなったのか、レティはその場で泣き崩れてしまう
+	PRINTFORMW %CALLNAME:MASTER%はそんな彼女を起こし、優しく、しかし力強く、レティを抱きしめた
+	PRINTFORMW 
+	PRINTFORMW 「ありがとう…。こんな素敵な贈り物、生まれて始めてよ…」
+	PRINTFORMW 
+	PRINTFORMW 「一方通行でも良かった…都合のいい女でも良かった…」
+	PRINTFORMW 「どんなに想いを募らせても、私は奴隷で%CALLNAME:MASTER%は調教師。いつかは手元を離れないといけないって…」
+	PRINTFORMW 「しかも、冬を辛くするだけの雪女だもの…。嫌われて当然だって諦めてた…」
+	PRINTFORMW 「ましてあなたから言ってくれるなんて思いもしなかったわ…」
+	PRINTFORMW 「だから、もぅ、嬉しい…！ 嬉しいの！！ こんな私を好きって言ってくれて…！！」
+	PRINTFORMW 
+	PRINTFORMW レティは涙を拭い、しっかりと%CALLNAME:MASTER%の目を見据えた
+	PRINTFORMW 「至らないところもたくさんあると思うけど…よろしくお願いします…！」
+	PRINTFORMW 
+	PRINTFORMW 「んっ…ちゅ…」
+	PRINTFORMW 長く、熱く、そして激しいキス。やがてそっと唇を離したレティは――――
+	PRINTFORMW 
+	PRINTFORMW 「大好き…。愛してるわ、%CALLNAME:MASTER%…」
+ENDIF
+
+;-------------------------------------------------
+;@単体エンディング関係(12、X2をキャラ番号に置換する)
+;男主人verしか書いてないです。
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SINGLE_ENDING
+DRAWLINE
+IF TALENT:相愛 == 1
+	PRINTFORMW ―――単体エンド条件達成―――
+	PRINTFORMW …………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW 
+
+	PRINTFORMW 卯の中刻。男は今日もいつもの時刻に目を覚ます。
+	PRINTFORMW 日の光は微弱だが、それでも今が夜ではないということぐらいはわかるもので、
+	PRINTFORMW 思い切って布団から抜け出し外を眺めると、妖怪の山には厚い雲が掛かっていた。
+	PRINTFORMW じんわりと体を覆う寒気に震えながらも、炬燵を求めて居間に向かう。
+	PRINTFORMW …季節は冬。一年で最も生き物の動きが緩慢になるこの時期も、そろそろ佳境に入りつつある。
+	PRINTFORMW 
+	PRINTFORMW 家にはこの男以外の気配は無い。
+	PRINTFORMW 雪が全ての音を飲み込んでしまったような静寂の中、ただ吐息の白さと廊下を歩く足音だけが際立つ。
+	PRINTFORMW 男はまるで遭難中にようやく見つけた山小屋の如くいそいそと炬燵に入り、また安らかな寝息を立て始める。
+	PRINTFORMW 
+	PRINTFORMW 辰の下刻。二度寝からようやく目覚め、男はうんと伸びをした。
+	PRINTFORMW 先ほど廊下をとぼとぼと歩いていた時とは違い、空気が何やらかぐわしい。
+	PRINTFORMW 無音の世界かと思われた家の中も、今では雑多な音が駆け巡っている。
+	PRINTFORMW 
+	PRINTFORMW 「おはよう。気持ち良さそうに寝てたから起こせなかったわ」
+	PRINTFORMW 隣の台所から朝食を運んでくる一人の女。彼の妻である。
+	PRINTFORMW 「今日も良い天気よ。折角だし、後で出かけない？」
+	PRINTFORMW 雪女である彼女にとっての良い天気とは、このように雪が深々と降り積もる気候であるらしい。
+	PRINTFORMW 男は提案を快諾すると、最愛の妻の料理に箸をつけ始めた。
+	PRINTFORMW 
+	PRINTFORMW 「家が潰れちゃうかも。朝から張り切り過ぎたかしら」
+	PRINTFORMW はにかみながらの言葉に苦笑して応える男。
+	PRINTFORMW 緩やかに時を刻む冬の朝。絵に描いたような幸せな食事風景と、少し普通と違う会話内容。
+	PRINTFORMW しかし男は、家を押し潰す程の降雪を彼女がもたらすとは、本気では考えていない。
+	PRINTFORMW それだけ彼女を理解し、信頼し、また彼女も男を心から愛していた。
+	PRINTFORMW 
+	PRINTFORMW 男は以前生業としていた闇の仕事から足を洗い、今は他人様に口外しても問題無い仕事で生活している。
+	PRINTFORMW そんな夫を甲斐甲斐しく支える妻も、心の通った現在の生活に満足していた。
+	PRINTFORMW 大金など手にしなくても良い。こうやって愛する人と共に在る喜びさえあれば、と。
+	PRINTFORMW 
+	PRINTFORMW 常人では理解し難い馴れ初めを持ち、種族の壁を乗り越え、紆余曲折を経て愛し合うに至った二人。
+	PRINTFORMW 今日は彼の仕事も休み。冬空の中、仲睦まじく寄り添う二人の姿が確認出来るかもしれない。
+	PRINTFORMW あなたはしっかり防寒するのよと釘を刺された男は、歯痒そうに頷く。
+	PRINTFORMW 深雪に凍える幻想郷にポツンと建つ夫婦の家は、どこまでも、どこまでも…温かかった。
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.112A (レティ愛妻エンド)
+ENDIF
+
+	RETURN 0
+
+
+;-------------------------------------------------
+;@奴隷エンディング関係
+;-------------------------------------------------
+@KOJO_12_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+
+PRINTFORMW あれから幾ばくかの時が過ぎた。
+PRINTFORMW 五年？ 十年？ 時の感覚などもはや無い。
+PRINTFORMW 人を買い、貶め、辱め、犯し尽くし、商品として売る。それがこの男の仕事だった。
+PRINTFORMW 男も加齢には勝てず已む無く廃業したが、巨万の富を得た男は、今は悠々自適に生活している。
+PRINTFORMW ただ一人、売る事無く手元に残した彼専用の奴隷と共に。
+PRINTFORMW 
+PRINTFORMW 「あぁっ、んはっ、もっと…もっと深く！」
+PRINTFORMW 「いい、いいよぉ！ オマ○コぐちゃぐちゃになって、ふぁぁ！」
+PRINTFORMW 「もうイっちゃう、イく、はぁ、んっ、んはぁぁぁぁああ！！」
+PRINTFORMW 
+PRINTFORMW 人里では、最近は暖冬が続くと話題になっている。
+PRINTFORMW 雪が積もる事は年々減り、気温の低下も穏やかになった。
+PRINTFORMW 人間は概ねその傾向を喜んでいたが、そのような世相は彼女の耳には届かない。
+PRINTFORMW ここ何年も外に出ておらず、そうした話を聞く機会が無い事ももちろん関係しているが、
+PRINTFORMW それ以上に、今の彼女にとって、寒い冬や白い雪など些末な事柄に過ぎなくなっていたのだ。
+PRINTFORMW 欲するのは主たる男の寵愛と熱き猛り、そして自らを汚す白濁のみ。
+PRINTFORMW 今日も幻想郷のどこかで、彼女の艶かしい嬌声がこだまする。
+PRINTFORMW 
+PRINTFORMW 幻想郷に本格的な冬が帰ってくる日は、今後もしばらく訪れないだろう。
+PRINTFORMW 男が彼女を愛で続ける限りは……。
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.112B (レティ奴隷エンド)
+
+RETURN 0
+
+
+;口上の存在判定（YM版）
+@TRY_12
+RETURN 1
+

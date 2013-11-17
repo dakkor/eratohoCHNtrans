@@ -1,0 +1,711 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;X1をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは600～699番のコマンド（派生コマンド）の口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;初回かどうかは最初に@COM_FLAGを呼び出した上で
+;RESULT:1が1かどうかで判別できる
+;========================================================
+;-------------------------------------------------
+;Ｇスポット刺激 CFLAG:8583
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_600
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_600
+	;初めて
+	IF CFLAG:8583 == 0
+		PRINTFORMW 「んっ、んん？何なんでしょうこの感覚…」
+		CFLAG:8583= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8583 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はぁぁぁ、そ、そこはぁ、あん、はぁぁぁぁぁ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あ、あぁぁぁぁ、そこ！そこ弄っちゃっ、あぁぁぁぁ!!」
+			ENDIF
+			CFLAG:8583 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「指で…指なんかで!!あ、ああ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そこっ、ばかり弄らないで……あぁっ」
+			ENDIF
+			CFLAG:8583 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;潜望鏡 CFLAG:8584
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_601
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_601
+;PRINTFORMW 
+
+;-------------------------------------------------
+;シックスナイン CFLAG:8585
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_602
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_602
+	;初めて
+	IF CFLAG:8585 == 0
+		PRINTFORMW 「お互い舐め合うのですね」
+		CFLAG:8585= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv3以上かつC感覚Lv3以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3 && (CFLAG:8585 <= 3)
+			PRINTFORMW 「この責めに耐えれますか%CALLNAME:MASTER%様　きゃあ、本気を出さないでください」
+			CFLAG:8585 = 4
+		;屈服刻印Lv3かつ奉仕精神Lv3以上かつC感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3 && (CFLAG:8585 <= 2)
+			PRINTFORMW 「…ぷはぁ、やりますね、でも負けませんよ　はむぅ」
+			CFLAG:8585 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ん…んぷっ、あんっもう」
+			CFLAG:8585 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;６９パイズリ CFLAG:8586
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_603
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_603
+;PRINTFORMW 
+
+;-------------------------------------------------
+;雁が首 CFLAG:8587
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_604
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_604
+	;恋慕かつ奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「%CALLNAME:MASTER%様の綺麗に差し上げますね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はむぅ、ちゅ、なんて雄々しいのかしら」
+		ENDIF
+		RETURN 0
+	;奉仕精神Lv3
+	ELSEIF ABL:奉仕精神 >= 3
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「んむっ、んん？これもっと大きくなるのですか」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「このまま全て搾り取ろうかしら」
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「大きすぎて入りきれませんよ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「顎が疲れます」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;指でＶを撫でる CFLAG:8588
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_605
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_605
+	;初めて
+	IF CFLAG:8672 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「大切な所ですので慎重にお願いしますね」
+			PRINTFORMW ハラハラした顔で%CALLNAME:TARGET%は見ている
+		;その他の場合
+		ELSE
+			PRINTFORMW 「触らないでください！そこは大切な所ですよ!!」
+		ENDIF
+		CFLAG:8672= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8672 <= 2)
+			PRINTFORMW 「うぅ…焦らさないでください～」
+			CFLAG:8672 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「くすぐったいだけですよ」
+			CFLAG:8672 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;ペッティング CFLAG:8200
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_606
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_606
+	;初めて
+	IF CFLAG:8200 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 「うんっ、あぁっ！もっと私に触れてください」
+					PRINTFORMW 『ん～、こうかしら？』
+				;その他の場合
+				ELSE
+					PRINTFORML 『あんたこういう事がおかしいと思わないの？』
+					PRINTFORML 「何を言っているのです？%CALLNAME:MASTER%様なら大丈夫ですよ。きっと総領娘様も気に入るはずです」
+					PRINTFORMW 『もうすっかり調教されちゃってさ～～』
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「%CALLNAME:MASTER%様、手つきが厭らしいですよ」
+			ENDIF
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『さ～てと、どうしようかな』
+				PRINTFORMW 「あ、あのこんな事は……ひゃぁぁ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 『じゃあ始めるわね』
+				PRINTFORMW 「どうぞお手柔らかに」
+			ENDIF
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2
+			PRINTFORMW 「な、何度触れても気持ちよくなど…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやっ、そんな所触らないでください」
+		ENDIF
+		CFLAG:8200= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (CFLAG:8200 <= 5)
+			;助手が天子で助手が調教
+			IF ASSIPLAY && NO:ASSI == 52
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORML 『%CALLNAME:TARGET%ってスタイル良いよね、こうボン・キュ・ボンって感じで』
+					PRINTFORML 「ふふ、総領娘さまの身体だってスレンダーで美しいですよ」
+					PRINTFORMW 『そ、そうかな？んーそうだといいけど』
+				;その他の場合
+				ELSE
+					PRINTFORML 「気持ちよくしてくださいね」
+					PRINTFORMW 『どうして私がこんなことを……』
+				ENDIF
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んぁ…体のすみずみまで撫でまわしてください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「…あんっ、%CALLNAME:MASTER%様の手…凄くいいです」
+			ENDIF
+			CFLAG:8200 = 6
+		;助手が天子で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 52 && (CFLAG:8200 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORML 「んっ、くぁっ、んんっ」
+				PRINTFORML 『随分感じているみたいね』
+				PRINTFORMW 「そ、そんなことは！ああっ」
+			;その他の場合
+			ELSE
+				PRINTFORML 『……こんなのでどう？』
+				PRINTFORML 「どう？と言われましても……複雑な気分です」
+				PRINTFORMW 『奇遇ね、私もよ』
+			ENDIF
+			CFLAG:8200 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3 && (CFLAG:8200 <= 3)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORML 「ああんっ!!……はっ！」
+				PRINTFORMW 「ひ、卑怯です！そんな所ばかり触るなんて…」
+			;その他の場合
+			ELSE
+				PRINTFORML 「んぁ！ああ…はぁ…」
+				PRINTFORMW 「手つきが厭らしいですよぉ」
+			ENDIF
+			CFLAG:8200 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2 && (CFLAG:8200 <= 2)
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ…そこはっ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、くっ……んんっ！」
+			ENDIF
+			CFLAG:8200 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「駄目です！触らないでください」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もうやめてください」
+			ENDIF
+			CFLAG:8200 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;二人で犯す CFLAG:8589
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_610
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_610
+;PRINTFORMW 
+
+;-------------------------------------------------
+;岩清水 CFLAG:8590
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_611
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_611
+	;恋慕かつ露出癖Lv3かつC感覚Lv3
+	IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「んぁっ！いっ！私…こんな顔…んっ！をするのですね」
+		RETURN 0
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「%CALLNAME:MASTER%様恥ずかしいです」
+		RETURN 0
+	;屈服刻印Lv3かつ露出癖Lv3かつC感覚Lv3
+	ELSEIF MARK:屈服刻印 == 3 && ABL:露出癖 >= 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 「いやぁ、私…そんな顔してない、気持ちよく……なんか…」
+		RETURN 0
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「恥ずかしくて顔も…体も…熱い」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「んっ、見せないで…」
+	ENDIF
+
+;-------------------------------------------------
+;乱れ牡丹 CFLAG:8591
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_612
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_612
+	;初めて
+	IF CFLAG:8591 == 0
+		PRINTFORML 「――っ!!」
+		PRINTFORMW 「あ、ああ……繋がっている、こんなにハッキリと…」
+		CFLAG:8591= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ露出癖Lv3以上かつV感覚Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8591 <= 4)
+			PRINTFORMW 「見えますか？私のここが%CALLNAME:MASTER%様のを咥えて離さない所を」
+			CFLAG:8591 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8676 <= 3)
+			PRINTFORMW 「%CALLNAME:MASTER%様と私が繋がっている…」
+			CFLAG:8591 = 4
+		;屈服刻印Lv3かつ露出癖Lv3以上かつV感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3 && (CFLAG:8591 <= 2)
+			PRINTFORML 「んっ、あっ、はっ」
+			PRINTFORMW （私、なんて顔をしているの……犯されているのに……）
+			CFLAG:8591 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「見せないで！鏡の前でだなんて…」
+			CFLAG:8591 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;騎乗乳房自慰 CFLAG:8592
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_613
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_613
+;PRINTFORMW 
+
+;-------------------------------------------------
+;挿入Ｇスポ責め CFLAG:8593
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_614
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_614
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORML 「んあぁ！そこゴリゴリしないでぇ」
+			PRINTFORMW 「だめぇ、きもちいいですぅ」
+		;その他の場合
+		ELSE
+			PRINTFORML 「そこっ！あんっ、そこを突いてください!!」
+			PRINTFORMW 「気持ちいいです！イっちゃいそうですぅ」
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「そこ、どうしてそこばかり…つ、突くのですか」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あんっ、そこは、やんっ、し、刺激が強すぎます」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;挿入子宮口責め CFLAG:8594
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_615
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_615
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;妊娠である
+		IF TALENT:妊娠 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「うふふ、赤ちゃんに分かるのかしら、お父さんがノックしていますよ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「だめですよぉぉぉ、そんなにそこを突いたら赤ちゃんがびっくりしちゃいますぅぅ」
+			ENDIF
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ひゃぁ、深いぃぃぃ、奥ばっかり責めないでぇぇぇ」
+			;その他の場合
+			ELSE
+				PRINTFORML 「先っぽが奥に…あんっ、子宮の入り口に当たってます」
+				PRINTFORMW 「このまま出されちゃったら妊娠しちゃいそうですね」
+			ENDIF
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+		;乱数分岐:2
+		IF RAND:2 == 0
+			PRINTFORMW 「ちょっとそこばかり責めて痛いですよ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ふ、深いです…んんっ奥に当たっています」
+		ENDIF
+	ENDIF
+
+;-------------------------------------------------
+;後背位愛撫 CFLAG:8595
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_616
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_616
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面愛撫 CFLAG:8596
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_617
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_617
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位アナル胸愛撫 CFLAG:8597
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_618
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_618
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面アナル胸愛撫 CFLAG:8598
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_619
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_619
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強制放尿 CFLAG:8599
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_620
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_620
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;おもらし癖である
+		IF TALENT:おもらし癖 == 1
+			;効果[野外プレイ]
+			IF TEQUIP:52 == 1
+				PRINTFORMW 「見られちゃう、%CALLNAME:MASTER%様に触られておしっこが出ちゃいますぅぅ！」
+			;その他の場合
+			ELSE
+				PRINTFORML 「触らなくても出ますよ」
+				PRINTFORMW 「%CALLNAME:MASTER%様がそういう体にしたのですからね」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あんっ、乱暴ですね、さぁ出しますよ」
+		ENDIF
+		RETURN 0
+	;露出癖Lv5
+	ELSEIF ABL:露出癖 >= 5
+		PRINTFORMW 「いやぁ、出ちゃいます！出しちゃいます!!」
+		RETURN 0
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORML 「出ません、出ませんから触らないで！」
+		PRINTFORMW 「いやぁ…いやぁ…出てるっ」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「触らないで！せっかく我慢してたのに…出ちゃう」
+	ENDIF
+
+;-------------------------------------------------
+;口移し CFLAG:8600
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_621
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_621
+;PRINTFORMW 
+
+;-------------------------------------------------
+;四肢緊縛 CFLAG:8601
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_622
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_622
+;PRINTFORMW 
+
+;-------------------------------------------------
+;亀甲縛り CFLAG:8602
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_623
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_623
+;PRINTFORMW 
+
+;-------------------------------------------------
+;吊り下げ CFLAG:8603
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_624
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_624
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローションプレイ CFLAG:8604
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_625
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_625
+;PRINTFORMW 
+
+;-------------------------------------------------
+;搾乳 CFLAG:8605
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_626
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_626
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳首甘噛み CFLAG:8606
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_627
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_627
+;PRINTFORMW 
+
+;-------------------------------------------------
+;相互自慰 CFLAG:8607
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_628
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_628
+;PRINTFORMW 
+
+;-------------------------------------------------
+;サンドイッチ CFLAG:8608
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_629
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_629
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位手淫 CFLAG:8609
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_630
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_630
+;PRINTFORMW 
+
+;-------------------------------------------------
+;相互秘貝開帳 CFLAG:8610
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_631
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_631
+;PRINTFORMW 
+
+;-------------------------------------------------
+;イきつけ三杯 CFLAG:8611
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_649
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_649
+;PRINTFORMW 
+
+;-------------------------------------------------
+;浄玻璃の鏡 CFLAG:8612
+;TEQUIP:56 == 0で解除口上
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_650
+;終了時
+IF TEQUIP:56 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;御所車(逆レイプ) CFLAG:8613
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_651
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_651
+;PRINTFORMW 
+
+;-------------------------------------------------
+;フォーオブアカインド(ふたなり) CFLAG:8614
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_652
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_652
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蜘蛛の巣 CFLAG:8615
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_653
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_653
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蜘蛛脚六点責め CFLAG:8616
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_654
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_654
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蜘蛛の巣姦 CFLAG:8617
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_655
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_655
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蜘蛛の巣肛門姦 CFLAG:8618
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_656
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_656
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蓑虫プレイ CFLAG:8619
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_657
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_657
+;PRINTFORMW 
+
+;-------------------------------------------------
+;拘束∇ CFLAG:8620
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_658
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_658
+;PRINTFORMW 
+
+;-------------------------------------------------
+;性感槍ぐんぐにる CFLAG:8621
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_660
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_660
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手撫で回し CFLAG:8622
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_680
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_680
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手アナル愛撫 CFLAG:8623
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_682 
+;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_682
+;PRINTFORMW 
+
+;-------------------------------------------------
+;触手胸愛撫 CFLAG:8624
+;-------------------------------------------------
+@KOJO_51_TRAIN_MESSAGE_S_COM_683
+ ;地の文呼び出し
+TRYCALL SYSTXT_TRAIN_MESSAGE_F_COM_683
+;PRINTFORMW 
+

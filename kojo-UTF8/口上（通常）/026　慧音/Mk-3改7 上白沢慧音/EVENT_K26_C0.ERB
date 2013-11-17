@@ -1,0 +1,2106 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;26をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;慧音口上
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下で全コマンド口上を表示させないようにする場合はここに記述
+;========================================================
+@KOJO_26_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は戻る
+;SIF EQUIP:14
+;	RESULT = 1
+;口枷がある場合は戻る
+;SIF TEQUIP:42
+;	RESULT = 1
+;失神中・失神回復時は戻る
+;SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+;	RESULT = 1
+;精神崩壊の場合は戻る
+;SIF TALENT:167
+;	RESULT = 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_0
+;初回実行時
+IF TFLAG:95 == 1
+		PRINTFORMW 「…触るんじゃない」
+		PRINTFORMW 慧音はあなたの手を振り払うが、あなたは無理やり慧音の体に指を這い回した。
+		RETURN 0
+;2回目以降
+ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「はぁ、なかなか…巧いじゃないか…」
+				PRINTFORMW 「…そこだ…もっとそこを…責めてくれ…」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 慧音の性感帯を責めてやると、慧音は声を上げて喘いだ。
+				PRINTFORMW 「そこっ！　弱くて…お、憶えててくれたのか…」
+				PRINTFORMW 「…嬉しいんだ、そういうの」
+			;その他の場合
+			ELSE
+				PRINTFORMW 慧音は目を閉じ、あなたの愛撫を全体で感じている。
+				PRINTFORMW あなたが悪戯心でその頬にキスをすると、慧音はあなたを見て微笑んだ。
+			ENDIF
+			CFLAG:8200 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「触るなら…もっと優しく撫でるようにしてくれ…」
+			PRINTFORMW 慧音は小言を放つが、あまり嫌でもないようだ。
+			CFLAG:8200 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「…触らないでくれ」
+				PRINTFORMW 慧音はあなたの手を振り払い、目を背けた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「まったく…私の体など触っても面白くもないだろう」
+			ENDIF
+			CFLAG:8200 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_1
+	;初めて
+	IF CFLAG:8201 == 0
+		PRINTFORMW 「そんな場所…舐めるところじゃない」
+		CFLAG:8201= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「う、ん…気持ち良いが…私も、お前に何かしてやれないだろうか…」
+				PRINTFORMW そう言う慧音に、あなたは答えるように舌を挿れた
+				PRINTFORMW 「ひゃあ！　きゅ、急に挿れたら…驚くだろう…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はっ、はっ…犬みたい…そんなに良いのか？　ここ」
+				PRINTFORMW 慧音は感じているのか、シーツを掴んで身震いしている。
+				PRINTFORMW 「くぅん…刺激…強ぃ…」
+			ENDIF
+			CFLAG:8201 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「確かに…気持ち良いが…お前は退屈じゃないのか？」
+			CFLAG:8201 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…やめてくれ…お前に舐められても、嬉しくも気持ち良くも無い」
+			CFLAG:8201 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_2
+	;初めて
+	IF CFLAG:8202 == 0
+		PRINTFORMW 「っ！　そんなところ…正気か！？」
+		CFLAG:8202= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「まさか…はぁ、こんなに気持ち良いなんて…」
+				PRINTFORMW 「私が…おかしいのか…ふぅん！」
+				PRINTFORMW 慧音は体を震わせた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁぁ、あん…」
+				PRINTFORMW 「指が…中に…掻き回されて…おかしくなりそうだ…」
+			ENDIF
+			CFLAG:8202 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「あっ…ん…」
+			PRINTFORMW 「感じてなんか…いないさ…」
+			CFLAG:8202 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…本当に…頭大丈夫か？」
+			CFLAG:8202 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_3
+	;初めて
+	IF CFLAG:8203 == 0
+		PRINTFORMW 「胸…まぁ、分からなくも無いが…」
+		CFLAG:8203= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はっ、ふ…もっと…強く揉んでも…」
+				PRINTFORMW 「いや、もっと強く…激しくしてく…はぁ、ん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「分かるか…？　鼓動…」
+				PRINTFORMW 「お前に触られると…とても嬉しくて、気持ち良くて…興奮するんだ」
+			ENDIF
+			CFLAG:8203 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はぁ、乳首ぃ…弄るなぁ…」
+				PRINTFORMW 「感じて…しまう、だろう…あっ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「胸を揉むのは…楽しいことなのか…」
+				PRINTFORMW 「残念だが、私には…分からないかもしれん」
+			ENDIF
+			CFLAG:8203 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…手は洗ってるのか？」
+			CFLAG:8203 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_4
+	;初めて
+	IF CFLAG:8204 == 0
+		PRINTFORMW 「指…って…」
+		PRINTFORMW 「そこは本来、男性器を挿入れる場所なん…あぁ♪」
+		CFLAG:8204= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁん♪　指ぃ♪」
+			PRINTFORMW 「そ、そんな敏感ぁうんっ♪　はぁ、はぁ…我慢しなくても…ソレを挿れても…いいんだぞ？」
+			CFLAG:8204 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ぅん…はぁ、まぁ、お前のモノを挿れられるよりは…マシか…」
+			PRINTFORMW 「だが…気持ち良くしてくれよ？」
+			CFLAG:8204 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「嫌なんだが」
+			PRINTFORMW 「処女じゃないとはいえ、好きでもないやつにやられるのは、かなり嫌なものなんだ」
+			CFLAG:8204 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_5
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8205 == 0
+		PRINTFORMW 「なっ…！？　私のを…舐め、ふああぁ♪」
+		PRINTFORMW 「あ、剥いて、はぁ♪　何これ…空気の刺激、がっ」
+		PRINTFORMW 初めての感覚に悶える慧音の亀頭を、あなたは舌でちょんと突いた。
+		PRINTFORMW 「ひゃあああん！　こんな、ビリビリ…する、ううん♪」
+		CFLAG:8205= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ひゃあ、はっ…白澤の…獣のモノを舐めてるんだ…獣のようにな…」
+				PRINTFORMW 「雄は獣のように求め、雌もまた獣…」
+				PRINTFORMW 「獣のように…淫らに乱れよう…」
+				PRINTFORMW 慧音は恍惚の表情を浮かべていた。
+			;その他の場合
+			ELSE
+				;射精経験 1以上
+				IF EXP:射精経験 >= 1
+					PRINTFORMW 「女性の男性器なんてな…それでもお前は舐めて、私を気持ち良くしてくれる」
+					PRINTFORMW 「舐められるのがこんなに気持ちいい、出すのがあんなに気持ち良くて…今すぐお前に奉仕してやりたい気分だ」
+					PRINTFORMW 「んっ、はぁ…気持ち良いぞ…」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「女性の男性器なんてな…それでもお前は舐めて、私を気持ち良くしてくれる」
+					PRINTFORMW 「舐められるのがこんなに気持ち良くて…今すぐお前に奉仕してやりたい気分だ」
+					PRINTFORMW 「んっ、はぁ…気持ち良いぞ…」
+				ENDIF
+			ENDIF
+			CFLAG:8205 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「舐める必要なんて…無いぃ、んじゃ…」
+			PRINTFORMW 慧音には刺激が強すぎるらしく、舐める度に悶えていた。
+			CFLAG:8205 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_6
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8206 == 0
+		PRINTFORMW 「はっ…ん…ちゅ、じゅる…」
+		CFLAG:8206= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW あなたが動く前に、慧音は唇を、あなたの唇に重ねる。
+				PRINTFORMW その時間は長く、一秒さえも、長く愛しく感じられる。
+				PRINTFORMW 慧音の愛を感じたあなたは、より強く、慧音を抱きしめた。
+			;その他の場合
+			ELSE
+				PRINTFORMW キスをする前に、慧音が軽く息を吸う。
+				PRINTFORMW それを見届けたあなたは、半ば強引に慧音の唇を奪った。
+				PRINTFORMW 「くちゅ、ずず、んちゅぅ、はぁ、ぅん、んっ…」
+				PRINTFORMW 互いの唾液の啜り合い、舌の絡ませ合い、あなたと慧音は、その互いに求め合うような接吻を、心行くまで楽しんだ。
+			ENDIF
+			CFLAG:8206 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「うぅ…ちゅる、くちゅぁ、ゅ…」
+			PRINTFORMW 慧音は若干の抵抗もあるが、確実にそのキスは柔らかくなっている。
+			CFLAG:8206 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ん、ぅぅん、くちゅ…はぁ」
+			PRINTFORMW 「どうしてお前なんかと…接吻しなくてはいけないのだ」
+			CFLAG:8206 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_7
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8207 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「自慰…？」
+			PRINTFORMW 「それを、私にやれと…？」
+			PRINTFORMW あなたが頷くと、慧音は顔を真っ赤にして俯いた。
+			PRINTFORMW 「…どうしてもか？」
+			PRINTFORMW その質問には答えずにいると、痺れを切らした慧音が先に口を開いた。
+			PRINTFORMW 「…分かった。お前が見たいって言うのなら…」
+			PRINTFORMW 慧音は自らの秘部に手をやる。
+			PRINTFORMW したことがあるのか、迷わずに自らの
+			IF PENIS(TARGET)
+				PRINT ペニス
+			ELSE
+				PRINT 陰核
+			ENDIF
+			PRINT を指で弄り始めた。
+			PRINTFORMW 「見られてると…お前でも…恥ずかしい…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「自慰…？」
+			PRINTFORMW 「それを、私にやれと…？」
+			PRINTFORMW あなたが頷くと、慧音は顔を真っ赤にして俯いた。
+			PRINTFORMW 「…どうしてもか？」
+			PRINTFORMW その質問には答えずにいると、痺れを切らした慧音が先に口を開いた。
+			PRINTFORMW 「…分かった。だが、あまり期待はしないでくれよ」
+			PRINTFORMW 慧音は自らの秘部に手をやる。
+			PRINTFORMW 一瞬、迷うように動きが止まったが、あなたを一瞥すると、諦めたように自らの
+			IF PENIS(TARGET)
+				PRINT ペニス
+			ELSE
+				PRINT 陰核
+			ENDIF
+			PRINT を弄り始めた。
+			PRINTFORMW 「ううぅ…見られるなんてぇ…」
+		ENDIF
+		CFLAG:8207= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「私としては…お前に触ってもらいたい…」
+				PRINTFORMW 「でも見たいって言うのなら…私で満足できれば、見てやってくれ…」
+				PRINTFORMW 「私の…恥ずかしい姿も…全部…っん」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そこに…お前のモノがあってだな…それを…挿れてもらえる…想像でっ…くっ…」
+				PRINTFORMW 「はぁ、はぁ…退屈だろう…私はいつでも…準備は出来てるからな…あぁん」
+			ENDIF
+			CFLAG:8207 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ひ、人の自慰なんて…見るものじゃない…」
+			PRINTFORMW 慧音はそう言いながらも、あなたの命令に逆らうことはできなかった。
+			CFLAG:8207 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_9
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8238 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「…なんだ…焦らさないでくれ…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「待たせるくらいなら終わってくれないだろうか…」
+		ENDIF
+		CFLAG:8238= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「…なんだ…焦らさないでくれ…」
+			CFLAG:8238 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「待たせるくらいなら終わってくれないだろうか…」
+			CFLAG:8238 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_10
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8239 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そ、それは…知らなくも無いが…」
+			PRINTFORMW 「なんか…機械はちょっと嫌なんだが…お前がしたいなら仕方が無いな…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「くぅ…！」
+			PRINTFORMW 「そんな物まで…持ち出して…！」
+		ENDIF
+		CFLAG:8239= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:2 == 0
+				PRINTFORMW 「ひゃ、は、あぁぁん！」
+				PRINTFORMW 「あ、頭まで…振動が…！」
+			ELSE
+				PRINTFORMW 「おもちゃぶるぶるしてる……」
+				PRINTFORMW 「気持ちいいよぉ……」
+			ENDIF
+		;その他の場合
+		ELSE
+			IF RAND:2 == 0
+				PRINTFORMW 「やめてくれぇ…」
+				PRINTFORMW 「おかしく…なってしまいそうだ…」
+			ELSE
+				PRINTFORMW 「うぅぅ、こんなのずるいぞ……」
+				PRINTFORMW 「私は嫌なのに……体は……」
+			ENDIF
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_11
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8240 == 0
+		PRINTFORMW 「それは…まさか…」
+		PRINTFORMW 「つ、使い方違っ、あぁぁぁ！」
+		CFLAG:8240= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「刺激が強すぎる…それは…」
+			PRINTFORMW 「ひぅ、あっ、ああぁぁぁぁぁぁ！」
+			PRINTFORMW 電気按摩の刺激に、慧音はよがり狂う。
+			CFLAG:8240 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「こっ、声が、あぁん、あぁああ！」
+			CFLAG:8240 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+	;初めて
+	IF CFLAG:8242 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「…抜けたぁ…」
+			PRINTFORMW 慧音はぼーっとしている。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やっと抜けたか」
+		ENDIF
+		CFLAG:8242= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「え、ど、どうして抜くんだ…？」
+			PRINTFORMW 「…そうか、お前のを…ふふふっ」
+			CFLAG:8242 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ちゃんと洗ってくれ、な」
+			CFLAG:8242 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+	;PRINTFORMW 
+	IF CFLAG:8241 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「道具ばっかり…お前のを…その、挿れて…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やめ…いや、お前のを挿れられるよりはマシか…」
+		ENDIF
+		CFLAG:8241= 1
+		RETURN 0
+		;二回目
+		ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;Ｖ感覚Lv3以上
+			IF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「中ぁ、かき回されてりゅぅ！」
+				PRINTFORMW 「お、おかしくなりそう、はぁん♪」
+				PRINTFORMW 既におかしくなっているようだ。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「むぅ…」
+				PRINTFORMW 「これも悪くないが…私はお前のモノのほうがいいな…」
+			ENDIF
+			CFLAG:8241 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ちゃんと洗ったんだろうな、それは」
+			CFLAG:8241 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	PRINTFORMW 「あうぁ……もうやめちゃうのか……？」
+;装着時
+ELSE
+	PRINTFORMW 「はぅ！　おちんちん包まれてる！　気持ちいいよぉ！」
+	PRINTFORMW 「こんなに気持ちいいんじゃ出ちゃう……」
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_20
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8252 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「やはり…この体位だな…」
+			PRINTFORMW 「お前なら、安心して体を預けられる…」
+			PRINTFORMW 「さぁ、貫いてくれ」
+			PRINTFORMW 慧音は自らの秘部に、あなたの剛棒を優しく誘う。
+			PRINTFORMW 亀頭がつぷり、と音を立てて入ると、慧音は嬉しそうな表情になる。
+			PRINTFORMW 「さぁ…思いっきり…私を乱してくれ」
+			PRINTFORMW その誘惑に負け、あなたは腰を強く打ちつけた。
+			PRINTFORMW 「っ、はぁん！」
+			PRINTFORMW 慧音は嬌声を上げ、シーツを掴む。
+			PRINTFORMW あなたは何度も何度も、激しく腰を打ちつけていった。
+			PRINTFORMW 「はぁ、はん！　激し、あぁん♪」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「や、やめろ！　犯すなんて…人のすることじゃない！」
+			PRINTFORMW 暴れる慧音を押さえつけ、足を開かせる。
+			PRINTFORMW 「頼む…謝る、だから…やめてくれ」
+			PRINTFORMW 泣きながら慧音は必死に謝るが、あなたは無視して、その膣に怒張を入り込ませた。
+			PRINTFORMW 「ああぁぁぁ！　いや…私…犯されて…うっ、うっ」
+			PRINTFORMW 慧音は泣き崩れる。両手で涙を拭う慧音を気にせず、あなたは腰を動かす。
+			PRINTFORMW 「あぁん、やめっ、ひぐっ、やめて…」
+			PRINTFORMW 普段の大人らしい強気な雰囲気など無い今の慧音に、あなたはさらに興奮した。
+		ENDIF
+		CFLAG:8252= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 慧音は挿入されたまま、あなたの首に手を巻いてくる。
+				PRINTFORMW あなたも慧音に覆いかぶさり、そのまま何度も子宮口を突き上げた。
+				PRINTFORMW 「おくぅ、ごつごつ突かれ…苦しいけど…ぐぅ、気持ち良い…」
+				PRINTFORMW 慧音は歯を食いしばる。その口に、優しくあなたはキスをする。
+				PRINTFORMW 「ん、ちゅる、じゅ…」
+				PRINTFORMW 上と下、両方の慧音を堪能しながら、あなたは絶頂に昂ぶっていった。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あぁん♪　お前の大きくてぶっといの…私、咥えて…」
+				PRINTFORMW 普段男らしい口調の慧音だが、さすがに夜伽では女になる。
+				PRINTFORMW そのギャップがたまらない。
+				PRINTFORMW 「もっと動いてくれ…私もお前もっ、気持ち良くなろう…」
+				PRINTFORMW 美しいその微笑に、あなたはたまらなく腰を動かし始めた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 何回も腰を打ちつけ、慧音は恍惚の表情であなたを見つめていた。
+				PRINTFORMW 「もっと奥にっ…子宮口突いて…はぁん♪」
+				PRINTFORMW 「はぁ…奥で出せば…妊娠しやすくなるか…？」
+				PRINTFORMW 簡単な考えだが、慧音の要望なら答えてやろう。
+				PRINTFORMW あなたはさらに深く、慧音を貫く。
+				PRINTFORMW 「ぐぅ…奥ぅ…当たっ、てぇ…」
+				PRINTFORMW 慧音は顔をしかめるが、あなたの顔を見ると、またすぐに微笑んだ。
+			ENDIF
+			CFLAG:8252 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やめてくれ…本当に嫌なんだ…」
+			PRINTFORMW 「私はお前の子供なんて身篭りたくないんだ…」
+			CFLAG:8252 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_21
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8253 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「後ろ…そうか…」
+			PRINTFORMW 「お前の顔が見えないけど…その分、激しくしてくれるな？」
+			PRINTFORMW 慧音の頼みを了承すると、慧音は壁に手をついた。
+			PRINTFORMW 「なんか…興奮するな…見えないのは…」
+			PRINTFORMW 慧音のぐしょ濡れの秘部が、さらに濡れだしたような気がした。
+			PRINTFORMW あなたはゆっくり亀頭を押し入れたが、慧音の言葉を思い出し、強くペニスを押し入れた。
+			PRINTFORMW 「ふぁぁ！　きゅ、急に…驚いただろう…」
+			PRINTFORMW 慧音は息を切らしているが、まだ始まったばかりだ。要望通り、激しくしてやろう。
+			PRINTFORMW 膣の感触を堪能していたが、腰を動かすことにする。
+			PRINTFORMW 慧音に覆いかぶさり、その腰を持ち、あなたは自らの腰を打ち付けた。
+			PRINTFORMW 「あっ！　あんっ！　強っ、激しすぎ…！」
+			PRINTFORMW その怒張は慧音の膣壁を擦り、子宮口を突く。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ、こんなっ、体勢で…」
+			PRINTFORMW 「嫌…なのに…やめろぉ…」
+			PRINTFORMW 慧音は抵抗するが、その体勢から逃れることは出来なかった。
+		ENDIF
+		CFLAG:8253= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「はぁ、はっ、激し…奥が…あん、突かれて…」
+				PRINTFORMW 壁に手をつく慧音の腰を持ち、あなたは何度も腰を打ちつけた。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「奥ぅ！　もっと奥を突いてくれぇ！」
+				PRINTFORMW 激しくせがむ慧音の膣に、あなたは要望通り激しく腰を打ち据える。
+				PRINTFORMW 僅かに見える慧音の表情は汗で輝き、それがまた女性としての美しさを強調している。
+				PRINTFORMW 「はぁ！　あぁん♪　もっと激しくぅ！」
+
+			;その他の場合
+			ELSE
+				PRINTFORMW 「こんな下劣な体勢も…はぁん、いいものだな…」
+				PRINTFORMW 慧音は腰を打ちつけられる度に嬌声を上げるが、あなたは腰を止めなかった。
+			ENDIF
+			CFLAG:8253 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はぁ、はっ…」
+				PRINTFORMW 慧音は犬のように舌を出しながら、されるがままにされている。
+				PRINTFORMW 「今でも間に合う…はぁ♪　ぬ、抜いてくれぇ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「嫌だ…こんな体勢で…こいつの子供なんて…」
+				PRINTFORMW だが慧音は動けず、ただ快楽に溺れていった。
+			ENDIF
+			CFLAG:8253 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_22
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8254 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ…いいな、この体位」
+			PRINTFORMW 「キスが…ちゅ、じゅる…しやすくてな…」
+			PRINTFORMW 一通りキスを堪能した後、あなたは慧音を持ち上げる。
+			PRINTFORMW 「ああ…大丈夫だ…挿れてくれ…」
+			PRINTFORMW 慧音の承諾を受け、あなたはゆっくりと慧音の膣を自らのペニスへと沈めて行く。
+			PRINTFORMW 「くぅ…ぅぅん」
+			PRINTFORMW 可愛らしい声を上げる慧音に、あなたはもう一度キスをした。
+			PRINTFORMW 「んっ…大丈夫だ…ありがとう…」
+			PRINTFORMW 健気に慧音が笑う。そしてあなたは完全に慧音の膣を、自分のペニスに沈めた。
+			PRINTFORMW 「はぁー、はぁー…入ったぁ…後は…動くだけだな」
+			PRINTFORMW 入ったばかりなのにも関わらず、慧音は腰を動かし始める。
+			PRINTFORMW そんな慧音を強く抱きしめ、あなたは一緒に腰を動かした。
+			PRINTFORMW 「はぁ♪　繋がって…抱きしめっ、感じて…っ」
+			PRINTFORMW 「好きだ…もっと強く、激しく…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はっ、はぁん♪　あぁ、ぁん！」
+			PRINTFORMW 「しっ…仕方が無いだろう…感じてしまうのは…」
+			PRINTFORMW 慧音は顔を赤くする。この近さだと、その赤さがはっきりと分かった。
+		ENDIF
+		CFLAG:8254= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「そんなにっ、強く抱きしめてっ！　あぁん♪」
+				PRINTFORMW 「愛してくれて…私の中で…大きくっ！」
+				PRINTFORMW 慧音は答えるかのように、あなたを抱きしめる力を強くする。
+				PRINTFORMW 「愛してる…好きだ！　大好きだ！　一緒に…気持ち良くなろう！」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ははっ、こんなに密着して…嬉しいよ…」
+				PRINTFORMW 「こうやって愛してもらって…抱きしめてもらって…」
+				PRINTFORMW 「このまま中に出して…私を孕ませてやってくれ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふっ、ふっ、どうだ？　私も頑張ってるつもりだが…」
+				PRINTFORMW 「大きくて…気持ち良くて…お前がこんなに近くに居て…」
+				PRINTFORMW 「これで子供が産まれたら…きっと幸せになれるだろうな…」
+			ENDIF
+			CFLAG:8254 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…近い…」
+			PRINTFORMW 「それと…はぁ、中には出さないでくれ…」
+			CFLAG:8254 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_23
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8255 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はっ、はっ…不安定だな…」
+			PRINTFORMW 「だから…抱きしめてくれ…動かないように」
+			PRINTFORMW あなたは慧音を後ろから強く抱きしめ、自らの怒張に沈めた。
+			PRINTFORMW 「ふぅ…顔は見えないが…確かに感じて…」
+			PRINTFORMW そのままあいた両手で、慧音の胸と秘部を弄る。
+			PRINTFORMW 「ひゃぁん！　いっぺんに…ふふっ、見えない分…たくさん気持ち良くしてくれるな？」
+			PRINTFORMW 慧音の期待に答えるべく、あなたは腰を振り始める。
+			PRINTFORMW 「はぁ♪　上がって、落ちてっ…入ってぇ♪」
+			PRINTFORMW 喘ぐ慧音の体を、両手で慰めながら挿入を繰り返す。
+			PRINTFORMW 「体全部…お前の体を感じて…！」
+			PRINTFORMW 「はぁん、あぁ、すごい…♪」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「だから…嫌だと言ってるだろう…」
+			PRINTFORMW 嫌がる慧音を説得するが、上手くいかない。
+			PRINTFORMW 痺れを切らしたあなたは、強行手段に出ることにした。
+			PRINTFORMW 「なっ、離せ！」
+			PRINTFORMW 後ろから慧音の体を抱え、そのまま膣に挿入した。
+			PRINTFORMW 「ああぁ！　いや…犯されて…！」
+			PRINTFORMW 「やめろ！　抜くんだ！」
+			PRINTFORMW 慧音は必死に叫ぶが、そんなの気にせずにあなたは腰を動かす。
+			PRINTFORMW 「あっ、あっん、苦し…ぐっ」
+			PRINTFORMW 慧音は若干苦しそうにしている。
+			PRINTFORMW 「私を犯すなんて…貴様…！」
+			PRINTFORMW 何も聞こえない。そう思いながら、あなたは腰を動かし続けた。
+		ENDIF
+		CFLAG:8255= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「あぁん、気持ち…良すぎる…」
+				PRINTFORMW 「中と胸と豆で…はぁ♪　全部責められて…幸せだ…」
+				PRINTFORMW あなたは髪の香りを堪能しながら、慧音の体を弄る。
+				PRINTFORMW その度に、慧音は甘い嬌声を上げた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「この体位は…私は受けるだけだからな…」
+				PRINTFORMW 「私の膣…気持ち良いか？」
+				PRINTFORMW 慧音の質問に、あなたは首を縦に振る。
+				PRINTFORMW 「…そうか」
+				PRINTFORMW 慧音は小さく微笑む。また膣内が、少しきつく締まった。
+			ENDIF
+			CFLAG:8255 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぅ…気持ち良くなんて…」
+			PRINTFORMW 慧音は自らの快感を否定するが、流れ出る愛液を止めることは出来ない。
+			PRINTFORMW 「そんな弄ったら…気持ち良すぎて…壊れるよぉ…」
+			PRINTFORMW まるで幼子のように、慧音は泣きながら快感に困惑していた。
+			CFLAG:8255 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_24
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8256 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この…体勢は…」
+			PRINTFORMW あなたが横になり、慧音をそそり立つ剛棒へと誘う。
+			PRINTFORMW 「分かった、頑張るよ」
+			PRINTFORMW 慧音はあなたに跨り、ペニスに手をやる。
+			PRINTFORMW もう片方の手で自らの秘部を開帳し、ずぶずぶと音を立てながらあなたのペニスを飲み込んでいった。
+			PRINTFORMW 途中で少し動きが止まったが、あなたは優しく胸を愛撫してやった。
+			PRINTFORMW 「す、すまない…はぁ、大丈夫…」
+			PRINTFORMW 慧音は一息入れ、腰を勢いよく降ろした。
+			PRINTFORMW 「っはあぁぁぁん！！」
+			PRINTFORMW 慧音は叫び声を上げるが、顔は悦んでいた。
+			PRINTFORMW 「入った…ぞ…はぁ、はぁ」
+			PRINTFORMW 息を荒げる慧音の表情は、とても嬉しそうだった。
+			PRINTFORMW 慧音はあなたの顔に手を寄せる。
+			PRINTFORMW 「今から…動くからな…いっぱい気持ち良くして…一緒に気持ち良くなろうな…」
+			PRINTFORMW 「ふっ、んん、くぅ…はぁ♪」
+			PRINTFORMW 腰を上下させる慧音に負けじと、あなたも腰を突き上げる。
+			PRINTFORMW 「あぁん！　う、動くのか…お前も…ははっ、分かった…一緒に気持ち良くなろう…」
+			PRINTFORMW その言葉を合図に、二人は腰を激しく動かし始めた。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「この…体勢は…」
+			PRINTFORMW あなたが横になり、慧音をそそり立つ剛棒へと誘う。
+			PRINTFORMW 「なぜだ…私がやるとでも思っているのか？」
+			PRINTFORMW 慧音は頑なにそれを拒む。だがあなたは引き下がらない。
+			PRINTFORMW 「しつこいな！　って、うわっ、何…ああぁ！」
+			PRINTFORMW 嫌がる慧音を、半分犯すように怒張をねじ込む。
+			PRINTFORMW 「あぁん、らめ、準備出来てな…ひゃあん！」
+			PRINTFORMW 苦しそうにも感じている慧音の体を、あなたは無理やり自分の上に載せた。
+			PRINTFORMW そのまま腰を押さえつけ、腰を使って慧音の子宮口を何度も叩く。
+			PRINTFORMW 慧音は暴れる力も無く、目に涙を浮かべながら快楽を抑えていた。
+		ENDIF
+		CFLAG:8256= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「いいぞ…この体位は…はぁん♪」
+				PRINTFORMW 慧音は恍惚の表情で、貪るように腰を振る。
+				PRINTFORMW 「自分の気持ちいいところを…うっ、調節できて…あはぁ」
+				PRINTFORMW 「ぅん…気持ち…良いか…？」
+				PRINTFORMW 腰を動かしながら、慧音はあなたの首筋をなぞった。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 慧音だけの動きでは満足できず、あなたまで腰を動かし始める。
+				PRINTFORMW 「ひゃうぅん！　急に動くなって…ひゃあ、ああん♪」
+				PRINTFORMW ひらひらと舞う銀髪、自らの腰と同調して動くその髪は、とても美しい。
+				PRINTFORMW そして喘ぎながらも、悦びの表情を浮かべる慧音の顔は、もっと美しかった。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「じゃあどっちが先にイくか…ふふ、試してみようか」
+				PRINTFORMW そう言って、慧音は腰を動かし始めた。
+				PRINTFORMW あなたに奉仕する表情、頑張ってるという誠意…日頃の感謝を込め、あなたは腰を動かし始める。
+				PRINTFORMW 「ははっ…そうこなくっちゃ…」
+				PRINTFORMW 揺れる胸、その胸を掴むと、あなたは揉みしだく。
+				PRINTFORMW 「あぁ…胸は…反則だぞ」
+				PRINTFORMW だが慧音は反発せず、素直に快楽を受け止め、あなたに微笑を向けた。
+			ENDIF
+			CFLAG:8256 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 慧音は諦めたように、あなたのペニスを下の口で飲む込む。
+			PRINTFORMW 「ぐっ…どうして…感じて…」
+			PRINTFORMW 挿れた瞬間、中の愛液が多くなった気もしたが、あなたは気にせず腰を動かした。
+			PRINTFORMW 「はぁっ！　あぁん！　奥にぃ…嫌なのに…」
+			CFLAG:8256 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8261 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そ、そっちは…違うんじゃ…」
+			PRINTFORMW あなたがアナルに挿入しようとすると、慧音が一瞬戸惑ったが、すぐ上気した表情に戻った。
+			PRINTFORMW 「いや、妊娠はしないぞ？」
+			PRINTFORMW それくらい承知だということを伝えると、慧音は少し顔をしかめた。
+			PRINTFORMW 「まぁいいが…」
+			PRINTFORMW あなたは剛棒で慧音のアヌスを貫く。
+			PRINTFORMW 「あぁ、ぐ、入って…あぁん」
+			PRINTFORMW 慧音は自らの愛液を尻穴に塗りたくり、さらに潤滑を進める。
+			PRINTFORMW ちょうど良い具合で、あなたは腰を動かした。
+			PRINTFORMW 「あっ、がっ、少し、苦しいけど…気持ち良いぞ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そ、そっちは…違う…」
+			PRINTFORMW あなたがアナルに挿入しようとすると、慧音がそれを制止する。
+			PRINTFORMW 「やめろ…挿れるなんて…」
+			PRINTFORMW 嫌そうな慧音に、前がいいか後ろがいいかと脅迫すると、慧音は渋々後ろを選んだ。
+			PRINTFORMW 「仕方が無い…その代わり、前はダメだぞ」
+			PRINTFORMW あなたは首を縦に振り、慧音のアヌスに挿入した。
+			PRINTFORMW 「ぐっ、ぐぅぅぅ、はぁ」
+			PRINTFORMW 慧音は目尻に涙を浮かべている。
+			PRINTFORMW 「本当に…入るんだな…」
+			PRINTFORMW そう言う慧音を無視して、あなたは腰を動かす。
+			PRINTFORMW 「ぐっ、はあぁ！　感じてなんか…」
+		ENDIF
+		CFLAG:8261= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「きもっ、気持ち良いっ！　肛門で、こんなに感じるなんっ、てっ！」
+				PRINTFORMW 「はぁ、はぁ、入って、出て…お腹が…苦しっ…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「入るものなのだな…大きい…膨らんだのが分かるぞ…」
+				PRINTFORMW 「ふぅ、動いて…はぁん♪　後ろ、感じる…すごいっ！　あぁ！」
+			ENDIF
+			CFLAG:8261 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ぐぅ…調子に乗るな」
+				PRINTFORMW 悪態を吐きながらも、慧音は足を開く。
+				PRINTFORMW 「前に挿れられるよりは…マシなだけだ」
+				PRINTFORMW 「はぐっ、ぐぅう、きつっ、腹が…」
+				PRINTFORMW 「はっ、はっ、動いて…腹の中で動いて…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ぐっ、むぅん、はぁ、はぁん」
+				PRINTFORMW 「腹の中が…暴れて…お前の…がっ」
+			ENDIF
+			CFLAG:8261 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_31
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8262 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「体勢…まるで犬みたいだな…」
+			PRINTFORMW 四つんばいになる慧音の尻を揉む。柔らかい。
+			PRINTFORMW 「揉むのも構わないが…挿れてはくれないだろうか？」
+			PRINTFORMW 慧音は頬を赤らめながらねだってくる。あなたはその期待に答えてやることにした。
+			PRINTFORMW 「ぐ、入ってる…犬みたいな…犬みたいに…」
+			PRINTFORMW 「おっきいのが肛門に、犬みたいな体勢で…はぁ、はぁ」
+			PRINTFORMW 「うぁ、動いちゃ、急にはぁん♪」
+			PRINTFORMW 「入って…お腹の中で暴れてりゅう！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ううう…こんな体勢…」
+			PRINTFORMW 早速あなたが慧音のアヌスに挿入すると、慧音は呻き声を上げた。
+			PRINTFORMW 「ぐぅ、きつい…腹がきつくて…大きすぎるぅ…」
+			PRINTFORMW その言葉を気にせずに、あなたは腰を動かす。
+			PRINTFORMW 「がっ、はっ、ふぅ、くぅん♪」
+		ENDIF
+		CFLAG:8262= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はっ、はっ、はふぅ！」
+				PRINTFORMW 慧音は犬のような体勢で、犬のような声を上げながら、快感に身を任せている。
+				PRINTFORMW 「ひゃっ、ペニスぅ、大きくな、ぐぅ、暴れてはぁ♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もっと、犬みたいに突いて！　私をお前の犬にしてぇ！」
+				PRINTFORMW 「はふぅ、はっ、うぐ、やぁ、はぁ、はぁん♪」
+			ENDIF
+			CFLAG:8262 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「あまり好きになれそうにないのだが…ぐぅ！」
+				PRINTFORMW 「激しっ、そんなに動かしたら…壊れるぅ…はぁん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ぐぅ、らめぇ…大きい…の、入って…」
+				PRINTFORMW 「ただでさえ違うのに…苦し…ぐっ、はぁ、あぁん！」
+			ENDIF
+			CFLAG:8262 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8263 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ、近い…幸せだ…こんな近くで感じられるなんて…」
+			PRINTFORMW すでに挿入してるのにも関わらず、慧音は動かずにあなたと唇を合わせる。
+			PRINTFORMW 「ちゅ、じゅ…ん…れる、ちゅる…じゅるる」
+			PRINTFORMW そしてキスをしたまま、あなたと慧音は動き出した。
+			PRINTFORMW 「んっ！　はっ、はぁ♪　おっきいの、感じて…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「近づけないでくれ…そんなに顔を…」
+			PRINTFORMW 慧音は嫌がってるが、あなたは気にせず腰を動かし始める。
+			PRINTFORMW 「むぐぅ、きつい…外からも中からも圧迫されて…」
+			PRINTFORMW 慧音は苦しそうにしているが、確実に感じてもいるようだ。
+			PRINTFORMW 「ぐっ、むっ、はぁ♪」
+		ENDIF
+		CFLAG:8263= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ん、大好きだ…愛してる…」
+				PRINTFORMW 慧音はあなたに唇を重ねる。あなたは執拗に舌を絡めた。
+				PRINTFORMW 「ちゅる…じゅ…はぁ、ん…ちゅ…」
+				PRINTFORMW 出来るだけ密着して、その愛を受け止める。
+				PRINTFORMW 「はぁ、あぁん♪　私たち…こんなに繋がって…幸せ…はぁん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もっと、激しく動いて…！」
+				PRINTFORMW 動くたびに、慧音の乳房が擦れる
+				PRINTFORMW 「はぁ、いいぞ、すごく気持ち良くて…大好きだ…はぁ♪」
+			ENDIF
+			CFLAG:8263 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はっ、ふっ、苦しい…もうちょっと…遅く…」
+				PRINTFORMW 慧音のいうこと無視し、あなたは腰を動かし続ける。
+				PRINTFORMW 「ぐぅ、でも、感じ…はぁ、あっ、あぁん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 動かすたびに、慧音は呻き声と喘ぎ声の混ざった声を上げる。
+				PRINTFORMW 「やっぱお腹…苦しい…大きいと…ぐぅ」
+				PRINTFORMW 「はっ、あぁ！　そんな、いやらしい音立って…！」
+			ENDIF
+			CFLAG:8263 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8264 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「後ろ…？」
+			PRINTFORMW 「なんか…子供みたいだな…」
+			PRINTFORMW ずぶずぶと挿入しながら、慧音をそこに座らせる。
+			PRINTFORMW 「はっ、あぁん…%CALLNAME:MASTER%、体大きいな…」
+			PRINTFORMW 「抱きしめてくれ…ぎゅうって」
+			PRINTFORMW 要望に答え、後ろから慧音を抱きしめる。
+			PRINTFORMW 「大きい手…暖かい…」
+			PRINTFORMW 慧音はあなたの手を握り、自ら腰を動かし始める。
+			PRINTFORMW 「はっ、はっ…私も…動かなくちゃな…」
+			PRINTFORMW 負けじとあなたも腰を動かし、前を責める。
+			PRINTFORMW 「あぁ、やぁ、前は…反則…」
+			PRINTFORMW 慧音の腰の動きが止まり、慧音はあなたにされるがままになった。
+			PRINTFORMW 「はぁ、やぁ、あぁん♪　しゅごい、体全部ぅ♪」
+			PRINTFORMW 「こんな気持ち良いのおかしくぅ！　私教師なのにぃ♪」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そんな…体全体責めちゃ…」
+			PRINTFORMW 嫌がりながらも、慧音は感じている。
+			PRINTFORMW 「ぐっ、肛門に挿れられて…前も責められ…嫌なのに、感じて…はぁん♪」
+		ENDIF
+		CFLAG:8264= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「良いぞ…最高に気持ち良くて、はぁ、はっ」
+				PRINTFORMW いやらしい声を上げる慧音の首筋に、舌を這わせる。
+				PRINTFORMW 「ひゃん！　きゅ、急に…イっちゃうじゃないか…あぁ♪」
+				PRINTFORMW 「はぁぁ！　お尻ぃ、前も、首ぃ、ひゃあん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 前を弄るあなたの手を、慧音は優しく握った。
+				PRINTFORMW 「はぁ、はぁ…大好き…」
+				PRINTFORMW それだけ言うと、慧音はあなたの手を導く。
+				PRINTFORMW 「くぅん…はぁ、もっと…激しくしても…いいぞ」
+			ENDIF
+			CFLAG:8264 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「そんな…体全体責めちゃ…」
+				PRINTFORMW 嫌がりながらも、慧音は感じている。
+				PRINTFORMW 「ぐっ、肛門に挿れられて…前も責められ…嫌なのに、感じて…はぁん♪」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「さっ、触るな…！」
+				PRINTFORMW 慧音は前を弄ろうとするあなたの手を振り払う。
+				PRINTFORMW 「挿れてるだけで…はぁ♪　十分だろう…」
+				PRINTFORMW そういう慧音の股間は、大量の愛液で濡れていた。
+			ENDIF
+			CFLAG:8264 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8265 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ、どうだ？　私の腰使いは…」
+			PRINTFORMW 慧音は上気した顔で見下ろしてくる。
+			PRINTFORMW 「気持ち良くして…射精させてやるからな…」
+			PRINTFORMW 懸命に奉仕するその姿に、あなたの気持ちは昂っていった。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ぐっ…前よりは…マシか…はぁん」
+			PRINTFORMW 「苦しい…早くイってくれ…あぁ」
+			PRINTFORMW 「はぁ、はぁ…ぐぅ」
+		ENDIF
+		CFLAG:8265= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「はっ、はぁ、ふふ…今から…先生が気持ち良くしてあげるからな…」
+				PRINTFORMW 「ぐっ、大きすぎ…そんなに挿れたかったのか、はぁん♪」
+				PRINTFORMW 「大きい体…たくましい…先生はっ、そんなお前が大好きだからな」
+				PRINTFORMW 「はっ、はっ、どう、だ？　気持ち良いか？」
+				PRINTFORMW 「すぐにイかせてやるからな…一緒に気持ちよくなって…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁ、どうだ？　私の腰使いは…」
+				PRINTFORMW 慧音は上気した顔で見下ろしてくる。
+				PRINTFORMW 「気持ち良くして…射精させてやるからな…」
+				PRINTFORMW 懸命に奉仕するその姿に、あなたの気持ちは昂っていった。
+			ENDIF
+			CFLAG:8265 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「ぐっ…前よりは…マシか…はぁん」
+				PRINTFORMW 「苦しい…早くイってくれ…あぁ」
+				PRINTFORMW 「はぁ、はぁ…ぐぅ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 慧音は腰を動かしながら、恥ずかしそうにあなたを見下ろす。
+				PRINTFORMW 「そ、そんなに見るな…奉仕してる姿なんて…」
+				PRINTFORMW 「嫌なんだからな…勘違いしないでく…ひゃぁん♪」
+				PRINTFORMW あなたが腰を突き上げると、慧音は可愛い嬌声を上げた。
+			ENDIF
+			CFLAG:8265 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_40
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8270 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、こんなに大きくして…そんなに興奮してたのか？」
+			PRINTFORMW 「ああ、心配無い、今から気持ちよくしてやるからな…」
+			PRINTFORMW 慧音はあなたのペニスを軽く握って、上下に動かした。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…何？　もう一回言ってみろ」
+			PRINTFORMW 「…手で擦れ？　何を言ってるんだ、こいつは…」
+			PRINTFORMW 「…分かったよ、擦ればいいんだな」
+		ENDIF
+		CFLAG:8270= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「ふふ、こんなに大きくして…そんなに興奮してたのか？」
+				PRINTFORMW 「ああ、心配無い、今から気持ちよくしてやるからな…」
+				PRINTFORMW 慧音はあなたのペニスを軽く握って、上下に動かした。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふふ、我慢汁出しすぎだ…いつまで耐えられるかな♪」
+				PRINTFORMW 根元を擦って出てきたカウパーで、亀頭を指で摘み、擦る。
+				PRINTFORMW 強すぎる刺激と、慧音の上気した顔を見ていると、今にも射精しそうな感覚に見舞われた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「こういう体勢も、っと…ふふ、良いんじゃないか？」
+				PRINTFORMW 慧音があなたの後ろに周り、そのまま抱きつきながらあなたにペニスを擦り始めた。
+				PRINTFORMW 「近くで見れる…%CALLNAME:MASTER%の感じてる顔…ん」
+				PRINTFORMW あなたは慧音に奉仕されたまま、熱い接吻を交わした。
+			ENDIF
+			CFLAG:8270 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「まぁ…少しは工夫してみるのも…」
+				PRINTFORMW 「どうだ？　気持ち良いか？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「びくびくしてるな…ふふ、いつでも出していいんだぞ」
+			ENDIF
+			CFLAG:8270 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「…なんだ？」
+				PRINTFORMW 「別に見ながらやれとは言われてないからな」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「汚いな…ちゃんと洗っているのか？」
+			ENDIF
+			CFLAG:8270 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_41
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8271 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ちゅる、ん…ふふ、我慢しなくてもいいんだぞ？」
+			PRINTFORMW 「さっきから震えて…れろ、咥えて…はむ…」
+			PRINTFORMW 「ぅん…おおひすぎて…はぁ、む…」
+			PRINTFORMW 慧音は咥えながらも舌を動かし、心地よい刺激を与えてくる…
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ぐぅ…そんなもの、押し付けるんじゃない」
+			PRINTFORMW 「…っ、分かった、舐めればいいんだろう」
+			PRINTFORMW 慧音は渋々ではあるが、あなたのペニスに舌を這わせ始めた。
+		ENDIF
+		CFLAG:8271= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「ちゅる、ん…ふふ、我慢しなくてもいいんだぞ？」
+				PRINTFORMW 「さっきから震えて…れろ、咥えて…はむ…」
+				PRINTFORMW 「ぅん…おおひすぎて…はぁ、む…」
+				PRINTFORMW 慧音は咥えながらも舌を動かし、心地よい刺激を与えてくる…
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふぅ、こういうのも…ぢゅる、いいもんだな…」
+				PRINTFORMW 「こんなに我慢汁出して…じゅるるる…いつでも出してくれ」
+				PRINTFORMW 大量に溢れ出すカウパーを啜る刺激すらも気持ち良く、あなたは今にも射精してしまいそうだった。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「%CALLNAME:MASTER%は座っていてくれ。うん、そういうふうに」
+				PRINTFORMW あなたはベッドに座るように促され、慧音は床に座った。
+				PRINTFORMW 「この体勢で…れる…ちゅ…」
+				PRINTFORMW そのまま慧音は、頭だけであなたに奉仕する。
+				PRINTFORMW 「はっ、ぴちゃ、はぅ、ちゅりゅ、れろ、はっ、はぅ…はむ」
+				PRINTFORMW そのまま慧音は亀頭を咥え、雁首を刺激する。
+				PRINTFORMW 手を使わずの奉仕、あなたが力を加えると、慧音の口の中でペニスが跳ねる。
+				PRINTFORMW 「む…あふぁれないへふれ…今、ひもちよくしてやるはらな…」
+				PRINTFORMW 手は床につき、犬のようにあなたのペニスを舐め続ける
+			ENDIF
+			CFLAG:8271 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「うん？　気持ち良いのか？　言わなくても分かるぞ」
+				PRINTFORMW 慧音の技術はいやらしく、筋裏や亀頭に与える刺激の一つ一つが、射精との戦いだった。
+				PRINTFORMW 「ここが…弱いんだな…ちろ」
+				PRINTFORMW 的確に弱点を責めて来る。あなたは今にも射精してしまいそうだった。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁ、ちゅる、みゅ…」
+				PRINTFORMW 嫌がるそぶりはなく、慧音は貪るようにあなたのペニスを舐めている。
+				PRINTFORMW 「気持ち良い？　そうか、頑張る甲斐があるよ…」
+			ENDIF
+			CFLAG:8271 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「うぅぅ…れろ…」
+				PRINTFORMW 恐る恐る舐めてはいるが、まだ嫌悪感は拭えていないようだ。
+				PRINTFORMW 「なんでこんなもの…ちゅる…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 手で押さえながら、舌を這わせる。
+				PRINTFORMW 「好きでやってるわけじゃあ…ないんだからな」
+				PRINTFORMW 慧音は上目遣いであなたを見ながら、亀頭を舌で突付いた。
+			ENDIF
+			CFLAG:8271 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_42
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8272 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「胸で…分かった、やってみる」
+			PRINTFORMW 「ん、もうちょっと、寄せてくれないか？」
+			PRINTFORMW あなたが腰を動かすと、そこだと言わんばかりに、慧音は胸でペニスを扱き始める。
+			PRINTFORMW 「ふっ、ん…なんか、複雑な気持ちだな…」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「胸で…擦る…」
+			PRINTFORMW 「…本当意味の分からないことばかり…」
+			PRINTFORMW 「まぁ…どうせ逆らっても無駄なのだろう」
+			PRINTFORMW 慧音は半ば諦めるように、胸でペニスを擦り始めた。
+		ENDIF
+		CFLAG:8272= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「ぅん、くっ…胸が擦れて…感じ…」
+				PRINTFORMW パイズリで胸が感じてしまってるのか、慧音は切なそうに胸を動かし続ける。
+				PRINTFORMW が、疲れのせいもあるのか、速さは次第に落ちていく。
+				PRINTFORMW あなたが頭に手を乗せると、慧音はこちらを一瞥し、吹っ切れたように胸を大きく動かし始めた。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「こういうのは…どうだろうか…」
+				PRINTFORMW 慧音はあなたのペニスを挟むのではなく、乳首で亀頭を擦ってきた。
+				PRINTFORMW 「はぁん♪　これは…すごい…」
+				PRINTFORMW 顔は恍惚で、あなたは亀頭を乳首で擦られただけの快感に、ペニスをビクビクと震わせた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふっ、ふっ…胸は…大きいほうだとは思うからな…」
+				PRINTFORMW 慧音は豊満な胸でペニスを包む。
+				PRINTFORMW その感触は、膣とも口とも言えない、不思議な快感を与えてくれた。
+				PRINTFORMW 「こんなに震わせて…先生にはお見通しだぞ♪」
+			ENDIF
+			CFLAG:8272 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「まぁ…やれと言うのなら…やるが…」
+				PRINTFORMW 渋々ながらも、慧音は了承してくれた。
+				PRINTFORMW まだ恐怖が残るような挙動があるが、ゆっくりと胸でペニスを包む。
+				PRINTFORMW 「出して終わるなら…早く出してもらいたいものだ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 胸の上下運動を続ける慧音も、さすがに疲れてくるようだ。
+				PRINTFORMW 動きがゆるくなってきて、もどかしいあなたは、自分から腰を振り始める。
+				PRINTFORMW 「あぁっ！　きゅ、急に乱暴にするんじゃないっ！」
+				PRINTFORMW そう言いながらも、慧音はまんざらでもないようだった。
+			ENDIF
+			CFLAG:8272 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「…くだらない」
+				PRINTFORMW それだけ言って、後は黙々と奉仕し続けた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「私の胸をなんだと思っているんだ…元々はだな、赤子の成長を助長するための母乳を…」
+				PRINTFORMW パイズリされながら特別授業を受けても、説得力に欠けていた。
+			ENDIF
+			CFLAG:8272 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_43
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8273 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「股で…擦る…」
+			PRINTFORMW 「挿れたほうが…早くないか？」
+			PRINTFORMW そう言いながらも、慧音はあなたの上に跨り、秘貝でペニスを擦り始めた。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…挿れたら…抹消だ」
+			PRINTFORMW 恐ろしい捨て台詞を残し、渋々と股でペニスを擦り始めた。
+		ENDIF
+		CFLAG:8273= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「これは…色々な体勢で出来そうだな…」
+				PRINTFORMW 慧音は、ベッドに腰掛けるあなたに上に座り、背面座位のような格好になった。
+				PRINTFORMW 「ふふ、ここから…手で擦ってみようか」
+				PRINTFORMW 自分の股からそそり立つあなたのペニスを、手で擦り始めた。
+				PRINTFORMW 「どう、だ…責められる気分は…んっ」
+				PRINTFORMW よく見ると、慧音自身も、自らの指で秘部を弄り回している。
+				PRINTFORMW それに気づいたあなたは、慧音の後ろから手を回し、秘部を慰めてやった。
+				PRINTFORMW 「ひゃぁ…ふぅ、うん…ふふっ」
+				PRINTFORMW 二人で慰め合いながら、慧音はあなたを見て微笑んだ。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んむ…ちゅる、ぢゅ…」
+				PRINTFORMW 二人は抱きしめあいながら、唇を重ねている。
+				PRINTFORMW 下半身の股間は擦りあって、互いを昂ぶらせていく。
+				PRINTFORMW 「ん…」
+				PRINTFORMW 重ねたまま、下だけを動かし、抱きしめながら、慧音の艶やかで長い美しい蒼髪に、指を通した。
+			;その他の場合
+			ELSE
+				PRINTFORMW 「上から…見下ろすのも悪くないな」
+				PRINTFORMW あなたに跨った慧音は、あなたを見下ろしながら腰を動かしている。
+				PRINTFORMW あくまで素股なので、妙にさばさばとした感じもしている。
+				PRINTFORMW だがその感じが、慧音の大人の魅力を引き出しているようにも思えた。
+			ENDIF
+			CFLAG:8273 = 3
+		;その他の場合
+		ELSE
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「男というのはよく分からないな…」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「確かに…挿れられるよりはマシだが…」
+				PRINTFORMW 「違う。よく考えたら何もマシなことなんて無いじゃないか」
+			ENDIF
+			CFLAG:8273 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8277 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「足なんて…まぁ、お前なら少し力加減を間違っても大丈夫だろう」
+			PRINTFORMW 慧音は少しだけ黒く笑い、足の裏でペニスを扱き始めた。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「足…？」
+			PRINTFORMW 「…思った以上にお前の頭は重症みたいだな」
+		ENDIF
+		CFLAG:8277= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW 「踏まれるのが良いか、擦られるのが良いか…」
+				PRINTFORMW 慧音は細い美脚を見せびらかし、あなたに問う。
+				PRINTFORMW 「まぁ、どちらでも良いだろう」
+				PRINTFORMW そう言って、慧音はあなたのペニスを、立ちながら軽く踏んできた。
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「意外と難しかったりするんだぞ…」
+				PRINTFORMW 慧音は左足で擦り上げて、右足の指で器用に亀頭を責めてくる。
+			CFLAG:8277 = 3
+Endif
+		;その他の場合
+		ELSE
+			PRINTFORMW 「もう意味が分からなくなってきた…」
+			CFLAG:8277 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8278 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、この髪を見た人は誰もが振り向くんだ…なんてな」
+			PRINTFORMW 冗談も軽く済ませ、あなたのペニスに細く美しい髪を絡ませる。
+			PRINTFORMW 長くしなやかなその髪は、その奉仕する姿も含め、非常に犯しい甲斐のある髪のように思えた。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「髪なんて…くっついたら取れるのか？」
+			PRINTFORMW 少し不安そうだったが、ペニスにハラハラと髪を絡ませ始めた。
+		ENDIF
+		CFLAG:8278= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「髪まで…体中犯し尽くすんだな」
+				PRINTFORMW 「なんだかんだ言っても…嬉しいよ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「どうだ？　髪には結構…気を使っているつもりだが」
+				PRINTFORMW 自分の髪を絡ませ、慧音は手であなたのペニスを扱いている。
+				PRINTFORMW サラサラで軽いその髪は、まさに一つの淫具そのものにも思えた。
+			ENDIF
+			CFLAG:8278 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「い、痛い！　そんなに無理やり動かさないでくれ！」
+			PRINTFORMW あなたが手を止めると、あなたの手には数本の抜け落ちた髪が握られていた。
+			CFLAG:8278 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8279 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「くすぐったそうだが…面白そうだな」
+			PRINTFORMW 慧音の露出した脇に、あなたは執拗にペニスを当てがった。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「脇なんて…どっかの巫女にでも頼めばいいだろう…」
+			PRINTFORMW 少々呆れながらも、慧音は腕を上げ、脇を露出した。
+		ENDIF
+		CFLAG:8279= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「挟んでみるのも良いかもな…」
+				PRINTFORMW その一言で、あなたは慧音の後ろに回り、脇にペニスを構える。
+				PRINTFORMW 慧音が腕を下ろし、ペニスを挟むと、あなたは腰を動かし始めた。
+			;その他の場合
+			ELSE
+				PRINTFORMW 慧音の色白い肌にペニスを当てがう。
+				PRINTFORMW だが慧音はもどかしいように、ペニスを見つめている。
+				PRINTFORMW 「結構…退屈だな…」
+			ENDIF
+			CFLAG:8279 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「勝手にしてくれ…」
+			CFLAG:8279 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8286 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ！　それは…」
+			PRINTFORMW 「潤滑用か…悪くないな」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「冷たっ…むぅ…」
+			PRINTFORMW 「そんなものまで持ち出して…何がしたいんだ…」
+		ENDIF
+		CFLAG:8286= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふっ、私も塗ってやろう」
+			PRINTFORMW そう言い出し、慧音はあなたの体の隅々までローションを塗りたくった。
+			CFLAG:8286 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…嫌な予感しかしないのだが…」
+			CFLAG:8286 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+	;初めて
+	IF CFLAG:8287 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「媚薬…こくっ…」
+			PRINTFORMW 「ふぅ…もっと、乱れようじゃないか」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うっ…ん…ぷはぁ…」
+			PRINTFORMW 「な…貴様！　何を飲ませた！」
+			PRINTFORMW そう言い放つ慧音の表情は、見る見る紅潮していった。
+		ENDIF
+		CFLAG:8287= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「もっともっと激しく…もっともっと気持ちよく…」
+			PRINTFORMW 媚薬を飲み終えた慧音の眼は、もはや獣のようにあなたを求めていた。
+			CFLAG:8287 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「私は…薬になんか…決…して…」
+			PRINTFORMW 自らの感情を抑えようとするが、体は正直なようだ。
+			PRINTFORMW 慧音は息を荒げ始め、口の端からは唾液が漏れ始めていた。
+			CFLAG:8287 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 慧音にエプロンを着せると、慧音は頬を赤らめてあなたに振り向いた。
+			PRINTFORMW 「に、似合ってるか…？　旦那様…？」
+			PRINTFORMW その恥らう新妻の姿は、まさにあなたの男としての本能をくすぐった。
+		;その他の場合
+		ELSE
+			PRINTFORMW 「…ふざけるな」
+			PRINTFORMW 白けたようにあなたを見つめながらも、慧音は慣れた手振りでエプロンを身に着けた。
+		ENDIF
+		CFLAG:8308= 1
+		RETURN 0
+	;２回目以降
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「いつか、本当にこうやって出迎えられたらいいのにな…」
+			PRINTFORMW 物悲しそうに呟く慧音をあなたはそっと抱きしめる。
+			PRINTFORMW 「こんなに近くに居るのに…こんなに体を重ねているのに…」
+			PRINTFORMW 「奴隷と調教者以上の関係には…なれないのか？」
+			PRINTFORMW 今にも泣き出しそうな慧音の髪を撫でながら、一つ、「愛してる」とだけ言ってやった。
+			CFLAG:8308 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁぁぁぁぁ…」
+			PRINTFORMW 長い長いため息を吐きながら、渋々とエプロンを身につけた。
+			CFLAG:8308 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_26_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

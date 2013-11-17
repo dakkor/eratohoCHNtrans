@@ -1,0 +1,1553 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;39をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_39_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 1
+;口枷がある場合は戻る
+SIF TEQUIP:42
+	RETURN 1
+;失神回復時は戻る
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊の場合は戻る
+SIF TALENT:167
+	RETURN 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_0
+IF CFLAG:8000 == 0
+	IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3
+			;前提に屈服刻印0がある以上すごい条件である
+			;じゃなくてちゃんと書き直します、はい
+			PRINTFORMW 「………痛くしないで…お願いですから……」
+			PRINTFORMW 触れた途端に雛の瞳が恐怖で揺れる……雛にとっては俺の全てが苦痛なのかもしれない
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛の肌に触れると僅かに身体を震わせ、こちらに瞳を向ける
+			PRINTFORMW しかしそれ以上の反応は見られなかった
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「…っ！」
+			PRINTFORMW 雛の肌に指を這わせる…
+			PRINTFORMW 快感や不快感より先に恐怖心が来るようだ
+	ELSE
+			PRINTFORMW 「嫌…そんな風に触らないで」
+			PRINTFORMW 雛の表情は固い。少々面倒な相手の様だ
+	ENDIF
+	CFLAG:8000 = 1
+;二回目以降（何度も読まないだろうからENTER連打回数減らすために一括表示）
+ELSE
+		;恋慕＋反発刻印Lv3
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG <= 5
+			PRINTFORML 雛の肌に触れ、その身体を愛撫した
+			PRINTFORMW 雛は震えながらシーツを強く握り締め、その視線はこちらに注がれている……
+			;CFLAG:8000 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8000 <= 4
+			PRINTFORML 抵抗はされないものの雛の反応は薄い
+			PRINTFORMW 多少の居心地の悪さを感じながらも%CALLNAME:MASTER%は雛を愛撫した…
+			;CFLAG:8000 = 5
+		;屈服刻印Lv2以上
+		ELSEIF MARK:屈服刻印 >= 2 && CFLAG:8000 <= 3
+			PRINTFORML 「ん…ふ……」
+			PRINTFORMW %CALLNAME:MASTER%が触れると雛の呼吸が僅かに乱れた
+			;CFLAG:8000 = 4
+		;屈服刻印Lv1
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8000 <= 2
+			PRINTFORML 「はずかし…ぃ…です……」
+			PRINTFORMW %CALLNAME:MASTER%の目に触れないよう雛は肌を隠そうとしている
+			;CFLAG:8000 = 3
+		;それ以外
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8000 <= 1
+			PRINTFORML 「そんな風に乱暴にされると…痛いわ」
+			PRINTFORMW 雛は表情をしかめるが強い抵抗はされなかった
+			;CFLAG:8000 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_1
+IF CFLAG:8001 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「ひっ……ご主人様…何を……？」
+			PRINTFORMW 次に何をされるのかわからない恐怖に雛は身を強張らせた
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛の股間に顔を埋め、舌で秘芯を責め立てる
+			PRINTFORMW 物言わぬ瞳がじっと%CALLNAME:MASTER%を見つめ続けた……
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「っ！……」
+			PRINTFORMW 雛は羞恥に頬を朱に染め、瞳を閉じてしまった
+	ELSE
+			PRINTFORMW 雛の閉じられている脚を強引に割り開く
+			PRINTFORMW 「っ…や…そんな場所……恥ずかしい……」
+			PRINTFORMW 雛は羞恥に頬を朱に染め、目を閉じている
+	ENDIF
+	CFLAG:8001 = 1
+ELSE
+		;恋慕＋反発刻印Lv3
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8001 <= 4
+			PRINTFORML 雛の表情には恐怖がありありと見て取れる
+			PRINTFORML …試しに歯を立ててやったらどうなるだろう
+			PRINTFORMW 軽く噛んだだけでもパニックになるだろうな……
+			;CFLAG:8001 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8001 <= 3
+			PRINTFORMW 雛は抵抗もなく、ただ%CALLNAME:MASTER%が責める様を眺めている……
+			;CFLAG:8001 = 4
+		;屈服刻印Lv1
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8001 <= 2
+			PRINTFORML 「…っふ……っ…く」
+			PRINTFORMW 声が出そうになるのを必死に我慢しているようだ
+			;CFLAG:8001 = 3
+		;それ以外
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8001 <= 1
+			PRINTFORML 「…ん…や……」
+			PRINTFORMW %CALLNAME:MASTER%の額に雛の手が添えられる。引き剥がす程の力は込められておらず、%CALLNAME:MASTER%は雛を責め続けた
+			;CFLAG:8001 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_2
+IF CFLAG:8002 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「……ご主人様……そこは……」
+			PRINTFORMW 雛の瞳に動揺と羞恥が浮かぶが、拒絶するには至らないようだ
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛のアナルに触れ、その窄まりを責め立てる
+			PRINTFORMW アナルに触れた時に微かに瞳が泳いだように見えた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「……不衛生ですから…ご容赦ください」
+			PRINTFORMW 雛がやんわりと拒否の言葉を口にする
+			PRINTFORMW %CALLNAME:MASTER%は構わず雛のアナルを弄った……
+	ELSE
+			PRINTFORMW 「っ！……そこはっ」
+			PRINTFORMW 過剰なまでに雛はアナルへの責めを拒絶しようとする
+	ENDIF
+	CFLAG:8002 =1
+ELSE
+	;UP:潤滑ってここじゃ見えない気がするんだけど まあいいか…
+	IF TALENT:恋慕 && MARK:反発刻印 == 3 && (PALAM:潤滑 + UP:潤滑 >= PALAMLV:2) && CFLAG:8002 <= 6
+			PRINTFORML 「…んっ……っふ…こんなぁ……」
+			PRINTFORMW 雛はイヤイヤと首を振り、必死にこの快楽を否定しようとしている
+			;CFLAG:8002 = 6
+	ELSEIF TALENT:恋慕 && MARK:反発刻印 == 3 && (PALAM:潤滑 + UP:潤滑 < PALAMLV:2) && CFLAG:8002 <= 5
+			PRINTFORML 「あっ…やっ！…痛いのは……嫌、です……」
+			PRINTFORMW 雛の抗議の声も最後の方は聞き取りきれない程小さな声になっていた……
+			;CFLAG:8002 = 5
+	ELSEIF TALENT:恋慕 && (PALAM:潤滑 + UP:潤滑 >= PALAMLV:2) && CFLAG:8002 <= 4
+			PRINTFORML 「…んっ…くぅ」
+			PRINTFORMW 雛の呼吸がやや乱れ、その表情もほんのりと上気しているようにみえる
+			;CFLAG:8002 = 4
+	ELSEIF TALENT:恋慕 && (PALAM:潤滑 + UP:潤滑 < PALAMLV:2) && CFLAG:8002 <= 3
+			PRINTFORML %CALLNAME:MASTER%の指が雛のアナルを刺激する
+			PRINTFORMW 雛の目尻には涙が溜まっていた…
+			;CFLAG:8002 = 3
+	ELSEIF (PALAM:潤滑 + UP:潤滑 >= PALAMLV:2) && ABL:Ａ感覚 >= 3 && CFLAG:8002 <= 2
+			PRINTFORML 「あ…ぁ…だめなのに……」
+			PRINTFORMW 雛は何事かうわ言のように呟く。肛虐の刺激に困惑しているようだ
+			;CFLAG:8002 = 2
+	ELSE
+			PRINTFORML 「っ……く……」
+			PRINTFORMW 雛は苦悶の表情を浮かべている
+			;CFLAG:8002 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_3
+IF CFLAG:8003 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「お願いします……優しく……」
+			PRINTFORMW 雛の肌に触れると雛はぶるぶると震えだした
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛の胸を掌で覆う。その手には確かな雛の鼓動を感じる事ができる
+			PRINTFORMW 雛の『お願い』。自身の破滅を望んだ彼女に俺は何ができるのだろう……
+			PRINTFORMW 雛は無言のまま%CALLNAME:MASTER%の手の動きを眺めている……
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「……んっ……お願い……優し…く」
+			PRINTFORMW 目尻に涙を浮かべ、雛はこちらを見つめている……
+			PRINTFORMW 
+	ELSE
+			PRINTFORMW 雛の胸に触れると雛の心音が手に伝わる
+			PRINTFORMW 雛の表情を覗いてみると雛は視線を逸らしてしまった
+	ENDIF
+	CFLAG:8003 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8003 <= 4
+			PRINTFORML %CALLNAME:MASTER%の掌が雛の肌に触れる……
+			PRINTFORMW 雛の表情は青褪め、震えだしてしまった……
+			;CFLAG:8003 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8003 <= 3
+			PRINTFORML 「……んっ」
+			PRINTFORML 胸を責めると時折雛はぶるりと全身を震わせる……
+			PRINTFORMW 表情からは何も窺えない…が、その瞳からは一筋の涙が頬に伝っていた……
+			;CFLAG:8003 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8003 <= 2
+			PRINTFORML 「……っは……くぅ…んっ」
+			PRINTFORML 雛は必死に声を押し殺しながら%CALLNAME:MASTER%の責めに耐えている
+			PRINTFORMW その姿は%CALLNAME:MASTER%の嗜虐心を煽り、責める指は更に激しさを増した……
+			;CFLAG:8003 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8003 <= 1
+			PRINTFORML 「っ…痛……」
+			PRINTFORML %CALLNAME:MASTER%の責めに対し苦悶の表情を浮かべる雛
+			PRINTFORMW まだ快楽を受け入れるには時間がかかるようだ
+			;CFLAG:8003 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_4
+IF CFLAG:8004== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+					PRINTFORMW 「…ご主人様……」
+					PRINTFORMW 雛は不安そうな表情でこちらを見つめる
+					PRINTFORMW 苦痛を与えぬよう気遣いながら雛の膣内を掻き混ぜた
+	ELSEIF TALENT:恋慕
+					PRINTFORMW ゆっくりと雛の秘所に指を挿れると、その手首に雛の手が添えられる
+					PRINTFORMW ぶるぶると震え、こちらの様子を窺う表情は青褪めていた
+	ELSEIF MARK:屈服刻印 >= 1
+					PRINTFORMW 「……ん……」
+					PRINTFORMW 秘所に触れると雛はびくりと身を強張らせる
+					PRINTFORMW 雛がこれ以上怯えないようゆっくりと指を挿入させた
+	ELSE
+					PRINTFORMW 「っ！……待って…そこはっ」
+					PRINTFORMW 秘裂に触れると慌てて雛はその手を抑える
+					PRINTFORMW ふるふると首を弱弱しく振る雛は涙目になっていた
+	ENDIF
+	CFLAG:8004 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8004 <= 4
+				PRINTFORML 「…ぁ……ご主人様………」
+				PRINTFORML 抵抗する事なく雛は%CALLNAME:MASTER%の指を受け入れた
+				PRINTFORMW しかしその声も身体も震えており、恐怖心は拭えていない事を伝えていた……
+			;CFLAG:8004 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8004 <= 3
+				PRINTFORML %CALLNAME:MASTER%は雛の秘所に触れ、ゆっくりとその指を挿れてゆく
+				PRINTFORMW 腕に抱きつきこちらを見る雛は怯えることはなく、こちらを受け入れているように見えた
+			;CFLAG:8004 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8004 <= 2
+				PRINTFORML 「…ん……そこは……」
+				PRINTFORMW 続く言葉は聞こえなかったが悲しそうな表情を雛は見せた……
+			;CFLAG:8004 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8004 <= 1
+				PRINTFORML 「…や……そこはやめて」
+				PRINTFORMW 雛はこちらの腕を強く握り締めてきた
+			;CFLAG:8004 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_5
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キスする
+;特定の手順を踏むと好感度がアップとかやりたかったけど挫折orz
+;もうちょっと細かく書いておいてくれれば誰かが実装してくれるかもしれませんよ。
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_6
+IF CFLAG:8006 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「ん……」
+			PRINTFORMW 雛の手が%CALLNAME:MASTER%の胸に添えられる
+			PRINTFORMW しかしその手に力は込められず、%CALLNAME:MASTER%は雛の唇の感触をしばし堪能した
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛を抱き寄せ、その唇に想いをのせる
+			PRINTFORMW 雛の腕がわななき、申し訳程度に背に回される
+			PRINTFORMW しかし、すぐにその腕は力なくだらりと垂れ下がり、瞳からは大粒の涙が溢れ出した……
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 前触れもなく雛の唇を奪う
+			PRINTFORMW 「…んぅ？…んんっ……はふ……」
+			PRINTFORMW 驚いた表情を見せたが雛は抵抗を見せなかった
+	ELSE
+			PRINTFORMW 「……意外な事をするのね……それともこれもあなたの手段のひとつなの？」
+			PRINTFORMW 雛は自身の唇に指先で触れ、驚きの表情と共にこちらを見つめる
+	ENDIF
+	CFLAG:8006 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8006 <= 4
+			PRINTFORML %CALLNAME:MASTER%の掌が雛の肩に触れ、唇を奪う
+			PRINTFORMW ……雛の奥歯がカチカチと鳴るのが聞こえる。舌を挿れるのはやめておこう
+			;CFLAG:8006 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8006 <= 3
+			PRINTFORML 「……ん」
+			PRINTFORML 雛を抱き寄せ唇を重ねる……
+			PRINTFORMW 表情からは何も窺えない…が、その瞳からはとめどなく涙が溢れていた
+			;CFLAG:8006 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8006 <= 2
+			PRINTFORML 「……んっ……んんっ」
+			PRINTFORMW 雛は瞳を伏せ、口内を這い回る舌の刺激に耐えている
+			;CFLAG:8006 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8006 <= 1
+			PRINTFORML 「っ…やめて」
+			PRINTFORMW 横を向く雛の頤を引き寄せ、強引に口付けた
+			;CFLAG:8006 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;自慰
+;マグロモードでオナニーって想像つかない…それでも欲情してたら無意識にでもやるもんですかね？
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_7
+;うーむ、旧版はシャワーしかなかったのだろうか…
+IF TEQUIP:54 == 0
+	IF CFLAG:8007 == 0
+		IF TALENT:恋慕 && MARK:反発刻印 >= 3
+			PRINTFORMW 「……はい……ご主人様の仰せのままに……」
+			PRINTFORMW 雛はこちらを気にしながら、のろのろと自らを慰め始めた……
+			PRINTFORMW 「……そんなにじっとみないでください」
+		ELSEIF TALENT:恋慕
+			PRINTFORMW %CALLNAME:MASTER%が指示しても雛は動こうとしない
+			PRINTFORMW 仕方なく%CALLNAME:MASTER%は雛の手を取り秘所と胸へその手を当てさせた…
+			;・・・これってオナニー？
+		ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「…はい、わか…り…まし、た……」
+			PRINTFORMW 雛は瞳を伏せ、自身の身体を慰め始める
+			PRINTFORMW 「このようなものは……ひとに見せるものでは」
+			PRINTFORMW 抗議の声をぼそりと呟きながらも%CALLNAME:MASTER%の指示に逆らおうとはしなかった……
+		ELSE
+			PRINTFORMW 「そんな…」
+			PRINTFORMW %CALLNAME:MASTER%の指示に雛は頬を染める
+			PRINTFORMW しばらくの葛藤の後、雛は自身の身体をまさぐり始めた……
+		ENDIF
+		CFLAG:8007 = 1
+	ELSE
+		IF TALENT:恋慕 && MARK:反発刻印 >= 3 && ABL:自慰中毒 >= 3 && CFLAG:8007 <= 6
+			PRINTFORML 「…ご主人様……その……切ないです……」
+			PRINTFORMW 非難の言葉も次第に行為の快楽に流されていった……
+			;CFLAG:8007 = 7
+		ELSEIF TALENT:恋慕 && MARK:反発刻印 >= 3 && CFLAG:8007 <= 5
+			PRINTFORML 「…んぅ……ふうぅぅっ」
+			PRINTFORMW 必死に声を押し殺し、雛は行為に没頭する……
+			;CFLAG:8007 = 6
+		ELSEIF TALENT:恋慕 && ABL:自慰中毒 >= 3 && CFLAG:8007 <= 4
+			PRINTFORML 度重なる自慰の経験からか感じうるポイントを正確に責め続ける
+			PRINTFORMW 次第に呼吸も荒くなり、肌も上気していった……
+			;CFLAG:8007 = 5
+		ELSEIF TALENT:恋慕 && CFLAG:8007 <= 3
+			PRINTFORML のろのろと雛の指が雛の肌を這い回る
+			PRINTFORMW 快楽を得るには物足りないように見える……
+			;CFLAG:8007 = 4
+		ELSEIF ABL:自慰中毒 >= 3 && CFLAG:8007 <= 2
+			PRINTFORML 「…んっ…はっ……んんんっ！」
+			PRINTFORMW 命令した直後こそ戸惑っていたが次第に雛はその行為がもたらす快楽に溺れていった
+			;CFLAG:8007 = 3
+		ELSE
+			PRINTFORML 「…こんな姿を……見られるなんて…」
+			PRINTFORMW 雛は羞恥に震えながら自らを慰めた
+			;CFLAG:8007 = 2
+		ENDIF
+	ENDIF
+;冷水と熱湯もあるがとりあえずなしで
+;おかしいって突っ込まれたら直すかもしれないけど TEQUIP:54 != 0にしてやればいいんじゃね？
+ELSEIF TEQUIP:54 == 1
+	IF CFLAG:8800 == 0
+		IF TALENT:恋慕 && MARK:反発刻印 >= 3
+			PRINTFORMW 「……はい……」
+			PRINTFORMW 返事はあるがなかなか雛は動かない。痺れを切らし、動こうとした矢先に雛は慌ててシャワーを動かした
+			PRINTFORMW 「……そんなにじっとみられると…やりづらいです」
+			PRINTFORMW %CALLNAME:MASTER%の視線が気になるのかちらちらとこちらを気にしながら雛は行為を続けた
+		ELSEIF TALENT:恋慕
+			PRINTFORMW %CALLNAME:MASTER%は雛の股間にシャワーを導き、秘部を刺激した
+			PRINTFORMW 雛はただひたすら%CALLNAME:MASTER%の行動を空虚な瞳で見ているだけだった……
+			;もうこれはオナニーじゃない…でもそれ以外に続行させる方法が見受けられなかったんですorz
+		ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW タイル張りの室内にシャワーが降り注ぐ音が響く
+			PRINTFORMW 雛は%CALLNAME:MASTER%の指示に従い、シャワーを秘部へと導く
+			PRINTFORMW きゅぅっと脚を内股に閉じ、片手を挟み込む
+			PRINTFORMW 俯いている為表情は見えないが全身が小刻みに震えているのは羞恥かあるいは快楽か…
+			PRINTFORMW 空いている左腕で自身の身体を抱き寄せ、シャワーによってもたらされる快楽に必死に耐えている
+		ELSE
+			PRINTFORMW 「…お風呂場でも…しなきゃいけないの……？」
+			PRINTFORMW %CALLNAME:MASTER%の指示に雛は頬を染める
+			PRINTFORMW しばらくの葛藤の後、雛はゆっくりとシャワーに手を伸ばした……
+		ENDIF
+		CFLAG:8800 = 1
+	ELSE
+		IF TALENT:恋慕 && MARK:反発刻印 >= 3 && CFLAG:8800 <= 5
+			PRINTFORML 「っ……っ………んっ」
+			PRINTFORMW  声を押し殺し、雛は行為を続ける。%CALLNAME:MASTER%が気になるようでしきりにこちらに視線を向けていた…… 
+			;CFLAG:8800 = 6
+		ELSEIF TALENT:恋慕 && ABL:自慰中毒 >= 3 && CFLAG:8800 <= 4
+			PRINTFORML 「っ……っ………ふっ」
+			PRINTFORML 雛は指示に従い行為に耽る。しかしその瞳には快楽の色は現れず
+			PRINTFORMW あくまで空虚なまま%CALLNAME:MASTER%に向けられていた…… 
+			;CFLAG:8800 = 5
+		ELSEIF TALENT:恋慕 && CFLAG:8800 <= 3
+			PRINTFORML 「……っぁ……」
+			PRINTFORMW 雛は指示に従い自らを慰める。%CALLNAME:MASTER%を捉えていないその瞳には何が映っているのだろうか… 
+			;CFLAG:8800 = 4
+		ELSEIF ABL:自慰中毒 >= 3 && CFLAG:8800 <= 2
+			PRINTFORML 「あ…あ……私は……こんな……はしたない……」
+			PRINTFORMW 自らを貶める台詞を断続的に吐きながら雛は行為に没頭した
+			;CFLAG:8800 = 3
+		ELSE
+			PRINTFORML 「ん……いや……見ないで……」
+			PRINTFORMW 雛はおずおずとシャワーを股間へと導く。%CALLNAME:MASTER%の視線を避ける為かその瞳は伏せられていた
+			;CFLAG:8800 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_9
+IF CFLAG:8009 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 雛から数歩離れ、その裸身を見つめる
+			PRINTFORMW 「…こんどは…なにを……？」
+			PRINTFORMW その裸身を隠す事もできずに怯えながら雛は言葉を紡いだ
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛の瞳がこちらに向けられる
+			PRINTFORMW その瞳に果たして俺は見えているのだろうか
+			PRINTFORMW 何の抵抗もなく、されるがままの雛を見つめながらあの時の想いを確認する
+			PRINTFORMW ……俺はこれで本当にいいのか？雛の望みを聞くべきではないのか……？
+			PRINTFORMW ふと気付くと雛の首すじに両手を添えている。慌てて%CALLNAME:MASTER%は雛から離れた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 雛の全身をじっくりと眺めた後、その表情を窺う
+			PRINTFORMW 頬は朱に染まり、瞳はこちらと視線を合わせないようにゆらゆらと泳ぐ
+			PRINTFORMW ふと、視線が合うと雛は俯いて胸と局部を腕で覆い隠してしまった
+	ELSE
+			PRINTFORMW 「見られるだけなのは……触られるより恥ずかしいのね」
+			PRINTFORMW 雛は身体を腕で隠し、視線を逸らした
+	ENDIF
+	CFLAG:8009 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8009 <= 4
+			PRINTFORML 雛からしばし離れ、その身体を眺める
+			PRINTFORMW 雛は震えながらこちらの様子を窺っている……
+			;CFLAG:8009 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8009 <= 3
+			PRINTFORML 雛を抱き寄せ、しばしそのまま雛の表情を見つめる
+			PRINTFORML 雛の手が胸に添えられ、僅かに力が込められる
+			PRINTFORMW %CALLNAME:MASTER%は何も言わず雛から離れた
+			;CFLAG:8009 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8009 <= 2
+			PRINTFORML 「…恥ずかしいですから……」
+			PRINTFORMW 聞き取れないほど小さな声で雛は拒絶の言葉を口にした
+			;CFLAG:8009 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8009 <= 1
+			PRINTFORML 雛の裸身をじっくりと眺める
+			PRINTFORMW 雛は目を伏せ、顔を逸らした
+			;CFLAG:8009 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_10
+IF CFLAG:8010 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 雛の眼前にローターを突きつけ、その振動を見せ付ける
+			PRINTFORMW 雛の表情から血の気が引くのが見える
+			PRINTFORMW どうやら何をされるか想像がついたようだ
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 静かな部屋に機械の振動音が響く
+			PRINTFORMW 「…っ…ぁ…ぁあっ」
+			PRINTFORMW 雛の手が%CALLNAME:MASTER%の手首を掴み、押し戻そうと力が込められる
+			PRINTFORMW 「…ひっ…ぅあっ…ああっ！！」
+			PRINTFORMW しかしその身体はローターの刺激に屈し、雛は%CALLNAME:MASTER%の腕にしがみついた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「くっ…ひっ…とめ…てぇ……」
+			PRINTFORMW 刺激が強すぎるのかがくがくと震えながら雛は悶え続けた
+	ELSE
+			PRINTFORMW 「こんっな、の…いや……せめて……あな、たの…手でっ」
+			PRINTFORMW 機械の無慈悲な責めはまだ止まらない
+	ENDIF
+	CFLAG:8010 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8010 <= 4
+			PRINTFORML 「んくっ……やめ……ぁあっ」
+			PRINTFORMW 雛はローターの刺激を必死に耐えているようだ
+			;CFLAG:8010 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8010 <= 3
+			PRINTFORML 雛の秘芯をローターが無遠慮に責めたてる
+			PRINTFORMW 雛は%CALLNAME:MASTER%の腕にしがみつき、その刺激に身悶えた
+			;CFLAG:8010 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8010 <= 2
+			PRINTFORML 「やっ…やだ……もう、やだよぉ……」
+			PRINTFORMW ぎゅっと目を閉じたまま雛はイヤイヤと首を振る
+			;CFLAG:8010 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8010 <= 1
+			PRINTFORML 「あぐ……これ…やめてぇ……」
+			PRINTFORMW 機械の容赦ない責めに耐えかね雛は拒絶の言葉を口にした
+			;CFLAG:8010 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_11
+IF CFLAG:8011 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「や……怖いです…やめて……ご主人様……」
+			PRINTFORMW ぶるぶると震えながら雛は訴える
+			PRINTFORMW しかし嫌だとは言ってもその脚が動く事はなかった
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛の瞳が動揺に震え、こちらから距離を置こうと後ずさる
+			PRINTFORMW 弱弱しく首を振り、青褪めた表情の雛に触れると涙が頬を伝った
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「それ……なんですか……」
+			PRINTFORMW 青褪め、震えながら雛はこちらに尋ねる
+			PRINTFORMW スイッチを入れると雛は慌ててこちらから離れようとした
+	ELSE
+			PRINTFORMW 「……そういうの……使ってほしくない……」
+			PRINTFORMW 視線を逸らしながら憮然とした表情で雛は言う
+			PRINTFORMW その声が震えているのを%CALLNAME:MASTER%は聞き逃さなかった
+	ENDIF
+	CFLAG:8011 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8011 <= 4
+			PRINTFORML 「……ご主人様……」
+			PRINTFORMW 何事か呟く雛は今にも泣きだしそうな表情をしている
+			;CFLAG:8011 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8011 <= 3
+			PRINTFORML 無機質な機械の作動音が部屋に響く
+			PRINTFORMW 雛はぼろぼろと涙を零しながらこちらに手を伸ばしてきた
+			;CFLAG:8011 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8011 <= 2
+			PRINTFORML 「や……やめ―――」
+			PRINTFORMW 続く言葉は嬌声に遮られ、%CALLNAME:MASTER%に届く事はなかった
+			;CFLAG:8011 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8011 <= 1
+			PRINTFORML 「…嫌がる事ばかり喜んでするのね、あなたは」
+			PRINTFORMW 壁に背を預ける雛。もう逃げられない事が解ってか悪態を一つ吐いた
+			;CFLAG:8011 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_12
+;本当は装着と解除でフラグ二つ必要だが、この辺でめんどうくさくなってきたのでサボれるところはサボります
+
+;解除時
+IF TEQUIP:20 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+		PRINTFORML 「……もう…それはやめてください」
+		PRINTFORMW ボロボロと涙を流しながら雛は懇願した
+	ELSEIF TALENT:恋慕
+		PRINTFORML 雛の秘所からバイブを抜き去る
+		PRINTFORMW 雛は安堵したようで僅かな溜め息が漏れた
+	ELSEIF MARK:屈服刻印 >= 1
+		PRINTFORML 「やっと…おわりですか……？」
+		PRINTFORMW 頬に何条もの涙の跡を残した顔がこちらを向いていた
+	ELSE
+		PRINTFORML 「……そんな道具、捨ててほしいわ。道具に責められるなんて……」
+		PRINTFORMW こちらとは視線を合わせずに雛は独り愚痴をこぼした
+	ENDIF
+;装着時
+ELSE
+	IF CFLAG:8012 == 0
+		IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW 「……い、や……そんなの…使わないでください」
+				PRINTFORMW 雛は震えながら首を振る
+				PRINTFORMW しかしその身体は一歩もそこから動けず、%CALLNAME:MASTER%に抑え込まれた
+		ELSEIF TALENT:恋慕
+				PRINTFORMW 「……」
+				PRINTFORMW 雛は何も言わずただこちらを見つめている
+				PRINTFORMW 秘裂へとバイブをあてがった時、びくりと小さく震えた
+				PRINTFORMW 「………ゃ」
+				PRINTFORMW 聞き取れない程微かな声で雛はそれを拒んだ……
+		ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW 「……や……ゆるして」
+				PRINTFORMW 血の気の引いた表情のまま首を振り、雛は数歩後ずさる
+				PRINTFORMW その腕を捕まえると雛の絶叫が%CALLNAME:MASTER%の鼓膜に突き刺さった……
+		ELSE
+				PRINTFORMW 「いや…やめて……いやなの……」
+				PRINTFORMW 首を横に振りながら雛は後ずさる。その背に壁が当たり、ずるずると座り込む
+				PRINTFORMW 身を竦ませ、泣きながら懇願する雛の秘所に%CALLNAME:MASTER%はバイブを埋没させた
+		ENDIF
+		CFLAG:8012 = 1
+	ELSE
+		IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORML 「いや……いや……」
+			PRINTFORMW 怯え震え続ける雛は逃げる事すら忘れひたすら同じ言葉を口にするだけだった
+		ELSEIF TALENT:恋慕
+			PRINTFORML 雛の秘所から無機質な機械音が響く
+			PRINTFORMW %CALLNAME:MASTER%の手に雛の掌が重なる。雛の瞳が訴える事とは……
+		ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORML 「やっ…やだ……もう、やめてください……」
+			PRINTFORMW ぎゅっと目を閉じたまま雛はイヤイヤと首を振る
+		ELSE
+			PRINTFORML 「あぐ……これ…やめてぇ……」
+			PRINTFORMW 機械の容赦ない責めに耐えかね雛は拒絶の言葉を口にした
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+		PRINTFORMW 雛はバイブを抜いた後もしばらく泣き続けた
+	ELSEIF TALENT:恋慕
+		PRINTFORML 「ぐす……」
+		PRINTFORMW 雛が泣き止むまではまだ時間が掛かりそうだ……
+	ELSEIF MARK:屈服刻印 >= 1
+		PRINTFORML 「や…こないで……」
+		PRINTFORMW バイブを抜いた後も雛は怯え続けた
+	ELSE
+		PRINTFORML 「…そんなの使わないで」
+		PRINTFORMW 雛は用心深くこちらの様子を伺っている
+	ENDIF
+;装着時
+ELSE
+	IF CFLAG:8013 == 0
+		IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「や……怖い…嫌……やめて……ご主人様」
+			PRINTFORMW ぶるぶると震えながら雛は訴え、その目からは涙が零れ落ちた
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「…嫌……やめてっ」
+			PRINTFORMW 普段の雛からは想像できない程強い口調で拒絶されてしまった
+		ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW ぶるぶると震えながら雛はこちらの行動に注視している
+			PRINTFORMW 雛のアナルにバイブが触れると雛は泣き出してしまった
+		ELSE
+			PRINTFORMW 「嫌、嫌！やだってば！やめてよ」
+			PRINTFORMW 髪を振り乱しながら雛は叫ぶ
+			PRINTFORMW バイブのスイッチを入れた途端その動きが止まり、その瞳から止め処なく涙が溢れた
+		ENDIF
+		CFLAG:8013 = 1
+	ELSE
+		IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORML 「……う……ぁ……ご主人様……止めて…抜いてぇ…っ」
+			PRINTFORMW 雛は%CALLNAME:MASTER%にしがみついて刺激に耐えている
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「……なんで……」
+			PRINTFORMW 雛は涙を溜めた瞳でこちらを見つめている
+		ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORML 「……や……抜いてください」
+			PRINTFORMW 血の気の引いた表情で雛は訴えた
+		ELSE
+			PRINTFORML 「…抜いて……お願いだから……」
+			PRINTFORML 涙を零し、掠れた声で懇願した
+			PRINTFORMW ……この程度で根を上げるのならばそのうち堕ちるだろうか
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_20
+IF CFLAG:8020 == 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW %CALLNAME:MASTER%は雛を組み敷いた
+				PRINTFORMW 雛の表情は怯え、その身は恐怖に打ち震える
+				PRINTFORMW 「や……やさし…く……して…くださ、い……お願……い…しま、す……」
+				PRINTFORMW そのまま抱き寄せてやると雛はいくらか落ち着きを取り戻したようだ
+	ELSEIF TALENT:恋慕
+				PRINTFORMW 「……」
+				PRINTFORMW 雛は何も言わずただこちらを見つめている
+				PRINTFORMW 雛に覆いかぶさるように%CALLNAME:MASTER%は身体を重ねた
+				PRINTFORMW 「……暖かい」
+				PRINTFORMW ゆらゆらと腕が所在無さげに動き、しばらくの後、%CALLNAME:MASTER%の背に回された
+	ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW 「……った……あ……」
+				PRINTFORMW 瞳の端に涙を滲ませながら雛はこちらに手を伸ばす
+				PRINTFORMW その手を握ると雛はいくらか安堵したようだ
+	ELSE
+				PRINTFORMW 「……ひどい」
+				PRINTFORMW %CALLNAME:MASTER%の下で雛は聞こえないように一言呟いた
+	ENDIF
+	CFLAG:8020 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8020 <= 4
+			PRINTFORML 「……は…ぁ……ごしゅ…じんさま……」
+			PRINTFORMW 恐怖心は拭えぬもののお互いに肌を接触させるこの行為はいくらか彼女も安堵できるようだ
+			;CFLAG:8020 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8020 <= 3
+			PRINTFORML 雛の腕が背に回される。苦痛を与えないように%CALLNAME:MASTER%は気遣いながら身体を重ねる
+			PRINTFORMW 雛の頬が%CALLNAME:MASTER%の頬に触れ、摺り寄せられた
+			;CFLAG:8020 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8020 <= 2
+			PRINTFORML 「あ……ん……怖いから……ぎゅうって、して欲しいです……」
+			PRINTFORMW 要望に応じ、%CALLNAME:MASTER%は雛と身体を合わせた
+			;CFLAG:8020 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8020 <= 1
+			PRINTFORML 「……合意だなんて思わないで」
+			PRINTFORMW 雛は視線を合わせようとしなかった
+			;CFLAG:8020 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_21
+IF CFLAG:8021== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW 雛を背後から抱き寄せ、そのまま押し倒す
+				PRINTFORMW 驚きの表情と共にこちらを振り返る雛
+				PRINTFORMW 「や……怖い……お願…い…ひどいこと…しない…で……」
+				PRINTFORMW 雛の腰を抱え、%CALLNAME:MASTER%は己の分身を突き入れた
+	ELSEIF TALENT:恋慕
+				PRINTFORMW 「……」
+				PRINTFORMW 雛は背中越しにこちらを眺める。怖がりな彼女には少々酷な体位かもしれない
+				PRINTFORMW ゆっくりと%CALLNAME:MASTER%は雛へと己自身を埋没させてゆく
+				PRINTFORMW 抵抗はされなかったが雛の手がシーツを強く握り締めているのが見えた
+	ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW 後ろを向かせ、雛の腰に手を添える
+				PRINTFORMW 「え……やっ……やあぁ……」
+				PRINTFORMW こちらの意図を知った雛はじたばたともがいた
+	ELSE
+				PRINTFORMW 「……こんなの嫌」
+				PRINTFORMW こちらを見ようとしない雛の表情はわからない。
+				PRINTFORMW しかし、彼女の落とした涙がシーツの上で砕けるのが見えた……
+	ENDIF
+	CFLAG:8021 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8021 <= 4
+			PRINTFORML 「……や…ぁ……ごしゅ、じ…ん…さま……こわい……」
+			PRINTFORMW 雛は身体を捻り、こちらに手を伸ばしてきた
+			;CFLAG:8021 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8021 <= 3
+			PRINTFORML 背中越しに雛はやや血の気の引いた顔色でこちらを見つめている
+			PRINTFORML 表情の変化はわかりにくいがやはり恐怖は感じているようで視線は定まらない
+			PRINTFORMW %CALLNAME:MASTER%はなるべく雛と肌が触れ合うよう、前屈した
+			;CFLAG:8021 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8021 <= 2
+			PRINTFORML 「や…こわい……こわいです……」
+			PRINTFORMW ぶるぶるとその裸身を震わせながら雛は訴えた……
+			;CFLAG:8021 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8021 <= 1
+			PRINTFORML 「…卑怯ね……見られるのが…嫌なの？」
+			PRINTFORMW こちらを見ずに雛は呟く。その肩が小刻みに震えているのが見えた……
+			;CFLAG:8021 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_22
+IF CFLAG:8022== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW 「……ご主人様……」
+				PRINTFORMW 繋がったまま抱き寄せると雛は穏やかな表情でこちらを見つめる
+				PRINTFORMW 雛と視線を合わせると頬をやや朱に染め、こちらから視線を外して俯いてしまった
+	ELSEIF TALENT:恋慕
+				PRINTFORMW 雛を抱き寄せ、ゆっくりと%CALLNAME:MASTER%は雛へと己自身を沈めてゆく
+				PRINTFORMW 雛の腕が%CALLNAME:MASTER%の背に回され、お互いに抱き合う形になる
+				PRINTFORMW 雛の背が震え、嗚咽と共に雛の涙が頬を伝い、%CALLNAME:MASTER%の胸に落ちる
+				PRINTFORMW %CALLNAME:MASTER%は雛が落ち着くまでそのまま抱きしめた
+	ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW お互いに抱き合い、肌を密着させる
+				PRINTFORMW 「……ぅ……なんか恥ずかしいです……」
+				PRINTFORMW %CALLNAME:MASTER%が腰を振ると雛は首に腕を回し、より肌を密着させてきた
+	ELSE
+				PRINTFORMW 「…もう……好きなようにすればいいじゃない」
+				PRINTFORMW 視線を合わせようとしない雛を抱き寄せ、その首すじに口付ける
+				PRINTFORMW しばし戸惑った後、雛はこちらの背に腕を回した
+	ENDIF
+	CFLAG:8022 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8022 <= 4
+			PRINTFORML 「…ぁ……ご主人様……」
+			PRINTFORMW 抱き寄せると雛は身体を預けてきた
+			;CFLAG:8022 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8022 <= 3
+			PRINTFORML 雛を抱き寄せ、肌を合わせると雛が頬を摺り寄せてきた
+			PRINTFORMW 雛が背に腕を回してくるのを確認した後、%CALLNAME:MASTER%はゆっくりと腰を動かした
+			;CFLAG:8022 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8022 <= 2
+			PRINTFORML 「…ぁ……なんだか……嬉しいです」
+			PRINTFORMW 雛は%CALLNAME:MASTER%を抱く腕に力を込め、離れようとしなかった
+			;CFLAG:8022 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8022 <= 1
+			PRINTFORML 「…酷い……こんなやり方……ずるい」
+			PRINTFORMW 雛は何事かぶつぶつと文句を言っていた様だが%CALLNAME:MASTER%が腰を動かすと抱きついてきた
+			;CFLAG:8022 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_23
+IF CFLAG:8023== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW 「……ぁ……や」
+				PRINTFORMW 抱き抱えられた雛はじたばたともがく
+				PRINTFORMW そのまま抱き寄せると落ち着いたのか雛の動きが控えめになった
+	ELSEIF TALENT:恋慕
+				PRINTFORMW 雛を抱き抱え、ゆっくりと%CALLNAME:MASTER%は雛へと己自身を沈めてゆく
+				PRINTFORMW 雛は不安そうにこちらを見ようと後ろを何度も向こうと試みる
+				PRINTFORMW 上体をこちらへ引き寄せ、肩口から顔を見せてやると多少は安堵したようだ
+	ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW 雛を後ろから抱き寄せ肌を密着させる
+				PRINTFORMW 「……怖くないです……大丈夫……」
+				PRINTFORMW 言葉とは裏腹に雛の声は震えている
+				PRINTFORMW %CALLNAME:MASTER%は雛が落ち着くのを待ち、ゆっくりと動き始めた
+	ELSE
+				PRINTFORMW 「……ん……ねぇ、その……そっち向きたい」
+				PRINTFORMW 背後から抱かれる事にはまだ恐怖心の方が勝るようだ
+	ENDIF
+	CFLAG:8023 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8023 <= 4
+			PRINTFORML 「…ぅ……ご主人様……」
+			PRINTFORMW 不安そうな表情で雛はこちらをしきりに振り返った
+			;CFLAG:8023 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8023 <= 3
+			PRINTFORML 背後から雛を抱き抱えると雛は%CALLNAME:MASTER%の手に自身の手を重ねた
+			PRINTFORMW 恐怖心に圧され震える雛を%CALLNAME:MASTER%は優しく抱きしめた
+			;CFLAG:8023 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8023 <= 2
+			PRINTFORML 「…や……」
+			PRINTFORMW やはりこちらが見えないのが不安なようでその身体は小刻みに震えている
+			;CFLAG:8023 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8023 <= 1
+			PRINTFORML 「……どうしてもそっち向いちゃだめ？」
+			PRINTFORMW 雛は背後から抱かれる事が不満なようで何度もこちらを向こうとしていた
+			;CFLAG:8023 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_24
+IF CFLAG:8024== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+				PRINTFORMW 「…う……んんっ」
+				PRINTFORMW %CALLNAME:MASTER%の分身がゆっくりと雛を貫く
+				PRINTFORMW 「……ご主人様……動き…ますね」
+				PRINTFORMW 震える声で開始を伝えた雛はゆっくりと腰を動かし始めた
+	ELSEIF TALENT:恋慕
+				PRINTFORMW 雛は戸惑いながらも腰をゆっくりと沈める
+				PRINTFORMW %CALLNAME:MASTER%に向けられた視線がふらふらと揺らめくのが見える
+				PRINTFORMW 雛の手を取り、握ってやると安心したのか腰を動かし始めた
+	ELSEIF MARK:屈服刻印 >= 1
+				PRINTFORMW 「…失礼いたします……っ……」
+				PRINTFORMW %CALLNAME:MASTER%のモノが秘所に触れたがそのまま止まってしまう
+				PRINTFORMW 雛は震え、最後の踏ん切りがつかないようで視線をさまよわせる
+				PRINTFORMW %CALLNAME:MASTER%は雛の腰を抱え、ゆっくりと引き寄せた
+	ELSE
+				PRINTFORMW 「…ヘンな気分……あなたに無理やりしてるような……」
+				PRINTFORMW 雛はこちらを見下ろしながら腰を振った
+	ENDIF
+	CFLAG:8024 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8024 <= 4
+			PRINTFORML 「ご主人様…」
+			PRINTFORML %CALLNAME:MASTER%の上で腰を振る雛が手を伸ばす
+			PRINTFORMW %CALLNAME:MASTER%はその手を繋ぎ、下から雛を突き上げた
+			;CFLAG:8024 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8024 <= 3
+			PRINTFORML 雛は両手を%CALLNAME:MASTER%の胸板に乗せ、積極的に腰を振る
+			PRINTFORMW 雛の腰に添えた手を伸ばし、わき腹をさするとくすぐったそうに身をよじった
+			;CFLAG:8024 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8024 <= 2
+			PRINTFORML 「……うぁ……ぁあっ」
+			PRINTFORML 雛の腰が跳ね、%CALLNAME:MASTER%の上で踊る
+			PRINTFORMW %CALLNAME:MASTER%は下から突き上げ、雛を責め立てた
+			;CFLAG:8024 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8024 <= 1
+			PRINTFORML 「……あなたは気持ちいいのかしら？」
+			PRINTFORMW 雛は腰を動かしながら問いかける。朱に染まったその肌に%CALLNAME:MASTER%は興奮を覚えた……
+			;CFLAG:8024 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_31
+IF CFLAG:8031== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 雛を背後から抱き寄せ、そのまま押し倒す
+			PRINTFORMW 驚きの表情と共にこちらを振り返る雛
+			PRINTFORMW 「や……怖い……お願…い…ひどいこと…しない…で……」
+			PRINTFORMW 雛の腰を抱え、%CALLNAME:MASTER%は己の分身を雛の窄まりへとあてる
+			PRINTFORMW 「ひ……やっ…やぁっ」
+			PRINTFORMW こちらの意図を知り、雛は小さな叫び声を上げた
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 「……」
+			PRINTFORMW 雛は背中越しにこちらを眺める。怖がりな彼女には少々酷な体位かもしれない
+			PRINTFORMW ゆっくりと%CALLNAME:MASTER%は雛へと近づく
+			PRINTFORMW 抵抗はされなかったが雛の手がシーツを強く握り締めているのが見えた
+			PRINTFORMW 雛の菊門に己の分身をあてがう
+			PRINTFORMW 「……ぇ……あ」
+			PRINTFORMW 雛の瞳が揺れる。……ほんとうに、そこでするの？
+			PRINTFORMW 雛の無言の訴えが聞こえたような気がした……
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 後ろを向かせ、雛の腰に手を添える
+			PRINTFORMW 「え……やっ……やあぁ……」
+			PRINTFORMW こちらの意図を知った雛はじたばたともがいた
+			PRINTFORMW 雛の菊門に己の分身をあてがう
+			PRINTFORMW 「な……え……そんなっ」
+			PRINTFORMW 雛は驚き、次いでその表情は恐怖に引きつった
+	ELSE
+			PRINTFORMW 「……こんなの嫌」
+			PRINTFORMW こちらを見ようとしない雛の表情はわからない。
+			PRINTFORMW しかし、彼女の落とした涙がシーツの上で砕けるのが見えた
+			PRINTFORMW 雛の尻穴に己の分身をあてがう
+			PRINTFORMW 「な……え……そんなっ」
+			PRINTFORMW 雛は驚いてこちらを振り返り、その表情は恐怖へと変わった
+	ENDIF
+	CFLAG:8031 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8031 <= 4
+			PRINTFORML 「……ごしゅじ、ん…さま……そこは……いや」
+			PRINTFORMW 雛はぶるぶると震えながら訴える
+			;CFLAG:8031 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8031 <= 3
+			PRINTFORML ふるふると雛の視線が揺れ動く。ゆっくりと%CALLNAME:MASTER%のものが雛のアナルへと埋まってゆく
+			PRINTFORMW いやいやと首を振る雛はやや青褪めて見えた
+			;CFLAG:8031 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8031 <= 2
+			PRINTFORML 「や…いや……いやです……こんなの」
+			PRINTFORMW ぶるぶるとその裸身を震わせながら雛は訴え続けた……
+			;CFLAG:8031 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8031 <= 1
+			PRINTFORML 「…そんな場所……やめて」
+			PRINTFORMW 雛の要望を無視し、雛のアナルに突き入れる。雛の絶叫が部屋中に響き渡った
+			;CFLAG:8031 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_40
+IF CFLAG:8040== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「はい…ご主人様…」
+			PRINTFORMW こちらの指示を伝えると雛の手が動き、肉棒に添えられる
+			PRINTFORMW 「手落ちなどはございませんか？」
+			PRINTFORMW よく見ると雛の指も、身体も小刻みに震えていた
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 「……」
+			PRINTFORMW こちらの要望を伝えるとのろのろと雛の手が動き、肉茎に添えられる
+			PRINTFORMW 慈しむような動作で雛の指が優しく扱いてくれた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「はい……わかりました」
+			PRINTFORMW 思ったより素直に雛は%CALLNAME:MASTER%の肉棒へと手を添える
+			PRINTFORMW 動作はぎこちなかったが、それでも快楽を与えようと懸命に手を動かしているようだ
+			PRINTFORMW 「……痛くありませんか？…ちゃんと……できていますか？」
+			PRINTFORMW 不安そうに雛はこちらに問いかけてくる
+	ELSE
+			PRINTFORMW 「…こうすればいいの？」
+			PRINTFORMW 雛の手が己の分身を包み、ゆっくりと扱く
+			PRINTFORMW 「……あったかい」
+			PRINTFORMW ぼうっとした表情で雛は手淫を続けた
+	ENDIF
+	CFLAG:8040 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8040 <= 4
+			PRINTFORML 「……ご主人様……いかがですか？」
+			PRINTFORMW 雛はこちらの表情を恐る恐る窺いながら奉仕を続けた
+			;CFLAG:8040 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8040 <= 3
+			PRINTFORML 雛は無言のまま奉仕を続ける。白磁のような指先が優しく%CALLNAME:MASTER%のものを包みこむ
+			PRINTFORMW %CALLNAME:MASTER%がそっと雛の頬に触れると雛の表情が柔らかくなったように感じた
+			;CFLAG:8040 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8040 <= 2
+			PRINTFORML 「…いかがですか？」
+			PRINTFORMW 不安そうな表情のまま雛は奉仕を続けた
+			;CFLAG:8040 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8040 <= 1
+			PRINTFORML 「…気持ちいい？」
+			PRINTFORMW 雛はこちらの様子を窺いながら奉仕を続けた
+			;CFLAG:8040 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_41
+IF CFLAG:8041== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「はい…ご主人様…」
+			PRINTFORMW こちらの指示を伝えると雛の手が動き、陰茎に添えられる
+			PRINTFORMW 「……失礼……致し、ます」
+			PRINTFORMW 語尾が少し震えたがそのまま雛は%CALLNAME:MASTER%の陰茎を頬張った
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 「……」
+			PRINTFORMW こちらの要望を伝えると雛は無言のまま肉竿に触れ、口付ける
+			PRINTFORMW 嫌そうな素振り一つ見せず雛は奉仕を行った
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「はい……わかりました」
+			PRINTFORMW 思ったより素直に雛は%CALLNAME:MASTER%の肉棒へと手を添え、顔を近づける
+			PRINTFORMW しばし戸惑った後、意を決し口付け懸命に舌を動かして奉仕を行う
+			PRINTFORMW 「……ん…ちゅ……」
+			PRINTFORMW 不安そうに雛はこちらを見ていた
+	ELSE
+			PRINTFORMW 「…咥える？」
+			PRINTFORMW 雛は信じられないといった表情で聞き返してくる
+			PRINTFORMW 「……わかったわ。自分でするから……」
+			PRINTFORMW しばらくの間ためらい、堅く目を閉じたまま口付けた
+	ENDIF
+	CFLAG:8041 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8041 <= 4
+			PRINTFORML 「んっ…ふっ……」
+			PRINTFORMW 懸命に奉仕を続ける雛の頬を%CALLNAME:MASTER%は優しく撫でた
+			;CFLAG:8041 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8041 <= 3
+			PRINTFORML 雛の舌が%CALLNAME:MASTER%の息子を這う感触に%CALLNAME:MASTER%は小さく呻く
+			PRINTFORMW 舌と口内全体を使った奉仕に%CALLNAME:MASTER%は確かな快感を覚えた
+			;CFLAG:8041 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8041 <= 2
+			PRINTFORML 「…んっんっ…んぅ…」
+			PRINTFORMW こちらと目が合うと雛の頬が僅かに上気した
+			;CFLAG:8041 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8041 <= 1
+			PRINTFORML 「…ん…んむ…んふ」
+			PRINTFORMW 雛はこちらを上目遣いで窺いながら奉仕を続けた
+			;CFLAG:8041 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_42
+IF CFLAG:8042== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「はい…ご主人様…」
+			PRINTFORMW 雛の手が自身の胸に添えられ、その胸が%CALLNAME:MASTER%の屹立した肉棒に触れる
+			PRINTFORMW 「ぁ…ぅ……」
+			PRINTFORMW 顔色はやや青褪めてはいるがその手は休むことなく奉仕を続けた
+	ELSEIF TALENT:恋慕
+			PRINTFORMW %CALLNAME:MASTER%の思惑に反し、雛は腰に腕を回し抱きついてくる
+			PRINTFORMW 確かに%CALLNAME:MASTER%のモノは雛の胸に挟まれてはいるが……
+			PRINTFORMW こういうのもたまにはいいのかもしれない等と思いながら雛の頬を撫でた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「胸…ですか？……かしこまりました…」
+			PRINTFORMW 雛の胸が触れ、柔らかな感触に包まれる
+			PRINTFORMW 「あったかい……はぁ……」
+			PRINTFORMW うっとりとした表情で雛は奉仕を続けた
+	ELSE
+			PRINTFORMW 「胸で？…できなくはないと思うけど……」
+			PRINTFORMW 雛は自分の胸に手をあてがい、確認するように見つめている
+			PRINTFORMW 「……上手くできるかどうかなんて知らないわ」
+			PRINTFORMW 胸で%CALLNAME:MASTER%のモノを挟むと雛は目を閉じて奉仕を開始した
+	ENDIF
+	CFLAG:8042 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8042 <= 4
+			PRINTFORML 「ご主人様……」
+			PRINTFORML 奉仕を続ける雛の頬に触れると雛の表情が強張る
+			PRINTFORMW 目と鼻の先にいるはずの雛との距離を%CALLNAME:MASTER%は感じた……
+			;CFLAG:8042 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8042 <= 3
+			PRINTFORML 奉仕を続ける雛と目が合う。雛は無言のまま口も奉仕に用いる
+			PRINTFORMW 雛の髪を梳いてやると雛は瞳を閉じた。嬉しそうに見えたのは自惚れだろうか……
+			;CFLAG:8042 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8042 <= 2
+			PRINTFORML 「…どうでしょうか？」
+			PRINTFORMW こちらの様子を確認しながら雛は奉仕を行った
+			;CFLAG:8042 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8042 <= 1
+			PRINTFORML 「…手の方がやりやすいわ」
+			PRINTFORMW 胸の奉仕はどうやら気が向かないようだが指示に従い奉仕をはじめた
+			;CFLAG:8042 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_43
+IF CFLAG:8043== 0
+	IF TALENT:恋慕 && MARK:反発刻印 == 3
+			PRINTFORMW 「…ご主人様…あの……」
+			PRINTFORMW %CALLNAME:MASTER%の上で雛は急におろおろと不安そうに辺りを見回す
+			PRINTFORMW 「ぁぅ……」
+			PRINTFORMW おずおずと%CALLNAME:MASTER%の胸に手を当て、雛は腰を動かし始めた
+	ELSEIF TALENT:恋慕
+			PRINTFORMW 雛は%CALLNAME:MASTER%に馬乗りになるがその先の動作に戸惑う
+			PRINTFORMW 苦笑しながら%CALLNAME:MASTER%は雛の腰を掴み、その身を揺らす
+			PRINTFORMW 突然の刺激に驚いたのか雛は抱きついてきた
+	ELSEIF MARK:屈服刻印 >= 1
+			PRINTFORMW 「…すみません。仰る意味が……」
+			PRINTFORMW 指示に対し雛は困惑しているようだ。……確かに馴染みの薄い行為かもしれない
+	ELSE
+			PRINTFORMW 「……これが気持ち言いの？」
+			PRINTFORMW %CALLNAME:MASTER%の上で雛が腰を揺する
+			PRINTFORMW しばらく続けさせていると雛の呼吸が乱れ始めた
+	ENDIF
+	CFLAG:8043 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && CFLAG:8043 <= 4
+			PRINTFORML 「ご主人様…」
+			PRINTFORML 雛の指が%CALLNAME:MASTER%の胸板をなぞる
+			PRINTFORMW %CALLNAME:MASTER%はそのお返しに雛の太腿を撫でた
+			;CFLAG:8043 = 5
+		ELSEIF TALENT:恋慕 == 1 && CFLAG:8043 <= 3
+			PRINTFORML 奉仕を続ける雛と目が合う。雛は無言のまま腰を揺する
+			PRINTFORMW 伸ばされた指に指を絡め手を握ってやると雛の動きはより積極的になった
+			;CFLAG:8043 = 4
+		ELSEIF MARK:屈服刻印 >= 1 && CFLAG:8043 <= 2
+			PRINTFORML 「こんな……あぁ……」
+			PRINTFORMW %CALLNAME:MASTER%の上で雛の蜜壷が蠢き、溢れた蜜が%CALLNAME:MASTER%のモノを濡らした
+			;CFLAG:8043 = 3
+		ELSEIF MARK:屈服刻印 == 0 && CFLAG:8043 <= 1
+			PRINTFORML 「……ん」
+			PRINTFORMW 瞳を閉じながら雛は腰を動かす。その肌はやや上気した様子でほんのりと汗を帯びた
+			;CFLAG:8043 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_39_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

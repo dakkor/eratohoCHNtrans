@@ -1,0 +1,9794 @@
+;-------------------------------------------------
+;  Eragenによって生成された口上ファイルです  
+;CFLAG設定条件
+;-------------------------------------------------
+;-------------------------------------------------
+;ぬえ口上
+;気力:1600 / 
+;生意気 / 好奇心 / Ｃ鈍感 / Ｖ敏感 / Ａ鈍感 / Ｂ敏感 / 貧乳 / 具現 / 触手使役術 / 鵺 / 
+;サドっ気:Lv2 / 
+;被写経験:1 / 
+;白蓮:120% / 
+;-------------------------------------------------
+;--------------------------------------------------
+;エキストラモード構文　CFLAG:8001を使用
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------;
+@KOJO_78_EXTRA_INITIALIZATION
+IF CFLAG:8001 == 0
+	PRINTL 処女モードに移行しますか？
+	PRINTL [0] はい
+	PRINTL [1] いいえ
+	$INPUT_LOOP0
+	INPUT
+	;はい
+	IF RESULT == 0
+		PRINTFORMW 処女追加　V感およびV経験0になりました
+		TALENT:0 = 1
+		EXP:Ｖ経験 = 0
+		ABL:Ｖ感覚 = 0
+		CFLAG:8001 = 1
+	;いいえ
+	ELSEIF RESULT == 1
+		PRINTFORMW 何も変動しません
+		CFLAG:8001 = 2
+	ELSE
+		GOTO INPUT_LOOP0
+	ENDIF
+;		コンボプレイは私には無理だった、でも名残だけ置いておく
+;		CFLAG:5220 == 0
+;			PRINTL この口上はコンボプレイが入っています
+;			PRINTL この機能を使えるようにしますか？
+;			PRINTL [0] ええ
+;			PRINTL [1] だめ
+;			$INPUT_LOOP1
+;			INPUT
+;			IF RESULT == 0
+;				PRINTFORMW 特定の組み合わせで変わるかも？
+;				CFLAG:5220 = 2
+;			ELSEIF RESULT == 1
+;				PRINTFORMW たぶん何もおきない・・・はず
+;			ELSE
+;				GOTO INPUT_LOOP1
+;		ENDIF
+	PRINTL 霊夢との相性が上がりますがどうします？
+	PRINTL [0] とりあえず上げとく
+	PRINTL [1] そのまま
+	$INPUT_LOOP2
+	INPUT
+	IF RESULT == 0
+		PRINTW 霊夢との相性が上がりました
+		PRINTFORMW 
+		PRINTFORMW 
+		RELATION:1 = 120
+	ELSEIF RESULT == 1
+		PRINTFORMW 特に変更しません
+		PRINTFORMW 
+		PRINTFORMW 
+	ELSE
+		CFLAG:5220 = 1
+		GOTO INPUT_LOOP2
+	ENDIF
+ENDIF
+
+;--------------------------------------------------
+;調教開始時のセリフ
+;--------------------------------------------------
+@KOJO_78_SLAVE_MESSAGE_TRAIN_START
+SIF CFLAG:5220 > 1
+	CFLAG:5220 = 2
+SELECTCOM:1 = -1
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K78_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K78_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ（Y1を助手のキャラ番号にする）
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:7021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:7021 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時	CFLAG:8002
+;-------------------------------------------------
+IF CFLAG:8002 == 0
+	PRINTFORMW 今日は面白い玩具を買った
+	PRINTFORMW たしか鵺と言っていたか
+	PRINTFORMW 一体どんなのだろうか、楽しみだ
+	PRINTFORMW ・・・・・・・
+	PRINTFORMW ・・・・・
+	PRINTFORMW ・・・
+	PRINTFORMW 気が付くと見知らぬ部屋に寝かされていた
+	PRINTFORMW 「・・・ここは？」
+	PRINTFORML 考えても仕方ない、とりあえず出ようと思い立ち上がった時に
+	PRINTFORMW ドアが開き誰かが入ってきた
+	PRINTFORMW 「え、誰・・・なの？」
+	PRINTFORMW あなたは無言でぬえに近づいていく
+	PRINTFORMW 「え、ちょっと、わたしの話を聞いて・・・」
+	PRINTFORMW ぬえの言葉を無視しベッドに押し倒す
+	PRINTFORMW 「へ、ああ、いやっやめてっっ」
+	PRINTFORMW 暴れるぬえを押さえつけ服を脱がせた
+	CFLAG:8002 = 1
+	RETURN 1
+ENDIF
+;-------------------------------------------------
+;調教開始時１回のみ	CFLAG:8002
+;-------------------------------------------------
+;恋慕かつおもらし
+IF CFLAG:8002 < 4 && TALENT:恋慕 == 1 && TALENT:おもらし癖 == 1
+	PRINTFORMW 部屋に入るとぬえは寝ている
+	PRINTFORMW 寝相が悪いのかな、毛布が隅に寄っていた
+	PRINTFORML 今日はやめよう、なんて思いながら毛布をかけ直そうと近づくと
+	PRINTFORMW ベッドに黄色いシミがついていた・・・？
+	PRINTFORMW なんだろうと考えていると
+	PRINTFORMW 「んん、あれ・・・あ、ごめんなさい、つい寝ちゃっ・・・て」
+	PRINTFORMW 「え、うそ・・・でしょ・・・まただ、なんて・・・ううっ」
+	PRINTFORMW いきなり泣き出してしまった
+	PRINTFORMW あなたは抱きしめて落ち着かせようとするが
+	PRINTFORMW 「たってあなたが、ひっく、おしっこなんて、させる、からぁ」
+	PRINTFORMW 「初めはちょっとくらいなら、って思ってたのに・・・こんなのって」
+	PRINTFORMW あなたは耳に舌を這わせてそっと囁く
+	PRINTFORMW 「ううっ、確かにおしっこするのきもちい・・・って何言わせるのよっ」
+	CFLAG:8002 = 5
+	RETURN 1
+;恋慕
+ELSEIF CFLAG:8002 < 3 && TALENT:恋慕 == 1
+	PRINTFORMW 「ねえ、少し話を聞いてほしいの」
+	PRINTFORMW あなたはぬえの隣に座った
+	PRINTFORMW 「ありがとう、それで話ってのはね」
+	PRINTFORMW ぬえは自分のことを話し出した
+	PRINTFORML 人を怯えさせた事、地下に封印された事
+	PRINTFORMW 飛倉をばら撒いた事、そしてここでの事を
+	PRINTFORMW 「最初はあなたが憎かった」
+	PRINTFORMW 「ううん、そういうのが言いたいわけじゃなくて、その・・・」
+	PRINTFORMW 「わたしは・・・あなたが好きなの」
+	PRINTFORMW 「おかしいと思ってるでしょ？」
+	PRINTFORMW 「こんな所に連れてこられてエッチなことさせられたのに」
+	PRINTFORMW 「今はあなたが来るだけで嬉しいし、あなたに会うだけで胸がドキドキするの」
+	PRINTFORMW （できれば、わたしだけを見てほしい・・・でも）
+	PRINTFORMW 「あなたの傍にいたいの」
+	PRINTFORMW 「あなたのしたいこと、何でもやってみせるから傍にいさせて」
+	PRINTFORMW あなたはぬえをやさしく抱き寄せた
+	PRINTFORMW 「ん、ありがとう・・・」
+	PRINTFORMW 「ごめん、わたし、うれしく　て」
+	PRINTFORMW あなたは泣き止むまでぬえの頭を撫でてあげた
+	CFLAG:8002 = 4
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF CFLAG:8002 < 2 && MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	PRINTFORMW 「また、来たのね」
+	PRINTFORMW 「脱ぐからあっち向いててよ・・・」
+	PRINTFORMW あなたが一歩踏み出すと
+	PRINTFORMW 「わかった、わかったから・・・」
+	PRINTFORMW そういってゆっくりとだが脱ぎ始めた
+	CFLAG:8002 = 3
+	RETURN 1
+;屈服刻印Lv1
+ELSEIF CFLAG:8002 < 1 && MARK:屈服刻印 == 1
+	PRINTFORMW 「まだ諦めないんだから」
+	PRINTFORMW 「必ず、必ずここから出てやる」
+	PRINTFORMW そんな言葉を聞き流しぬえの服に手を掛ける
+	CFLAG:8002 = 2
+	RETURN 1
+ENDIF
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+IF ASSI < 0
+	CALL K78_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上（Y1を助手のキャラ番号に置換) CFLAG:5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;霊夢助手時 ある動画を見ていいなと思ってたがいきなりナムッときた　反省はしていない
+ELSEIF NO:ASSI == 1
+	DRAWLINE
+	;初めて
+	IF CFLAG:5204 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		;ぬえと霊夢が恋慕
+		IF TALENT:恋慕 == 1 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW ガチャ
+			PRINTFORMW 「あ、やっと・・・へ？」
+			PRINTFORMW 『あ、ぬえじゃない』
+			PRINTFORMW 「霊夢がここにいるってことはもしかして」
+			PRINTFORMW 『そうよ、私も捕まったの、まぁそんなことより』
+			PRINTFORMW 『ちゅう、んんっ、ぷはぁ』
+			PRINTFORMW 『ほら、あなたも立ってないで混ざろうよ』
+			CFLAG:5204 = 1
+		;ぬえのみ恋慕　逃げ出そうとする霊夢と
+		ELSEIF TALENT:恋慕 == 1 && TALENT:ASSI:恋慕 == 0
+			PRINTFORMW 『ぬえ！？　よかったぁ、無事なんだね』
+			PRINTFORMW 「霊夢、久しぶりね」
+			PRINTFORMW 「あ、もしかして霊夢も一緒にするの？」
+			PRINTFORMW 『ぬえとならなんとか逃げ・・・へ？』
+			PRINTFORMW 「なんだ、霊夢は“まだ”なんだ」
+			PRINTFORMW 『なにいって・・・！？』
+			PRINTFORMW 「あ、あなた遅いよ、早くはじめよ？」
+			PRINTFORMW 『（嘘、なんであいつがぬえと）』
+		;霊夢のみ恋慕
+		ELSEIF TALENT:恋慕 == 0 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『なんだ、誰とえっちするかと思えばぬえじゃない』
+			PRINTFORMW 「れ、霊夢！？　助けに来てくれたの？」
+			PRINTFORMW 『そんなわけないでしょ、私もあの人に調教されたのよ』
+			PRINTFORMW 『って、こんな話をしに来たんじゃないの』
+			PRINTFORMW 『今日はあの人と一緒にあなたを調教しに来たの』
+			PRINTFORMW 「じょ、冗談でしょ、ねぇ、いつもの霊夢に戻って！！」
+			PRINTFORMW 『さて、あの人が来る前にその服脱がせますか』
+		;その他　諦めている霊夢
+		ELSEIF TALENT:恋慕 == 0 && TALENT:ASSI:恋慕 == 0
+			PRINTFORMW 「れ、霊夢！？」
+			PRINTFORMW 『あ・・・ぬえ』
+			PRINTFORMW 「もしかして助けに来て・・・」
+			PRINTFORMW 『ごめん、あいつに従わないと』
+			PRINTFORMW 霊夢はぬえを押し倒して服を脱がせる
+			PRINTFORMW 「いやっ、お願い、正気に戻ってよ」
+			CFLAG:5204 = 1
+			RETURN 1
+		ENDIF
+	;二回目以降
+	ELSE
+		;ぬえと霊夢が恋慕
+		IF TALENT:恋慕 == 1 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 「んむ、ちゅう、あ、遅いよ」
+			PRINTFORMW あなたが部屋に入るとすでに裸になった二人がキスをしていた
+			PRINTFORMW 『さて、あなたも来たことだし』
+			PRINTFORMW 「早くしよ、我慢できない」
+		;ぬえのみ恋慕
+		ELSEIF TALENT:恋慕 == 1 && TALENT:ASSI:恋慕 == 0
+			PRINTFORMW 「ふふ、今日もかわいがってね」
+			PRINTFORMW 『こんなの、こんなの私が知ってるぬえじゃない・・・』
+		;霊夢のみ恋慕
+		ELSEIF TALENT:恋慕 == 0 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『ねぇ、ぬえも早く堕ちなさいよ』
+			PRINTFORMW 『こっちは愉しくて気持ちいいよ』
+			PRINTFORMW （うそよ、こんな霊夢なんて・・・）
+		;その他
+		ELSE
+			PRINTFORMW 「わたしは諦めない」
+			PRINTFORMW 「必ずここから出るんだから」
+			PRINTFORMW 「だから、霊夢も・・・」
+			PRINTFORMW 『・・・・・・・・ごめん、もう戻れないよ』
+			RETURN 1
+		ENDIF
+	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K78_KOJO2
+ENDIF
+;-------------------------------------------------
+;特定の順序でコマンドを実行した場合（編集不要）
+;-------------------------------------------------
+;※追加機能D1『抜かずにウフフ機能』（上級者向け）
+;※追加機能D2『サポートプレイ機能』（上級者向け）
+;エキストラモード構文で許可する(CFLAG:5220 > 0)必要があります
+;有効になっている場合、コンボ口上・サポート口上を呼びます
+;ここを編集する必要はありませんが、コンボ口上・サポート口上はファイル末尾にあります。別途記入願います
+
+
+;サポートプレイ
+;IF CFLAG:5220 >= 2000
+;	CALL COMBOASSI_78
+;	IF RESULT == 1
+		;コマンド初回判定を更新
+;		A = 300+SELECTCOM
+;		SIF SELECTCOM == 2
+;			RETURN 0
+;		SIF SELECTCOM < 2
+;			A += 1
+;		SIF CFLAG:A == 0
+;			CFLAG:A = 1
+;		RETURN 0
+;	ELSE
+;		SIF RESULT == 0
+;			CFLAG:5220 -= 2000
+;	ENDIF
+;コンボプレイ
+;ELSEIF CFLAG:5220 > 0
+;	CALL COMBO_78
+;	IF RESULT == 1 || RESULT == 3
+		;コマンド初回判定を更新
+;		A = 300+SELECTCOM:1
+;		SIF SELECTCOM:1 == 2
+;			RETURN 0
+;		SIF SELECTCOM:1 < 2
+;			A += 1
+;		SIF CFLAG:A == 0
+;			CFLAG:A = 1
+;		RETURN 0
+;	ELSEIF RESULT == 2
+;		SELECTCOM = SELECTCOM:1
+;		CALL KOJO_MESSAGE_COM_78_3
+;		SELECTCOM = CFLAG:5220
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;CALL KOJO_MESSAGE_COM_78_3
+;RETURN 0
+;-------------------------------------------------
+;調教開始時 CFLAGなし
+;-------------------------------------------------
+@K78_KOJO2
+;反発刻印Lv3
+IF MARK:反発刻印 == 3
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「あんまり酷い事しないでくれるといいんだけど」
+		PRINTFORMW 「・・・期待してもいいんだよね？」
+	;その他の場合
+	ELSE
+		PRINTFORMW （あんたを殺して必ず出てやるんだから）
+		PRINTFORMW ぬえは敵意剥き出しでこちらを睨んでいる
+	ENDIF
+	RETURN 1
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	;乱数分岐:3
+	IF RAND:3 == 0
+		PRINTFORMW 「あ、まっててね　今準備するから」
+		PRINTFORMW そう言ってぬえは服を脱ぎ始めた
+		PRINTFORMW 「おまたせ、それじゃ始めましょ」
+	;乱数分岐:2
+	ELSEIF RAND:2 == 0
+		PRINTFORMW 「来てくれたんだ」
+		PRINTFORMW そういって駆け寄ってきたと思えばキスされた
+		PRINTFORMW 「んむっちゅうぅぅ・・・」
+		PRINTFORMW 「ふふ、ごちそうさま」
+	;その他の場合
+	ELSE
+		PRINTFORMW 「んー、愛し合うのもいいけどさ」
+		PRINTFORMW 「たまにはえっちなこと無しで一緒になりたいのだけど・・・だめ？」
+	ENDIF
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	PRINTFORMW 「う、また・・・なのね」
+	PRINTFORMW 「わかってるよ、脱ぐから待って」
+	RETURN 1
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2 && TALENT:恋慕 == 0
+	PRINTFORMW 「やめてよ」
+	PRINTFORMW 「こんなことして何が楽しいの」
+	RETURN 1
+;その他の場合
+ELSE
+	PRINTFORMW 「わたしはあんたなんかに屈しないんだから」
+	PRINTFORMW 「いつか抜け出してやる」
+ENDIF
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_78_SLAVE_MESSAGE_TRAIN_END
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、78を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K78_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K78_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;反発刻印Lv3
+IF MARK:反発刻印 == 3
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「どうして優しくしてくれないのかなぁ？」
+		PRINTFORMW 楽しそうに言ってるが目は笑っていない
+	;その他の場合
+	ELSE
+		PRINTFORMW ぬえはただ静かに睨みつけるだけだ
+	ENDIF
+	RETURN 1
+;恋慕かつ体力500未満
+ELSEIF TALENT:恋慕 == 1 && BASE:0 < 500
+	PRINTFORMW 「はぁ、はぁ、ごめんなさい、もう、動けそうに、ない」
+	PRINTFORMW 消耗したぬえをベッドに運んで出ようとすると
+	PRINTFORMW 「お、お願い、寝るまでで、いいの、傍にいて」
+	PRINTFORMW あなたは近くに座った
+	PRINTFORMW 「ありがとう・・・・・んっ・・・すぅ」
+	PRINTFORMW よほど疲れたのかすぐに寝てしまった
+	PRINTFORMW あなたはしばらくぬえの寝顔を眺めた
+
+	RETURN 1
+;恋慕
+ELSEIF TALENT:恋慕 == 1
+	PRINTFORMW 「え、もう終わり？」
+	PRINTFORMW 「まだ物足りないけどあなたがそういうのなら」
+	PRINTFORMW あなたか部屋から出ようとすると
+	PRINTFORMW 「あ、あのね、キス・・・してほしいな」
+	PRINTFORMW 「んむ、ちゅっ」
+	PRINTFORMW 「ありがとう」
+	PRINTFORMW あなたが出て行った後
+	PRINTFORMW 「またね」
+	RETURN 1
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	PRINTFORMW あなたが出て行った後ぬえはベッドに身を投げ出した
+	PRINTFORMW （もうどうでもいいや、ここでの生活も慣れちゃったし）
+	PRINTFORMW ぬえはあなたが出て行ったドアを見て
+	PRINTFORMW （次はいつ来るのかな）
+	RETURN 1
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	PRINTFORMW 「へ、もうお終いなの？」
+	PRINTFORMW 物足りないのか
+	PRINTFORMW 「そ、そんなわけないでしょ！！」
+	PRINTFORMW （どうしよう、この生活に慣れ始めてる・・・）
+	RETURN 1
+;その他の場合
+ELSE
+	PRINTFORMW （早く出なくちゃ）
+	PRINTFORMW （こんなところにずっといたらおかしくなる）
+	PRINTFORMW （狂う前に逃げ出さないと）
+ENDIF
+RETURN 0
+;-------------------------------------------------
+;@KOJO_MESSAGE_COM関係
+;コマンド実行時に出力されます
+;--------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_78_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_78_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ時は口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 1 && SELECTCOM != 226
+	RETURN 0
+;強制開口器時は口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 3 && SELECTCOM != 229
+	RETURN 0
+;触手口辱時は口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 2 && SELECTCOM != 506
+	RETURN 0
+;触手強制飲酒は口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 4 && SELECTCOM != 583
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、78を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K78_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K78_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG 8100～を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫	CFLAG:8200
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:8200 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、くすぐったい」
+			PRINTFORMW 「優しく触るんだね、もっと激しくしてもいいよ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ちょ、ちょっと、変なところ触らないでよ」
+			PRINTFORMW 「くっ、馬鹿、離してよ」
+		ENDIF
+		CFLAG:8200= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、触ってくれるの？」
+			PRINTFORMW 「んっ、あなたに触ってもらうの好き・・・」
+			CFLAG:8200 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2 && TALENT:恋慕 == 0
+			PRINTFORMW 「くっ」
+			PRINTFORMW ぬえは目を瞑って耐えている
+			CFLAG:8200 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやっ、触らないで」
+			CFLAG:8200 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ	CFLAG:8201
+;-------------------------------------------------
+IF SELECTCOM == 1
+	;初めて
+	IF CFLAG:8201 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「だめっ、汚いからやめて」
+			PRINTFORMW 「うう、せめて洗わせてよ・・・」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「へ、どこに顔埋めてるのよ」
+			PRINTFORMW 「いやっ、離してっ」
+		ENDIF
+		CFLAG:8201= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＣ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「くぅ、舌が絡み付いて」
+			PRINTFORMW 「きゃっ、噛んじゃいやぁ・・・」
+			CFLAG:8201 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 <= 2
+			PRINTFORMW 「あ、また舐めるの？」
+			PRINTFORMW 「舐めてくれるのはうれしいけど汚くない？」
+			CFLAG:8201 = 4
+		;Ｃ感覚Lv3
+		ELSEIF ABL:Ｃ感覚 >= 3 && TALENT:恋慕 == 0
+			PRINTFORMW 「ああっ、クリばっか舐めないで」
+			PRINTFORMW 「いやなの、感じたく、くぅぅ」
+			CFLAG:8201 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「く、そんなとこ舐めないで」
+			CFLAG:8201 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル愛撫	CFLAG:8202
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:8202 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ、ち、ちょっと」
+			PRINTFORMW 突然の刺激にぬえは驚いたようだ
+			PRINTFORMW 「そこは、うぅ、指入れちゃだめ・・・」
+			PRINTFORMW ぬえはギュッと目を閉じて耐えている
+		;その他の場合
+		ELSE
+			PRINTFORMW あなたはぬえのアナルを指で軽く擦ると
+			PRINTFORMW 「ば、どこ触ってあぐっっっ」
+			PRINTFORMW 「いやっ、抜いて、このヘンタイ」
+		ENDIF
+		CFLAG:8202 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 > 2
+			;効果[アナルバイブ装着]
+			IF TEQUIP:25 == 1
+					PRINTFORMW あなたはぬえに入れたアナルバイブを動かしてみた
+					PRINTFORMW 「んんっ、ズボズボしたら、おしりばかになる」
+					PRINTFORMW 「だめっ、かき回すのは、もっとぉ」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「や、もっとぉ、もっと奥までぇ」
+				PRINTFORMW 「ひゃ、ひろげちゃ、やぁ・・・」
+				PRINTFORMW 根元まで入れた指を動かしてやると蕩けた声で鳴いた
+			CFLAG:8202 = 5
+			ENDIF
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ａ感覚 <= 2
+			PRINTFORMW 「またお尻なの？」
+			PRINTFORMW どうやらアナルを弄られるのに困惑しているようだ
+			PRINTFORMW 「あ、くぅ・・・できれば、痛くしないで」
+			PRINTFORMW やさしく、じっくり慣らしていけばいい
+			CFLAG:8202 = 4
+		;Ａ感覚Lv3
+		ELSEIF ABL:Ａ感覚 >= 3 && TALENT:恋慕 == 0
+			PRINTFORMW 「うう、やめて、気持ちよくなんか・・・」
+			PRINTFORMW （うそよ、おしりが気持ちいいわけない）
+			CFLAG:8202 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「痛っ、そんなところに入れないでっ」
+			PRINTFORMW 「馬鹿っ変態っあたまおかしうぅ・・・」
+			CFLAG:8202 = 2
+		RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;胸愛撫	CFLAG:8203
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:8203 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				PRINTFORMW ぬえの大きな胸を揉んでいく
+				PRINTFORMW “やわらかいな”
+				PRINTFORMW 「あ、うん、そういってもらえると嬉しいな」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んー、やっぱり胸が大きいほうがいいのかな」
+				PRINTFORMW いや、これはこれで・・・
+				PRINTFORMW 「あっ、そ、そうなんだ」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いや、触らないで」
+			PRINTFORMW 抵抗するも虚しく終わる
+			PRINTFORMW 「ううっ最悪・・・」
+		ENDIF
+		CFLAG:8203= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＢ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｂ感覚 >= 3
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「くっ、激しく揉んじゃ」
+					PRINTFORMW 「あん、そこは」
+
+				;その他の場合
+				ELSE
+					PRINTFORMW 「んんっ、いくら大きいからって乱暴にしないで」
+					PRINTFORMW 「ね、優しくして」
+					PRINTFORMW 「そうしたいのは分かるけど女の子の大事なものだから」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふふ、あなたに触ってもらうの好きよ」
+				PRINTFORMW 「あんっ、乳首ばっか触られると」
+				PRINTFORMW 「んんっ、そこばっか、よわいのにぃ」
+			ENDIF
+			CFLAG:8203 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あなたに触ってもらうとね、すっごくドキドキするんだ」
+			PRINTFORMW 「ねぇ、わかる？」
+			PRINTFORMW ぬえはあなたの手を押し付けて鼓動を感じさせた
+			CFLAG:8203 = 4
+		;Ｂ感覚Lv3
+		ELSEIF ABL:Ｂ感覚 >= 3 && TALENT:恋慕 == 0
+			PRINTFORMW 「あっ、やだ、ふにふにしちゃっ」
+			PRINTFORMW （すごい、おっぱいってこんなに感じるなんて）
+			CFLAG:8203 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「気持ち悪いだけよ」
+			PRINTFORMW 「いい加減やめてくれない？」
+			CFLAG:8203 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;指挿入れ	CFLAG:8204
+;-------------------------------------------------
+IF SELECTCOM == 4
+	;初めて
+	IF CFLAG:8204 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:0 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:0 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+		ENDIF
+		CFLAG:8204= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＶ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			CFLAG:8204 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			CFLAG:8204 = 4
+		;Ｖ感覚Lv3
+		ELSEIF ABL:Ｖ感覚 >= 3
+			CFLAG:8204 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8204 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラする	CFLAG:8205
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:8205 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぇ、だめだよ、そんな、きたなひっ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8205= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ射精中毒Lv2
+		IF TALENT:恋慕 == 1 && ABL:射精中毒 >= 2
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW 「舐めてもらうのもいいけどね」
+				PRINTFORMW 「おちんちんからせーえき搾られるの好きなの」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うあ、やだ、あなたのお口きもちいい」
+				PRINTFORMW 「吸って、くぅっつよ・・・く、しぼってっっ」
+				PRINTFORMW 「せーえきでなくなるまでのんでっっっっ」
+			ENDIF
+			CFLAG:8205 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、また舐めるの？」
+			PRINTFORMW 「どっちかといえばわたしがしてあげる方なのに」
+			CFLAG:8205 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8205 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;キスする	CFLAG:8206
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:8206 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん、ちゅっ」
+			PRINTFORMW 「そういえばキスだけって始めてだよね」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8206= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん、んむ、ちゅぅぅ」
+			PRINTFORMW 「ぷはぁ、ふふ、なんでかな、キスするととても幸せだね」
+			CFLAG:8206 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8206 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;センズリ	CFLAG:8207
+;-------------------------------------------------
+IF SELECTCOM == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:30 == 2
+	;初めて
+	IF CFLAG:8207 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW ぬえはオナホを掴むと恐る恐る扱き始めた
+			PRINTFORMW 「くぅ、なかが、すごい、からみつく・・・」
+			PRINTFORMW ぎこちない手つきだが徐々に手の速度が上がってきた
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8207= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ、んんっ」
+			PRINTFORMW ぬえはオナホを持って扱き始めた
+			SIF ABL:1 >= 3
+			PRINTFORMW 「ひゃ、ねぇ、わたっしのおまんこも、こんなに、きもちいぃの？」
+			;恋慕かつ射精中毒Lv3
+			IF TALENT:恋慕 == 1 && ABL:射精中毒 >= 3
+				PRINTFORMW 「うっ、はあっくぅ」
+				PRINTFORMW 「せーえきいっぱいしぼりとるのぉ」
+				PRINTFORMW ぬえは夢中で手を動かしている
+				PRINTFORMW 「ごめん、ごめんね、わたし、だけ、たのしんでぇ」
+				PRINTFORMW 涎を垂らして自慰にふけるぬえを見つめている
+			;その他の場合
+			ELSE
+			ENDIF
+			CFLAG:8207 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8207 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;自慰	CFLAG:8208
+;-------------------------------------------------
+IF SELECTCOM == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8208 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「自慰・・するところが見たいの？」
+			PRINTFORMW 「うう、あなただからするんだよ？」
+
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ？」
+			PRINTFORMW 「くぅ、やればいいんでしょ、やれば」
+			PRINTFORMW （なんであいつの言いなりになってるのよ）
+		ENDIF
+		CFLAG:8208= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ自慰中毒Lv3
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「ふふ、わたしのオナニーちゃんと見ててね」
+			PRINTFORMW 「あ、でも我慢できなくなったら・・・ね」
+			CFLAG:8208 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「また見たいの？」
+			PRINTFORMW 「わたしはあなたに触って欲しいんだけど・・・」
+
+			CFLAG:8208 = 4
+		;自慰中毒Lv3
+		ELSEIF ABL:自慰中毒 >= 3 && TALENT:恋慕 == 0
+			PRINTFORMW 「んっ、な、何よ、別に進んでしてるわけじゃ・・・」
+			PRINTFORMW （どうしよう、これクセになりそう）
+			CFLAG:8208 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はいはい、わかりましたよ」
+			PRINTFORMW （何やってるんだろう）
+			CFLAG:8208 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;何もしない	CFLAG:8209
+;-------------------------------------------------
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:8209 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん、どうしたの？」
+			PRINTFORMW 少し休憩すると伝えると
+			PRINTFORMW 「そ、それじゃあね、ひざまくら・・・してあげる」
+			PRINTFORMW あなたはしばらくぬえに膝枕してもらった
+
+		;その他の場合
+		ELSE
+			PRINTFORMW 「休憩？」
+			PRINTFORMW 「そんなのより早く外に出してほしいわ」
+		ENDIF
+		CFLAG:8209= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;効果[アナルビーズ]
+			IF TEQUIP:25 == 5
+				PRINTFORMW 休憩すると伝えてあなたは座った
+				PRINTFORMW ぬえはあなたの側により仰向けに寝転ぶ
+				PRINTFORML あなたがお腹を擦ってやると
+				PRINTFORMW くすぐったそうにしてるがどこか嬉しそうだ
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「ん、休憩？　それじゃあ・・・えいっ」
+				PRINTFORMW ぬえはあなたに抱きついてきた
+				PRINTFORMW 「ふふ、暖かいね」
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 少し休もう、と言ってベッドに身を投げ出す
+				PRINTFORMW 天井を見上げるあなたにぬえが覆いかぶさってきた
+				PRINTFORMW 「全身であなたの温もりを感じたいなって・・・だめ？」
+				PRINTFORMW それも悪くないので好きにさせた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あ、休憩？　だったら膝枕しようかな」
+				PRINTFORMW あなたはぬえに膝枕してもらうことにした
+				PRINTFORMW やわらかい膝の感触が心地いい
+				PRINTFORMW ・・・・・
+				PRINTFORMW ・・・
+				PRINTFORMW （あれ、寝ちゃった？）
+				PRINTFORMW あなたの頭を撫でながらどうしようかと考えてたらあなたが目を覚ました
+				PRINTFORMW 「え？　あ、そんなに時間は経ってないよ」
+				PRINTFORMW 「もうちょっと寝ててもよかったのに・・・」
+				PRINTFORMW なんだか残念そうだ
+				PRINTFORMW （・・・寝顔、結構かわいかったなぁ）
+			ENDIF
+			CFLAG:8209 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ・・・」
+			PRINTFORMW （何やってるんだろう）
+			CFLAG:8209 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローター	CFLAG:8210
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:8210 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8210= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8210 = 5
+		;恋慕かつＣ感覚Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			CFLAG:8210 = 4
+		;Ｃ感覚Lv3
+		ELSEIF ABL:Ｃ感覚 >= 3
+			CFLAG:8210 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8210 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電気按摩	CFLAG:8211
+;-------------------------------------------------
+IF SELECTCOM == 11
+	;初めて
+	IF CFLAG:8211 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8211= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8211 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8211 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バイブ（着）	CFLAG:8212
+;-------------------------------------------------
+IF SELECTCOM == 12 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:8212 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8212= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8212 = 4
+		;恋慕かつＶ感覚Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			CFLAG:8212 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8212 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バイブ（脱）	CFLAG:8213
+;-------------------------------------------------
+IF SELECTCOM == 12 && TEQUIP:20 == 0
+	;初めて
+	IF CFLAG:8213 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8213= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8213 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8213 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルバイブ（着）	CFLAG:8214
+;-------------------------------------------------
+IF SELECTCOM == 13 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8214 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うん？　変わったカタチの棒ね」
+			PRINTFORMW 「え、お尻に入れるの？」
+			PRINTFORMW 「したいん・・・だよね　うん、入れていいよ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8214= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あっ」
+			PRINTFORMW アナルバイブを見せただけで赤くなった
+			PRINTFORMW 「入れて、それ見せられちゃ我慢できないっ」
+			PRINTFORMW そんなぬえの期待に応えるように突き入れた
+			CFLAG:8214 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んん、ふか・・い」
+			PRINTFORMW （こんなのよりも指でして欲しいかな？）
+			PRINTFORMW （いや、できれば触って欲しくないけど・・・）
+			CFLAG:8214 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8214 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルバイブ（脱）	CFLAG:8215
+;-------------------------------------------------
+IF SELECTCOM == 13 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8215 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ」
+			PRINTFORMW （うう、お尻の穴がスースーする）
+			PRINTFORMW （閉じなくなったらどうするのよ・・・ばか）
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8215= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW ぐりぐり動かしながら引き抜いていく
+			PRINTFORMW 「きゃっ、お尻のなかっ、えぐれてっ、ひゃうっっ」
+			PRINTFORMW 「ああ、抜けちゃった、今度はあなたのおちんちんを・・・ね？」
+			CFLAG:8215 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「くあっ、ああ、漏らしてない・・・よね？」
+			CFLAG:8215 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8215 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クリキャップ（着）	CFLAG:8216
+;-------------------------------------------------
+IF SELECTCOM == 14 && TEQUIP:30 == 1
+	;初めて
+	IF CFLAG:8216 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8216= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8216 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8216 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クリキャップ（脱）	CFLAG:8217
+;-------------------------------------------------
+IF SELECTCOM == 14 && TEQUIP:30 == 0
+	;初めて
+	IF CFLAG:8217 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8217= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8217 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8217 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ニプルキャップ（着）	CFLAG:8218
+;-------------------------------------------------
+IF SELECTCOM == 15 && TEQUIP:35 == 1
+	;初めて
+	IF CFLAG:8218 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8218= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8218 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8218 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ニプルキャップ（脱）	CFLAG:8219
+;-------------------------------------------------
+IF SELECTCOM == 15 && TEQUIP:35 == 0
+	;初めて
+	IF CFLAG:8219 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8219= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8219 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8219 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;オナホール（着）	CFLAG:8220
+;-------------------------------------------------
+IF SELECTCOM == 16 && TEQUIP:30 == 2
+	;初めて
+	IF CFLAG:8220 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW あなたはオナホールを見せた
+			PRINTFORMW 「なに、それ・・・？」
+			PRINTFORMW これは、と説明しようとしたが
+			PRINTFORMW 実際使ったほうが面白そうなので黙ってあてがった
+			PRINTFORMW 「え、ちょっとまっっっ、くあぁ・・・」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8220= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ・・・」
+			PRINTFORMW オナホールを手渡すと顔を赤くした
+			PRINTFORMW 「自分でいれる、のよね」
+			PRINTFORMW 「あ、だめ、背中がゾクゾクして・・・」
+			CFLAG:8220 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8220 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;オナホール（脱）	CFLAG:8221
+;-------------------------------------------------
+IF SELECTCOM == 16 && TEQUIP:30 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「そっと抜いてよ、そ、ひゃああぁぁっ」
+		PRINTFORMW 一気に外したオナホにぬえの液が糸を引いた
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電極オナホール	CFLAG:8222
+;-------------------------------------------------
+IF SELECTCOM == 17
+	;初めて
+	IF CFLAG:8222 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8222= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8222 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8222 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;正常位	CFLAG:8223
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:8223 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW 「あ、あのね」
+				PRINTFORMW 「わたし、初めてなの、だから」
+				PRINTFORMW もじもじするぬえを落ち着かせるように撫でてやる
+				PRINTFORMW 「あ、ありがとう・・・うん、きて」
+				PRINTFORMW 「ぐっっ、だ、だいじょうぶ、だから」
+				PRINTFORMW そうは言うものの辛そうにする
+				PRINTFORMW あなたは一度抜こうと腰を引くがぬえが脚を絡めてきた
+				PRINTFORMW 「や、やっとひとつになれたのに、大好きなあなたとひとつになれたんだから」
+				PRINTFORMW 「離さないで、今だけそばにいてっ」
+				PRINTFORMW あなたはしばらくぬえと繋がったままでいた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あ、この格好でするんだ」
+				PRINTFORMW 「やっぱり格好でするのがいいな」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW あなたはぬえをベッド押し倒した
+				PRINTFORMW 「ちょっと、いきなり何す・・・る」
+				PRINTFORMW あなたのモノが秘所に擦れるのを見て青ざめる
+				PRINTFORMW 「い、いやっ、やめてっ」
+				PRINTFORMW 暴れるぬえを押さえつけて一気に貫いた
+				PRINTFORMW 「あがっ、ぐ・・・こんな、こんな初めて、うぁ、だなんて」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くっ、こんなことさせて満足？」
+				PRINTFORMW 「無理やり犯してなにがいいのよ」
+			ENDIF
+		ENDIF
+		CFLAG:8223= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＶ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あん、あなたってすごいね」
+			PRINTFORMW 「わたしの弱いところ、全部分かってるみたい」
+			PRINTFORMW 「うん、そこ、もっと激しく突いてっ」
+			CFLAG:8223 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んん、あなたと向き合ってすると」
+			PRINTFORMW 「わたしの恥ずかしい顔見られちゃうよね」
+			PRINTFORMW そんなぬえがかわいくてあなたは髪を撫でた
+			CFLAG:8223 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「この格好でするとか」
+			PRINTFORMW 「さぞ嬉しいんでしょうね」
+			PRINTFORMW （こいつの言いなりだなんて・・・）
+			CFLAG:8223 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位	CFLAG:8224
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:8224 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW 「この格好って犬みたい・・・」
+				PRINTFORMW 「せめて初めては普通にして欲しかったんだけどさ」
+				PRINTFORMW （仕方ないかな、でもやっぱり）
+				PRINTFORMW 考え事をしてるぬえに入れると告げ腰を進めようとすると
+				PRINTFORMW 「あ、待って」
+				PRINTFORMW 「あのね、ギュってして、あなたが見えなくて怖いの」
+				PRINTFORMW 「うん、ありがとう・・・っつぅ」
+
+			;その他の場合
+			ELSE
+				PRINTFORMW 「後ろからって犬じゃないんだから」
+				PRINTFORMW 「ん、これでいいの？」
+				PRINTFORMW 「うゎ、すごい、ずんっずんってくる」
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW 「へ、ちょっと、なにするつも・・・うそ」
+				PRINTFORML 秘所にペニスを擦りつけられる感覚で
+				PRINTFORMW 自分が何をされるのか分かってしまった
+				PRINTFORMW 「や、やだっ、そんなの、ぐっっ」
+				PRINTFORMW （わたしの、わたしの初めてがこんな形で・・・）
+			;その他の場合
+			ELSE
+				PRINTFORMW 「くぅ、こんな格好で犯されるなんて」
+			ENDIF
+		ENDIF
+		CFLAG:8224= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;効果[アナルビーズ]
+		IF TEQUIP:25 == 5
+			PRINTFORMW 「んん、尻尾が揺れて、お尻がっ」
+			PRINTFORMW アナルビーズが揺れる度にぬえの膣が締まる
+			PRINTFORMW あなたはその感触を味わおうと激しく突き入れた
+			CFLAG:8224 = 5
+		;恋慕かつＶ感覚Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あっ、だめっ、そこよわいのっ」
+			PRINTFORMW 「んんっ、そんなにつかれたら、たてなく、なる」
+			PRINTFORMW お尻を突き出した状態で力が抜けてしまったようだ
+			CFLAG:8224 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「後ろから？　うん、いいよ」
+			PRINTFORMW （でも、あなたの顔が見れないと不安だよ）
+
+			CFLAG:8224 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「く、ケダモノはこういうのが好きなのかしら？」
+			CFLAG:8224 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面座位	CFLAG:8225
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:8225 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、あなたと抱き合ってするなんて」
+			PRINTFORMW （うう、顔が近い、恥ずかしいよ・・・）
+			PRINTFORMW 真っ赤にしているぬえを見ながら犯した
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8225= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＶ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「うぁ、もっと、もっと突き上げてっ」
+			PRINTFORMW 「あなたと一緒に、イきたいのっ」
+			PRINTFORMW 「ふぁ、トぶ、わからないっけど、なにかが」
+			PRINTFORMW ぬえはあなたにしがみ付き喘いでいた
+			CFLAG:8225 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぁ、すごい、この格好」
+			PRINTFORMW 「あなたの顔、近くて、すっごくドキドキする」
+			PRINTFORMW （やだ、しあわせすぎだよ）
+			CFLAG:8225 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8225 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面座位	CFLAG:8226
+;-------------------------------------------------
+IF SELECTCOM == 23
+	;初めて
+	IF CFLAG:8226 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8226= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＶ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			CFLAG:8226 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			CFLAG:8226 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8226 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位	CFLAG:8227
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:8227 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW 「え、わたしから乗るの？」
+				PRINTFORMW 「あ、ううん、いやじゃないの、ただね」
+				PRINTFORMW 「はじめてはあなたに奪って欲しかったんだけど・・・」
+				PRINTFORMW ぬえは少し考え込むが頭を振るとあなたに跨った
+				PRINTFORMW 「わたしから捧げるの、わたしから、わたしから・・・」
+				PRINTFORMW しかしなかなか腰を落とそうとしない
+				PRINTFORMW どうしたのかと尋ねると
+				PRINTFORMW 「ご、ごめん、もう少し、待って」
+				PRINTFORMW やはり怖いのだろうか
+				PRINTFORMW ぬえの頬を撫でてまた今度にしようと言うと
+				PRINTFORMW 「ま、待って　大丈夫、大丈夫だからっ」
+				PRINTFORMW ・・・そして意を決してぬえは腰を落とした
+				PRINTFORMW 「くっあ、いつっっ」
+				PRINTFORMW 「や、やっと、つながったのね」
+				PRINTFORMW 「ごめん、ね、決心が、つかなくて」
+				PRINTFORMW 涙を目にためて微笑んだ
+				PRINTFORMW 「あ、今動くから・・・」
+				PRINTFORMW だがあなたはぬえの手を引いて抱き寄せた
+				PRINTFORMW 「っっっっ」
+				PRINTFORMW しばらくぬえと抱き合った
+			;その他の場合
+			ELSE
+				PRINTFORMW 「え、わたしが跨るの？」
+				PRINTFORMW 「んー、ちょっと難しそう・・・」
+				PRINTFORMW 「じゃ、乗るね、んんっ」
+
+			ENDIF
+		;その他の場合
+		ELSE
+			;処女
+			IF TALENT:0 == 1
+				PRINTFORMW 「は、冗談じゃない、なんでよりにもよってあんたと」
+				PRINTFORMW なるべく痛くないようにするつもりだったが埒があかない
+				PRINTFORMW あなたはぬえを跨らせ強引に処女を奪う
+				PRINTFORMW 「やだ、はなし、ぐううう・・・」
+				PRINTFORMW （なんで、なんでわたしがこんな目に）
+				PRINTFORMW ぬえは泣きながら突き上げられている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「自分から乗れとか趣味悪すぎ」
+				PRINTFORMW 「はぁ、どうせしなくても無理やりするんでしょ？」
+				PRINTFORMW そういって渋々あなたの上に跨った
+			ENDIF
+		ENDIF
+		CFLAG:8227= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＶ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふふ、あなたは動いちゃダメよ」
+			PRINTFORMW 「わたしが搾り取ってあげるんだから」
+			PRINTFORMW ぬえはあなたに跨り淫靡な腰使いで動く
+			PRINTFORMW 「どう、きもちいい？」
+			PRINTFORMW あなたが頷くとぬえは微笑んだ
+			CFLAG:8227 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、わたしが上になるのね」
+			PRINTFORMW ぬえはあなたに跨り動き出す
+			PRINTFORMW 「ん、くぅ、どう、きもちいい？」
+			PRINTFORMW まだ慣れていないのか動きがぎこちない
+			CFLAG:8227 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「く、あんたの為に動くなんて」
+			PRINTFORMW （今なら首を絞められるかな・・・だめか）
+			CFLAG:8227 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;逆レイプ	CFLAG:8228
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:8228 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8228= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8228 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8228 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手を犯す	CFLAG:8229
+;-------------------------------------------------
+IF SELECTCOM == 26
+	;初めて
+	IF CFLAG:8229 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8229= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8229 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8229 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面立位	CFLAG:8230
+;-------------------------------------------------
+IF SELECTCOM == 27
+	;初めて
+	IF CFLAG:8230 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8230= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8230 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8230 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面立位	CFLAG:8231
+;-------------------------------------------------
+IF SELECTCOM == 28
+	;初めて
+	IF CFLAG:8231 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8231= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8231 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8231 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;正常位アナル	CFLAG:8232
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:8232 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8232= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			CFLAG:8232 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			CFLAG:8232 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8232 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位アナル	CFLAG:8233
+;-------------------------------------------------
+IF SELECTCOM == 31
+	;初めて
+	IF CFLAG:8233 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この格好でするって、本当にケモノみたいね」
+			PRINTFORMW 「くう、大丈夫、入ってきて」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8233= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「はっ、やだ、そんなにズボズボされちゃ、くう」
+			PRINTFORMW 「お、おしり、ばかになる、やだっ、おかしくなるっっ」
+			PRINTFORMW 突き出したお尻を犯すとかわいい声で鳴いてくれる
+			CFLAG:8233 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ぐっ、うう」
+			PRINTFORMW 「だ、だいじょうぶよ、いれるときが辛いだけで、はぐっ」
+			PRINTFORMW あまり無理はさせたくない、ゆっくり動くことにした
+			CFLAG:8233 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8233 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面座位アナル	CFLAG:8234
+;-------------------------------------------------
+IF SELECTCOM == 32
+	;初めて
+	IF CFLAG:8234 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8234= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			CFLAG:8234 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			CFLAG:8234 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8234 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面座位アナル	CFLAG:8235
+;-------------------------------------------------
+IF SELECTCOM == 33
+	;初めて
+	IF CFLAG:8235 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW あなたはぬえに膝の上に座るように言った
+			PRINTFORMW 「ん、この後どうするの？」
+			PRINTFORMW あなたはぬえの腰を持ち上げペニスを宛がう
+			PRINTFORMW 「へ、ちょ、ちょっとまっっっ」
+
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8235= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW ぬえは顔を赤くしてあなたの上に座る
+			PRINTFORMW 「ふぁ、やだ、ふかくささって、くぅ」
+			PRINTFORMW ペニスを根元まで銜え込ませたら、あなたは脚を抱えて動き出した
+			CFLAG:8235 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW あなたは自分のペニスに座るよう手招きする
+			PRINTFORMW 「・・・断れないとわかっててやってるの？」
+			PRINTFORMW 渋々とあなたの上に座る
+			PRINTFORMW （ふぅ、仕方ないなぁ）
+			PRINTFORMW 「くうっ、ふかい・・・」
+			CFLAG:8235 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8235 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位アナル	CFLAG:8236
+;-------------------------------------------------
+IF SELECTCOM == 34
+	;初めて
+	IF CFLAG:8236 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お、お尻に入れてするの？」
+			PRINTFORMW 「う、うん、やってみるね」
+			PRINTFORMW ぬえは恐る恐るあなたのモノをアナルに銜え込んでいく
+			PRINTFORMW 「うう、この状態で動くのって難しそう・・・」
+			PRINTFORMW 「ひゃっ、ちょ、突き上げないでっ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8236= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「うぁ、ご、ごめん、わたしだけ、きもちよくっ」
+			PRINTFORMW 「でも、腰が止まらないっ」
+			PRINTFORMW 腰を振って快楽を得るたびにアナルが締まる
+			PRINTFORMW あなたは夢中で腰を動かすぬえとアナルの締まりを楽しんでいる
+			CFLAG:8236 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「きつっ」
+			PRINTFORMW あまり開発されていないので快楽を得るまでには至っていないようだ
+			PRINTFORMW それでもあなたを満足させようと腰を動かす
+			CFLAG:8236 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8236 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;逆アナルレイプ	CFLAG:8237
+;-------------------------------------------------
+IF SELECTCOM == 35
+	;初めて
+	IF CFLAG:8237 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8237= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8237 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8237 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手のＡを犯す	CFLAG:8238
+;-------------------------------------------------
+IF SELECTCOM == 36
+	;初めて
+	IF CFLAG:8238 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8238= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8238 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8238 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面立位アナル	CFLAG:8239
+;-------------------------------------------------
+IF SELECTCOM == 37
+	;初めて
+	IF CFLAG:8239 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8239= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8239 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8239 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面立位アナル	CFLAG:8240
+;-------------------------------------------------
+IF SELECTCOM == 38
+	;初めて
+	IF CFLAG:8240 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「立ってする？」
+			PRINTFORMW 「え、ああ、こうするのね」
+			PRINTFORMW ぬえに壁に手をつかせお尻を突き出させる
+			PRINTFORMW 「うう、なんかドキドキする」
+			PRINTFORMW まぁ普通座ってするからね
+			PRINTFORMW 「うん、入れていいよ、くうっ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8240= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;Ａ感覚Lv3
+			IF ABL:Ａ感覚 >= 3
+				;乱数分岐:2
+				IF RAND:2 == 0
+					PRINTFORMW 「んん、我慢できない、早く入れて・・・」
+					PRINTFORMW アナルに擦りつけて焦らしてみる
+					PRINTFORMW 「や、入れてちょうだひっっ」
+					PRINTFORMW ヒクついて緩んだところを一気に突き入れた
+					PRINTFORMW 「くうぅう、いきなりだなんてズルイ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あっ、だめ、はげしっ」
+					PRINTFORMW あなたは激しく出し入れしてやる
+					PRINTFORMW 「だ、だめっおしり、こわれるっっ」
+					PRINTFORMW 壁に爪をたてて口から涎をたらし喘いでいる
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「またこの格好？」
+				PRINTFORMW 「あなたがしたいんだったらいいけど」
+				PRINTFORMW 「立ったままって足が辛くて」
+				PRINTFORMW 「あ、愚痴ってごめん」
+			ENDIF
+			CFLAG:8240 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8240 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;手淫	CFLAG:8241
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:8241 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「手でするの？」
+			PRINTFORMW 「初めてだから上手に出来ないと思うけど・・・」
+			PRINTFORMW 「それじゃ、あ、ビクビクしてる」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「手でしろってねぇ」
+			PRINTFORMW 「はぁ、わかったわよ」
+			PRINTFORMW （うわっ、すごく熱い・・・）
+		ENDIF
+		CFLAG:8241= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うん、わかった」
+			PRINTFORMW 「えっと、このぐらいだっけ」
+			PRINTFORMW 「あ、もうちょっと強くても大丈夫なんだ」
+			CFLAG:8241 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はいはい、わかりました」
+			PRINTFORMW （く、なんでこんなことしなくちゃいけないのよ）
+			CFLAG:8241 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラチオ	CFLAG:8242
+;-------------------------------------------------
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:8242 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「えっと、口ですればいいのね・・・」
+			PRINTFORMW （う、大きい、入るかなぁ）
+			PRINTFORMW 「・・・あむっ、んっ、ちゅう」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやっ、そんなの咥えさせむぐっ」
+			PRINTFORMW 「んん、んぐんんっっっ」
+			PRINTFORMW （うぇ、生臭い）
+		ENDIF
+		CFLAG:8242= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv3
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「あむ、ん・・・ちゅる、んふぅ」
+			PRINTFORMW （確かここが弱いんだよね）
+			PRINTFORMW ぬえはあなたの感じるところを舌先で刺激する
+			CFLAG:8242 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んむ、ちゅうぅ・・・ん、じゅるっ」
+			PRINTFORMW 「どほ、ひもひいい？」
+			PRINTFORMW （ん、喜んでくれてるみたいだけど難しい）
+			CFLAG:8242 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「んんっむぐ、んぷっ」
+			PRINTFORMW 涙を堪えながらぬえは奉仕している
+			CFLAG:8242 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;パイズリ	CFLAG:8243
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:8243 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				PRINTFORMW 「うん、じゃあじっとしてて」
+				PRINTFORMW ぬえはおっぱいであなたのペニスを包み込むと
+				PRINTFORMW ゆっくり動かし始める
+				PRINTFORMW 「重くて動かしにくい・・・」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「胸でおちんちんを挟むの？」
+				PRINTFORMW 「・・・わたしのじゃ気持ちよくならないと思うのだけど」
+				PRINTFORMW むしろ一生懸命奉仕している姿が見たい
+				PRINTFORMW 「ふぇ、あ、その、・・・うん、わかった」
+			ENDIF
+		;その他の場合
+		ELSE
+			PRINTFORMW 「胸でしろって、嫌味か何か？」
+			PRINTFORMW （女の子の胸を何だと思ってるのよ）
+		ENDIF
+		CFLAG:8243= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ奉仕精神Lv3
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3
+			PRINTFORMW 「どう、気持ちいい？」
+			PRINTFORMW 「ふふ、ありがと」
+			PRINTFORMW 「出そうだったら言って、お口で受け止めてあげる」
+			CFLAG:8243 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んしょ、ねぇ、気持ちいい？」
+			PRINTFORMW 「ほんと？　ならいいんだけど」
+			PRINTFORMW （よかったぁ、喜んでくれてる）
+			CFLAG:8243 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ、わかったから」
+			PRINTFORMW 「あなたの考えること、全然わからない」
+			PRINTFORMW （知りたくもないけど）
+			CFLAG:8243 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;素股	CFLAG:8244
+;-------------------------------------------------
+IF SELECTCOM == 43
+	;初めて
+	IF CFLAG:8244 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8244= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8244 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8244 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル舐め強制	CFLAG:8245
+;-------------------------------------------------
+IF SELECTCOM == 44
+	;初めて
+	IF CFLAG:8245 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8245= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8245 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8245 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルおねだり	CFLAG:8246
+;-------------------------------------------------
+IF SELECTCOM == 45
+	;初めて
+	IF CFLAG:8246 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8246= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8246 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8246 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;足舐め強制	CFLAG:8247
+;-------------------------------------------------
+IF SELECTCOM == 46
+	;初めて
+	IF CFLAG:8247 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8247= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8247 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8247 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;足扱き	CFLAG:8248
+;-------------------------------------------------
+IF SELECTCOM == 47
+	;初めて
+	IF CFLAG:8248 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8248= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8248 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8248 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;髪扱き	CFLAG:8249
+;-------------------------------------------------
+IF SELECTCOM == 48
+	;初めて
+	IF CFLAG:8249 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8249= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8249 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8249 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;腋扱き	CFLAG:8250
+;-------------------------------------------------
+IF SELECTCOM == 49
+	;初めて
+	IF CFLAG:8250 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8250= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8250 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8250 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;全身扱き	CFLAG:8251
+;-------------------------------------------------
+IF SELECTCOM == 50
+	;初めて
+	IF CFLAG:8251 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8251= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8251 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8251 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尻扱き	CFLAG:8252
+;-------------------------------------------------
+IF SELECTCOM == 51
+	;初めて
+	IF CFLAG:8252 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8252= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8252 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8252 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;竿扱き	CFLAG:8253
+;-------------------------------------------------
+IF SELECTCOM == 52
+	;初めて
+	IF CFLAG:8253 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8253= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8253 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8253 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;玉揉み強制	CFLAG:8254
+;-------------------------------------------------
+IF SELECTCOM == 53
+	;初めて
+	IF CFLAG:8254 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8254= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8254 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8254 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;玉舐め強制	CFLAG:8255
+;-------------------------------------------------
+IF SELECTCOM == 54
+	;初めて
+	IF CFLAG:8255 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8255= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8255 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8255 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル愛撫強制	CFLAG:8256
+;-------------------------------------------------
+IF SELECTCOM == 55
+	;初めて
+	IF CFLAG:8256 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8256= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8256 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8256 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローション	CFLAG:8257
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:8257 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8257= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8257 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8257 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;媚薬	CFLAG:8258
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:8258 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8258= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8258 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8258 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;利尿剤	CFLAG:8259
+;-------------------------------------------------
+IF SELECTCOM == 62
+	;初めて
+	IF CFLAG:8259 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これは・・・？」
+			PRINTFORMW 「え、おしっこするところが見たいの？」
+			PRINTFORMW 「・・・しょうがないなぁ　んくっんくっ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8259= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;おもらし癖である
+			IF TALENT:おもらし癖 == 1
+				PRINTFORMW 「こんな薬に頼らなくても」
+				PRINTFORMW 「あなたが出せって言えば出すのに」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ん、飲めばいいのね」
+			ENDIF
+			CFLAG:8259 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8259 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;座薬挿入	CFLAG:8260
+;-------------------------------------------------
+IF SELECTCOM == 63
+	;初めて
+	IF CFLAG:8260 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8260= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8260 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8260 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;座薬追加挿入	CFLAG:8261
+;-------------------------------------------------
+IF SELECTCOM == 63 && TEQUIP:15 & 1
+	;初めて
+	IF CFLAG:8261 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8261= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8261 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8261 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;座薬（膣）挿入	CFLAG:8262
+;-------------------------------------------------
+IF SELECTCOM == 64
+	;初めて
+	IF CFLAG:8262 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8262= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8262 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8262 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;座薬（膣）追加挿入	CFLAG:8263
+;-------------------------------------------------
+IF SELECTCOM == 64 && TEQUIP:15 & 2
+	;初めて
+	IF CFLAG:8263 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8263= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8263 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8263 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;強精神薬	CFLAG:8264
+;-------------------------------------------------
+IF SELECTCOM == 65
+	;初めて
+	IF CFLAG:8264 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8264= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8264 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8264 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;排卵誘発剤	CFLAG:8265
+;-------------------------------------------------
+IF SELECTCOM == 66
+	;初めて
+	IF CFLAG:8265 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8265= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8265 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8265 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;緊急避妊薬	CFLAG:8266
+;-------------------------------------------------
+IF SELECTCOM == 67
+	;初めて
+	IF CFLAG:8266 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8266= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8266 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8266 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;産卵促進剤	CFLAG:8267
+;-------------------------------------------------
+IF SELECTCOM == 68
+	;初めて
+	IF CFLAG:8267 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8267= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8267 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8267 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;陰核成長剤	CFLAG:8268
+;-------------------------------------------------
+IF SELECTCOM == 69
+	;初めて
+	IF CFLAG:8268 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8268= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8268 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8268 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;興奮剤	CFLAG:8269
+;-------------------------------------------------
+IF SELECTCOM == 70
+	;初めて
+	IF CFLAG:8269 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8269= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8269 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8269 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手避妊薬	CFLAG:8270
+;-------------------------------------------------
+IF SELECTCOM == 71
+	;初めて
+	IF CFLAG:8270 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8270= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8270 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8270 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;感覚増幅薬	CFLAG:8271
+;-------------------------------------------------
+IF SELECTCOM == 72
+	;初めて
+	IF CFLAG:8271 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8271= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8271 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8271 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クリトリス注射	CFLAG:8272
+;-------------------------------------------------
+IF SELECTCOM == 80
+	;初めて
+	IF CFLAG:8272 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8272= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8272 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8272 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナ注射	CFLAG:8273
+;-------------------------------------------------
+IF SELECTCOM == 81
+	;初めて
+	IF CFLAG:8273 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8273= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8273 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8273 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル注射	CFLAG:8274
+;-------------------------------------------------
+IF SELECTCOM == 82
+	;初めて
+	IF CFLAG:8274 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8274= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8274 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8274 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バスト注射	CFLAG:8275
+;-------------------------------------------------
+IF SELECTCOM == 83
+	;初めて
+	IF CFLAG:8275 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8275= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8275 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8275 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尿道注射	CFLAG:8276
+;-------------------------------------------------
+IF SELECTCOM == 84
+	;初めて
+	IF CFLAG:8276 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8276= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8276 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8276 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｃ肥大注射	CFLAG:8277
+;-------------------------------------------------
+IF SELECTCOM == 85
+	;初めて
+	IF CFLAG:8277 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8277= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8277 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8277 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｃ強精神薬注射	CFLAG:8278
+;-------------------------------------------------
+IF SELECTCOM == 86
+	;初めて
+	IF CFLAG:8278 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8278= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8278 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8278 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;採血注射	CFLAG:8279
+;-------------------------------------------------
+IF SELECTCOM == 88
+	;初めて
+	IF CFLAG:8279 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8279= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8279 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8279 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;裸エプロン	CFLAG:8280
+;-------------------------------------------------
+IF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:8280 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「これを着てするの？」
+			PRINTFORMW 「なんだか夫婦になった気分・・・」
+			PRINTFORMW 「あなた、ご飯にする？　お風呂にする？　それともわ・た・し？」
+			PRINTFORMW 「なんてね」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8280= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、待ってて、すぐ着替えるから」
+			PRINTFORMW 「お待たせ、ってそんなに時間経ってないか」
+			PRINTFORMW 「ふふ、かわいがってね」
+			CFLAG:8280 = 3
+		;その他の場合
+		ELSE
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;エプロン（脱）CFLAG:9201
+;-------------------------------------------------
+IF SELECTCOM == 90 && TEQUIP:59 == 1
+	;初めて
+	IF CFLAG:9201 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、もう脱ぐの？」
+			PRINTFORMW 「また着けたいな」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8280 = 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1 && (FLAG:11 == 2)
+			PRINTFORMW 「え、もう終わり？」
+			PRINTFORMW 「待って最後にね　ちゅっ」
+			PRINTFORMW 「ふふ、いってらっしゃい、あなた」
+			PRINTFORMW （でも、いつかはきっと・・・）
+		;その他の場合
+		ELSE
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;スク水プレイ	CFLAG:8281
+;-------------------------------------------------
+IF SELECTCOM == 91
+	;初めて
+	IF CFLAG:8281 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8281= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8281 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8281 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お医者プレイ	CFLAG:8282
+;-------------------------------------------------
+IF SELECTCOM == 92
+	;初めて
+	IF CFLAG:8282 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8282= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8282 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8282 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;コスプレ	CFLAG:8283
+;-------------------------------------------------
+IF SELECTCOM == 93
+	;初めて
+	IF CFLAG:8283 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8283= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8283 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8283 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手コスプレ	CFLAG:8284
+;-------------------------------------------------
+IF SELECTCOM == 94
+	;初めて
+	IF CFLAG:8284 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8284= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8284 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8284 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ビデオ撮影	CFLAG:8285
+;-------------------------------------------------
+IF SELECTCOM == 100
+	;初めて
+	IF CFLAG:8285 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8285= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8285 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8285 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ビデオ鑑賞	CFLAG:8286
+;-------------------------------------------------
+IF SELECTCOM == 101
+	;初めて
+	IF CFLAG:8286 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8286= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8286 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8286 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;写真撮影	CFLAG:8287
+;-------------------------------------------------
+IF SELECTCOM == 102
+	;初めて
+	IF CFLAG:8287 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8287= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8287 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8287 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;羞恥プレイ	CFLAG:8288
+;-------------------------------------------------
+IF SELECTCOM == 103
+	;初めて
+	IF CFLAG:8288 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8288= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8288 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8288 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;野外プレイ	CFLAG:8289
+;-------------------------------------------------
+IF SELECTCOM == 104
+	;初めて
+	IF CFLAG:8289 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8289= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8289 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8289 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;公開露出ライブ	CFLAG:8290
+;-------------------------------------------------
+IF SELECTCOM == 105
+	;初めて
+	IF CFLAG:8290 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8290= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8290 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8290 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;公衆肉便器プレイ	CFLAG:8291
+;-------------------------------------------------
+IF SELECTCOM == 106
+	;初めて
+	IF CFLAG:8291 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8291= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8291 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8291 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;裸体盛り	CFLAG:8292
+;-------------------------------------------------
+IF SELECTCOM == 107
+	;初めて
+	IF CFLAG:8292 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8292= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8292 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8292 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ベビープレイ	CFLAG:8293
+;-------------------------------------------------
+IF SELECTCOM == 108
+	;初めて
+	IF CFLAG:8293 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8293= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8293 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8293 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;秘貝開帳	CFLAG:8294
+;-------------------------------------------------
+IF SELECTCOM == 110
+	;初めて
+	IF CFLAG:8294 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8294= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8294 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8294 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;放尿	CFLAG:8295
+;-------------------------------------------------
+IF SELECTCOM == 111
+	;初めて
+	IF CFLAG:8295 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ほ、ホントにここでするの？」
+			PRINTFORMW 「うう、こんに近くで見られちゃうなんて・・・」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8295= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ露出癖Lv3　格好が違うだけで
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+				;Aビーズ付き
+				ELSEIF TEQUIP:25 == 5
+				PRINTFORMW 折角尻尾が付いているので犬みたいにやらせてみよう
+				PRINTFORMW そう思ったあなたはぬえを四つん這いにさせて片足を持った
+				PRINTFORMW 「やだ、こんな格好、恥ずかしいよ」
+				PRINTFORML 片足を上げたままでいるぬえにあなたは
+				PRINTFORMW 身体をくすぐってやることにした
+				PRINTFORMW 「だめ、背中は、よわいのに」
+				PRINTFORMW 「やだ、やだっ、こんな格好で漏らすのだけはあああぁぁ」
+		ELSE
+			PRINTFORMW 「それじゃ、するところ見ててね」
+			PRINTFORMW 顔を赤く染めて放尿している
+			PRINTFORMW 「んんっ、おしっこ気持ちいい」
+			PRINTFORMW （どうしよう、クセになりそう）
+		ENDIF
+			CFLAG:8295 = 4
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「・・・出すよ」
+			PRINTFORMW 顔を真っ赤にして放尿をした
+			PRINTFORMW （っっ、やだ、見ないでっ）
+			CFLAG:8295 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8295 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;剃毛	CFLAG:8296
+;-------------------------------------------------
+IF SELECTCOM == 112
+	;初めて
+	IF CFLAG:8296 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うう、スースーする・・・」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8296= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ露出癖Lv3
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 「っっ、恥ずかしいところ丸見え」
+			PRINTFORMW 「あんっ、そんなに見つめないで」
+			PRINTFORMW そういいつつもこの状態を楽しんでいる
+			CFLAG:8296 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「・・・いくらあなたがしたいからって」
+			PRINTFORMW 「やっぱり恥ずかしいよ」
+			CFLAG:8296 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8296 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;毛抜き	CFLAG:8297
+;-------------------------------------------------
+IF SELECTCOM == 113
+	;初めて
+	IF CFLAG:8297 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8297= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8297 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8297 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;毛を抜かせる	CFLAG:8298
+;-------------------------------------------------
+IF SELECTCOM == 114
+	;初めて
+	IF CFLAG:8298 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8298= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8298 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8298 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;自慰見せつけ	CFLAG:8299
+;-------------------------------------------------
+IF SELECTCOM == 115
+	;初めて
+	IF CFLAG:8299 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8299= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8299 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8299 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人自慰見せつけ	CFLAG:8300
+;-------------------------------------------------
+IF SELECTCOM == 116
+	;初めて
+	IF CFLAG:8300 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8300= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8300 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8300 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;秘貝開帳見せつけ	CFLAG:8301
+;-------------------------------------------------
+IF SELECTCOM == 117
+	;初めて
+	IF CFLAG:8301 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8301= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8301 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8301 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人秘貝見せつけ	CFLAG:8302
+;-------------------------------------------------
+IF SELECTCOM == 118
+	;初めて
+	IF CFLAG:8302 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8302= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8302 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8302 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;焦らしプレイ	CFLAG:8303
+;-------------------------------------------------
+IF SELECTCOM == 120
+	;初めて
+	IF CFLAG:8303 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8303= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8303 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8303 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;射精止め	CFLAG:8304
+;-------------------------------------------------
+IF SELECTCOM == 121
+	;初めて
+	IF CFLAG:8304 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8304= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8304 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8304 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;豆責め	CFLAG:8305
+;-------------------------------------------------
+IF SELECTCOM == 122
+	;初めて
+	IF CFLAG:8305 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8305= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8305 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8305 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;豆絞り	CFLAG:8306
+;-------------------------------------------------
+IF SELECTCOM == 123
+	;初めて
+	IF CFLAG:8306 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8306= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8306 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8306 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローター自慰	CFLAG:8307
+;-------------------------------------------------
+IF SELECTCOM == 124 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:8307 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8307= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8307 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8307 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;顔面騎乗	CFLAG:8308
+;-------------------------------------------------
+IF SELECTCOM == 126
+	;初めて
+	IF CFLAG:8308 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8308= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8308 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8308 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;陰核クリップ（着）	CFLAG:8309
+;-------------------------------------------------
+IF SELECTCOM == 130 && TEQUIP:30 == 5
+	;初めて
+	IF CFLAG:8309 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8309= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8309 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8309 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;陰核クリップ（脱）	CFLAG:8310
+;-------------------------------------------------
+IF SELECTCOM == 130 && TEQUIP:30 == 5
+	;初めて
+	IF CFLAG:8310 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8310= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8310 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8310 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;陰核電極	CFLAG:8311
+;-------------------------------------------------
+IF SELECTCOM == 131
+	;初めて
+	IF CFLAG:8311 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8311= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8311 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8311 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ペニスローター	CFLAG:8312
+;-------------------------------------------------
+IF SELECTCOM == 132
+	;初めて
+	IF CFLAG:8312 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8312= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8312 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8312 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電マペニス責め	CFLAG:8313
+;-------------------------------------------------
+IF SELECTCOM == 133
+	;初めて
+	IF CFLAG:8313 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8313= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8313 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8313 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;陰核測定	CFLAG:8314
+;-------------------------------------------------
+IF SELECTCOM == 135
+	;初めて
+	IF CFLAG:8314 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8314= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8314 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8314 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;割礼	CFLAG:8315
+;-------------------------------------------------
+IF SELECTCOM == 136
+	;初めて
+	IF CFLAG:8315 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8315= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8315 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8315 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;射精機能開発	CFLAG:8316
+;-------------------------------------------------
+IF SELECTCOM == 137
+	;初めて
+	IF CFLAG:8316 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8316= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8316 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8316 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尿道綿棒	CFLAG:8317
+;-------------------------------------------------
+IF SELECTCOM == 140
+	;初めて
+	IF CFLAG:8317 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8317= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8317 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8317 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;カテーテル（着）	CFLAG:8318
+;-------------------------------------------------
+IF SELECTCOM == 141 && TEQUIP:32 == 1
+	;初めて
+	IF CFLAG:8318 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8318= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8318 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8318 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;カテーテル（脱）	CFLAG:8319
+;-------------------------------------------------
+IF SELECTCOM == 141 && TEQUIP:32 == 0
+	;初めて
+	IF CFLAG:8319 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8319= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8319 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8319 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;採尿器（着）	CFLAG:8320
+;-------------------------------------------------
+IF SELECTCOM == 142 && TEQUIP:32 == 2
+	;初めて
+	IF CFLAG:8320 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8320= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8320 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8320 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;採尿器（脱）	CFLAG:8321
+;-------------------------------------------------
+IF SELECTCOM == 142 && TEQUIP:32 == 0
+	;初めて
+	IF CFLAG:8321 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8321= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8321 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8321 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バルーンカテーテル（着）	CFLAG:8322
+;-------------------------------------------------
+IF SELECTCOM == 143 && TEQUIP:32 == 3
+	;初めて
+	IF CFLAG:8322 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8322= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8322 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8322 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バルーンカテーテル（脱）	CFLAG:8323
+;-------------------------------------------------
+IF SELECTCOM == 143 && TEQUIP:32 == 0
+	;初めて
+	IF CFLAG:8323 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8323= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8323 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8323 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電極カテーテル（着）	CFLAG:8324
+;-------------------------------------------------
+IF SELECTCOM == 144 && TEQUIP:32 == 4
+	;初めて
+	IF CFLAG:8324 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8324= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8324 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8324 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;電極カテーテル（脱）	CFLAG:8325
+;-------------------------------------------------
+IF SELECTCOM == 144 && TEQUIP:32 == 0
+	;初めて
+	IF CFLAG:8325 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8325= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8325 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8325 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;飲尿する	CFLAG:8326
+;-------------------------------------------------
+IF SELECTCOM == 145
+	;初めて
+	IF CFLAG:8326 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「・・・ここで立っていればいいのね」
+			PRINTFORMW あなたはしゃがむと尿道口に口をつける
+			PRINTFORMW 「うう、ホントにしなくちゃだめ？」
+			PRINTFORMW 顔を真っ赤にしてあなたの口の中に放尿した
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8326= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ露出癖Lv3
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			;前コマンド顔面騎乗2種
+			IF PREVCOM == 187 || PREVCOM == 126
+				PRINTFORMW あなたはその体制のままぬえの尿道口に口をつける
+				PRINTFORMW 「ひゃっ、まって、そこは、くうっ」
+				PRINTFORMW あなたは吸いながら舌で刺激すると
+				PRINTFORMW ぬえはあなたの口の中へ放尿した
+			;その他の場合
+			ELSE
+				PRINTFORMW あなたはぬえの尿道口に口をつけると
+				PRINTFORMW ぬえの手が頭の後ろに回る
+				PRINTFORMW 「出すよ、しっかり味わってね」
+				PRINTFORMW 「くっ、のんで、たくさんのんでっ」
+				PRINTFORMW ぬえはあなたの顔を自分の秘所に押し付けた
+			ENDIF
+			CFLAG:8326 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			CFLAG:8326 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8326 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尿道挿入	CFLAG:8327
+;-------------------------------------------------
+IF SELECTCOM == 146
+	;初めて
+	IF CFLAG:8327 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8327= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8327 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8327 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クスコ（着）	CFLAG:8328
+;-------------------------------------------------
+IF SELECTCOM == 150 && TEQUIP:21 == 1
+	;初めて
+	IF CFLAG:8328 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8328= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8328 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8328 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クスコ（脱）	CFLAG:8329
+;-------------------------------------------------
+IF SELECTCOM == 150 && TEQUIP:21 == 0
+	;初めて
+	IF CFLAG:8329 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8329= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8329 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8329 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローター挿入（着）	CFLAG:8330
+;-------------------------------------------------
+IF SELECTCOM == 151 && TEQUIP:20 == 3
+	;初めて
+	IF CFLAG:8330 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8330= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8330 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8330 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローター挿入（脱）	CFLAG:8331
+;-------------------------------------------------
+IF SELECTCOM == 151 && TEQUIP:20 == 0
+	;初めて
+	IF CFLAG:8331 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8331= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8331 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8331 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;小陰唇指愛撫	CFLAG:8332
+;-------------------------------------------------
+IF SELECTCOM == 152
+	;初めて
+	IF CFLAG:8332 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8332= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8332 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8332 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;愛液採集器	CFLAG:8333
+;-------------------------------------------------
+IF SELECTCOM == 153
+	;初めて
+	IF CFLAG:8333 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8333= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8333 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8333 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナ電極	CFLAG:8334
+;-------------------------------------------------
+IF SELECTCOM == 155
+	;初めて
+	IF CFLAG:8334 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8334= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8334 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8334 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナバーベル	CFLAG:8335
+;-------------------------------------------------
+IF SELECTCOM == 156
+	;初めて
+	IF CFLAG:8335 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8335= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8335 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8335 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナバルーン	CFLAG:8336
+;-------------------------------------------------
+IF SELECTCOM == 157
+	;初めて
+	IF CFLAG:8336 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8336= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8336 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8336 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローターＡ挿入（着）	CFLAG:8337
+;-------------------------------------------------
+IF SELECTCOM == 170 && TEQUIP:25 == 3
+	;初めて
+	IF CFLAG:8337 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8337= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8337 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8337 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローターＡ挿入（脱）	CFLAG:8338
+;-------------------------------------------------
+IF SELECTCOM == 170 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8338 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8338= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8338 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8338 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル電極（着）	CFLAG:8339
+;-------------------------------------------------
+IF SELECTCOM == 171 && TEQUIP:25 == 4
+	;初めて
+	IF CFLAG:8339 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8339= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8339 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8339 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル電極（脱）	CFLAG:8340
+;-------------------------------------------------
+IF SELECTCOM == 171 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8340 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8340= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8340 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8340 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルビーズ（着）	CFLAG:8341
+;-------------------------------------------------
+IF SELECTCOM == 172 && TEQUIP:25 == 5
+	;初めて
+	IF CFLAG:8341 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なにそれ、珠と尻尾？が付いてるものは」
+			PRINTFORMW 「・・・本気なの？　うう、そんな顔しないで」
+			PRINTFORMW あなたがお願いするとぬえはこちらにお尻を向けた
+			PRINTFORMW そして1粒すつ、ゆっくりとビーズを飲み込ませていく
+			PRINTFORMW 「くっ、ギチギチいってる、それに、しっぽがさわさわって」
+			PRINTFORMW 付属の尻尾がももをくすぐるのだろうか
+			PRINTFORMW そんなことを考えながらぬえを見つめる
+			PRINTFORMW 「や、やっぱり言わなくちゃだめ？」
+			PRINTFORMW 「・・・・・・わん」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8341= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW あなたがオモチャを見せると
+			PRINTFORMW ぬえは顔を赤らめてお尻を向けた
+			PRINTFORMW 「くぅん、最近コレ入れるの、すきぃ」
+			PRINTFORMW ビーズにも馴れたようで次々と飲み込んでいく
+			PRINTFORMW 「ふふ、あなたのペットなんだからたっぷり可愛がってね」
+			CFLAG:8341 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「またなの・・・？」
+			PRINTFORMW 「それ、取るときがんんっ」
+			PRINTFORMW まだ馴れていないのだろう、少し嫌そうだ
+			PRINTFORMW （これを付けているときはこの人のペット・・・）
+			CFLAG:8341 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8341 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルビーズ（脱）	CFLAG:8342
+;-------------------------------------------------
+IF SELECTCOM == 172 && TEQUIP:25 == 0
+	;恋慕かつＡ感覚Lv3
+	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「え、もう外すの？」
+		PRINTFORMW 少し残念そうな顔をするぬえ
+		PRINTFORMW 「うん、いいよ」
+		PRINTFORMW そして尻尾を握って一気に引き抜いた
+		PRINTFORMW 「あああぁぁあぁああぁぁっっっっ」
+		PRINTFORMW 「はぁ、はぁ、はぁ」
+		PRINTFORMW 「す、すごい、おしり、けずれる・・・」
+		RETURN 0
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「あああ、でるっ、なかみでるっ」
+		PRINTFORMW 1つ引き抜く度に可愛い声で鳴く
+		PRINTFORMW 時折軽く引っ張って刺激すると
+		PRINTFORMW 肛門がヒクつく・・・おもしろい
+		PRINTFORMW 「ううっ、じらさないで、抜いてよ・・・」
+		PRINTFORMW あなたはぬえの肛門でしばらく遊んだ
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;拡張バルーン（着）	CFLAG:8343
+;-------------------------------------------------
+IF SELECTCOM == 173 && TEQUIP:25 == 6
+	;初めて
+	IF CFLAG:8343 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8343= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8343 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8343 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;拡張バルーン（脱）	CFLAG:8344
+;-------------------------------------------------
+IF SELECTCOM == 173 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8344 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8344= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8344 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8344 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;浣腸プレイ（着）	CFLAG:8345
+;-------------------------------------------------
+IF SELECTCOM == 174 && TEQUIP:25 == 7
+	;初めて
+	IF CFLAG:8345 == 0
+		PRINTFORMW 「ちょっと、なに、それ？」
+		PRINTFORMW 後ろに退くぬえにこの道具の説明をする
+		PRINTFORMW 「そ、そんな、冗談・・・だよね？」
+		PRINTFORMW あなたは無言のまま近づく
+		PRINTFORMW 「いやっ、それだけはダメっっっ、くぅっ」
+		PRINTFORMW あなたはぬえを押さえつけ浣腸した
+		CFLAG:8345= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつマゾっ気Lv3
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あ、お浣腸するんだ」
+			PRINTFORMW ぬえはお尻を手で拡げると
+			PRINTFORMW 「たくさん入れて、痛いの我慢するときもちいいの」
+			CFLAG:8345 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ひっ、またそれなの」
+			PRINTFORMW 「どうしてもするの？」
+			PRINTFORMW やがて観念したのかお尻をこちらに向けた
+			CFLAG:8345 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8345 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;浣腸プレイ（脱）	CFLAG:8346
+;-------------------------------------------------
+IF SELECTCOM == 174 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8346 == 0
+		PRINTFORMW 「ぐううぅぅ、だめ、トイレに行かせて」
+		PRINTFORMW お腹を押さえるぬえに対してあなたは一言
+		PRINTFORMW ここで出せ
+		PRINTFORMW 「うう、いじわるしないでよ、お部屋、汚れるでしょ？」
+		PRINTFORMW 確かに汚れるのはよろしくない、けど
+		PRINTFORMW そのために下にシートを敷いているのだ
+		PRINTFORMW そう説明しながらぬえをしゃがませる
+		PRINTFORMW 「ひっ、だっ、グリグリしない・・・」
+		PRINTFORMW 少しプラグを弄った後一気に引き抜いた
+		PRINTFORMW 「いやああぁぁぁああぁあああっっっ」
+		PRINTFORMW ・・・・・
+		PRINTFORMW ・・・
+		PRINTFORMW どうしよう、片付けるのしんどいなぁ
+		PRINTFORMW 何か受けるものが必要なんだけど・・・
+;		PRINTFORMW あ、桶屋が儲かる！！
+		CFLAG:8346= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			;マゾっ気Lv3
+			IF ABL:マゾっ気 >= 3
+				;効果[お風呂場プレイ]
+				IF TEQUIP:53 == 1
+					PRINTFORMW あなたはぬえをまんぐり返しにした
+					PRINTFORMW （え、この格好で？）
+					PRINTFORMW （排泄するところ見られちゃうし出したものがかかる・・・）
+					PRINTFORMW 顔を赤くし何かを期待するように見つめてくる
+					PRINTFORMW そんなぬえに答えるようにプラグを引き抜く
+					PRINTFORMW 「くぅ、みてっ、わたしのはずかしいところっ、ぜんぶっ」
+					PRINTFORMW あなたはぬえのお尻から噴出す噴水を観察した
+				;その他の場合
+				ELSE
+					PRINTFORMW 洗面器にぬえを跨らせてプラグを引き抜く
+					PRINTFORMW が、耐える
+					PRINTFORMW 「くぅ、我慢するのが、すごくいいの」
+					PRINTFORMW 懸命に耐えるぬえのお尻の穴をくすぐってみる
+					PRINTFORMW 「あ、触っちゃあああぁあぁぁ・・・」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW （出すのがきもちいいって・・・）
+				PRINTFORMW あなたは赤面するぬえを洗面器に跨らせた
+				PRINTFORMW 「それじゃあ抜いて、んんっ」
+				PRINTFORMW （どうしよう、こんなのがクセになったら）
+			ENDIF
+			CFLAG:8346 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW あなたは洗面器を持ってくるとその中にするように言った
+			PRINTFORMW 「うう、たしかにお部屋は汚れないけど・・・」
+			PRINTFORMW やはり人前でするのは抵抗があるのだろう
+			PRINTFORMW 「お願いだから嫌わないでね、くうぅぅ・・・・」
+			CFLAG:8346 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8346 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;空気浣腸（着）	CFLAG:8347
+;-------------------------------------------------
+IF SELECTCOM == 175 && TEQUIP:25 == 8
+	;初めて
+	IF CFLAG:8347 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8347= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8347 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8347 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;空気浣腸（脱）	CFLAG:8348
+;-------------------------------------------------
+IF SELECTCOM == 175 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8348 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8348= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8348 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8348 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルバーベル	CFLAG:8349
+;-------------------------------------------------
+IF SELECTCOM == 179
+	;初めて
+	IF CFLAG:8349 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8349= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8349 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8349 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル舐め	CFLAG:8350
+;-------------------------------------------------
+IF SELECTCOM == 180
+	;初めて
+	IF CFLAG:8350 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ、ちょ、やめてよ」
+			PRINTFORMW 「うう、舐めないでよ、汚いのに・・・」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぁ・・・きもちわるい」
+			PRINTFORMW （まるでナメクジが這ってるみたい）
+		ENDIF
+		CFLAG:8350= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「はぁっ、んん、お尻の穴ほじられてる」
+			PRINTFORMW 「温かくて柔らかいのがにゅるにゅるってぇ・・・」
+			CFLAG:8350 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「また舐めるんだ、汚くない？」
+			PRINTFORMW 「わ、わたしのだから汚くないって・・・」
+			PRINTFORMW （そんなこと言わないで）
+			PRINTFORMW 「うぁ、舌が入って」
+			CFLAG:8350 = 4
+		;Ａ感覚Lv3
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW （うそ、お尻の穴舐められて感じてる！？）
+			PRINTFORMW 「そんな、そんなはず、ああんっ」
+			CFLAG:8350 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW （気持ち悪い・・・）
+			PRINTFORMW （こんなところ舐めるなんて正気じゃない）
+			CFLAG:8350 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル綿棒	CFLAG:8351
+;-------------------------------------------------
+IF SELECTCOM == 181
+	;初めて
+	IF CFLAG:8351 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8351= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8351 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8351 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナニー	CFLAG:8352
+;-------------------------------------------------
+IF SELECTCOM == 182 && TEQUIP:50 == 0 && TEQUIP:25 == 0
+	;初めて
+	IF CFLAG:8352 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お、お尻の穴を・・・自分で」
+			PRINTFORMW 「なんでこんなことさせたがるのよ、んんっ」
+			PRINTFORMW （あ、なんかツルツルしてる）
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8352= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「くぅ、お尻の穴グニグニってするの」
+				PRINTFORMW 「やだ、クセになる」
+				PRINTFORMW 「あなたが、あなたが悪いのよ」
+				PRINTFORMW 「お尻で感じるようにさせるから」
+				PRINTFORMW なんて言いながらも気持ちよさそうにお尻を弄っている
+			CFLAG:8352 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「うう、お尻の中に指を入れるのって変な感じ」
+			PRINTFORMW 「ねぇ、こんなの見てて楽しい？」
+			PRINTFORMW 「そう、ならいいけど・・・」
+			CFLAG:8352 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8352 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;バイブアナニー	CFLAG:8353
+;-------------------------------------------------
+IF SELECTCOM == 182 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:8353 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「バイブを動かすの？」
+			PRINTFORMW 「はぁ、なんとなく分かってたよ」
+			PRINTFORMW （こういうの見てて本当に楽しいのかな）
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8353= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「はっ、くぅん、すごっい・・・」
+			PRINTFORMW あなたが言うや否やぬえはアナルバイブを動かし始めた
+			PRINTFORMW 「うんんっ、お尻の穴、ズボズボするの、すき」
+			PRINTFORMW 蕩けた顔でお尻を弄っている
+
+			CFLAG:8353 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、うん・・・」
+			PRINTFORMW 「それじゃあするね、んんっ」
+			PRINTFORMW ゆっくりとアナルバイブを出し入れし始めた
+			CFLAG:8353 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8353 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ビーズアナニー	CFLAG:8354
+;-------------------------------------------------
+IF SELECTCOM == 182 && TEQUIP:25 == 5
+	;初めて
+	IF CFLAG:8354 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぇ、これでするの？」
+			PRINTFORMW ぬえは尻尾の根元を掴んでゆっくり出していく
+			PRINTFORMW 「う、やだ、あれしてるみたいで・・・」
+			PRINTFORMW 「次に、入れて、ひゃっ、吸い込まれちゃった」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8354= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW ぬえはお尻の穴を閉めるとビーズを一気に引き抜く
+			PRINTFORMW 「くあっあああぁぁあぁああっ」
+			PRINTFORMW 「はぁ、はぁ、これ、すごい・・・」
+			PRINTFORMW 「ふふ、もう一回」
+			PRINTFORMW 何度も引き抜いてはビーズを入れていった
+
+			CFLAG:8354 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW ぬえはゆっくりとビーズを出し入れしている
+			PRINTFORMW 「く、ううっ・・・」
+			PRINTFORMW 「やっぱり出るときがちょっと・・・」
+
+			CFLAG:8354 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8354 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尻素股	CFLAG:8355
+;-------------------------------------------------
+IF SELECTCOM == 183
+	;初めて
+	IF CFLAG:8355 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8355= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8355 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8355 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フリスク挿入	CFLAG:8356
+;-------------------------------------------------
+IF SELECTCOM == 184
+	;初めて
+	IF CFLAG:8356 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8356= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8356 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8356 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尻愛撫	CFLAG:8357
+;-------------------------------------------------
+IF SELECTCOM == 186
+	;初めて
+	IF CFLAG:8357 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8357= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8357 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8357 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;顔面騎乗アナル	CFLAG:8358
+;-------------------------------------------------
+IF SELECTCOM == 187
+	;初めて
+	IF CFLAG:8358 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8358= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8358 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8358 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルの皺数え	CFLAG:8359
+;-------------------------------------------------
+IF SELECTCOM == 188
+	;初めて
+	IF CFLAG:8359 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「は、何言って、って冗談でしょ・・・あっ」
+			PRINTFORMW あなたはぬえのお尻を広げた
+			PRINTFORMW 「うう、いや、そんなに見ないで」
+			PRINTFORMW （はずかしいよ）
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8359= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつＡ感覚Lv3
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			;乱数分岐:3
+			IF RAND:3 == 0
+				PRINTFORMW あなたは皺の1本1本を爪で優しくなぞりながら数える
+				PRINTFORMW 「ああ、くすぐった・・・い、やだ、ムズムズして」
+				PRINTFORMW （いじわる、焦らさないでよ）
+				PRINTFORMW あなたがゆっくり数えているとお尻の穴がヒクついてきた
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW あなたは両手でお尻を拡げ皺を数え始めた
+				PRINTFORMW （恥ずかしいのにすごくドキドキする）
+				PRINTFORMW （どうしよう、弄って欲しい）
+			;その他の場合
+			ELSE
+				PRINTFORMW 「わたしが拡げるの？」
+				PRINTFORMW 「うん、じゃあ拡げるね」
+				PRINTFORMW 丸見えのお尻の穴に顔を近づけ皺を数える
+				PRINTFORMW 「ふぁ、くすぐったいよ」
+			ENDIF
+			CFLAG:8359 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃんっ」
+			PRINTFORML あなたが皺の1本1本を爪で突付きながら
+			PRINTFORMW 数える度にお尻の穴が窄まる
+			PRINTFORMW 動くな、と言ったが
+			PRINTFORMW 「だって、くうぅ、そんなことされたらっ」
+			PRINTFORMW 恥ずかしさで悶えるぬえを余所に皺を数えていく
+			CFLAG:8359 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8359 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首ローター	CFLAG:8360
+;-------------------------------------------------
+IF SELECTCOM == 190
+	;初めて
+	IF CFLAG:8360 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8360= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8360 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8360 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;搾乳機（着）	CFLAG:8361
+;-------------------------------------------------
+IF SELECTCOM == 191 && TEQUIP:35 == 2
+	;初めて
+	IF CFLAG:8361 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8361= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8361 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8361 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;搾乳機（脱）	CFLAG:8362
+;-------------------------------------------------
+IF SELECTCOM == 191 && TEQUIP:35 == 0
+	;初めて
+	IF CFLAG:8362 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8362= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8362 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8362 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳腺開発	CFLAG:8363
+;-------------------------------------------------
+IF SELECTCOM == 192
+	;初めて
+	IF CFLAG:8363 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8363= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8363 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8363 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳房電極（着）	CFLAG:8364
+;-------------------------------------------------
+IF SELECTCOM == 193 && TEQUIP:35 == 4
+	;初めて
+	IF CFLAG:8364 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8364= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8364 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8364 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳房電極（脱）	CFLAG:8365
+;-------------------------------------------------
+IF SELECTCOM == 193 && TEQUIP:35 == 0
+	;初めて
+	IF CFLAG:8365 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8365= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8365 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8365 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;サラシ（着）	CFLAG:8366
+;-------------------------------------------------
+IF SELECTCOM == 194 && TEQUIP:36
+	;初めて
+	IF CFLAG:8366 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8366= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8366 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8366 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;サラシ（脱）	CFLAG:8367
+;-------------------------------------------------
+IF SELECTCOM == 194 && TEQUIP:36 == 0
+	;初めて
+	IF CFLAG:8367 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8367= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8367 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8367 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首クリップ（着）	CFLAG:8368
+;-------------------------------------------------
+IF SELECTCOM == 195 && TEQUIP:35 == 5
+	;初めて
+	IF CFLAG:8368 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8368= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8368 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8368 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首クリップ（脱）	CFLAG:8369
+;-------------------------------------------------
+IF SELECTCOM == 195 && TEQUIP:35 == 0
+	;初めて
+	IF CFLAG:8369 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8369= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8369 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8369 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;胸揉み	CFLAG:8370
+;-------------------------------------------------
+IF SELECTCOM == 200
+	;初めて
+	IF CFLAG:8370 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				PRINTFORMW 「んんっ、やっぱり大きいと揉み応えある？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「わたしの胸、ちっちゃいから揉みごたえ無いと思うのだけど」
+				PRINTFORMW 「・・・え、やだ、そんなこと言われると」
+
+			ENDIF
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8370= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「そんなにわたしのおっぱい好き？」
+			PRINTFORMW 「ふふ、優しくされるとなんだか嬉しいね」
+			CFLAG:8370 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8370 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首責め	CFLAG:8371
+;-------------------------------------------------
+IF SELECTCOM == 201
+	;初めて
+	IF CFLAG:8371 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「きゃ、乳首つまんじゃいや」
+			PRINTFORMW 「キュッキュってしないで・・・」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8371= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ、乳首つままないで」
+			PRINTFORMW 「やだ、力が抜けて・・・」
+			CFLAG:8371 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8371 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首舐め	CFLAG:8372
+;-------------------------------------------------
+IF SELECTCOM == 202
+	;初めて
+	IF CFLAG:8372 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8372= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8372 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8372 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首吸い	CFLAG:8373
+;-------------------------------------------------
+IF SELECTCOM == 203
+	;初めて
+	IF CFLAG:8373 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んんっ、強く吸ったら乳首取れちゃうよ」
+
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8373= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、あかちゃんみたいでかわいい」
+			PRINTFORMW 「きゃっ、歯で擦らないで」
+			PRINTFORMW （この人のあかちゃんかぁ・・・欲しいかな）
+			CFLAG:8373 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8373 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;母乳飲み	CFLAG:8374
+;-------------------------------------------------
+IF SELECTCOM == 204
+	;初めて
+	IF CFLAG:8374 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW あなたがぬえの母乳を飲んでいると
+			PRINTFORMW 「わたしのおっぱいおいしい？」
+			PRINTFORMW 素直においしいと言ってもいいのだが
+			PRINTFORMW ここは口移しで飲ませることにする
+			PRINTFORMW 「んんっ、んく、くちゅっ」
+			PRINTFORMW （ふぁ、あまい・・・）
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8374= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うう、そんなに強く吸わないで」
+			PRINTFORMW 「いっぱい出るからぁんんっ、やさしくして」
+			CFLAG:8374 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8374 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;胸自慰	CFLAG:8375
+;-------------------------------------------------
+IF SELECTCOM == 205 && TEQUIP:50 == 0
+	;初めて
+	IF CFLAG:8375 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8375= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8375 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8375 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;公開胸自慰	CFLAG:8376
+;-------------------------------------------------
+IF SELECTCOM == 205 && TEQUIP:50
+	;初めて
+	IF CFLAG:8376 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8376= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8376 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8376 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳スパンキング	CFLAG:8377
+;-------------------------------------------------
+IF SELECTCOM == 206
+	;初めて
+	IF CFLAG:8377 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8377= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8377 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8377 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳ファック	CFLAG:8378
+;-------------------------------------------------
+IF SELECTCOM == 207
+	;初めて
+	IF CFLAG:8378 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8378= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8378 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8378 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;縦パイズリ	CFLAG:8379
+;-------------------------------------------------
+IF SELECTCOM == 208
+	;初めて
+	IF CFLAG:8379 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「へぇ、大きいとこういうことができるんだ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8379= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、こんなに激しくして」
+			PRINTFORMW 「そんなにわたしのむねまんこ好き？」
+			PRINTFORMW 「わたしは・・・好きだよ」
+			CFLAG:8379 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8379 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;パイズリフェラ	CFLAG:8380
+;-------------------------------------------------
+IF SELECTCOM == 209
+	;初めて
+	IF CFLAG:8380 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8380= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+			CFLAG:8380 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8380 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳合わせ	CFLAG:8381
+;-------------------------------------------------
+IF SELECTCOM == 210
+	;初めて
+	IF CFLAG:8381 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8381= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8381 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8381 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳合わせ見せつけ	CFLAG:8382
+;-------------------------------------------------
+IF SELECTCOM == 211
+	;初めて
+	IF CFLAG:8382 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8382= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8382 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8382 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;スパンキング	CFLAG:8383
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:8383 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW あなたは座ってぬえをももの上でうつ伏せになるように言った
+			PRINTFORMW 「ふふ、くすぐったいわ」
+			PRINTFORMW 腕を回し抱えるようにしてぬえのおなかを撫でる
+			PRINTFORMW が、頃合いを見てお尻をはたいた
+			PRINTFORMW 「きゃっ、ちょっと、いたっ、やめてっ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8383= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつマゾっ気Lv3
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+				PRINTFORMW 「あっ」
+				PRINTFORMW ぬえは顔を赤くして、ももの上でうつ伏せになる
+				PRINTFORMW 「なによ、べ、別に期待なんてくぅっ、あんっ」
+				PRINTFORMW 叩かれて感じる変態さんめ
+				PRINTFORMW 「嘘、嘘よ、そんなああんっ」
+				PRINTFORMW 否定するもお尻が赤くなるにつれぬえは濡れていた
+		ENDIF
+			CFLAG:8383 = 4
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うう、どうせ言ってもやめてくれないのでしょ」
+			PRINTFORMW 手招きするあなたにささやかな抵抗を見せるもうつ伏せになる
+			PRINTFORMW 「うー、おかしいよ、こんなの」
+			CFLAG:8383 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8383 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鞭	CFLAG:8384
+;-------------------------------------------------
+IF SELECTCOM == 221
+	;初めて
+	IF CFLAG:8384 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8384= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8384 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8384 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;針	CFLAG:8385
+;-------------------------------------------------
+IF SELECTCOM == 222
+	;初めて
+	IF CFLAG:8385 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8385= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8385 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8385 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;蝋燭	CFLAG:8386
+;-------------------------------------------------
+IF SELECTCOM == 223
+	;初めて
+	IF CFLAG:8386 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8386= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8386 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8386 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;縄（着）	CFLAG:8387
+;-------------------------------------------------
+IF SELECTCOM == 224 && TEQUIP:40
+	;初めて
+	IF CFLAG:8387 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8387= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8387 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8387 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;縄（脱）	CFLAG:8388
+;-------------------------------------------------
+IF SELECTCOM == 224 && TEQUIP:40 == 0
+	;初めて
+	IF CFLAG:8388 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8388= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8388 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8388 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アイマスク（着）	CFLAG:8389
+;-------------------------------------------------
+IF SELECTCOM == 225 && TEQUIP:41 == 1
+	;初めて
+	IF CFLAG:8389 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8389= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8389 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8389 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アイマスク（脱）	CFLAG:8390
+;-------------------------------------------------
+IF SELECTCOM == 225 && TEQUIP:41 == 0
+	;初めて
+	IF CFLAG:8390 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8390= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8390 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8390 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ボールギャグ（着）	CFLAG:8391
+;-------------------------------------------------
+IF SELECTCOM == 226 && TEQUIP:42 == 1
+	;初めて
+	IF CFLAG:8391 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8391= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8391 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8391 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ボールギャグ（脱）	CFLAG:8392
+;-------------------------------------------------
+IF SELECTCOM == 226 && TEQUIP:42 == 0
+	;初めて
+	IF CFLAG:8392 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8392= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8392 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8392 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;罵倒	CFLAG:8393
+;-------------------------------------------------
+IF SELECTCOM == 227
+	;初めて
+	IF CFLAG:8393 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8393= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8393 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8393 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鼻フック（着）	CFLAG:8394
+;-------------------------------------------------
+IF SELECTCOM == 228 && TEQUIP:44 == 1
+	;初めて
+	IF CFLAG:8394 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8394= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8394 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8394 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鼻フック（脱）	CFLAG:8395
+;-------------------------------------------------
+IF SELECTCOM == 228 && TEQUIP:44 == 0
+	;初めて
+	IF CFLAG:8395 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8395= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8395 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8395 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;強制開口器（着）	CFLAG:8396
+;-------------------------------------------------
+IF SELECTCOM == 229 && TEQUIP:42 == 3
+	;初めて
+	IF CFLAG:8396 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8396= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8396 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8396 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;強制開口器（脱）	CFLAG:8397
+;-------------------------------------------------
+IF SELECTCOM == 229 && TEQUIP:42 == 0
+	;初めて
+	IF CFLAG:8397 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8397= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8397 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8397 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;イラマチオ	CFLAG:8398
+;-------------------------------------------------
+IF SELECTCOM == 230
+	;初めて
+	IF CFLAG:8398 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8398= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8398 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8398 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;フィストファック	CFLAG:8399
+;-------------------------------------------------
+IF SELECTCOM == 231
+	;初めて
+	IF CFLAG:8399 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8399= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8399 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8399 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルフィスト	CFLAG:8400
+;-------------------------------------------------
+IF SELECTCOM == 232
+	;初めて
+	IF CFLAG:8400 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8400= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8400 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8400 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;両穴フィスト	CFLAG:8401
+;-------------------------------------------------
+IF SELECTCOM == 233
+	;初めて
+	IF CFLAG:8401 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8401= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8401 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8401 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナダイビング	CFLAG:8402
+;-------------------------------------------------
+IF SELECTCOM == 234
+	;初めて
+	IF CFLAG:8402 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8402= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8402 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8402 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アナルダイビング	CFLAG:8403
+;-------------------------------------------------
+IF SELECTCOM == 235
+	;初めて
+	IF CFLAG:8403 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8403= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8403 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8403 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ツボを突く	CFLAG:8404
+;-------------------------------------------------
+IF SELECTCOM == 236
+	;初めて
+	IF CFLAG:8404 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8404= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8404 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8404 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鼻クリップ	CFLAG:8405
+;-------------------------------------------------
+IF SELECTCOM == 237
+	;初めて
+	IF CFLAG:8405 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8405= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8405 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8405 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;スタンガン	CFLAG:8406
+;-------------------------------------------------
+IF SELECTCOM == 238
+	;初めて
+	IF CFLAG:8406 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8406= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8406 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8406 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;足で踏む	CFLAG:8407
+;-------------------------------------------------
+IF SELECTCOM == 240
+	;初めて
+	IF CFLAG:8407 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8407= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8407 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8407 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;腹パン	CFLAG:8408
+;-------------------------------------------------
+IF SELECTCOM == 241
+	;初めて
+	IF CFLAG:8408 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8408= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8408 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8408 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;三角木馬（着）	CFLAG:8409
+;-------------------------------------------------
+IF SELECTCOM == 242 && TEQUIP:43
+	;初めて
+	IF CFLAG:8409 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8409= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8409 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8409 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;三角木馬（脱）	CFLAG:8410
+;-------------------------------------------------
+IF SELECTCOM == 242 && TEQUIP:43 == 0
+	;初めて
+	IF CFLAG:8410 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8410= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8410 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8410 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;杭	CFLAG:8411
+;-------------------------------------------------
+IF SELECTCOM == 243
+	;初めて
+	IF CFLAG:8411 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8411= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8411 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8411 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ナイフ	CFLAG:8412
+;-------------------------------------------------
+IF SELECTCOM == 244
+	;初めて
+	IF CFLAG:8412 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8412= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8412 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8412 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鉈	CFLAG:8413
+;-------------------------------------------------
+IF SELECTCOM == 245
+	;初めて
+	IF CFLAG:8413 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8413= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8413 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8413 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ビンタを張る	CFLAG:8414
+;-------------------------------------------------
+IF SELECTCOM == 251
+	;初めて
+	IF CFLAG:8414 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8414= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8414 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8414 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;アイアンメイデン	CFLAG:8415
+;-------------------------------------------------
+IF SELECTCOM == 252
+	;初めて
+	IF CFLAG:8415 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8415= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8415 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8415 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;罵ってもらう	CFLAG:8416
+;-------------------------------------------------
+IF SELECTCOM == 270
+	;初めて
+	IF CFLAG:8416 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8416= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8416 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8416 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;足を舐める	CFLAG:8417
+;-------------------------------------------------
+IF SELECTCOM == 271
+	;初めて
+	IF CFLAG:8417 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8417= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8417 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8417 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;叩いてもらう	CFLAG:8418
+;-------------------------------------------------
+IF SELECTCOM == 272
+	;初めて
+	IF CFLAG:8418 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8418= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8418 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8418 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;鞭で打ってもらう	CFLAG:8419
+;-------------------------------------------------
+IF SELECTCOM == 273
+	;初めて
+	IF CFLAG:8419 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8419= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8419 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8419 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;コンドーム	CFLAG:8420
+;-------------------------------------------------
+IF SELECTCOM == 290
+	;初めて
+	IF CFLAG:8420 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8420= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8420 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8420 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;コンドーム精飲(奴)	CFLAG:8421
+;-------------------------------------------------
+IF SELECTCOM == 291
+	;初めて
+	IF CFLAG:8421 == 0
+		;恋慕+精液中毒３以上
+		IF TALENT:恋慕 == 1 && ABL:精液中毒 >= 3
+		PRINTFORMW 「どうせ飲ませるのなら直接飲みたいのに・・・」
+		PRINTFORMW 不満げな声を出すものの顔は緩んでいる
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「それを・・・飲むの？」
+		PRINTFORMW 「わ、わかった、飲む・・・ね？」
+		PRINTFORMW （うう、なに、ゴム臭くて気持ち悪い）
+		CFLAG:8421= 1
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕+精液中毒３以上　どっかのエロ漫画にこんな描写があったのでつい　全く変わってますが
+		IF TALENT:恋慕 == 1 && ABL:精液中毒 >= 3
+		PRINTFORMW ゴムを受け取ったぬえは先端を噛んで
+		PRINTFORMW ゴムの中のの精液を強く吸うと
+		PRINTFORMW 中の精液が勢いよく口へ流れる
+		PRINTFORMW ぬえは擬似口内射精を楽しんでいる
+		CFLAG:8421 = 2
+		;恋慕+精液中毒３以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:精液中毒 >= 3
+		PRINTFORMW ぬえはゴムに穴を開けてちゅるちゅると精液を吸い出している
+		CFLAG:8421 = 3	
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW （吐きたい、でも吐いたら嫌われちゃうかも）
+		PRINTFORMW （それは・・・やだなぁ）
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;コンドーム精飲(助)	CFLAG:8422
+;-------------------------------------------------
+IF SELECTCOM == 292
+	;初めて
+	IF CFLAG:8422 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8422= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8422 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8422 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ザーメンキス	CFLAG:8423
+;-------------------------------------------------
+IF SELECTCOM == 293
+	;初めて
+	IF CFLAG:8423 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8423= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8423 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8423 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;クンニ強制	CFLAG:8424
+;-------------------------------------------------
+IF SELECTCOM == 300
+	IF ASSIPLAY && ASSI > 0 && NO:ASSI == 1
+		;初めて
+		IF CFLAG:8424 == 0
+		IF TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 『じゃあ舐めてもらおうかな』
+		PRINTFORMW 「久しぶりだね、こういうのって」
+		CFLAG:8424 = 1
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:8424 == 1 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 『あっ』
+		PRINTFORMW 『(やだ、前より上手になってる)』
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;貝あわせ	CFLAG:8425　なんとなく想像はつくけどねぇ　　ちんこ生えてるからできないよ、多分
+;-------------------------------------------------
+IF SELECTCOM == 301
+	;初めて
+	IF CFLAG:8425 == 0
+		CFLAG:8425= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8425 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8425 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;足コキする	CFLAG:8426
+;-------------------------------------------------
+IF SELECTCOM == 302
+	;初めて
+	IF CFLAG:8426 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW あなたはベッドに腰掛けるとぬえに目の前に座るように言った
+			PRINTFORMW 「どうしたの、こんなところうひゃあっ」
+			PRINTFORMW あなたは両足でぬえのペニスを挟み込む
+			PRINTFORMW 「そんな、足でなんてっくぅ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8426= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;マゾっ気Lv3
+			IF ABL:マゾっ気 >= 3
+				PRINTFORMW あなたはいつものように座らせると
+				PRINTFORMW ぬえのペニスを強めに踏みつける
+				PRINTFORMW 「あっ、そんなに、つよくしちゃっ」
+				PRINTFORMW 「だめっ床にグリグリしないで」
+				PRINTFORMW かわいい悲鳴を聞きながらぬえのペニスを転がしている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「どうせなら足より手の方がいいのだけど・・・」
+				PRINTFORMW やや不満気になるぬえだが
+				PRINTFORMW 案外足でされるのを楽しんでるようだ
+			ENDIF
+			CFLAG:8426 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8426 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人フェラチオ	CFLAG:8427
+;-------------------------------------------------
+IF SELECTCOM == 303
+		IF NO:ASSI == 1
+	;初めて
+	IF CFLAG:8427 == 0 
+	IF TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 『ん、じゅるっ』
+		PRINTFORMW 「ちょ、霊夢ずるいよ！」
+		PRINTFORMW 『・・・しょうがないなぁ』
+		PRINTFORMW 「ぁむ、れいむとあなたの味が混ざって」
+		PRINTFORMW 『れろ、ちゅう』
+		CFLAG:8427= 1
+	ENDIF
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:8427 == 1 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 「はぁ、れろっちゅ」
+		PRINTFORMW 『んむ、じゅるる』
+		PRINTFORMW 「れ、れいむぅ」
+		PRINTFORMW 『ちゅぱっ、なによ、れろ』
+		PRINTFORMW 霊夢は奉仕のついでに時々ぬえと舌を絡めていた
+			CFLAG:8427 = 1
+		RETURN 0
+	ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二本フェラチオ	CFLAG:8428
+;-------------------------------------------------
+IF SELECTCOM == 304
+	;初めて
+	IF CFLAG:8428 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8428= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8428 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8428 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人で素股	CFLAG:8429
+;-------------------------------------------------
+IF SELECTCOM == 305
+	;初めて
+	IF CFLAG:8429 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8429= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8429 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8429 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人でパイズリ	CFLAG:8430
+;-------------------------------------------------
+IF SELECTCOM == 306
+		IF NO:ASSI == 1
+	;初めて
+	IF CFLAG:8430 == 0 
+			;巨乳以上
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+		PRINTFORMW 『・・・・・』
+		PRINTFORMW 「ん、どうしたの？」
+		PRINTFORMW 『なんであんたの方が私のより大きいのよ』
+		PRINTFORMW 『まぁいいわ、早く始めましょ』
+		PRINTFORMW （・・・胸が痛い）
+		CFLAG:8430 = 1
+			;普通以下
+		ELSE
+		PRINTFORMW 『んしょ、どうしたのよ』
+		PRINTFORMW 「え、いや、霊夢のおっぱい大きいなって」
+		PRINTFORMW 『そう？　ぬえと変わらないと思うけど』
+		PRINTFORMW 「・・・いいな、やわらかそうで」
+		CFLAG:8430 = 1
+			ENDIF
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:8430 == 1 
+			;巨乳以上
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+		PRINTFORMW 『んん、乳首が、擦れて』
+		PRINTFORMW 「や、霊夢そんなに押し付けないでっ」
+		PRINTFORMW 『ふぁ、だってぬえのおっぱいがぷにぷにしてて』
+		PRINTFORMW 「ひゃあ、おっぱい舐めないでよ」
+			;普通以下
+		ELSE
+		PRINTFORMW 「ん、どう、かな？」
+		PRINTFORMW 『大丈夫よ、ちゅ』
+		PRINTFORMW 霊夢はいきなりぬえにキスをした
+		PRINTFORMW 「んむっ、ちょっと霊夢」
+		PRINTFORMW 『こういうのって結構興奮するのよ、ねぇ』
+		PRINTFORMW 「ふぇ、あ、大きくなってる？」
+			CFLAG:8430 = 1
+			ENDIF
+		RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手を犯させる	CFLAG:8431
+;-------------------------------------------------
+IF SELECTCOM == 307
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 1
+	;初めて
+	IF CFLAG:8431 == 0
+		IF ABL:ASSI:Ｖ感覚 >=3 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 「・・・入れるよ？」
+		PRINTFORMW 『うん、大丈夫だから』
+		PRINTFORMW そう頷いた霊夢の秘所にゆっくりと挿入する
+		PRINTFORMW 「ふぁ、なにこれ」
+		PRINTFORMW （これが、おまんこのなか・・・わたしのおちんちんに絡み付いて）
+			CFLAG:8431 = 1
+		ENDIF
+		RETURN 0
+	;2回目以降　V感3以上で
+	ELSEIF CFLAG:8431 == 1 && ABL:ASSI:Ｖ感覚 >= 3 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 「れいむ、気持ちいい？」
+		PRINTFORMW 『ふぁ、ぅん、もっと、ひゃあっ、ふかく』
+		PRINTFORMW 「こ、こう、んっやだ、ヒダが、絡み付いて・・・」
+		CFLAG:8431 = 1
+		RETURN 0
+	ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手のＡを犯させる	CFLAG:8432
+;-------------------------------------------------
+IF SELECTCOM == 308
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 1
+	;初めて　ただしA感3以上でだな？
+	IF CFLAG:8432 == 0 
+			IF ABL:ASSI:Ａ感覚 >= 3 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 「お、お尻って」
+		PRINTFORMW 「霊夢大丈夫なの？」
+		PRINTFORMW 『んー、それなりに開発してもらったから大丈夫だと思うけど』
+		PRINTFORMW 「うー、それじゃ、いくよ？」
+		PRINTFORMW ぬえはゆっくりとペニスを沈めていった
+		CFLAG:8432 = 1
+			ENDIF
+		RETURN 0
+	;2回目以降
+	ELSEIF CFLAG:8432 == 1 && ABL:ASSI:Ａ感覚 >= 3 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+		PRINTFORMW （くぅ、お尻のなか、キツくて、ひあっ・・・）
+		PRINTFORMW 「やだ、おしりのあな、しめつけないでっ」
+		PRINTFORMW 『だ、だって、あん、ぬえのかお、みてたら・・・ね』
+		PRINTFORMW 『気持ちいい、でしょ、んんっ』
+		CFLAG:8432 = 1
+		RETURN 0
+	ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;助手とキスする	CFLAG:8433
+;-------------------------------------------------
+IF SELECTCOM == 309
+	;初めて
+	IF CFLAG:8433 == 0 
+		IF TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1 && NO:ASSI == 1
+		PRINTFORMW 『んん、ちゅう』
+		PRINTFORMW 「・・・いいなぁ」
+		PRINTFORMW 羨ましそうにぬえがこっちを見ている
+		CFLAG:8433= 1
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:8433 == 1 && TALENT:ASSI:恋慕 == 1 && NO:ASSI == 1 && TALENT:恋慕 == 1
+		PRINTFORMW 『はむっ、んんー』
+		PRINTFORMW 「ずるいよ、わたしだってして欲しいのに」
+		PRINTFORMW 『・・・ぷはぁ、だったらお願いでもしてみればいいじゃない』
+		PRINTFORMW 『可愛く出来たらんんっ、ちゅ、ちゅるっ』
+			CFLAG:8433 = 1
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人の尻を叩く	CFLAG:8434
+;-------------------------------------------------
+IF SELECTCOM == 310
+	;初めて
+	IF CFLAG:8434 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8434= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8434 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8434 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;尻を二人で叩く	CFLAG:8435
+;-------------------------------------------------
+IF SELECTCOM == 311
+	;初めて
+	IF CFLAG:8435 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8435= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8435 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8435 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人のＶをフィスト	CFLAG:8436
+;-------------------------------------------------
+IF SELECTCOM == 312
+	;初めて
+	IF CFLAG:8436 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8436= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8436 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8436 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人のＡをフィスト	CFLAG:8437
+;-------------------------------------------------
+IF SELECTCOM == 313
+	;初めて
+	IF CFLAG:8437 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8437= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8437 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8437 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;優しくする	CFLAG:8438
+;-------------------------------------------------
+IF SELECTCOM == 320
+	;初めて
+	IF CFLAG:8438 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8438= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8438 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8438 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;手淫する	CFLAG:8439
+;-------------------------------------------------
+IF SELECTCOM == 321
+	;初めて
+	IF CFLAG:8439 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひゃっ」
+			PRINTFORMW あなたはぬえのペニスに手を這わして
+			PRINTFORMW やさしく扱きはじめた
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8439= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕かつ射精中毒Lv3
+		IF TALENT:恋慕 == 1 && ABL:射精中毒 >= 3
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW あなたは手で筒を作るとぬえのペニスにあてがった
+				PRINTFORMW 「わ、わたしが動くの？」
+				PRINTFORMW あなたが答えるとぬえは手の中にペニスを挿入した
+				PRINTFORMW 時折あなたは手を強く握ってみると
+				PRINTFORMW 「ふあっ、だめ、ぎゅっぎゅってしないで」
+				PRINTFORMW そういいながらもぬえは激しく腰を突き入れた
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やぁっ、そんな、はげしっ、くぅ」
+				PRINTFORMW あなたは緩急をつけながらぬえのペニスを扱いていく
+				PRINTFORMW 「で、でるっ、せーえきがああっ」
+				PRINTFORMW しかし、イきそうなところで手を離す
+				PRINTFORMW それを何度か繰りかえし焦らしていく
+				PRINTFORMW 「ああ、お願い、せーえき出させてっ、このままじゃ狂うっっ！」
+				PRINTFORMW 何度目かの哀願を聞いてから満足するまで扱いてあげた
+			ENDIF
+			ENDIF
+			CFLAG:8439 = 4
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;乱数分岐:2
+			IF RAND:2 == 0
+				PRINTFORMW あなたは後ろにまわり込んでぬえのペニスを握った
+				PRINTFORMW が、握るだけで手は動かさない
+				PRINTFORMW 「くぅ、やだ、焦らさないで」
+				PRINTFORMW あなたはぬえの耳元で
+				PRINTFORMW 自分で腰を振ってみて、と囁いた
+				PRINTFORMW ぬえは初めこそ遠慮がちに動いていたが
+				PRINTFORMW だんだんと腰の動きが激しくなっていった
+
+			;その他の場合
+			ELSE
+				PRINTFORMW あなたは焦らすように手を動かす
+				PRINTFORMW 「くうっいじわひゃん」
+				PRINTFORMW たまに思い出したかのように早く動かしてみたりすると
+				PRINTFORMW ぬえはかわいい声を上げた
+			ENDIF
+			CFLAG:8439 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8439 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;パイズリする	CFLAG:8440
+;-------------------------------------------------
+IF SELECTCOM == 322
+	IF ASSIPLAY && ASSI > 0
+		IF NO:ASSI == 1
+	;初めて
+	IF CFLAG:8440 == 0 
+		IF TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+			PRINTFORMW 『そういえばぬえのおちんちんを間近で見るのって初めてなのよね』
+			PRINTFORMW 『と、言うよりもいつの間にか生えてるし』
+			PRINTFORMW 「うう、あまり見ないで、恥ずかしいよ」
+			PRINTFORMW 『何言ってるのよ、ここでもっと恥ずかしい事されたでしょ』
+		SIF ABL:マゾっ気 >= 3
+			PRINTFORMW 霊夢に見られている間、ぬえのモノはビクビク反応している
+			PRINTFORMW 『それじゃ、いくよ』
+		CFLAG:8440= 1
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSEIF CFLAG:8440 == 1 && TALENT:ASSI:恋慕 == 1 && TALENT:恋慕 == 1
+			PRINTFORMW 「れ、れいむ、やだ、許して・・・」
+			PRINTFORMW 『何言ってるのよ、こんなに暴れて、素直に気持ちいいって言いなさいよ』
+			PRINTFORMW そう言って霊夢は胸の動きを早くする
+			PRINTFORMW 「やだ、やだっ、溶けるっおちんちん溶けちゃうっ」
+		CFLAG:8440 = 1
+		ENDIF
+		RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;正常位させる	CFLAG:8441
+;-------------------------------------------------
+IF SELECTCOM == 323
+	;初めて
+	IF CFLAG:8441 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8441= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8441 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8441 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位させる	CFLAG:8442
+;-------------------------------------------------
+IF SELECTCOM == 324
+	;初めて
+	IF CFLAG:8442 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8442= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8442 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8442 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位する	CFLAG:8443
+;-------------------------------------------------
+IF SELECTCOM == 325
+	;初めて
+	IF CFLAG:8443 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8443= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8443 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8443 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ペニバン挿入	CFLAG:8444
+;-------------------------------------------------
+IF SELECTCOM == 326
+	;初めて
+	IF CFLAG:8444 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8444= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8444 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8444 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;指チュパ	CFLAG:8445
+;-------------------------------------------------
+IF SELECTCOM == 327
+	;初めて
+	IF CFLAG:8445 == 0
+		PRINTFORMW 「指を舐めるの？　変なの」
+		CFLAG:8445= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;前コマンドアナル愛撫+奉仕精神ｌｖ3+A感覚ｌｖ3
+			IF PREVCOM == 2 && ABL:奉仕精神 >= 3 && ABL:Ａ感覚 >= 3
+				PRINTFORMW あなたは腸液で汚れた指をぬえに舐めさせた
+				PRINTFORMW 「あむ、ちゅっ、むぅ・・・」
+				PRINTFORMW （苦い・・・これがわたしのお尻の味・・・？）
+				PRINTFORMW 眉をひそめるも丹念に指をしゃぶっている
+				PRINTFORMW あなたはぬえの頭を撫でてあげるとうれしそうに目を細めた
+			;前コマンド強制放尿
+			ELSEIF PREVCOM == 620
+				PRINTFORMW あなたは尿で汚れた指を出した
+				PRINTFORMW 「んんっ、んぷ、じゅるっ」
+				PRINTFORMW （わたしのおしっこを舐めるなんて・・・）
+				PRINTFORMW 「むぅ、ちゅう・・・・ふぅ」
+
+			;乱数分岐:3
+			ELSEIF RAND:3 == 0
+				PRINTFORMW あなたはぬえの目の前に指を出した
+				PRINTFORMW 「また舐めるの？　ふふ、好きなんだから」
+				PRINTFORMW 「ちゅ、ふぅ・・・ず、ずずずずっ、んふぅ、ぢゅる」
+				PRINTFORMW ぬえは指を2本咥えて吸ってきた
+				PRINTFORMW 指の隙間から空気が入るのか強く吸う度に大きな音が出た
+			;乱数分岐:2
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふふ、またきれいにしてあげるね、あむっ」
+				PRINTFORMW 「ん、ちゅっ、むぅ・・・ぢゅる、んく」
+				PRINTFORMW ぬえは夢中であなたの指をしゃぶっている
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んむ、ちゅる、んふ・・・ちゅ」
+				PRINTFORMW 「ほう、ひもひいい？　ちゅぱ」
+				PRINTFORMW あなたはぬえの頭を撫でてあげた
+			ENDIF
+			CFLAG:8445 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8445 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;首筋耳裏責め	CFLAG:8446
+;-------------------------------------------------
+IF SELECTCOM == 328
+	;初めて
+	IF CFLAG:8446 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8446= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8446 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8446 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;玉愛撫	CFLAG:8447
+;-------------------------------------------------
+IF SELECTCOM == 329
+	;初めて
+	IF CFLAG:8447 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8447= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8447 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8447 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;玉を舐める	CFLAG:8448
+;-------------------------------------------------
+IF SELECTCOM == 330
+	;初めて
+	IF CFLAG:8448 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8448= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8448 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8448 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人でフェラする	CFLAG:8449
+;-------------------------------------------------
+IF SELECTCOM == 331
+	;初めて
+	IF CFLAG:8449 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8449= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8449 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8449 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ正常位させる	CFLAG:8450
+;-------------------------------------------------
+IF SELECTCOM == 332
+	;初めて
+	IF CFLAG:8450 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8450= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8450 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8450 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ後背位させる	CFLAG:8451
+;-------------------------------------------------
+IF SELECTCOM == 333
+	;初めて
+	IF CFLAG:8451 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8451= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8451 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8451 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ騎乗位する	CFLAG:8452
+;-------------------------------------------------
+IF SELECTCOM == 334
+	;初めて
+	IF CFLAG:8452 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8452= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8452 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8452 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;パイズリフェラする	CFLAG:8453
+;-------------------------------------------------
+IF SELECTCOM == 335
+	;初めて
+	IF CFLAG:8453 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8453= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8453 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8453 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ヴァギナを拭く	CFLAG:8454
+;-------------------------------------------------
+IF SELECTCOM == 336
+	;初めて
+	IF CFLAG:8454 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8454= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8454 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8454 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人で首筋耳裏責め	CFLAG:8455
+;-------------------------------------------------
+IF SELECTCOM == 337
+	;初めて
+	IF CFLAG:8455 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8455= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8455 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8455 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人に犯させる	CFLAG:8456
+;-------------------------------------------------
+IF SELECTCOM == 338
+	;初めて
+	IF CFLAG:8456 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8456= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8456 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8456 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ぱふぱふ	CFLAG:8457
+;-------------------------------------------------
+IF SELECTCOM == 340
+	;初めて
+	IF CFLAG:8457 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8457= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8457 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8457 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;胸枕	CFLAG:8458
+;-------------------------------------------------
+IF SELECTCOM == 341
+	;初めて
+	IF CFLAG:8458 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				PRINTFORMW 「ふぇ、わたしのおっぱいを枕に？」
+				PRINTFORMW 「うん、きて」
+				PRINTFORMW あなたはぬえの大きな胸に頭を乗せそのやわらかさを堪能する
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ふぇ、わたしのおっぱいを枕に？」
+				PRINTFORMW 「・・・そういうのは大きな娘にしてもらった方が」
+				PRINTFORMW あなたはそんなぬえを押し倒しその胸に頬擦りした
+				PRINTFORMW 「っつう、なにする・・・・もう」
+			ENDIF
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8458= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			;巨乳ないし爆乳
+			IF TALENT:巨乳 == 1 || TALENT:爆乳 == 1
+				PRINTFORMW 「じゃあ、一緒に寝よ？」
+				PRINTFORMW あなたはぬえの胸に頭を乗せると
+				PRINTFORMW ぬえはあなたの頭に手をまわした
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やっぱり、大きい方が気持ちいいって・・・」
+				PRINTFORMW そんなことを言うぬえにあなたは
+				PRINTFORMW そういうかわいい顔を見たいからやりたいんだ、と
+				PRINTFORMW 「ずるい、そんなこと言われたら断れないじゃない」
+				PRINTFORMW 顔を赤くするぬえの胸に頭を乗せた
+			ENDIF
+			CFLAG:8458 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8458 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳繰り合う	CFLAG:8459
+;-------------------------------------------------
+IF SELECTCOM == 342
+	;初めて
+	IF CFLAG:8459 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8459= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8459 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8459 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳ビンタ	CFLAG:8460
+;-------------------------------------------------
+IF SELECTCOM == 343
+	;初めて
+	IF CFLAG:8460 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8460= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8460 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8460 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳の揉み合い	CFLAG:8461
+;-------------------------------------------------
+IF SELECTCOM == 344
+	;初めて
+	IF CFLAG:8461 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8461= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8461 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8461 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お風呂を楽しむ	CFLAG:8462
+;-------------------------------------------------
+IF SELECTCOM == 345
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW ぬえはあなたに寄り添った
+		PRINTFORMW （一緒にお風呂だなんて）
+		PRINTFORMW （なんだか夫婦みたい）
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お外を楽しむ	CFLAG:8463
+;-------------------------------------------------
+IF SELECTCOM == 346
+	;初めて
+	IF CFLAG:8463 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8463= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8463 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8463 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お嫁さんで楽しむ	CFLAG:8464
+;-------------------------------------------------
+IF SELECTCOM == 347
+	;初めて
+	IF CFLAG:8464 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8464= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8464 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8464 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お酒を飲ませる	CFLAG:8465
+;-------------------------------------------------
+IF SELECTCOM == 348
+	;初めて
+	IF CFLAG:8465 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8465= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8465 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8465 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ふぉーゆーっ！	CFLAG:8466
+;-------------------------------------------------
+IF SELECTCOM == 349
+	;初めて
+	IF CFLAG:8466 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8466= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8466 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8466 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お風呂場プレイ	CFLAG:8467
+;-------------------------------------------------
+IF SELECTCOM == 350
+	;初めて
+	IF CFLAG:8467 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お風呂？」
+			PRINTFORMW 「それってもう終わりなの？」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8467= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あ、お風呂入るの？」
+			PRINTFORMW 「それじゃ、わたしが身体を洗ってあげるよ」
+			CFLAG:8467 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8467 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;シャワー	CFLAG:8468
+;-------------------------------------------------
+IF SELECTCOM == 351
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「わたしが浴びるの？」
+		PRINTFORMW 「まぁ綺麗になるし嫌じゃないよ」
+		PRINTFORMW （ホントはあなたの頭とか洗ってあげたいんだけどなぁ）
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;泡踊り	CFLAG:8469
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:8469 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW ぬえはボディソープを塗りたくるとあなたに抱きついてきた
+			PRINTFORMW 「わたしの身体で洗うだなんて、ふふ」
+			PRINTFORMW 嬉しそうに身体を擦り付けてきた
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8469= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「洗うからじっとしててね」
+			PRINTFORMW そういって泡まみれの身体を擦り付けてきた
+			PRINTFORMW （あなたを洗ってあげれるってちょっといいかも）
+			CFLAG:8469 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8469 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;泡踊りする	CFLAG:8470
+;-------------------------------------------------
+IF SELECTCOM == 353
+	;初めて
+	IF CFLAG:8470 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8470= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8470 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8470 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;たわし洗い	CFLAG:8471
+;-------------------------------------------------
+IF SELECTCOM == 354
+	;初めて
+	IF CFLAG:8471 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8471= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8471 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8471 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｇスポット刺激	CFLAG:8472
+;-------------------------------------------------
+IF SELECTCOM == 600
+	;初めて
+	IF CFLAG:8472 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8472= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8472 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8472 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;潜望鏡	CFLAG:8473
+;-------------------------------------------------
+IF SELECTCOM == 601
+	;初めて
+	IF CFLAG:8473 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8473= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8473 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8473 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;シックスナイン	CFLAG:8474
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:8474 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8474= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8474 = 4
+		;恋慕かつＣ感覚Lv3
+		ELSEIF TALENT:恋慕 == 1 && ABL:Ｃ感覚 >= 3
+			CFLAG:8474 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8474 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;６９パイズリ	CFLAG:8475
+;-------------------------------------------------
+IF SELECTCOM == 603
+	;初めて
+	IF CFLAG:8475 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8475= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8475 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8475 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;雁が首	CFLAG:8476
+;-------------------------------------------------
+IF SELECTCOM == 604
+	;初めて
+	IF CFLAG:8476 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8476= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8476 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8476 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;指でＶを撫でる	CFLAG:8477
+;-------------------------------------------------
+IF SELECTCOM == 605
+	;初めて
+	IF CFLAG:8477 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8477= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8477 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8477 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;二人で犯す	CFLAG:8478
+;-------------------------------------------------
+IF SELECTCOM == 610
+	;初めて
+	IF CFLAG:8478 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8478= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8478 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8478 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;岩清水	CFLAG:8479
+;-------------------------------------------------
+IF SELECTCOM == 611
+	;初めて
+	IF CFLAG:8479 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8479= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8479 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8479 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乱れ牡丹	CFLAG:8480
+;-------------------------------------------------
+IF SELECTCOM == 612
+	;初めて
+	IF CFLAG:8480 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8480= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8480 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8480 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗乳房自慰	CFLAG:8481
+;-------------------------------------------------
+IF SELECTCOM == 613
+	;初めて
+	IF CFLAG:8481 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8481= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8481 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8481 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;挿入Ｇスポ責め	CFLAG:8482
+;-------------------------------------------------
+IF SELECTCOM == 614
+	;初めて
+	IF CFLAG:8482 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8482= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8482 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8482 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;挿入子宮口責め	CFLAG:8483
+;-------------------------------------------------
+IF SELECTCOM == 615
+	;初めて
+	IF CFLAG:8483 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8483= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8483 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8483 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位愛撫	CFLAG:8484
+;-------------------------------------------------
+IF SELECTCOM == 616
+	;初めて
+	IF CFLAG:8484 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8484= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8484 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8484 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面愛撫	CFLAG:8485
+;-------------------------------------------------
+IF SELECTCOM == 617
+	;初めて
+	IF CFLAG:8485 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8485= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8485 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8485 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位アナル胸愛撫	CFLAG:8486
+;-------------------------------------------------
+IF SELECTCOM == 618
+	;初めて
+	IF CFLAG:8486 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8486= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8486 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8486 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;対面アナル胸愛撫	CFLAG:8487
+;-------------------------------------------------
+IF SELECTCOM == 619
+	;初めて
+	IF CFLAG:8487 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8487= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8487 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8487 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;強制放尿	CFLAG:8488
+;-------------------------------------------------
+IF SELECTCOM == 620
+	;初めて
+	IF CFLAG:8488 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「だっ、指で擦ったら我慢できっ」
+
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8488= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「くぅ、やだ、ちから抜けて」
+			PRINTFORMW 「ああ、漏れちゃった・・・」
+			CFLAG:8488 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8488 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;口移し	CFLAG:8489
+;-------------------------------------------------
+IF SELECTCOM == 621
+	;初めて
+	IF CFLAG:8489 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8489= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8489 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8489 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;四肢緊縛	CFLAG:8490
+;-------------------------------------------------
+IF SELECTCOM == 622
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;マゾっ気Lv3
+		IF ABL:マゾっ気 >= 3
+		;その他の場合
+		ELSE
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;亀甲縛り	CFLAG:8491
+;-------------------------------------------------
+IF SELECTCOM == 623
+	;恋慕
+	IF TALENT:恋慕 == 1
+		;マゾっ気Lv3
+		IF ABL:マゾっ気 >= 3
+		;その他の場合
+		ELSE
+		ENDIF
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;吊り下げ	CFLAG:8492
+;-------------------------------------------------
+IF SELECTCOM == 624
+	;初めて
+	IF CFLAG:8492 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8492= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8492 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8492 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;ローションプレイ	CFLAG:8493
+;-------------------------------------------------
+IF SELECTCOM == 625
+	;初めて
+	IF CFLAG:8493 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8493= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8493 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8493 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;搾乳	CFLAG:8494
+;-------------------------------------------------
+IF SELECTCOM == 626
+	;初めて
+	IF CFLAG:8494 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8494= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8494 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8494 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;乳首甘噛み	CFLAG:8495
+;-------------------------------------------------
+IF SELECTCOM == 627
+	;初めて
+	IF CFLAG:8495 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8495= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8495 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8495 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;相互自慰	CFLAG:8496
+;-------------------------------------------------
+IF SELECTCOM == 628 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0
+	;初めて
+	IF CFLAG:8496 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8496= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8496 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8496 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;サンドイッチ	CFLAG:8497
+;-------------------------------------------------
+IF SELECTCOM == 629
+	;初めて
+	IF CFLAG:8497 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8497= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8497 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8497 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;後背位手淫	CFLAG:8498
+;-------------------------------------------------
+IF SELECTCOM == 630
+	;初めて
+	IF CFLAG:8498 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8498= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8498 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8498 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;相互秘貝開帳	CFLAG:8499
+;-------------------------------------------------
+IF SELECTCOM == 631
+	;初めて
+	IF CFLAG:8499 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:8499= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			CFLAG:8499 = 3
+		;その他の場合
+		ELSE
+			CFLAG:8499 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_78_MESSAGE_PALAMCNG
+;※追加機能D1『抜かずにウフフ機能』
+;抜かず判定関数を呼ぶ
+CALL COMBOPLAY_2
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;抜かず判定関数を呼ぶ
+CALL COMBOPLAY_2
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、78を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K78_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K78_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG 9100～を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた	CFLAG:9100
+;-------------------------------------------------
+IF (PALAM:10 + UP:10) > PALAMLV:2 && CFLAG:9001 == 0
+	CFLAG:9100 = 1
+ENDIF
+;-------------------------------------------------
+;初めて欲情がLV2超えた	CFLAG:9101
+;-------------------------------------------------
+IF (PALAM:13 + UP:13) > PALAMLV:2 && CFLAG:9002 == 0
+	CFLAG:9101 = 1
+ENDIF
+;-------------------------------------------------
+;初めて恥情がLV2超えた	CFLAG:9102
+;-------------------------------------------------
+IF (PALAM:15 + UP:15) > PALAMLV:2 && CFLAG:9003 == 0
+	CFLAG:9102 = 1
+ENDIF
+;-------------------------------------------------
+;初めて恐怖がLV2超えた	CFLAG:9103
+;-------------------------------------------------
+IF (PALAM:17 + UP:17) > PALAMLV:2 && CFLAG:9004 == 0
+	CFLAG:9103 = 1
+ENDIF
+;-------------------------------------------------
+;ふだんは死に口上　これを表示させるとかありえん
+;-------------------------------------------------
+IF TALENT:恋慕 == 1 && MARK:反発刻印 == 3 && (PALAM:17 + PALAM:20 + PALAM:21 >= 2000)
+		PRINTFORMW 行為を終えるとぬえが話しかけてきた
+		PRINTFORMW 「あ、そうだ、実はプレゼントがあるんだ」
+		PRINTFORMW 「えっと、驚かせたいから目、瞑ってくれる？」
+		PRINTFORMW ぬえのお願いにあなたは目を瞑った
+		PRINTFORMW ・・・・・
+		PRINTFORMW ・・・
+		PRINTFORMW ズブッ
+		PRINTFORMW 急な痛みに襲われ目を開けると
+		PRINTFORMW 「あんたが、あんたが悪いんだから」
+		PRINTFORMW なんとぬえがあなたの心臓を突き刺していた
+		PRINTFORMW 「言ったでしょ？　あまりふざけないでって」
+		PRINTFORMW あなたが崩れ落ちたとき胸から凶器が抜け、大量のいの血が噴出す
+		PRINTFORMW やがて、多すぎる出血はあなたの力を奪う
+		PRINTFORMW 「好きだったのに、愛していたのに、なんで・・・」
+		PRINTFORMW もう動かないあなたに向かって呟き続ける
+		PRINTFORMW 「やっぱり妖怪と人間の恋、報われないのかな・・・」
+		PRINTFORMW しばらく考え込んでいたぬえはあなたの側に座ると
+		PRINTFORMW 「この頸、記念に貰ってくね」
+		PRINTFORMW 赤く染まった凶器があなたの頸に食い込み、切り離した
+		PRINTFORMW ぬえはあなたの頭部を抱きしめて
+		PRINTFORMW 「バイバイ愛しい人」
+		PRINTFORMW その額に口づけをする
+		PRINTFORMW 「ん、ずっと一緒だよ」
+		PRINTFORMW ・・・・・・・
+		PRINTFORMW ・・・・・
+		PRINTFORMW ・・・
+		PRINTFORMW 終焉は突然に
+		PRINTFORMW 壊れてしまった鵺は次々と人を襲い
+		PRINTFORMW 退治されるまで暴れたという
+		PRINTFORMW
+		PRINTFORMW
+		PRINTFORMW 「ねぇ、どうして優しくしてくれないの？」
+		PRINTFORMW 「うふ、うふふふふ、あはは、あははははははははは・・・は」
+		QUIT
+ENDIF
+;恋慕じゃないとしないのはあなたが油断しないからだと
+;-------------------------------------------------
+;初めてC絶頂	CFLAG:9104　一度は書いたけどイク度に表示されるとウザい
+;-------------------------------------------------
+IF NOWEX:0 > 0 && CFLAG:9104 == 0
+	CFLAG:9104 = 1
+ENDIF
+;-------------------------------------------------
+;初めてV絶頂	CFLAG:9105
+;-------------------------------------------------
+IF NOWEX:1 > 0 && CFLAG:9105 == 0
+	CFLAG:9105 = 1
+ENDIF
+;-------------------------------------------------
+;初めてA絶頂	CFLAG:9106
+;-------------------------------------------------
+IF NOWEX:2 > 0 && CFLAG:9106 == 0
+	CFLAG:9106 = 1
+ENDIF
+;-------------------------------------------------
+;初めてB絶頂	CFLAG:9107
+;-------------------------------------------------
+IF NOWEX:3 > 0 && CFLAG:9107 == 0
+	CFLAG:9107 = 1
+ENDIF
+;-------------------------------------------------
+;処女喪失(処女のみ)	CFLAG:9108
+;-------------------------------------------------
+IF TFLAG:0 > 0
+ENDIF
+;-------------------------------------------------
+;セックスで射精させた	CFLAG:9109
+;-------------------------------------------------
+IF TFLAG:11 > 0
+ENDIF
+;-------------------------------------------------
+;手で射精させた	CFLAG:9110
+;-------------------------------------------------
+IF TFLAG:19 > 0
+ENDIF
+;-------------------------------------------------
+;口で射精させた	CFLAG:9112
+;-------------------------------------------------
+IF TFLAG:15 > 0
+ENDIF
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ)	CFLAG:9113
+;-------------------------------------------------
+IF TFLAG:30 > 0
+ENDIF
+;-------------------------------------------------
+;噴乳した(母乳体質のみ)	CFLAG:9114
+;-------------------------------------------------
+IF TFLAG:31 > 0
+ENDIF
+;-------------------------------------------------
+;Ｃ感覚Lv5でＣ絶頂50以上	CFLAG:9115
+;-------------------------------------------------
+IF ABL:0 >= 5 && EX:0 >= 50 && NOWEX:0 > 0
+ENDIF
+;-------------------------------------------------
+;Ｖ感覚Lv5でＶ絶頂50以上	CFLAG:9116
+;-------------------------------------------------
+IF ABL:1 >= 5 && EX:1 >= 50 && NOWEX:1 > 0
+ENDIF
+;-------------------------------------------------
+;Ａ感覚Lv5でＡ絶頂50以上	CFLAG:9117
+;-------------------------------------------------
+IF ABL:2 >= 5 && EX:2 >= 50 && NOWEX:2 > 0
+ENDIF
+;-------------------------------------------------
+;Ｂ感覚Lv5でＢ絶頂50以上	CFLAG:9118
+;-------------------------------------------------
+IF ABL:3 >= 5 && EX:3 >= 50 && NOWEX:3 > 0
+ENDIF
+;-------------------------------------------------
+;C絶頂	CFLAG:9130
+;-------------------------------------------------
+IF NOWEX:0 > 0 && NOWEX:1 <= 0 && NOWEX:2 <= 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		CFLAG:9130 = 3
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;V絶頂	CFLAG:9131
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 > 0 && NOWEX:2 <= 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		CFLAG:9131 = 3
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;A絶頂	CFLAG:9132
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 <= 0 && NOWEX:2 > 0 && NOWEX:3 <= 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		CFLAG:9132 = 3
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;B絶頂	CFLAG:9133
+;-------------------------------------------------
+IF NOWEX:0 <= 0 && NOWEX:1 <= 0 && NOWEX:2 <= 0 && NOWEX:3 > 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		CFLAG:9133 = 3
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係（78をキャラ番号に置換）
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_78_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、78を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K78_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K78_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;刻印変動時のセリフ CFLAG 9140～を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印Lv3取得	CFLAG:9141
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:9141 == 0
+	PRINTFORMW 「お願いだから痛いことしないで」
+	PRINTFORMW 「痛いのは嫌なの」
+	CFLAG:9141 = 1
+ENDIF
+;-------------------------------------------------
+;快楽刻印Lv3取得	CFLAG:9142
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:9142 == 0
+	PRINTFORMW 「あは、こんなにきもちいいなんて・・・」
+	CFLAG:9142 = 1
+ENDIF
+;-------------------------------------------------
+;屈服刻印Lv3取得	CFLAG:9143
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:9143 == 0
+	PRINTFORMW （ああ、もうだめだ）
+	PRINTFORMW （わたしはこの人に逆らえない・・・）
+	PRINTFORMW （もう元には戻れないのかな）
+	CFLAG:9143 = 1
+ENDIF
+;-------------------------------------------------
+;恐怖刻印Lv3取得	CFLAG:9144
+;-------------------------------------------------
+IF TFLAG:43 == 3 && CFLAG:9144 == 0
+	CFLAG:9144 = 1
+ENDIF
+;-------------------------------------------------
+;反発刻印Lv3取得	CFLAG:9145
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:9145 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ねぇ、何をしても怒らないとでも思ってるわけ？」
+		PRINTFORMW 「確かにわたしはあなたが好き、でもね」
+		PRINTFORMW 「あんまりふざけてると・・・」
+		PRINTFORMW 「刺すよ？」
+		RETURN 0
+	;その他の場合
+	ELSE
+		PRINTFORMW 「いつかあんたを殺してやる」
+		PRINTFORMW 「絶対、絶対殺してやる」
+		PRINTFORMW 「せいぜい今を楽しんでおくといいよ」
+	ENDIF
+	CFLAG:9145 = 1
+ENDIF
+;-------------------------------------------------
+;薬物刻印Lv3取得	CFLAG:9146
+;-------------------------------------------------
+IF TFLAG:45 == 3 && CFLAG:9146 == 0
+	CFLAG:9146 = 1
+ENDIF
+;-------------------------------------------------
+;恥辱刻印Lv3取得	CFLAG:9147
+;-------------------------------------------------
+IF TFLAG:46 == 3 && CFLAG:9147 == 0
+	CFLAG:9147 = 1
+ENDIF
+;-------------------------------------------------
+;イベント口上集（78、X2をキャラ番号に置換する） CFLAG 9151～を使用
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_BEFORE
+;-------------------------------------------------
+;朝フェラ	CFLAG:9164
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;初めて
+	IF CFLAG:9164 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW ぬえがこっそりと部屋に入ってくると
+			PRINTFORMW あなたのベッドに潜り込みズボンを下ろし
+			PRINTFORMW あなたのモノを咥えしゃぶりはじめた
+			PRINTFORMW 「んむ、ちゅう・・・あむ・・・ぷぁ」
+			PRINTFORMW （あ、大きくなった）
+			PRINTFORMW そのまま舐め続けてると急に布団が取られた
+			PRINTFORMW ぬえが顔を上げるとあなたと目が合った
+			PRINTFORMW 「こ、これは、あの、その・・・」
+			PRINTFORMW 続けるように促すとまた咥え始めた
+			PRINTFORMW そんなぬえを眺めながらその口に射精した
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:9164= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 上半身を起こすとぬえと目が合った
+			PRINTFORMW 「ずずっ、ん、おはお・・・ちゅる」
+			PRINTFORMW ぬえは咥えたまま挨拶をすると奉仕にもどった
+			CFLAG:9164 = 3
+		;その他の場合
+		ELSE
+			CFLAG:9164 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;朝パイズリ	CFLAG:9165
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE141
+IF 1
+	;初めて
+	IF CFLAG:9165 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW ぬえはあなたの部屋に入り
+			PRINTFORMW あなたのズボンを下ろすと自分の胸に挟んだ
+			PRINTFORMW 胸の谷間に唾液を垂らした
+			PRINTFORMW 滑りがよくなったところで胸を動かし始めた
+			PRINTFORMW 「くぅ、ちょっと、ふぅ、やりにくい・・・」
+			PRINTFORMW 夢中になっているせいかあなたが起きていることにも気づかない
+			PRINTFORMW そんなかわいいぬえを堪能しつつあなたはその胸を汚した
+			PRINTFORMW 「わ、すごいいっぱいでて・・・」
+			PRINTFORMW 惚けていたぬえと目が合う
+			PRINTFORMW おはよう
+			PRINTFORMW 「え、いつから・・・みてたの？」
+			PRINTFORMW かなり始めの方だと言うとあまりの恥ずかしさで顔を伏せた
+			PRINTFORMW そんなぬえを撫でてあげた
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:9165= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 下半身に違和感があったので起きてみると
+			PRINTFORMW ぬえが熱心に胸を動かしていた
+			PRINTFORMW 「あ、おはよ、今出してあげるからね」
+			PRINTFORMW そう言って動きを強めていく
+			PRINTFORMW 「で、出そうになったら、いってね、口でうけとめてあげる、から」
+			PRINTFORMW そしてあなたは口の中に射精した
+			PRINTFORMW 「ん、んぐっ、ごちそうさま」
+			CFLAG:9165 = 3
+		;その他の場合
+		ELSE
+			CFLAG:9165 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;朝騎乗位	CFLAG:9166
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE142
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;朝キス	CFLAG:9167
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE143
+IF 1
+	;初めて
+	IF CFLAG:9167 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 何かしらの気配を感じ跳ね起きた
+			PRINTFORMW が
+			PRINTFORMW 「あいたっ」
+			PRINTFORMW 「いたた、びっくりしたなぁ」
+			PRINTFORMW ぬえに頭突きをかましてしまった、痛い
+			PRINTFORMW 「うう、とりあえずおはよう」
+			PRINTFORMW ぬえは頭を抑えるあなたに近づくと
+			PRINTFORMW 「んむ」
+		;その他の場合
+		ELSE
+		ENDIF
+		CFLAG:9167= 1
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 人の気配を感じたので目を開けると
+			PRINTFORMW 「あ、また起こしちゃった」
+			PRINTFORMW 目の前にはぬえがいた
+			PRINTFORMW ぬえは困ったような顔をして
+			PRINTFORMW 「おはよ、あむっ」
+			CFLAG:9167 = 3
+		;その他の場合
+		ELSE
+			CFLAG:9167 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;朝搾乳	CFLAG:9168
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE144
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「ん、あ、おはよ」
+		PRINTFORMW 「絞りたてだけど飲む？」
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;朝新妻プレイ	CFLAG:9169
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE145
+IF 1
+ENDIF
+;-------------------------------------------------
+;調教後セックス	CFLAG:9170
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;調教後自慰	CFLAG:9171
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「もっといじって・・・うん、こわれるぐらいに」
+		PRINTFORMW 「あ、そこっ、もっとつよくっっっ」
+		PRINTFORMW あなたのことを考えながらしてるようだ
+		PRINTFORMW 「っっっ！！　・・・あなたに触って欲しいよ」
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;調教後アナニー	CFLAG:9172
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE152
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「どうしよう、お尻でするなんて・・・」
+		PRINTFORMW 「で、でもっ、いい」
+		PRINTFORMW ぬえは満足いくまでお尻を弄り続けた
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;調教後自慰搾乳	CFLAG:9173
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE153
+IF 1
+ENDIF
+;-------------------------------------------------
+;レズプレイ	CFLAG:9174
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE154
+IF 1
+ENDIF
+;-------------------------------------------------
+;レズプレイ(69)	CFLAG:9175
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE155
+IF 1
+ENDIF
+;-------------------------------------------------
+;ＢＬプレイ	CFLAG:9176
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE156
+IF 1
+ENDIF
+;-------------------------------------------------
+;ＢＬプレイ(69)	CFLAG:9177
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE157
+IF 1
+ENDIF
+;-------------------------------------------------
+;夜這い	CFLAG:9178
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;夜這いキス用/元76	CFLAG:9179
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE159
+IF 1
+ENDIF
+;-------------------------------------------------
+;自慰できないことによる悶絶	CFLAG:9180
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE160
+IF 1
+ENDIF
+;-------------------------------------------------
+;触手に襲われる	CFLAG:9181
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE161
+IF 1
+ENDIF
+;-------------------------------------------------
+;おねしょ(おもらし癖取得)	CFLAG:9195
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE102
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW （ん、なんか冷たいような）
+		PRINTFORMW ぼんやりとそんなことを考えていたが冷たさが意識を覚醒させる
+		PRINTFORMW （・・・え、まさか、そんなわけが）
+		PRINTFORMW 恐る恐る下半身に手を伸ばす
+		PRINTFORMW 「じょ、冗談でしょ、そんなことが・・・」
+		RETURN 0
+	;その他の場合
+	ELSE
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;妊娠	CFLAG:9196
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE170
+IF 1
+ENDIF
+;-------------------------------------------------
+;コンボ口上テンプレ集
+;特定の順序でコマンドを実行した場合に口上とプレイ結果を変化させます
+;エキストラモード構文で許可する(CFLAG:5220 > 0)必要があります
+;-------------------------------------------------
+;@COMBO_78　なごり～
+;挿れっぱなしのプレイではA=1、抜く場合はA=0に戻す
+;A = 1
+	;恋慕かつＡ感覚Lv3
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+		;前コマンド対面座位
+;		IF CFLAG:5220 == 22 && ABL:1 > 2
+;		IF SELECTCOM == 2
+;		CALL COMBOPLAY
+;			PRINTFORMW ぬえと抱き合っていたあなたはお尻へと手を伸ばした
+;			PRINTFORMW 「ん、ちょっと、それ以上はああっ」
+;			PRINTFORMW 「うう、おしりのあなグニグニしないでぇ」
+;			PRINTFORMW あなたは穴に中指を引っ掛けると再び腰を動かした
+;			PRINTFORMW 「んんっ、いやっ、ひろげないでよっ」
+;			PRINTFORMW ぬえがしがみ付いて動きにくいが反応が面白かった
+;			ENDIF
+;			RETURN 1
+;		ENDIF
+;	ENDIF
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;前コマンド後背位
+;			IF CFLAG:5220 == 21 && ABL:1 > 2
+;			IF SELECTCOM == 2
+;			CALL COMBOPLAY
+				;乱数分岐:2
+;				IF RAND:2 == 0
+;					PRINTFORMW ぬえを犯していると、あなたは悪戯したくなった
+;					PRINTFORMW 「はぁっはぁっはひゃあっ」
+;					PRINTFORMW 「だめっそんなとこ、つつか、ないでぇ」
+;					PRINTFORMW ぬえのアナルを指で軽くつつくと
+;					PRINTFORMW それに合わせて膣が締め付けてくる
+;					PRINTFORMW あなたはぬえのアナルで遊びながら犯し続けた
+				;その他の場合
+;				ELSE
+;					PRINTFORMW 「あ、もっと、突いてああっ」
+;					PRINTFORMW あなたはいきなりアナルに指を入れると
+;					PRINTFORMW ぬえは嬌声をあげた
+;					PRINTFORMW あなたはアナルに入れた指を動かした
+;					PRINTFORMW 「はっ、や、かきまっぜないで」
+;				ENDIF
+;			ENDIF
+;			ENDIF
+;			RETURN 1
+;	ENDIF
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;A愛撫フェラ
+;			IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+;			IF CFLAG:5220 == 5
+;			CALL COMBOPLAY
+;				PRINTFORMW あなたはぬえのモノを咥えつつアナルに指を入れた
+;				PRINTFORMW 「くうっ、おしりにゆびいれないでぇ」
+;				PRINTFORMW あなたが激しく指を出し入れすると
+;				PRINTFORMW ぬえの腰が暴れだした
+;				PRINTFORMW しかし、動けば動くほど口や指がぬえを激しく攻め立てた
+;			RETURN 1
+;			ENDIF
+;		ENDIF
+;ENDIF
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;センズリアナニー
+;			IF CFLAG:5220 == 7 && TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:30 == 2
+;			IF SELECTCOM == 2
+;			CALL COMBOPLAY
+;				PRINTFORMW あなたはそのままお尻を弄るようにと言った
+;				PRINTFORMW 「ふぁ、すごっおしり、うごかす、と」
+;				PRINTFORMW 「おちんちん、びくびくってはねて」
+;				PRINTFORMW 「おしりが、きゅっきゅってしまって」
+;				PRINTFORMW 「やだ、ゆびがっとまらないっっ」
+;			RETURN 1
+;ENDIF
+;ENDIF
+;		ENDIF
+;	IF TALENT:恋慕 == 1 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;後背位系スパンキング
+;			IF CFLAG:5220 == 220
+;			IF SELECTCOM == 31 || 21
+;			CALL COMBOPLAY
+;				PRINTFORMW ぬえを後ろから犯していたあなたはお尻を撫でると
+;				PRINTFORMW 「ああっ」
+;				PRINTFORMW お尻を叩いた
+;				PRINTFORMW 「や、いま叩かれると、くぅっ」
+;				PRINTFORMW 叩くごとに締まる感触を楽しみながら腰を動かした
+;			RETURN 1
+;ENDIF
+;ENDIF
+;		ENDIF
+;	IF TALENT:恋慕 == 1 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;後背位手淫
+;			IF CFLAG:5220 == 321
+;			IF SELECTCOM == 31 || 21
+;			CALL COMBOPLAY
+;				PRINTFORMW 「はぁっはぁ、すごい、きもちいぃ」
+;				PRINTFORMW あなたは喘ぐぬえをもっと悦ばせようとペニスを握った
+;				PRINTFORMW 「ああっ、なにっ、なんなのっ」
+;				PRINTFORMW あなたは腰と手を動かして気持ちよくさせていく
+;				PRINTFORMW 「くうっ、ああっ、いやっ、やめて、わたしおかしくなるっっ」
+;			RETURN 1
+;ENDIF
+;ENDIF
+;ENDIF
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;手淫背面座位アナル
+;			IF CFLAG:5220 == 321
+;			IF SELECTCOM == 33
+;			CALL COMBOPLAY
+;				PRINTFORMW あなたは行為の最中にぬえのペニスを握った
+;				PRINTFORMW 「あうっ、だめ、そんなこと、うぐっ、ふかっ」
+;				PRINTFORMW ベッドの軋みを利用して突き上げ
+;				PRINTFORMW その揺れでペニスを刺激するとかわいい声で鳴いた
+;			RETURN 1
+;ENDIF
+;ENDIF
+;ENDIF
+;	IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ((TFLAG:133 && ASSIPLAY) || (TFLAG:133 == 0 && ASSIPLAY == 0))
+			;手淫背面立位アナル
+;			IF CFLAG:5220 == 321
+;			IF SELECTCOM == 38
+;			CALL COMBOPLAY
+;				PRINTFORMW あなたは動きを止めてぬえのペニスの先の方を握った
+;				PRINTFORMW そしてぬえに自分で動いて欲しいと言った
+;				PRINTFORMW 「うう、変なことばかりさせるんだから・・・んんっ」
+;				PRINTFORMW ぬえはゆっくりと腰を動かす
+;				PRINTFORMW 次第にその動きは激しくなっていく
+;				PRINTFORMW 「あっ、これ、すごいっ」
+;				PRINTFORMW 「おちんちんと、おしりが、こっこすれて、やだっとまらないっ」
+;				PRINTFORMW 涎を零しながらぬえは腰を振っている
+;			RETURN 1
+;ENDIF
+;ENDIF
+;ENDIF
+;騎乗位アナニー
+;騎乗位手淫
+;-------------------------------------------------
+;売却	CFLAG:9197
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+ENDIF
+;-------------------------------------------------
+;エンゲージリング使用	CFLAG:9198
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	PRINTFORMW 「どうしたの、大切な話って？」
+	PRINTFORMW “これを着けて欲しいんだ”
+	PRINTFORMW そういって小箱を取り出した
+	PRINTFORMW 「何かな・・・指輪？」
+	PRINTFORMW 「あ、もしかしてプレゼント？　嬉しい」
+	PRINTFORMW ・・・もしかして知らないのか？
+	PRINTFORMW 「ありがとう、わたし大切にするね」
+	PRINTFORMW やっぱり知らないのか
+	PRINTFORMW そういえば地下に封印されてたとか言ってたっけ？
+	PRINTFORMW “いや、そういうのじゃないんだ　これは・・・”
+	PRINTFORMW ・・・・・
+	PRINTFORMW ・・・
+	PRINTFORMW エンゲージリングの事を説明すると
+	PRINTFORMW 「え、それってもしかして・・・」
+	PRINTFORMW “結婚してほしい”
+	PRINTFORMW 「ほんと・・・なの？」
+	PRINTFORMW 「やだ、ただ傍にいられるだけで幸せだったのに」
+	PRINTFORMW 「結婚だなんて」
+	PRINTFORMW “いや？”
+	PRINTFORMW ぬえはあなたに抱きつくと
+	PRINTFORMW 「いやなわけないでしょ　もちろん・・・」
+ENDIF
+;-------------------------------------------------
+;赤い首輪使用	CFLAG:9199
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE201
+IF 1
+ENDIF
+;-------------------------------------------------
+;隷属の証使用	CFLAG:9200
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SUB_EVENT_SCENE202
+IF 1
+ENDIF
+;-------------------------------------------------
+;@単体エンディング関係(78、X2をキャラ番号に置換する)
+;-------------------------------------------------
+@KOJO_78_MESSAGE_SINGLE_ENDING
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW ぬえと結婚してしばらく経った
+PRINTFORMW 最初は大変になると思っていたがなんてことは無い
+PRINTFORMW 調教が夫婦の営みに変わった程度のことだった
+PRINTFORMW ある日、あなたか庭で日向ぼっこをしていると
+PRINTFORMW 「あ、ここにいたんだ」
+PRINTFORMW ぬえがやってきて隣に座り、あなたに寄り掛った
+PRINTFORMW 「そういえばさ、前から聞きたかったのだけど」
+PRINTFORMW 「わたしと会う前の話が聞きたいなってね」
+PRINTFORMW 「もっとあなたのことが知りたいの」
+PRINTFORMW （それに、あなただけがわたしのことを知ってるなんてずるい）
+PRINTFORMW ・・・・・・・・
+PRINTFORMW そのようにねだられるのは・・・嫌いじゃない
+PRINTFORMW そう思ったあなたは口を開いた
+PRINTFORMW “そうね、じゃあここに来る前のことでも話そうかな”
+PRINTFORMW でもその前に・・・ちゅっ
+PRINTFORMW 「んんっ、ぷはぁどうしたのよ、いきなり」
+PRINTFORMW “ぬえ、大好き”
+PRINTFORMW 「っっ、わたしも大好き・・・って誤魔化すつもり？」
+PRINTFORMW 赤くなったり笑ったり怒ったりとコロコロと忙しく表情を変える
+PRINTFORMW 全くかわいいんだから・・・っと、睨んできたので始めましょうか
+PRINTFORMW “あれは私が・・・”
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.1078 (ぬえエンド)
+RETURN 0
+
+;口上の存在判定（YM版）
+@TRY_78
+RETURN 1
+

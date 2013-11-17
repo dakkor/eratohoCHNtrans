@@ -1,0 +1,5528 @@
+;==============================================================
+;くれないみすず（紅美鈴）口上
+;==============================================================
+;!!!!!!!!注意!!!!!!!!!!
+;本口上にはデッドエンドフラグがいくつか設けられています
+;美鈴には紳士的に接してあげましょう
+;!!!!!!!!注意!!!!!!!!!!
+;使用CFLAG。抜けてるところが合ったらごめん(´・ω・`)
+;CFLAG:5001　　助手レミリア初体験判定用
+;CFLAG:5002　　助手レミリア最悪対面判定用
+;CFLAG:5003　　助手咲夜初体験判定用
+;CFLAG:5004    本名を教えたか判定用
+;CFLAG:5201　　初調教判定用
+;========================================================
+;口上ファイルの存在判定
+;========================================================
+;口上の存在判定（YM版）
+@TRY_6
+RETURN 1
+
+;========================================================
+;調教開始口上
+;========================================================
+@KOJO_6_SLAVE_MESSAGE_TRAIN_START
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;気絶中も戻る
+SIF TFLAG:899 >= 1
+	RETURN 0
+
+DRAWLINE
+
+;初調教時
+IF CFLAG:5201 == 0
+	;助手の存在をまったく考慮してません
+	DRAWLINE
+	PRINTL
+	PRINTFORMW 「……………」
+	PRINTFORMW （分かるのは「気」を操れなくなっていること、「力」もほとんど出せない事…
+	PRINTFORMW そして、部屋にもう一人「誰か」がいることだけ……お嬢様でも咲夜さんでもない
+	PRINTFORMW 今のところ敵意はなさそうですが…そろそろ寝たふりも限界ですか）
+	PRINTL
+	DRAWLINE
+	PRINTL
+	PRINTFORMW あなたは美鈴が目を覚ますまで新聞を読んで時間を潰していた
+	PRINTFORMW どうやら幻想郷の新聞らしいのだが正直な話、新聞というよりはゴシップ誌に近い
+	PRINTFORMW 特に見る価値もなさそうだ…ふと視線を上げた先に、美鈴の姿は無かった
+	PRINTFORML 「動かないでください」
+	PRINTFORMW 冷えた声が背後からかけられる
+	PRINTFORMW 「聞きたい事はいくつかありますが、お嬢様はどうされているかご存知ですか？」
+	PRINTFORMW あなたは能力を封じ、力を封じようと美鈴には力ずくでは敵わない事を本能的に悟った
+	PRINTFORMW 流石、『紅魔館最強の盾』といったところだろうか…だがここで主導権を渡すわけにも行かない
+	PRINTFORMW あなたは逆らえばレミリアやフランドールの安全は保障できないと伝えた
+	PRINTFORMW 「………いいでしょう、確証が持てない以上賭けに出るつもりはありません」
+	PRINTFORMW 能力や身体能力を封印されている事実から、あなたの言葉を信じたようだ
+	PRINTFORMW 「何が望みですか？」
+	PRINTFORMW あなたは性奴隷として調教し、売るつもりであると伝えた
+	PRINTFORMW 「っ！」
+	PRINTFORMW 美鈴は言葉に詰まるがすぐに冷静さを取り戻す
+	PRINTFORMW 「簡単にいくとは、思わないことです」
+	PRINTFORMW あなたは美鈴の服を少しずつ剥いでゆく
+	PRINTFORMW そこには女性的な魅力に満ちた完璧な肉体が存在していた
+	PRINTFORMW あなたはこの肉体を一刻も早く陥落させなければならない
+	PRINTFORMW いつ美鈴の気が変わり、あなたに牙を剥くとも限らないのだから…
+	CFLAG:5201 = 1
+	RETURN 1
+
+;恋慕取得
+ELSEIF TALENT:150 == 1 && CFLAG:5202 ==0
+	DRAWLINE
+	PRINTFORMW 調教部屋に入ると美鈴はあなたをどこか恨みがましい目で見つめてきた
+	PRINTFORMW 「はぁ…まさかここまで心と身体を作り変えられるとは思いませんでした…」
+	PRINTFORMW 「どんなにあなたを恨んでも…恨みきれないほどにあなたが根付いてしまったんです」
+	PRINTFORMW あなたの服の裾をつまむと美鈴はどこか迷子のような印象を受けた
+	IF CFLAG:5001 == 0
+		PRINTFORMW 「お嬢様が見つかれば…私はあなたに害をなしてしまうかもしれません」
+		PRINTFORMW 「これは、自ら立てた制約の呪いみたいなものなので如何ともしがたいのですが…それでも…」
+	;あそこから立て直したというのか…っ！？
+	ELSEIF CFLAG:5002 == 2
+		PRINTFORMW 「ごめんなさい…散々酷い態度を取っておきながら厚かましいのは分かっているのですが…」
+		PRINTFORMW 「あなたが、好きなんです」
+		CFLAG:5002 = 3
+	;レミリア恋慕・美鈴服従の面会パターンのみ？
+	ELSEIF CFLAG:5001 == 1
+		PRINTFORMW 「あなたにはとても酷いこともされましたが…それでも…」
+	ENDIF
+	PRINTFORMW 「どうか、私を離さないで下さい…お願いします…」
+	CFLAG:5202 = 1
+	RETURN 1
+
+;親愛取得
+;美鈴の中の価値観があなた＞れみりゃになります
+ELSEIF TALENT:152 == 1 && CFLAG:5203 == 0
+	DRAWLINE
+	PRINTFORMW 調教部屋に入ると美鈴は正座してあなたを出迎えた
+	PRINTFORMW 「……聞いていただきたいことがあります」
+	PRINTFORMW 立ち尽くすあなたを真っ直ぐと見据えながら美鈴は言葉を紡いでゆく
+	PRINTFORMW 「あなたに…仕えさせていただけないでしょうか」
+	PRINTFORMW 「奴隷としてで、良いんです」
+	PRINTFORMW 「あなたの奴隷でいる事の慶びが…お嬢様の配下であることの慶びよりも、その…」
+	PRINTFORMW 美鈴は言葉に詰まるが、決心したように一呼吸置くとはっきりと宣言した
+	PRINTFORMW 「お嬢様よりも、あなたの方が大事なんです…っ！」
+	PRINTFORMW それはどれほどの決意と想いが必要だったのだろう
+	PRINTFORMW 美鈴はあれほど忠実に主人を慕っていたというのに…
+	PRINTFORMW あなたは美鈴の目を真っ直ぐと見返しながら、励めと、そう声をかけた…
+	CFLAG:5203 = 1
+;-------------------------------------------------
+;名前を教えるイベントと調教中の呼び名を決めるイベント
+;-------------------------------------------------
+	;名前を教えるイベント
+	PRINTFORML 「あ、ありがとうございます！」
+	PRINTFORMW 美鈴は平伏しながらさらに言葉を続けた
+	PRINTFORMW 「あの…もしよろしければ我が主の名前を聞かせていただけないでしょうか…？」
+	PRINTL [0] 教える
+	PRINTL [1] 教えない
+	;名前を教えるか教えないかのループ
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+			PRINTL 名前を入力してください
+			PRINTL 　
+		;名前を入力するループ
+		$INPUT_LOOP_2
+		INPUTS
+		STRLENS RESULTS
+		IF RESULT > 14
+			PRINTFORML 「長いお名前なんですね…もう少し略すとどうなりますか？」
+			GOTO INPUT_LOOP_2
+		ELSEIF RESULTS == ""
+			GOTO INPUT_LOOP_1
+		ELSE
+			IF RESULTS == "美鈴"
+				PRINTFORML 「あの、それは私の名前です」
+				GOTO INPUT_LOOP_2
+			ELSEIF RESULTS == "紅美鈴"
+				PRINTFORML 「あの、それは私の名前です」
+				GOTO INPUT_LOOP_2
+			ELSEIF RESULTS == "レミリア"
+				PRINTFORML 「私はこの名前の方に仕える運命でもあるのでしょうか…？」
+			ELSEIF RESULTS == "咲夜"
+				PRINTFORML 「え…？いえ、知り合いの者と同じ名前だったので驚いて…」
+			ELSEIF RESULTS == "フランドール"
+				PRINTFORML 「前に仕えた主人の妹様が同じ名前でした…」
+			ELSE
+				PRINTFORML 「%RESULTS%…それが我が主の名前」
+			ENDIF
+			PRINTL [0] はい
+			PRINTL [1] いいえ
+			;入力した名前を確定するループ
+			$INPUT_LOOP_3
+			INPUT
+			IF RESULT == 0
+				MASTERNAME = %RESULTS%
+				CFLAG:5004 = 1
+				PRINTFORMW あなたは、本当の名前%MASTERNAME%を教えた
+			ELSEIF RESULT == 1
+				PRINTL 名前を入力してください
+				GOTO INPUT_LOOP_2
+			ELSE
+				GOTO INPUT_LOOP_3
+			ENDIF
+		ENDIF
+				PRINTFORMW 「%MASTERNAME%」
+				PRINTFORMW 美鈴は心に刻み付けるようにあなたの名を口にした
+				PRINTFORMW 「紅美鈴、この身果てるまで%MASTERNAME%様に御仕えいたします」
+				PRINTFORMW 「それで…なんとお呼びいたしましょうか？」
+	ELSEIF RESULT == 1
+		MASTERNAME = CALLNAME:MASTER
+		PRINTFORMW 「そうですか…」
+		PRINTFORMW 美鈴は大きく落胆しながらも受け入れたようだ
+		PRINTFORMW 「それではせめて…なんとお呼びすればよろしいか教えてください」
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+;-------------------------------------------------
+	;呼び名を決めるイベント
+	
+	PRINTL 
+	PRINTL [0] ご主人様がいい
+	PRINTL [1] 哥哥（中国語のお兄ちゃん）がいい  [2] お兄様がいい
+	SIF CFLAG:5004 == 1
+	PRINTL [3] 名前でいい        [4]さん付けがいい     [5]様付けがいい 
+	;呼び名を選択するループ
+	$INPUT_LOOP_4
+	INPUT
+	IF RESULT == 0
+		CSTR:90 = ご主人様
+		PRINTFORMW 「はい、かしこまりました」
+		PRINTFORMW 「よろしくお願いします。ご主人様」
+	ELSEIF RESULT == 1
+		CSTR:90 = お兄ちゃん
+		PRINTFORMW 「哥哥ですか」
+		PRINTFORMW 美鈴は頬を染めながらも笑顔であなたを呼んだ
+		PRINTFORMW 「よろしくお願いします、哥哥！」
+	ELSEIF RESULT == 2
+		CSTR:90 = お兄様
+		PRINTFORMW 「あはは…冗談だったのですが」
+		PRINTFORMW 「お望みであれば応えぬわけにも行きません、よろしくお願いしますお兄様っ！」
+	ELSEIF RESULT == 3
+		IF CFLAG:5004 == 1
+			CSTR:90 = %MASTERNAME%
+			PRINTFORMW 「では%CSTR:90%と呼ばせていただきます」
+			PRINTFORMW 美鈴は満面の笑みを浮べながらそう言った…
+		ELSE
+			GOTO INPUT_LOOP_4
+		ENDIF
+	ELSEIF RESULT == 4
+		IF CFLAG:5004 == 1
+			CSTR:90 = %MASTERNAME%さん
+			PRINTFORMW 「では%CSTR:90%と呼ばせていただきます」
+			PRINTFORMW 美鈴は満面の笑みを浮べながらそう言った…
+		ELSE
+			GOTO INPUT_LOOP_4
+		ENDIF
+	ELSEIF RESULT == 5
+		IF CFLAG:5004 == 1
+			CSTR:90 = %MASTERNAME%様
+			PRINTFORMW 「では%CSTR:90%と呼ばせていただきます」
+			PRINTFORMW 美鈴は満面の笑みを浮べながらそう言った…
+		ELSE
+			GOTO INPUT_LOOP_4
+		ENDIF
+	ELSE
+		GOTO INPUT_LOOP_4
+	ENDIF
+		PRINTL 　
+		DRAWLINE
+	RETURN 1
+
+;助手判定
+ELSEIF ASSI >= 0
+	CALL K6_MESSAGE_START_ASSI
+ELSE
+	TRYCALL K6_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;一度限り（？）の開始口上
+;-------------------------------------------------
+@K6_MESSAGE_START_1
+
+
+;-------------------------------------------------
+;助手との掛け合い
+;簡単にデッドエンドに逝けます。不用意に助手を連れて行くとコキャっとやられますよ？
+;二次創作のイメージがやはり強い為か、紅魔館の中でのヒエラルキーが低いイメージがあるため
+;助手とともに美鈴も親愛や恋慕だと遠慮しがちになるようです。がんばれ美鈴！まけるな美鈴！
+;-------------------------------------------------
+@K6_MESSAGE_START_ASSI
+;レミリア助手である
+IF NO:ASSI == 10
+	DRAWLINE
+	;初めて
+	IF CFLAG:5001 == 0
+		;レミリアが恋慕
+		IF TALENT:ASSI:150 == 1
+			PRINTFORMW 「ごきげんよう、美鈴」
+			PRINTFORML 「お嬢様…っ！！」
+			PRINTFORMW 美鈴はレミリアに駆け寄ると強くその小さな体を抱きしめた
+			PRINTFORML 「よくぞ…ご無事で…」
+			PRINTFORMW 大粒の涙が幾筋も美鈴の頬を流れる
+			PRINTFORML 「やれやれ、大げさね美鈴は…ほら、泣き止みなさい」
+			PRINTFORMW 「うぅ…ぐしゅ、はい…お嬢様…」
+			;美鈴は親愛
+			IF TALENT:150 == 1
+				PRINTFORML 顔をごしごしとぬぐいながら美鈴は立ち上がるとあなたに抱きついた
+				PRINTFORMW 「ご主人様…ありがとう…本当にありがと……うっ！？」
+				PRINTFORML 「あら、美鈴…？私のご主人様にいきなり抱きついてあまつさえキスをしそうだったけれども…どういうことなのかしら？」
+				PRINTFORMW レミリアは美鈴の後ろ髪を引っ張ると無理やりあなたから美鈴を引き離そうとする
+				PRINTFORML 「あははは…お、お嬢様これには深い事情が……ですね……あいたた！」
+				PRINTFORMW 「うるさい、問答無用！たっぷり躾けてあげるわ！」
+			;美鈴も恋慕
+			ELSEIF TALENT:150 == 1
+				PRINTFORMW 顔をごしごしとぬぐいながら美鈴は立ち上がると、覚悟を決めたような目であなたを射抜いた
+				PRINTFORMW 背筋に悪寒が走る
+				PRINTFORMW 「これで後顧の憂いはなくなりました、さようなら……我的愛人（私の愛しい人)」
+				PRINTFORML 「美鈴！」
+				PRINTFORML レミリアはとっさに腰に抱きついて飛び掛ろうとする美鈴を抑えた
+				PRINTFORMW 「待ちなさい美鈴…ご主人様を傷つける事は私が許さないわ」
+				PRINTFORML 「お嬢…様…？」
+				PRINTFORMW 美鈴はあの傲岸不遜な主の口から『ご主人様』という言葉が出たことに動揺を隠せない
+				PRINTFORMW 「いいこと？私は人買いに連れ去られ、危険な状態にあったところをご主人様に買われ、愛と快楽を教えていただいたのよ…」
+				PRINTFORMW 「………お嬢様、つまり、それは」
+				PRINTFORMW 「そう、貴女と私は恋敵というわけ…フフ、負けないわよ」
+				PRINTFORMW 「ち、違っ！お嬢様！私は……ッ！」
+				PRINTFORMW 狼狽する美鈴とそれをニヤニヤと哂うレミリアにあなたは歩み寄った…
+			;美鈴が服従
+			ELSEIF TALENT:160 == 1
+				PRINTFORML 顔をごしごしとぬぐいながら美鈴は立ち上がると、覚悟を決めたような目であなたを射抜いた
+				PRINTFORMW 「もう…あなたなどには負けない、私には主がいる！」
+				PRINTFORMW 背筋に悪寒が走る
+				PRINTFORML 「あら、だめよ美鈴」
+				PRINTFORMW レミリアは美鈴の腕をねじ上げベッドに押し倒した
+				PRINTFORML 「美鈴…私のご主人様を傷つける事は私が許さないわ」
+				PRINTFORMW 「お嬢…様…？」
+				PRINTFORMW 美鈴はあの傲岸不遜な主の口から『ご主人様』という言葉が出たことに動揺を隠せない
+				PRINTFORMW 「いいこと？私は人買いに連れ去られ、危険な状態にあったところをご主人様に買われ、愛と快楽を教えていただいたのよ…」
+				PRINTFORMW 「あなたにも教えてあげるわ…美鈴」
+				PRINTFORMW 永遠に幼き紅い月が妖艶に微笑む……
+			;美鈴が恋慕でも服従でもない
+			;淫乱のときにやったらその後の調教でくやしい…でも…ビクンビクン状態かも
+			;まぁそれでも超大変そうですが。
+			ELSE
+				PRINTFORMW 顔をごしごしとぬぐいながら美鈴は立ち上がると、覚悟を決めたような目であなたを射抜いた
+				PRINTFORMW 背筋に悪寒が走る
+				PRINTFORML 「これで後顧の憂いはなくなりました、……死になさい」
+				PRINTFORMW あなたを打ち据えようと美鈴は烈火の如き勢いで踏み込んできた
+				PRINTFORML 「あら、だめよ美鈴」
+				PRINTFORML しかし、紅い疾風は美鈴を吹き飛ばすと、そのままその小さな体からは想像も付かない怪力で美鈴を押さえつけた
+				PRINTFORMW 「ぐ…っ、お嬢様、何を！？」
+				PRINTFORMW 「クスクスクスクス……、私のご主人様を傷つける事は何人たりとて許さないわ、それがあなたであってもね…美鈴」
+				PRINTFORML 「ーーーーーッ！貴様……貴様ああああああああ！！」
+				PRINTFORMW 美鈴は魂の底から怨嗟の声を上げた…
+				PRINTFORMW 
+				DRAWLINE
+				PRINTFORMW 反発刻印がLv2以下のとき、Lv3になります
+				PRINTFORMW 屈服刻印がLv0のとき、Lv1になります
+				PRINTFORMW 否定の珠が500000追加されました
+				PRINTFORMW 『反抗的』になりました
+				PRINTFORMW 『抵抗』になりました
+				DRAWLINE
+				;反発刻印Lv3と屈服刻印Lv1がつきます
+					IF MARK:9 <= 2
+					MARK:9 = 3
+					ELSEIF MARK:2 == 0
+					MARK:2 = 1
+					ENDIF
+				;さらに反感買いまくります。
+				;ブチギレですね。
+				JUEL:100 += 500000
+				;うわ、反抗的と抵抗まで付きましたよ？でも快感の否定まで付かないあたり本質エロエロです。
+				TALENT:11 = 1
+				TALENT:34 = 1
+				CFLAG:5002 = 1
+			ENDIF
+		;レミリアが非恋慕
+		;おっと、これは危ないですよ…？
+		ELSEIF TALENT:ASSI:150 == 0
+		PRINTFORMW 「美…鈴………」
+		PRINTFORML 「お嬢様…っ！！」
+		PRINTFORMW 美鈴はレミリアに駆け寄ると強くその小さな体を抱きしめた
+		PRINTFORMW 「よくぞ…ご無事で…」
+		PRINTFORMW 大粒の涙が幾筋も美鈴の頬を流れる
+		PRINTFORMW レミリアも美鈴のことを抱きしめ、ぽつりぽつりとつぶやく…
+		PRINTFORMW 「美鈴……ごめんなさい、わたし、この方の奴隷になったの…」
+		PRINTFORMW 「大丈夫…大丈夫ですよお嬢様…」
+		PRINTFORMW 「え…？」
+			;美鈴が親愛
+			;唯一の生存フラグ
+			IF TALENT:152 == 1
+				PRINTFORMW 「いずれお嬢様にもこの方の素晴らしさが分かります。一緒に、気持ちよくなりましょう…」
+				PRINTFORMW 「そ、そんな…、美鈴…」
+				PRINTFORMW あなたは慈愛に満ちた表情を浮かべる美鈴と、絶望の表情を浮かべるレミリアにゆっくりと近づいた…
+				CFLAG:5001 = 1
+			;美鈴が恋愛
+			;残念、恋愛如きでは忠誠心を抑えきる事はできなかった！
+			;決め技：裸締め
+			ELSEIF TALENT:150 == 1
+				PRINTFORML 顔をごしごしとぬぐいながら美鈴は立ち上がると、覚悟を決めたような目であなたを射抜いた
+				PRINTFORMW 背筋に悪寒が走る
+				PRINTFORMW 「これで後顧の憂いはなくなりました」
+				PRINTFORMW 美鈴はあなたの背後に素早く回りこむと首をがっちりと極めた
+				PRINTFORMW 必死でもがくが美鈴の細い腕は一向に外れない
+				PRINTFORMW 意識が、遠のいてゆく…
+				PRINTFORMW 「別了（さようなら）……………我的愛人（私の愛しい人）」
+				PRINTFORMW あなたが最期に聞いた言葉は、異郷の地の愛の言葉だった……
+				PRINTFORMW ………
+				PRINTFORMW ……
+				PRINTFORMW …
+				PRINTFORMW 
+				PRINTL
+				DRAWLINE
+				PRINTL
+				PRINTFORML 　　　　　　　　　DEAD END
+				PRINTL
+				DRAWLINE
+				PRINTFORMW クリックするとゲームを終了します
+				QUIT
+			;美鈴が服従
+			;そのとき不思議なことがおこった！…仮面ライダーBLACK RXのOPを聞きながら書いた為てつをが混じってます。悪しからず。
+			;決め技：リボルクラッシュ
+			ELSEIF TALENT:160 ==1
+				PRINTFORML 顔をごしごしとぬぐいながら美鈴は立ち上がると、あなたを真っ直ぐと睨み付けた
+				PRINTFORMW 「もう、あなたに膝を折るのは終わりです」
+				PRINTFORML 「よくも、よくも我が主を辱めた…絶対にゆるさんッ！」
+				PRINTFORMW 美鈴の全身に闘気が満ちる
+				PRINTFORMW もうこうなってしまっては仕舞である
+				PRINTFORMW あなたは選択を誤った
+				PRINTFORMW 痛みや恐怖で美鈴を御することなどできはしなかったのだ…
+				PRINTFORMW ………
+				PRINTFORMW ……
+				PRINTFORMW …
+				PRINTFORMW 
+				PRINTL
+				DRAWLINE
+				PRINTL
+				PRINTFORML 　　　　　　　　　DEAD END
+				PRINTL
+				DRAWLINE
+				PRINTFORMW クリックするとゲームを終了します
+				QUIT
+			;美鈴が親愛でも恋愛でも服従でもない
+			;論外です…が、実際は壊造人格くらいまで行ってればセーフだとは思います。でも面倒だから他の人任せた！
+			;決め技：崩拳→もしかしてオラオラですかーッ！？
+			ELSE
+				PRINTFORML 「お嬢様の身を確保してくださったことには感謝します…ですが」
+				PRINTFORMW 美鈴は疾風のごとく踏み込むと、あなたのみぞおちを全体重をかけて打ち抜いた
+				PRINTFORMW 「我が主を辱めた罪…万死に値する！」
+				PRINTFORMW 万雷のごとく激しい攻撃があなたを打ち据えてゆく
+				PRINTFORMW あなたは激しい後悔と痛みの中、人生の幕を閉じた…
+				PRINTFORMW ………
+				PRINTFORMW ……
+				PRINTFORMW …
+				PRINTFORMW 
+				PRINTL
+				DRAWLINE
+				PRINTL
+				PRINTFORML 　　　　　　　　　DEAD END
+				PRINTL
+				DRAWLINE
+				PRINTFORMW クリックするとゲームを終了します
+			QUIT
+			ENDIF
+		ENDIF
+		CFLAG:5001 = 1
+	;２回目以降
+	ELSE
+		;レミリアが恋慕
+		IF TALENT:ASSI:150 == 1
+			;美鈴が恋慕
+			IF TALENT:150 == 1
+				PRINTFORMW あなたの来訪を予期していたのか、レミリアの来訪を予期できなかったのか
+				PRINTFORML 「ごきげんよう、美鈴」
+				PRINTFORMW 「あわわわわわ」
+				PRINTFORMW レミリアが姿を現した瞬間、美鈴は大慌てで脱いでいた服を手繰り寄せた
+				PRINTFORML 「あら？どうせすぐに脱ぐのだから一緒でしょう？」
+				PRINTFORML 「ひぅっ、お、お嬢様ぁ…」
+				PRINTFORMW レミリアは美鈴の豊かな胸を鷲づかみにしながら吸血種の証たる牙を美鈴の首筋に這わせ、熱い吐息を吹きかける
+				PRINTFORMW 「今日もたっぷり………苛めてあげる……………」
+				PRINTFORMW 永遠に幼き紅い月の目は真紅に染まっている…
+			;美鈴が服従
+			ELSEIF TALENT:160 == 1
+				PRINTFORML 「お嬢様…」
+				PRINTFORMW 美鈴はあなたとともに入室したレミリアを虚ろな目で見ている
+				PRINTFORMW 「どうしたの美鈴？早く脱ぎなさい」
+				PRINTFORMW 美鈴は泣きそうな顔を浮かべたが、涙は流さず…静かにうつむいた
+				PRINTFORMW 「はい、お嬢様…」
+				PRINTFORMW ゆっくりと美鈴の肌が顕わになってゆく…
+			;それ以外
+			ELSE
+				PRINTFORML 「お嬢様…」
+				PRINTFORMW 美鈴はあなたとともに入室したレミリアを虚ろな目で見ている
+				PRINTFORMW 「どうしたの美鈴？早く脱ぎなさい」
+				PRINTFORMW 美鈴は泣きそうな顔を浮かべ、歯を食いしばるとあなたを視線で責め立てる
+				PRINTFORML 「仕方の無い子ね…、あまり手間をかけさせないで頂戴」
+				PRINTFORMW レミリアは美鈴の服を力ずくで剥ぎ取ってゆく…
+			ENDIF
+		;レミリアが非恋慕
+		;ここで生き延びているということは親愛ですよね？
+		ELSE
+			PRINTFORML 「お嬢様っ」
+			PRINTFORMW 美鈴は笑顔でレミリアに駆け寄ると跪いてその手をとった
+			PRINTFORMW 「お加減いかがですか？ちゃんとお食事は食べていますか？」
+			PRINTFORMW 「…ええ、大丈夫よ美鈴」
+			PRINTFORMW レミリアは儚げに微笑んだ…
+		ENDIF
+	ENDIF
+;助手がPA…咲夜さん
+ELSEIF NO:ASSI == 9
+	DRAWLINE
+	;初めて
+	IF CFLAG:5003 == 0
+		;咲夜が恋慕
+		IF TALENT:ASSI:150 == 1
+			PRINTFORML 「御機嫌よう、美鈴」
+			PRINTFORMW 「さ、咲夜さんっ！無事だったんですね！」
+			PRINTFORMW 「ええ、おかげさまで」
+			PRINTFORMW 咲夜は少し恥ずかしげに微笑んだ
+			;レミリアとすでに面会済み
+			IF CFLAG:5001 == 1
+				PRINTFORMW 「お嬢様だけでなく咲夜さんにまでまた会えるなんて…」
+			;レミリアとまだ面会していない
+			ELSE
+				PRINTFORMW 「よかった…お嬢様もきっと無事ですよね」
+			ENDIF
+			;美鈴が親愛
+			IF TALENT:152 == 1
+				PRINTFORML 「ありがとうございます！ご主人様っ！」
+				PRINTFORMW 美鈴が頬を染めながらあなたに抱きつこうとした瞬間
+				PRINTFORMW 
+				PRINTFORML 「はれ？」
+				PRINTFORMW 「照れるわ、美鈴」
+				PRINTFORMW 咲夜が美鈴を抱きとめていた…
+			;美鈴が恋慕
+			ELSEIF TALENT:150 == 1
+				PRINTFORMW 「ありがとう……ございました……！」
+				PRINTFORMW 美鈴は深々とあなたに頭を下げる
+				PRINTFORMW あなたは自分の仕事をこなしているだけだと伝えると美鈴の頬にキスをした
+				PRINTFORMW 頬を染めてそっぽを向く美鈴を昨夜は冷ややかな眼で見ている…
+			;美鈴が服従
+			ELSEIF TALENT:160 == 1
+				;レミリアとすでに面会済み
+				IF CFLAG:5001 == 1
+					PRINTFORMW 「その…ご主人様、ありがとうございました…」
+					PRINTFORMW 美鈴は床に額をつけてあなたに感謝の意を伝える…
+					PRINTFORMW あなたは咲夜に目配せをすると咲夜は静かに微笑んで美鈴の肩に手を添えた
+					PRINTFORMW 「怖がらなくていいわ、美鈴…あなたにも愛を教えてあげる」
+				;レミリアとまだ面会していない
+				ELSE
+					PRINTFORMW 「もう…あなたなどには負けない…」
+					PRINTFORMW 「覚悟っ！」
+					PRINTFORMW 
+					PRINTFORML 「だめじゃない美鈴」
+					PRINTFORMW 「！？」
+					PRINTFORMW 迅雷の如く踏み込んできたはずの美鈴は…いつの間にか咲夜が組み伏せていた
+					PRINTFORMW 「お痛はここまで、さぁ…調教の時間よ」
+					PRINTFORMW 甘く囁く侍従長の言葉に美鈴は更なる絶望に沈んでゆく…
+				ENDIF
+			;美鈴がそれ以外
+			;またあなたは反発食らいそうなことをしくさってからに…
+			ELSE
+				;レミリアと最悪面会済み
+				IF CFLAG:5002 == 2
+					PRINTFORMW 「まさか…よくも咲夜さんまで！」
+				;レミリアと最悪面会していない
+				ELSE
+					PRINTFORMW 「咲夜さんも見つかった事ですし…そろそろお暇させていただきます」
+				ENDIF
+				PRINTFORMW 
+				PRINTFORML 「っ！」
+				PRINTFORMW あなたを攻撃しようとした美鈴の足をナイフが縫いとめる
+				PRINTFORMW 「止まりなさい美鈴、それ以上近寄る事は許しません」
+				PRINTFORMW 「く……っ、あなたと言う人は！！」
+				PRINTFORMW 怒りに燃える龍の瞳があなたを貫く…
+				PRINTFORMW 
+				DRAWLINE
+				PRINTFORMW 体力-500
+				PRINTFORMW 反発刻印がLv1以下のとき、Lv2になります
+				PRINTFORMW 否定の珠が100000追加されました
+				DRAWLINE
+				;体力-500
+				BASE:0 -= 500
+				;反発刻印が１以下のとき２になる
+				IF MARK:9 <=1
+					MARK:9 = 2
+				ENDIF
+				;否定の珠+100000
+				JUEL:100 += 100000
+			ENDIF
+		;咲夜が非恋慕
+		ELSE
+			PRINTFORML 「久しぶり…といったほうがいいかしらね」
+			PRINTFORMW 「咲夜さん！」
+			PRINTFORMW 美鈴は顔を輝かせ咲夜に駆け寄った
+			PRINTFORMW 「よかった、無事だったんですね」
+			PRINTFORMW 「無事…とは言いがたいけれど生きてはいるわ」
+			PRINTFORMW 咲夜の表情が曇った瞬間美鈴は息を呑んだ
+			;美鈴が親愛
+			IF TALENT:152 == 1
+				PRINTFORMW 「大丈夫ですよ」
+				PRINTFORMW 「美鈴…？」
+				PRINTFORMW 「ご主人様は咲夜さんにもきっと優しくしてくださるとおもいます」
+				PRINTFORMW 美鈴は心からの笑顔を咲夜に向けた…
+			;美鈴が恋慕
+			ELSEIF TALENT:150 == 1
+				PRINTFORMW 「あ…その………私…………」
+				PRINTFORMW 重たい沈黙が調教部屋を包み込む
+				PRINTFORMW 「…いいわ」
+				PRINTFORMW 「えっ」
+				PRINTFORMW 「お互いいろいろあったようだし、早く終わらせましょう」
+				PRINTFORMW 咲夜はどこか悲しげに微笑んだ…
+			;美鈴が服従
+			ELSEIF TALENT:160 == 1
+				;すでにレミリアと面会済み
+				IF CFLAG:5001 == 1
+					PRINTFORMW 「お嬢様も、もう…」
+					PRINTFORMW 沈鬱な空気が場を支配する
+					PRINTFORMW レミリアが堕ち、侍従長は主を変え、最強の盾は屈服した
+					PRINTFORMW もはやあなたは紅魔館を支配しつつあるのだ…
+				;未だレミリアと面会していない
+				;おおっと、一人ずつでは膝を折ったかもしれない。だが二人そろえばまだ戦えたようだぞ！
+				;決め技：咲夜さんとのツープラトン
+				ELSE
+					PRINTFORML だが、美鈴は歯を食いしばると笑いながら咲夜に告げた
+					PRINTFORMW 「咲夜さん、私を一発『張って』もらえまえせか？」
+					PRINTFORMW 「………、思い切りやってあげるわ」
+					PRINTFORMW パァン！
+					PRINTFORMW 咲夜は手をぶらぶらさせながら極上の笑みを浮かべた
+					PRINTFORMW 「美鈴、私にもお願いできるかしら？」
+					PRINTFORML 「よろこんで」
+					PRINTFORMW パァン！
+					PRINTFORMW ゆらりと、少女たちはあなたに向かい直る
+					PRINTFORML 「さて咲夜さん」
+					PRINTFORMW 「ええ、美鈴」
+					PRINTFORMW 「「このクソ野郎を潰してお嬢様を迎えに行きましょう」」
+					PRINTFORMW ………
+					PRINTFORMW ……
+					PRINTFORMW …
+					PRINTFORMW 
+					PRINTL
+					DRAWLINE
+					PRINTL
+					PRINTFORML 　　　　　　　　　DEAD END
+					PRINTL
+					DRAWLINE
+					PRINTFORMW クリックするとゲームを終了します
+					QUIT
+				ENDIF
+			;美鈴がまだ淫乱or陥落していない…だと…？
+			ELSE
+				;すでにレミリアと最悪面会済み
+				IF CFLAG:5002 == 2
+					PRINTFORMW ぎりっ、と歯を食いしばる音が聞こえる…
+					PRINTFORMW 「お嬢様に飽き足らず咲夜さんまで…」
+					PRINTFORMW 美鈴は今にもあなたにおそいかかりそうだ…
+					PRINTFORMW 
+					DRAWLINE
+					PRINTFORMW 反発刻印がLv1以下のとき、Lv2になります
+					PRINTFORMW 否定の珠が100000追加されました
+					DRAWLINE
+					;反発刻印が１以下のとき２になる
+					IF MARK:9 <=1
+					MARK:9 = 2
+					ENDIF
+					;否定の珠+100000
+					JUEL:100 += 100000
+				;まだレミリアと面会していない
+				;決め技：転蓮華
+				ELSE
+					PRINTFORMW パァン！
+					PRINTFORMW 大きな音が咲夜の頬から鳴った
+					PRINTFORMW 「目を覚ましてください咲夜さん」
+					PRINTFORMW 「あなたの前にはこの男への抵抗手段があります、そしてお嬢様の無事はまだ確認できていません」
+					PRINTFORMW 「咲夜さん、あなたがすべき事はなんですか？」
+					PRINTFORMW 咲夜は辛そうに顔を背けると…どこか諦めたように笑った
+					PRINTFORMW 「今のは貸しにして置いてあげるわ、美鈴」
+					PRINTFORMW 「はい、それでは行きましょう咲夜さん」
+					PRINTFORMW 美鈴があなたの視界から消え、ぐるりと世界が回った……
+					PRINTFORMW ………
+					PRINTFORMW ……
+					PRINTFORMW …
+					PRINTFORMW 
+					PRINTL
+					DRAWLINE
+					PRINTL
+					PRINTFORML 　　　　　　　　　DEAD END
+					PRINTL
+					DRAWLINE
+					PRINTFORMW クリックするとゲームを終了します
+					QUIT
+				ENDIF
+			ENDIF
+		ENDIF
+		CFLAG:5003 = 1
+	;2回目以降
+	ELSE
+		;咲夜が恋慕である
+		IF TALENT:ASSI:150 == 1
+			;美鈴が親愛でである
+			IF TALENT:152 == 1
+				PRINTFORML 「ご主人様っ」
+				PRINTFORMW あなたが大きく扉を開けると美鈴はあなたに飛びついてきた
+				PRINTFORMW 「嬉しい…今日もたっぷり可愛がってくださいね♪」
+				PRINTFORML 
+				PRINTFORMW 「ええ…たっぷり可愛がってあげてよ？」
+				PRINTFORMW 「！？」
+				PRINTFORMW 能力を使ったのだろう、美鈴がぎょっとした顔で振り返ると咲夜が美鈴のすぐ後ろに立っていた
+				PRINTFORMW さっき咲夜をつれて歩いていたときに「すぐに追いつく」と言っていたのはこれだったようだ
+				PRINTFORMW 得心しているあなたの胸で美鈴は小さく震えている…
+			;美鈴が恋慕である
+			ELSEIF TALENT:150 == 1
+				PRINTFORMW 「御機嫌よう…美鈴、調子はどう？」
+				PRINTFORML 「咲夜さん…」
+				PRINTFORMW 美鈴はどこか憔悴した目で咲夜を見つめている
+				PRINTFORMW 「どうかした？何かあればご主人様に言いなさいね」
+				PRINTFORMW 「っ！私の、私たちの主人は………っ！」
+				PRINTFORMW 気丈な美鈴が一滴涙をこぼす
+				PRINTFORMW 「……今の私たちの主人はこの方よ」
+				PRINTFORML 美鈴もすでにあなたの虜になりつつある
+				PRINTFORMW 反論は出来ず、うなだれるばかりだった…
+			;美鈴が服従である
+			ELSEIF TALENT:160 == 1
+				PRINTFORMW あなたと咲夜が調教部屋に入ると美鈴は部屋の隅でビクリと体を振るわせた
+				PRINTFORMW 「…そんな場所にいないでいらっしゃい、美鈴」
+				PRINTFORMW 命じられた美鈴はノロノロとあなたと咲夜に近づいてゆく
+				PRINTFORMW 「まったく、だらしのない…」
+				PRINTFORMW 美鈴は目を伏せながら、テキパキと動く咲夜に服を脱がされていった…
+			;それ以外
+			ELSE
+				PRINTFORMW 「御機嫌よう…美鈴、調子はどう？」
+				PRINTFORMW 「………」
+				PRINTFORMW 美鈴は目をつむったままピクリともしない
+				PRINTFORMW 咲夜はため息を一つつくと美鈴の服を脱がしていった…
+			ENDIF
+		;咲夜が恋慕でない
+		;ここで生き延びてるのは美鈴が親愛、恋慕、あとはレミリア面会済みの場合…だよね？
+		ELSE
+			;美鈴が親愛である
+			IF TALENT:152 == 1
+				PRINTFORMW 「ご主人様っ」
+				PRINTFORMW 扉を開けると美鈴はあなたに飛びついてきた
+				PRINTFORMW 「嬉しい…今日もたっぷり可愛がってくださいね♪」
+				PRINTFORMW 「………コホン」
+				PRINTFORMW 「さ、咲夜さんっ！？」
+				PRINTFORMW 「なんというか…変われば変わるものなのね…」
+				PRINTFORMW 咲夜は白けた目で美鈴を眺めている…
+			;美鈴が恋慕である
+			ELSEIF TALENT:150 == 1
+				PRINTFORML 「あっ……♪」
+				PRINTFORMW 美鈴は笑顔で出迎えてくれる
+				PRINTFORMW 「……御機嫌よう、美鈴」
+				PRINTFORMW 「さ、咲夜さん…」
+				PRINTFORMW しかし、美鈴は咲夜があなたの後ろから顔を出すと一転して顔を曇らせてしまった…
+			;それ以外
+			ELSE
+				PRINTFORMW 「…………」
+				PRINTFORMW 「…………」
+				PRINTFORMW 沈鬱な空気が調教部屋を満たしている
+				PRINTFORMW あなたはそれにかまわず服を脱ぐよう二人に命じた…
+			ENDIF
+		ENDIF
+	ENDIF
+;それ以外の助手の方
+ELSE
+	TRYCALL K6_MESSAGE_START_2
+ENDIF
+
+;-------------------------------------------------
+;調教開始時
+;-------------------------------------------------
+@K6_MESSAGE_START_2
+;反発刻印Lv3である
+IF MARK:9 == 3
+PRINTFORMW あなたは美鈴の調教部屋の前まで来たが、扉を開けることが出来ないでいた
+PRINTFORMW 理由は明白である
+PRINTFORMW 美鈴を完全に怒らせてしまった
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 根が真面目な分、こじらせると長いのだ
+		PRINTFORMW どうやって機嫌を直してもらうかたっぷりと10分考えてからあなたは調教部屋に入った…
+	;え！？恋慕つけずに怒らせたんですか？
+	;決め技：貼山靠
+	ELSEIF RAND:3 == 0
+		PRINTFORMW すでに気配からあなたが扉の前に立っていることは知られているだろう
+		PRINTFORMW 扉越しにですら卒倒しそうなほどの濃密な殺気が放たれているのだ
+		PRINTFORMW しかしここで引き返せば二度とあなたは美鈴を調教することは出来なくなるだろう
+		PRINTFORMW 調教師の矜持にかけてそれは出来なかった
+		PRINTFORMW あなたは虎穴へと足を踏み出す…
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW …
+		PRINTFORMW 
+		PRINTL
+		DRAWLINE
+		PRINTL
+		PRINTFORML 　　　　　　　　　DEAD END
+		PRINTL
+		DRAWLINE
+		PRINTFORMW クリックするとゲームを終了します
+		QUIT
+	;2/3でセフセフ！
+	ELSE
+		PRINTFORMW すでに気配からあなたが扉の前に立っていることは知られているだろう
+		PRINTFORMW 扉越しにですら卒倒しそうなほどの濃密な殺気が放たれているのだ
+		PRINTFORMW しかしここで引き返せば二度とあなたは美鈴を調教することは出来なくなるだろう
+		PRINTFORMW 調教師の矜持にかけてそれは出来なかった
+		PRINTFORMW あなたは虎穴へと足を踏み出す…
+		PRINTFORML ………
+		PRINTFORML ……
+		PRINTFORML …
+		PRINTFORMW 
+		PRINTL
+		PRINTFORMW 「よくも顔をだせたものですね」
+		PRINTFORMW 「怯えながら私の体を弄ぶといいでしょう」
+		PRINTFORMW 「それが私からあなたへの責め苦です」
+		PRINTFORMW 美鈴は壮絶な笑みを浮かべて服を脱ぎだした…
+	ENDIF
+;親愛である
+ELSEIF TALENT:152 == 1
+	PRINTFORMW 「ご主人様っ♪」
+	PRINTFORMW 美鈴はパッと表情を輝かせてあなたに飛びついてきた
+	PRINTFORMW 「えへへ…嬉しいです…」
+	PRINTFORMW あなたは美鈴の頬にキスをすると腰を抱きながら調教部屋に入った…
+;反発刻印2である
+ELSEIF MARK:9 == 2
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW あなたが部屋に入ると美鈴は冷たい目であなたを一瞥した
+		PRINTFORMW 「………ふんっ」
+		PRINTFORMW かなり本気でへそを曲げているようだ…
+	;それ以外
+	;套路（とうろ）、中国武術の「型」のようなもの
+	ELSE
+		PRINTFORMW 「噴ッ！破ッ！！」
+		PRINTFORMW あなたが部屋に入ると美鈴は套路を行っていた
+		PRINTFORMW 最後の打ち込みで部屋が大きく揺れる
+		PRINTFORMW 「…不自由ばかりと思いましたが、鍛錬を積むにはいい状態かもしれませんね」
+		PRINTFORMW 「『武』を使うのも遠い日ではないでしょうし」
+		PRINTFORMW なぜか美鈴はあなたを見ながらにこりと笑った…
+	ENDIF
+;恋慕+淫乱である
+ELSEIF TALENT:150 == 1 && TALENT:170 == 1
+	PRINTFORMW 「あっ…」
+	PRINTFORMW 扉を開けると美鈴は顔を真っ赤にしながら股を擦り始めた
+	PRINTFORMW あなたを見るだけでスイッチが入ってしまう体になったらしい…
+	SOURCE:18 += 1000
+	SOURCE:19 += 200
+;恋慕である
+ELSEIF TALENT:150 == 1
+	PRINTFORMW 「あっ…♪」
+	PRINTFORMW あなたが扉を開けると美鈴はパッっと表情に花を咲かせた
+	PRINTFORMW 「い、いえっ！別にあなたが待ち遠しかったわけではなく…っ」
+;淫乱である
+ELSEIF TALENT:170 == 1
+	PRINTFORMW 「あ…」
+	PRINTFORMW あなたが扉を開けると美鈴は焦点の合わない目であなたを捉えた
+	PRINTFORMW 「今日も…気持ちよくしてくださいね…♪」
+;服従である
+ELSEIF TALENT:160 == 1
+	PRINTFORMW 「ひっ…」
+	PRINTFORMW 美鈴はあなたに怯えるように身をすくませている…
+;反発刻印1である
+ELSEIF MARK:9 == 1
+	PRINTFORMW 「…………」
+	PRINTFORMW 美鈴はあなたをジト目でずっとみている
+	PRINTFORMW あなたは明るく話しかけたが美鈴の咎めるような目つきは変わらなかった…
+;好感度が750以上
+ELSEIF CFLAG:2 >= 750
+	PRINTFORMW 「う…その…今日もするんですか？」
+	PRINTFORMW 「わ、わかりました、脱ぎますからそんなにがっつかないでくださいっ」
+	PRINTFORMW 美鈴はどこか嬉しそうだ…
+;好感度が500以上
+ELSEIF CFLAG:2 >= 500
+	PRINTFORMW 「あはは……はぁ……この時間ですか……」
+	PRINTFORMW 「いえ、別に気持ちいいのが嫌いというわけではないんですが…」
+;好感度が250以上
+ELSEIF CFLAG:2 >= 250
+	PRINTFORMW 「あなたは何故こんなことを…」
+	PRINTFORMW 「気にしても仕方の無いことですが…」
+;それ以外
+;警告である。繰り返す、これは警告である。
+ELSE
+	PRINTFORMW 「私はいつでもあなたに害をなせます」
+	PRINTFORMW 「どうか、お忘れなく」
+ENDIF
+;========================================================
+;調教終了時の口上
+;========================================================
+@KOJO_6_SLAVE_MESSAGE_TRAIN_END
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;気絶中も戻る
+SIF TFLAG:899 >= 1
+	RETURN 0
+DRAWLINE
+TRYCALL K6_MESSAGE_END
+
+;--------------------------------------------------
+;調教終了時の口上
+;霊夢口上でゆうかりんの構文パク…リスペクトに成功したのでいずれ射精回数カウントとかします。
+;--------------------------------------------------
+@K6_MESSAGE_END
+;この調教でレミリア最悪面会を果たした
+IF CFLAG:5002 == 1
+	PRINTFORMW 「よくもっ！よくもっ！！」
+	PRINTFORMW 美鈴は悔し涙をボロボロと流しながら暴れている
+		;体力が500未満である
+		IF BASE:0 < 500
+			PRINTFORMW だが調教により嬲られた体は言う事を聞かず弱々しく身をくねらせるだけにとどまった
+		;体力が500以上である
+		ELSEIF BASE:0 >= 500
+			PRINTFORMW 必死にもがく美鈴をレミリアがニヤニヤしながら押さえつけている
+			PRINTFORMW レミリアがいなければどうなっていたか分からない
+		ENDIF
+	PRINTFORMW 部屋を出るとき、小さな呟きがあなたの耳を掠める
+		;好感度が750以上である
+		IF CFLAG:2 >= 750
+			PRINTFORMW 「本当は良い人なのだと…好きになれるかもと思っていたのに…！」
+			PRINTFORMW その声は、涙に濡れているような気がした…
+		;それ以外
+		ELSE
+			PRINTFORMW 「必ず地獄で後悔させてやる…ッ！！」
+			PRINTFORMW あなたは背筋の凍る思いをしながら調教部屋を後にした…
+		ENDIF
+	CFLAG:5002 = 2
+;反発刻印Lv3である
+ELSEIF MARK:9 == 3
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 美鈴は無言のままあなたに背を向ける
+		PRINTFORMW 調教の甲斐なく美鈴はすねたままのようだ
+		PRINTFORMW 次の調教ではもう少し誠意をこめた謝罪が必要だろう…
+	;それ以外
+	ELSE
+		PRINTFORMW あなたが部屋をでて廊下を歩いていると背後で爆音がした
+		PRINTFORMW 美鈴の調教部屋のドアがひしゃげて吹き飛んでいる
+		PRINTFORMW 「あ、おかまいなく…少し出歩かせていただきますので」
+		PRINTFORMW 有無を言わさぬ調子で言い放つと美鈴は玄関に向かって行く
+		PRINTFORMW 「……戻ってはきます、お嬢様の為に」
+		PRINTFORMW 大きな音を立てて扉が閉められた…
+	ENDIF
+;親愛である
+ELSEIF TALENT:152 == 1
+	;体力が500以下
+	IF BASE:0 < 500
+		PRINTFORMW 調教を終えると美鈴はあなたの胸に顔を埋めた
+		PRINTFORMW 「少し…疲れました…」
+		PRINTFORMW 「このまま眠らせて下さいませんか…？」
+		PRINTFORMW 頭を撫でながらあなたは儚げに微笑む美鈴を寝かしつけた…
+	;体力が500以上
+	ELSE
+		PRINTFORMW 「え、もう終わりでしょうか？」
+		PRINTFORMW いつもは美鈴が倒れてしまうまで責め立てているせいだろう、不思議そうな顔をして美鈴は立ち尽くした
+		PRINTFORMW 美鈴の体が心配だと伝えると美鈴はあなたの背にそっと頬を付けた
+		PRINTFORMW 「嬉しいです、%CSTR:90%…でも遠慮はなさらないで下さい」
+		PRINTFORMW 「この身を尽くす事こそが我が喜びなのですから…」
+	ENDIF 
+;反発刻印2である
+ELSEIF MARK:9 == 2
+	;体力が500以下
+	IF BASE:0 < 500
+		PRINTFORMW 「疲れたので出て行って下さい」
+		PRINTFORMW あなたを部屋から押し出すと美鈴はすぐに布団に横になってしまった…
+	;体力が500以上
+	ELSE
+		PRINTFORMW 「疲れたので出て行って下さい」
+		PRINTFORMW あなたを強く押し出しながら部屋から追い出すとバタンと扉を閉めた
+		PRINTFORMW 疲れているのではなかったのだろうか…？
+	ENDIF 
+;恋慕である
+ELSEIF TALENT:150 == 1
+	;体力が500以下
+	IF BASE:0 < 500
+		PRINTFORMW あなたは美鈴に調教が終わりである事を伝えた
+		PRINTFORMW 「そ、そうですか…」
+		PRINTFORMW 美鈴は糸の切れた人形のように布団に倒れこんでしまった
+		PRINTFORMW あなたが慌てて駆け寄ると美鈴は困ったように微笑んだ
+		PRINTFORMW 「ご、ご心配なく…その、腰が抜けてしまっただけですので…」
+	;体力が500以上
+	ELSE
+		PRINTFORMW 「へ？もう終わりなんですか？」
+		PRINTFORMW あなたが調教の終了を伝えると美鈴は不思議な顔をした
+		PRINTFORMW 「んっ…あ…その、もう少しだけ…」
+	ENDIF 
+;淫乱である
+ELSEIF TALENT:170 == 1
+	;体力が500以下
+	IF BASE:0 < 500
+		PRINTFORMW 「あ…はぁ…んっ…♪」
+		PRINTFORMW 美鈴はまどろみながらも未だ快楽に浸っている
+		PRINTFORMW 小刻みに痙攣を続ける美鈴を後にあなたは立ち去った…
+	;体力が500以上
+	ELSE
+		PRINTFORMW 「ねぇ…足りないんです…」
+		PRINTFORMW 「もっと、もっと下さい…」
+		PRINTFORMW 美鈴はあなたの足にしがみつきながら股間をこすりつける…
+	ENDIF 
+;服従である
+ELSEIF TALENT:160 == 1
+	;体力が500以下
+	IF BASE:0 < 500
+		PRINTFORMW 激しい調教に美鈴は完全に失神してしまったようだ
+		PRINTFORMW 投げ出された手足はピクリとも動こうとしない…
+	;体力が500以上
+	ELSE
+		PRINTFORMW 「も、申し訳ありません…」
+		PRINTFORMW 「ご無礼があったなら謝りますから…続けてください…」
+		PRINTFORMW 美鈴はあなたが機嫌を損ねたと勘違いして怯えている…
+	ENDIF 
+;反発刻印1である
+ELSEIF MARK:9 == 1
+	PRINTFORMW 「あなたが今までどのように女性を扱ってきたかは知りませんが」
+	PRINTFORMW 「もう少し紳士的に接するべきだと思います」
+;好感度が750以上
+ELSEIF CFLAG:2 >= 750
+	PRINTFORMW あなたが調教を終わり美鈴から離れようとすると美鈴が裾を掴んでいた
+	PRINTFORMW 「え…？ち、違うんです…これは…」
+	PRINTFORMW 必死に言い訳を探す美鈴は手を離そうとしなかった…
+;好感度が500以上
+ELSEIF CFLAG:2 >= 500
+	PRINTFORMW 「なんでこんな事をしているんですか…？」
+	PRINTFORMW 「もっと普通に出会えたなら…もっと…」
+;好感度が250以上
+ELSEIF CFLAG:2 >= 250
+	PRINTFORMW 「も、もう無理です…っ」
+	PRINTFORMW 美鈴はくたりと布団に倒れこんでしまった
+	PRINTFORMW 「一体どんな鍛え方をしたらそんなに絶倫になれるんですか…」
+	PRINTFORMW 美鈴は呆れの眼差しをあなたに向けている…
+;それ以外
+ELSE
+	PRINTFORMW 「はぁ…」
+	PRINTFORMW 「なんでため息をついているのかって？」
+	PRINTFORMW 「好きでもない男性に身体を無理やり弄られて喜ぶ女性がいるものですか」
+ENDIF
+
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;6をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;紅美鈴口上
+;==============================================================
+;========================================================
+;コマンド口上
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;基本的に美鈴は「経験者」ですので初回実行時の判定というよりは開発度の判定になると思います。
+;いずれは部位陥落での口上変化や細かな状況による分岐を用意したいと考えています。
+;あとせっかくMk-3なので地の文もどんどんいじりたい！
+;反発口上も早く用意せにゃ…
+;親愛も恋愛までとは一線を画す予定なのでそれも…orz
+;-------------------------------------------------
+;愛撫
+;よーしよしよしよしよしよしよしよしよし
+;-------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_6_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_6_TRAIN_MESSAGE_S_COM_0
+PRINTFORMW あなたは美鈴を後ろから抱きすくめると胸と陰部に手を伸ばした
+;Ｃ感覚とＢ感覚が合計３以下
+IF ABL:0 + ABL:3 <= 3
+	PRINTFORMW 美鈴の反応は未だ薄い…
+	PRINTL
+	PRINTFORMW 「……この程度で本当に私を堕とすつもりなんですか？」
+	PRINTFORMW 美鈴はあまり感じてはいないようだ
+	;初調教時
+	IF TFLAG:95 == 1
+		PRINTFORMW だが反応の節々から敏感になる素質は秘めていることをあなた見抜く
+		PRINTFORMW いずれ泣いて悦ぶだろうと、予言を残した…
+	ENDIF
+;Ｃ感覚とＢ感覚が合計４以上
+ELSE
+PRINTFORMW 美鈴は身を躍らせ大きく感じているようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「いい…もっと触ってください…」
+		PRINTFORMW 敏感な部分に触れるたびに美鈴は体をよじり素直な反応を返してくる
+		PRINTFORMW 「あっ、そこはっ、び、敏感だから…もっとやさしくしてくださいよぉ…」
+	PRINTFORMW 美鈴は胸とクリトリスを襲う快楽に完全に飲まれている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「いい加減無駄な努力は…」
+		PRINTFORMW 未だに抵抗を続ける美鈴の乳首やクリトリスを重点的に愛撫してやった
+		PRINTFORMW 「……っ！や、やめ…っ！」
+	PRINTFORMW 美鈴の抵抗は弱く、あなたのなすがままになっている…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ペッティング
+;よーしよしよしよしよしよしよしよしよし
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_606
+PRINTFORMW あなたは美鈴を後ろから抱きすくめると胸と陰部に手を伸ばした
+;Ｃ感覚とＢ感覚が合計５以下
+IF ABL:0 + ABL:3 <= 5
+	PRINTFORMW 美鈴の反応は未だに薄い…
+	PRINTL
+	PRINTFORMW 「……この程度で本当に私を堕とすつもりなんですか？」
+	PRINTFORMW 美鈴はあまり感じてはいないようだ
+	IF TFLAG:95 == 1
+	PRINTFORMW だが反応の節々から敏感になる素質は秘めていることをあなた見抜く
+	PRINTFORMW いずれ泣いて悦ぶだろうと、予言を残した…
+	ENDIF
+;Ｃ感覚とＢ感覚が合計６以上
+ELSE
+PRINTFORMW 美鈴は身を躍らせ大きく感じているようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「いい…もっと触ってください…」
+		PRINTFORMW 敏感な部分に触れるたびに美鈴は体をよじり素直な反応を返してくる
+		PRINTFORMW 「あっ、そこはっ、び、敏感だから…もっとやさしくしてくださいよぉ…」
+	PRINTFORMW 美鈴は胸とクリトリスを襲う快楽に完全に飲まれている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「いい加減無駄な努力は…」
+		PRINTFORMW 未だに抵抗を続ける美鈴の乳首やクリトリスを重点的に愛撫してやった
+		PRINTFORMW 「……っ！や、やめ…っ！」
+	PRINTFORMW 美鈴の抵抗は弱く、あなたのなすがままになっている…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;ペロペロペロペロペロペロ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_1
+PRINTFORMW あなたは美鈴のクリトリスに舌を這わせた
+;Ｃ感覚Ｌｖ2以下
+IF ABL:0 <= 2
+PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+PRINTL
+	PRINTFORMW 「汚らわしい…いくら舐めても無駄です」
+ELSEIF ABL:0 == 3
+PRINTFORMW 美鈴は声を抑えながら、時折太ももの内側に緊張を走らせている…
+PRINTL
+	PRINTFORMW 「ふっ…く…」
+	PRINTFORMW 「いいかげんに…っ！…して、ください…」
+;Ｃ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は無意識に腰を浮かせ、あなたの舌に押し付けて快感を貪っている…
+	;恋慕である
+	IF TALENT:150 == 1
+		IF PREVCOM == 1 && CFLAG:5420 > 0
+			PRINTFORMW 「イって…っ！だめっ、くるっちゃ…」
+			PRINTFORMW 「アリアリアリアリアリーヴェデルチ」
+		ELSE
+			PRINTFORMW 「あっ♪だめですよ…そんなにされたらすぐイってしまいます…」
+			PRINTFORMW 美鈴の抗議に耳を貸さずあなたはさらにクリトリスを責め立てた
+			PRINTFORMW 「……っ！！ああっ！だめ！イクううぅぅ！！」
+		ENDIF
+	PRINTFORMW 美鈴はクリトリスへの刺激に半狂乱になりながら悶えている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「だ、ダメです！舐めちゃ…っ！」
+		PRINTFORMW 美鈴のクリトリスに舌が触れた瞬間美鈴の腰が跳ねる
+		PRINTFORMW 「やだ…おかしくなる…おかしくなります…」
+	PRINTFORMW 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;こらっ！誰だ濡らしもせずに突っ込もうとしてる奴は！
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_2
+PRINTFORMW あなたは美鈴の尻穴に指を入れてかき回した
+;Ａ関係は初回口上あります。
+IF TFLAG:95 == 1
+PRINTL
+	PRINTFORMW 「な、ななななんてところを触ってるんですか！」
+	PRINTFORMW 必死に逃げようとする美鈴の腰を捕まえ、あなたは美鈴のアヌスをゆっくりと広げてゆく…
+	PRINTFORMW 「くぅぅ…変態…っ！」
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴は未だに尻穴から得られる快楽を十分に受け取れていないようだ…
+PRINTL
+	PRINTFORMW 「ですからそこは…触るような場所では…」
+	PRINTFORMW 「痛っ、痛いんです…」
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の括約筋は緩み、あなたの指を受け入れている…
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ふあっ♪んっ、ああっ♪」
+		PRINTFORMW 尻穴をほじられるたびに美鈴の口から甘い声が漏れ出す
+		PRINTFORMW 「すごい…お尻の穴気持ち良くて馬鹿になってしまいます…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「ああぁあぁっ！んっくぅ…っ」
+		PRINTFORMW 尻穴をほじられるたびに美鈴の口から甘い声が漏れ出す
+		PRINTFORMW 「う…嘘っ、ひうっ、お尻の穴が、こ、こんなに感じるなんてぇ…」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:2
+SOURCE:32 += 5000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;( ゜∀゜)o彡°おっぱい！おっぱい！
+;デフォできょぬーなのでややソースの入りは少なめ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_3
+PRINTFORMW あなたは美鈴の胸を揉みながら舌を這わせた
+;Ｂ感覚Ｌｖ3以下
+IF ABL:3 <= 3
+PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+PRINTL
+	PRINTFORMW 「私、胸はそんなに感じませんから無駄だと思いますよ？」
+	IF TFLAG:95 == 1
+	PRINTFORMW あなたは胸だけでイキ狂う未来の美鈴の姿を想像しながら胸を開発し続けた…
+	ENDIF
+;Ｂ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は乳首は硬くしこり、刺激に震えている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		;母乳体質である
+		IF TALENT:134 == 1
+			PRINTFORMW 「もっと、もっと絞ってください…」
+			PRINTFORMW 胸をこねくり回すたびに美鈴の腰がカクカクと跳ねる
+			PRINTFORMW 「あっ♪いいっ、でるっミルク吹き出ちゃいますっ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あんっ♪ああっ！」
+			PRINTFORMW 美鈴の乳首を弾いてやる度に美鈴は嬉しそうに嬌声を上げる
+			PRINTFORMW 「あまり苛められるとすぐにイっちゃいますよぅ…」
+		ENDIF
+		PRINTFORMW 美鈴は胸への悦楽に完全に溺れている…
+	;それ以外
+	ELSE
+		;母乳体質である
+		IF TALENT:134 == 1
+			PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+			PRINTFORMW 「だ、だめです！それ以上…あっ、されたら、おっぱいでちゃいます…」
+			PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+			PRINTFORMW 「私に一体何を…ふあああっ♪」
+			PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;だから濡らしもせずに突っ込むんじゃＮＥＥＥＥ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_4
+IF TEQUIP:20 > 0
+	;Ｖ感覚Ｌｖ２以下
+	IF ABL:1 <= 2
+		PRINTFORMW あなたは美鈴に挿入されているバイブで膣内をこねくり回した
+		PRINTFORMW 「苦しっ…、く………あ……っ、やめっ……！」
+		PRINTFORMW 美鈴の秘唇はまだ硬く、あなたを受け入れる準備は十分に出来ていないようだ…
+	;この辺にくると大体絶頂口上に連動するのを前提に書いている部分があります。
+	;Ｖ感覚Ｌｖ３以上
+	ELSE
+		;恋慕である
+		IF TALENT:150 == 1
+			PRINTFORMW あなたは美鈴の瑞々しい太ももを撫でながらゆっくりとバイブに手を伸ばす
+			PRINTFORMW 「ぐちゅぐちゅって…、めちゃくちゃにされちゃうんですね…」
+			PRINTFORMW 美鈴は期待に満ちた目で股間を見つめている…
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひうっ、あんっ、ふあああっ！！」
+			PRINTFORMW 美鈴は秘唇をえぐる２本の指に全身を支配されたように体を跳ねさせる
+			PRINTFORMW 「そ、そんな音立てないでくだ…うああっ！！」
+			PRINTFORMW 美鈴の抗議は淫らな水温と自らの嬌声にかき消された…
+		ENDIF
+	ENDIF
+ELSE
+	PRINTFORMW あなたは美鈴の秘唇に指を指し入れた
+	;Ｖ感覚Ｌｖ２以下
+	IF ABL:1 <= 2
+	PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+	PRINTL
+		PRINTFORMW 「く…痛っ、もうすこしやさしく…」
+		PRINTFORMW 美鈴の秘唇はまだ硬く、あなたを受け入れる準備は十分に出来ていないようだ…
+	;Ｖ感覚Ｌｖ３以上
+	ELSE
+	PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの指を締め上げる…
+	PRINTL
+		;恋慕である
+		IF TALENT:150 == 1
+			PRINTFORMW 「あああっ！ふあっ、んああっ♪」
+			PRINTFORMW 美鈴は秘唇をかき回されるたびにガクガクと腰をゆすり奥から蜜を噴き出す
+			PRINTFORMW 「イくっ！！イ…っっ！！」
+			PRINTFORMW もはや美鈴に理性の色は見られない…
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひうっ、あんっ、ふあああっ！！」
+			PRINTFORMW 美鈴は秘唇をえぐる２本の指に全身を支配されたように体を跳ねさせる
+			PRINTFORMW 「そ、そんな音立てないでくだ…うああっ！！」
+			PRINTFORMW 美鈴の抗議は淫らな水温と自らの嬌声にかき消された…
+		ENDIF
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:2
+SOURCE:32 += 5000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_5
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キスする
+;キスは好感度判定
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_6
+PRINTFORMW あなたは美鈴の唇に吸い付いた
+;恋慕である
+IF TALENT:150 == 1
+PRINTFORMW 美鈴は自ら舌を伸ばし、あなたの舌と積極的にに絡めあう…
+PRINTL
+	PRINTFORMW 「ちゅ…んっ、ぷぁ…んふ、ぅん…」
+	PRINTFORMW 美鈴は熱い吐息を吐きながら必死にあなたの舌に食らい付いてくる
+	PRINTFORMW 「もっと…ちゅぅ、はぁ…ちゅ…」
+PRINTFORMW 二人の口の端から涎がとろとろとこぼれた…
+;好感度1000以上
+ELSEIF CFLAG:2 >= 1000
+PRINTFORMW 美鈴は進入してきたあなたの舌に抵抗することなく絡めあっている…
+PRINTL
+	PRINTFORMW 「んっ…ぷぁ、んんっ…ん…」
+	PRINTFORMW 美鈴は流し込まれた大量の唾液をコクリと嚥下した…
+;好感度750以上
+ELSEIF CFLAG:2 >= 750
+PRINTFORMW 美鈴は進入してきたあなたの舌になすがままになっている…
+PRINTL
+	PRINTFORMW 「ん、んんっ、まって、そんな…んっ…」
+	PRINTFORMW あなたは美鈴の口内を蹂躙した…
+;好感度500以上
+ELSEIF CFLAG:2 >= 500
+PRINTFORMW 美鈴は口を開きあなたの舌を受け入れている…
+PRINTL
+	PRINTFORMW 「んっ、ん…ちゅ…んふ…」
+	PRINTFORMW あなたは美鈴の唇をついばみながら時折舌をもぐりこませる…
+;好感度500未満
+ELSE
+PRINTFORMW 美鈴は硬く口を閉ざし嫌がるように顔を背けている…
+PRINTL
+	PRINTFORMW 「ん、んんんっ！」
+	PRINTFORMW 美鈴は頑なに唇を閉ざし自らの口を拭った…
+ENDIF
+
+;-------------------------------------------------
+;自慰
+;羞恥系は従順+露出癖判定
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_7
+PRINTFORMW あなたは美鈴に自分で自分を責めるように指示した
+;従順Lv+露出癖が5以下
+IF ABL:10 + ABL:14 <= 5
+PRINTFORMW 美鈴はギリ、と歯を食いしばるとあなたをにらみながら自慰を始めた…
+PRINTL
+	PRINTFORMW 「そんなに私を辱めたいのですか」
+	PRINTFORMW 美鈴は屈辱的に表情をゆがませながら自慰を始めた…
+;従順Lv+奉仕精神Lvが6以上
+ELSE
+PRINTFORMW 美鈴はうっすら頬を染め自慰を始めた…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「はい…私の恥ずかしいところ、しっかり見ててくださいね…？」
+		PRINTFORMW ペロリと美鈴は自分の指を舐めるとあなたに見せ付けるように秘唇を割り開き、胸に手を這わせ始めた…
+		PRINTFORMW 「んんっ、ああっ♪…すごい、一人でするときよりずっと気持ちいい…♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「う…どうしてもしなきゃいけませんか…？え、いつも通りに？」
+		PRINTFORMW 「い、いつもなんてしてません！たまにし…か…」
+		PRINTFORMW 美鈴は途中で自分の失言に気づいたのかモジモジしながら自慰を始めた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_9
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_10
+PRINTFORMW あなたは独特の音を響かせるローターをゆっくりと美鈴のクリトリスに近づけた
+;Ｃ感覚Ｌｖ２以下
+IF ABL:0 <= 2
+	PRINTFORMW 美鈴は身を強張らせて刺激に備えている…
+	PRINTL
+	PRINTFORMW 「う…それ少し痛いからあまり好きではないんですが…」
+;Ｃ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴は期待の目を向け、うっすらと腰を持ち上げている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「本当は直接触っていただきたいんですが…」
+		PRINTFORMW でもこれはこれで良い物だ、そうあなたが確認を取ると美鈴は顔を真っ赤にしながら小さく頷いた…
+	;それ以外
+	ELSE
+		PRINTFORMW 「あ、あまり強く押し付けないでくださいね…？」
+		PRINTFORMW 「…っ！ああっ！んくっ、だ、だめ、声が…っ！！」
+		PRINTFORMW 美鈴は必死に声を押し殺そうとしているが、嬌声が口を覆った手の隙間からこぼれだす…
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_11
+PRINTFORMW あなたは大きな音を立てる電気按摩を美鈴の秘部に押し当てた
+;Ｃ感覚Ｌｖ２以下
+IF ABL:0 <= 2
+PRINTFORMW 美鈴の開かれていない性感をむりやりこじ開ける…
+PRINTL
+	PRINTFORMW 「なんて物を…あ、あまり強くしないでくださいね…」
+	PRINTFORMW 美鈴は襲い来る快楽に飲まれまいと必死に目を瞑っている…
+;Ｃ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 震える電気按摩が愛液のしぶきを散らす…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あああっっ！！らめれすっ！ああっ！ふああぁぁあぁっ！！」
+		PRINTFORMW 美鈴はシーツを強く握り締めながら、跳ねつく腰を必死に止めようとしたが徒労に終わった…
+	;それ以外
+	ELSE
+		PRINTFORMW 「だ、だめですっ！それを押し当てられたら…っ！」
+		PRINTFORMW 「ふぐっ、んんんんっっ！！」
+		PRINTFORMW 美鈴は食いしばった歯の隙間から涎を泡にしながらこぼしている…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	PRINTFORMW あなたは美鈴の秘唇からバイブを抜き取った
+	;Ｖ感覚Ｌｖ２以下
+	IF ABL:1 <= 2
+	PRINTFORMW 美鈴は自らを貫いた異物が取り除かれてほっとしているようだ…
+	PRINTL
+		PRINTFORMW 「お、終わりでしょうか…？」
+		PRINTFORMW 美鈴は呼吸を荒立て、胸を大きく上下動させている…
+	;Ｖ感覚Ｌｖ３以上
+	ELSE
+	PRINTFORMW 美鈴はどこか物足りなさそうな目でバイブを見つめている…
+	PRINTL
+		PRINTFORMW 「はぁ…はぁ…はぁ…、んくっ、はぁ…」
+		PRINTFORMW 美鈴の秘唇はヒクヒクと蠢き更なる刺激を求めている…
+	ENDIF
+;装着時
+ELSE
+PRINTFORMW あなたはバイブで美鈴の秘唇を貫いた
+;Ｖ感覚Ｌｖ２以下
+	IF ABL:1 <= 2
+	PRINTFORMW 美鈴は大きなバイブの圧迫感に苦しみを感じているようだ…
+	PRINTL
+		PRINTFORMW 「ん…くぅ…大きい…抜いて…ください…」
+		PRINTFORMW 美鈴は苦しげに眉をひそめる…
+	;Ｖ感覚Ｌｖ３以上
+	ELSE
+	PRINTFORMW 美鈴の秘唇は易々と大きなバイブを呑み込んだ…
+	PRINTL
+		PRINTFORMW 「ああっ…入って、く、るぅ…」
+		PRINTFORMW 美鈴の表情は快楽に蕩けている…
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ2以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:2
+SOURCE:32 += 5000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+PRINTFORMW あなたは美鈴のアナルからバイブを引き抜いた
+	;Ａ感覚Ｌｖ２以下
+	IF ABL:2 <= 2
+	PRINTFORMW 美鈴は未だに尻穴から得られる快楽を十分に受け取れていないようだ…
+	PRINTL
+		PRINTFORMW 「ですからそこは…触るような場所では…」
+		PRINTFORMW 「痛っ、痛いんです…」
+	;Ａ感覚Ｌｖ３以上
+	ELSE
+	PRINTFORMW 美鈴の括約筋は緩み、あなたの指を受け入れている…
+		;恋慕である
+		IF TALENT:150 == 1
+			PRINTFORMW 「ふあっ♪んっ、ああっ♪」
+			PRINTFORMW 尻穴をほじられるたびに美鈴の口から甘い声が漏れ出す
+			PRINTFORMW 「すごい…お尻の穴気持ち良くて馬鹿になってしまいます…」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ああぁあぁっ！んっくぅ…っ」
+			PRINTFORMW 尻穴をほじられるたびに美鈴の口から甘い声が漏れ出す
+			PRINTFORMW 「う…嘘っ、ひうっ、お尻の穴が、こ、こんなに感じるなんてぇ…」
+		ENDIF
+	ENDIF
+ 
+;装着時
+ELSE
+PRINTFORMW あなたは美鈴の尻穴にアナルバイブを突き立てた
+	;Ａ関係は初回口上あります。
+	IF TFLAG:95 == 1
+	PRINTL
+		PRINTFORMW 「や…、まって下さ…そ、そんなの入るわけ…」
+		PRINTFORMW 「ぐ…ああっ！痛っ、無理っ、無理です！」
+	;Ａ感覚Ｌｖ２以下
+	ELSEIF ABL:2 <= 2
+	PRINTFORMW 美鈴は快楽よりも苦痛のほうが勝っているようだ…
+	PRINTL
+		PRINTFORMW 「違います…そこは触るような場所ではないです…」
+		PRINTFORMW 美鈴のアナルはバイブにより限界まで広げられている…
+	;Ａ感覚Ｌｖ３以上
+	ELSE
+	PRINTFORMW 美鈴のアナルはたやすくバイブを呑み込んだ…
+		;恋慕である
+		IF TALENT:150 == 1
+			PRINTFORMW 「これ…おかしくなっちゃうから…違うのにしませんか？」
+			PRINTFORMW 涙目で訴えてくる美鈴のアナルに問答無用でバイブをねじ込んだ
+			PRINTFORMW 「ああぁぁあ♪んひっ、はおおおおっ！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ…お尻に…入れるんですね…」
+			PRINTFORMW 美鈴は尻をあなたに向け、高くかかげる
+			PRINTFORMW 「どうぞ…」
+		ENDIF
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ2以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:2
+SOURCE:32 += 5000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_20
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_21
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_22
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_23
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_24
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_27
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_28
+PRINTFORMW あなたは美鈴の秘唇に肉棒を挿入した…
+;初めて
+IF CFLAG:6000 == 0
+	PRINTFORMW 「入れる…んですね…」
+	PRINTFORMW 「いえ、覚悟はしていました」
+	PRINTFORMW 「でもどうか…中では出さないで下さい…どうか…」
+	CFLAG:6000 = 1
+;Ｖ感覚Ｌｖ２以下
+ELSEIF ABL:1 <= 2
+PRINTFORMW 美鈴はの膣はまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「そんな顔をしないで下さい…、んっ、私は平気ですからこのまま…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「んっ、くっ…ん…」
+		PRINTFORMW まだ膣に挿入される事にあまり慣れていないのか美鈴は辛そうにしている
+		PRINTFORMW 「調教師とは笑わせてくれますね…女一人感じさせる事が出来ないんですか？」
+	ENDIF
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴の秘唇は柔らかく、それでいて吸い付くようにあなたの肉棒を締め上げる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ、あっ、あん♪っ、深っ…こすれっ…！」
+		PRINTFORMW 「すご…くっ！あああっ！出してっ、膣内にこのまま…っ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「あっ、あっ、ああっ！」
+		PRINTFORMW 腰を打ち付けるたびに美鈴は声を抑えきれず鳴いてしまう
+		PRINTFORMW 「……っ、流されるっ、このままでは…っ！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_30
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_31
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_32
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_33
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_34
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_38
+PRINTFORMW あなたは美鈴のアナルに肉棒を挿入した…
+;初めて
+IF CFLAG:9001 == 0
+	PRINTFORMW 「じょ、冗談じゃ…」
+	PRINTFORMW 「入りませんっ！そこは入りませんか…らぁ…っっ！」
+	PRINTFORMW 美鈴の懇願を無視してあなたはペニスをアナルに沈めてゆく
+	PRINTFORMW 「………かはっ、…っ！が…うぁ…」
+	PRINTFORMW 美鈴は呼吸をするのもままならないほど苦しんでいる…
+	CFLAG:9001 = 1
+;Ａ感覚Ｌｖ２以下
+ELSEIF ABL:2 <= 2
+PRINTFORMW 美鈴はのアナルはまだあなたを受け入れる準備が完全でないようだ…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「こちらは…好きになれそうにないです…」
+	ELSE
+	;それ以外
+		PRINTFORMW 「うぐっ、いっ、んんんっ！」
+		PRINTFORMW 美鈴はアナルを穿られ、苦しそうな声を上げている
+		PRINTFORMW 「この…変態…っ！ぐあっ、いっ、ぅ……ッ！」
+	ENDIF
+;Ａ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴のアナルは入り口は強く締め付け、かつ引き込むようにあなたのペニスをしゃぶる…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ほああぁあ、あっ、あああっ♪」
+		PRINTFORMW 美鈴はアナルを穿たれる度に甘い声を上げる
+		PRINTFORMW 「尻穴で、あっ♪こんなに感じちゃうなんてっ、あああぁあぁ♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「くあっ！んおおおっ！ああああっ！！」
+		PRINTFORMW 美鈴は尻穴を穿たれる度に獣のような声を上げる
+		PRINTFORMW 「嫌っ、癖に、ああっ！だめっ！っ！癖に、なるっ！！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で突っ込んだ場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 10
+ENDIF
+
+;-------------------------------------------------
+;手淫
+;奉仕系は従順Lv+奉仕精神Lv判定です…好感度判定も混ぜたいなぁ。
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_40
+PRINTFORMW あなたは美鈴に手で奉仕するよう指示をした
+;従順Lv+奉仕精神Lvが4以下
+IF ABL:10 + ABL:13 <= 4
+PRINTFORMW 美鈴は嫌そうな顔をしながらペニスをしごき始めた…
+PRINTL
+	PRINTFORMW 「屈辱です…」
+	PRINTFORMW 「うっ、何でこんなに硬くしてるんですかもう…」
+;従順Lv+奉仕精神Lvが5以上
+ELSE
+PRINTFORMW 美鈴は頬を染めながら手淫を始めた…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「よく見てみると…こんなものが私に入るんですね…」
+		PRINTFORMW 「熱い…、興奮してくれていますか？」
+		PRINTFORMW 美鈴は懸命に奉仕している…
+	;それ以外
+	ELSE
+		PRINTFORMW 「うわ…熱い…」
+		PRINTFORMW 「硬いし時々跳ねるし…」
+		PRINTFORMW 美鈴はあなたのペニスに見とれながら手淫を続ける…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_41
+PRINTFORMW あなたは美鈴に口で奉仕するよう指示をした
+;従順Lv+奉仕精神Lvが4以下
+IF ABL:10 + ABL:13 <= 4
+PRINTFORMW 美鈴は渋々あなたのペニスを咥えた…
+PRINTL
+	PRINTFORMW 「気が進みませんね…」
+	PRINTFORMW 「うぅ…変な味です」
+;従順Lv+奉仕精神Lvが5以上
+ELSE
+PRINTFORMW 美鈴は懸命に舌を絡め、ペニスに吸い付き奉仕している…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「出してください…ちゅ、んっ、ぷぁ…」
+		PRINTFORMW 「精液…、精液飲ませてください…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ…ちゅぷ、えろ…」
+		PRINTFORMW 「出そうになったら言って下さいね、きちんと飲みますから」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_42
+PRINTFORMW あなたは美鈴に胸で奉仕するよう指示をした
+;従順Lv+奉仕精神Lvが5以下
+IF ABL:10 + ABL:13 <= 5
+PRINTFORMW 美鈴は胸を道具のように使われる事に嫌悪感を覚えているようだ…
+PRINTL
+	PRINTFORMW 「何が楽しいんですかこんなの…」
+	PRINTFORMW 「あなたもそこまで気持ちが言い訳ではないんでしょう？」
+;従順Lv+奉仕精神Lvが6以上
+ELSE
+PRINTFORMW 美鈴はその豊満な胸であなたのペニスを必死に扱いている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あっ…、私も、なんだか胸が…」
+		PRINTFORMW 「そ、そんな乳首をこすりつけるようになんて…ご奉仕できなくなっちゃいますよ…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふっ、くぅ…いかがですか…？」
+		PRINTFORMW 「はい…んっ、もっと、強くですね…」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股
+;潤滑がないと出来ないコマンドだよね？
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_43
+PRINTFORMW あなたは美鈴に股で挟むように指示をした
+;従順Lv+奉仕精神Lvが4以下
+IF ABL:10 + ABL:13 <= 4
+PRINTFORMW 美鈴は困惑した表情で従っている…
+PRINTL
+	PRINTFORMW 「はあ…？そのくらいなら別にかまいませんが…」
+	PRINTFORMW 「なんで私の体を自由に出来るというのに入れないのか不可解ですね」
+;従順Lv+奉仕精神Lvが5以上
+ELSE
+PRINTFORMW 美鈴は懸命に舌を絡め、吸い付いて奉仕している…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「ふあああっ♪クリ、こすれ…っ」
+		PRINTFORMW 「んっ、あんまり焦らされると我慢できなくて入れちゃうかも…」
+	;それ以外
+	ELSE
+		PRINTFORMW 「こすれて…ああっ！」
+		PRINTFORMW 「そ、そんな、にぃ！早く動かさないで下さいっ」
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;Ａ感覚も含む
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+;-------------------------------------------------
+;ビデオ撮影
+;TEQUIP:50 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_100
+;コマンド選択での撮影終了時
+IF TEQUIP:50 == 0
+	;PRINTFORMW 
+;撮影開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ビデオ鑑賞
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_101
+;PRINTFORMW 
+
+;-------------------------------------------------
+;写真撮影
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_102
+;PRINTFORMW 
+
+;-------------------------------------------------
+;羞恥プレイ
+;TEQUIP:56 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_103
+;終了時
+IF TEQUIP:56 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ
+;TEQUIP:52 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_104
+;終了時
+IF TEQUIP:52 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ベビープレイ
+;TEQUIP:58 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_108
+;終了時
+IF TEQUIP:58 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;秘貝開帳
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_110
+;PRINTFORMW 
+
+;-------------------------------------------------
+;放尿
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_111
+;PRINTFORMW 
+
+;-------------------------------------------------
+;剃毛
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_112
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毛抜き
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_113
+;PRINTFORMW 
+
+;-------------------------------------------------
+;毛を抜かせる
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_114
+;PRINTFORMW 
+
+;-------------------------------------------------
+;自慰見せつけ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_115
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人自慰見せつけ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_116
+;PRINTFORMW 
+
+;-------------------------------------------------
+;秘貝開帳見せつけ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_117
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人秘貝見せつけ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_118
+;PRINTFORMW 
+
+;-------------------------------------------------
+;焦らしプレイ
+;TEQUIP:68 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_120
+;終了時
+IF TEQUIP:68 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;射精止め（リボン巻き）
+;TEQUIP:69 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_121
+;終了時
+IF TEQUIP:69 == 0
+	;PRINTFORMW 
+;開始時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;豆責め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_122
+;PRINTFORMW 
+
+;-------------------------------------------------
+;豆絞り
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_123
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローター自慰
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_124
+;PRINTFORMW 
+
+;-------------------------------------------------
+;電マ自慰
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_125
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔面騎乗
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_126
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核クリップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_130
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;陰核電極
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_131
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;カテーテル
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_141
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;採尿器
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_142
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;バルーンカテーテル
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_143
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極カテーテル
+;TEQUIP:32 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_144
+;解除時
+IF TEQUIP:32 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;飲尿する
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_145
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道挿入
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_146
+;PRINTFORMW 
+
+;-------------------------------------------------
+;クスコ
+;TEQUIP:21 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_150
+;解除時
+IF TEQUIP:21 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ローター挿入
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_151
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;小陰唇指愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_152
+;PRINTFORMW 
+
+;-------------------------------------------------
+;愛液採集器
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_153
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナ電極
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_155
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナバーベル
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_156
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナバルーン
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_157
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ローターＡ挿入
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_170
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナル電極
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_171
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_172
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;拡張バルーン
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_173
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;浣腸プレイ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_174
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;空気浣腸
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_175
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルバーベル
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_176
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_180
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル綿棒
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_181
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナニー
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_182
+PRINTFORMW あなたは美鈴に自分で自分を責めるように指示した
+;従順Lv+露出癖が5以下
+IF ABL:10 + ABL:14 <= 5
+PRINTFORMW 美鈴はギリ、と歯を食いしばるとあなたをにらみながら自慰を始めた…
+PRINTL
+	PRINTFORMW 「そんなに私を辱めたいのですか」
+	PRINTFORMW 美鈴は屈辱的に表情をゆがませながら自慰を始めた…
+;従順Lv+奉仕精神Lvが6以上
+ELSE
+PRINTFORMW 美鈴はうっすら頬を染め自慰を始めた…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「はい…私の恥ずかしいところ、しっかり見ててくださいね…？」
+		PRINTFORMW ペロリと美鈴は自分の指を舐めるとあなたに見せ付けるようにアナルを割り広げた…
+		PRINTFORMW 「んんっ、ああっ♪…すごい、一人でするときよりずっと気持ちいい…♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「う…どうしてもしなきゃいけませんか…？え、いつも通りに？」
+		PRINTFORMW 「い、いつもなんてしてません！たまにし…か…」
+		PRINTFORMW 美鈴は途中で自分の失言に気づいたのかモジモジしながら自慰を始めた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;尻素股
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_183
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_186
+;PRINTFORMW 
+
+;-------------------------------------------------
+;顔面騎乗アナル
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_187
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルの皺数え
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_188
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳首ローター
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_190
+;PRINTFORMW 
+
+;-------------------------------------------------
+;搾乳機
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_191
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;乳腺開発
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_192
+;PRINTFORMW 
+;-------------------------------------------------
+;胸揉み
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_200
+PRINTFORMW あなたは豊満な美鈴の胸を揉みしだいた…
+;Ｂ感覚Ｌｖ3以下
+IF ABL:3 <= 3
+PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+PRINTL
+PRINTFORMW 「私、胸はそんなに感じませんから無駄だと思いますよ？」
+;Ｂ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は乳首は硬くしこり、刺激に震えている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あんっ♪ああっ！」
+		PRINTFORMW 美鈴の胸を絞り上げる度に美鈴は嬉しそうに嬌声を上げる
+		PRINTFORMW 「あまり苛められるとすぐにイっちゃいますよぅ…」
+		PRINTFORMW 美鈴は胸への悦楽に完全に溺れている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+		PRINTFORMW 「私に一体何を…ふあああっ♪」
+		PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首責め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_201
+PRINTFORMW あなたは美鈴の乳首を強く引っ張り上げた…
+;Ｂ感覚Ｌｖ3以下
+IF ABL:3 <= 3
+PRINTFORMW 美鈴は時々身をよじるだけで快感は得られていないようだ…
+PRINTL
+PRINTFORMW 「痛いだけなんですが…」
+;Ｂ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は乳首は硬くしこり、刺激に震えている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あんっ♪ああっ！」
+		PRINTFORMW 美鈴の乳首を摘まんでやる度に美鈴は嬉しそうに嬌声を上げる
+		PRINTFORMW 「あまり苛められるとすぐにイっちゃいますよぅ…」
+		PRINTFORMW 美鈴は胸への悦楽に完全に溺れている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+		PRINTFORMW 「私に一体何を…ふあああっ♪」
+		PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首舐め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_202
+PRINTFORMW あなたは美鈴の乳首を舐め回した…
+;Ｂ感覚Ｌｖ3以下
+IF ABL:3 <= 3
+PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+PRINTL
+PRINTFORMW 「私、胸はそんなに感じませんから無駄だと思いますよ？」
+;Ｂ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は乳首は硬くしこり、刺激に震えている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あんっ♪ああっ！」
+		PRINTFORMW 美鈴の乳首に強く吸い付く度に美鈴は嬉しそうに嬌声を上げる
+		PRINTFORMW 「あまり苛められるとすぐにイっちゃいますよぅ…」
+		PRINTFORMW 美鈴は胸への悦楽に完全に溺れている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+		PRINTFORMW 「私に一体何を…ふあああっ♪」
+		PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;乳首吸い
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_203
+PRINTFORMW あなたは豊満な美鈴の胸に吸い付いた…
+;Ｂ感覚Ｌｖ3以下
+IF ABL:3 <= 3
+PRINTFORMW 美鈴は時々身をよじるだけで大きな快感は得られていないようだ…
+PRINTL
+PRINTFORMW 「私、胸はそんなに感じませんから無駄だと思いますよ？」
+;Ｂ感覚Ｌｖ4以上
+ELSE
+PRINTFORMW 美鈴は乳首は硬くしこり、刺激に震えている…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あんっ♪ああっ！」
+		PRINTFORMW 美鈴の乳首を弾いてやる度に美鈴は嬉しそうに嬌声を上げる
+		PRINTFORMW 「あまり苛められるとすぐにイっちゃいますよぅ…」
+		PRINTFORMW 美鈴は胸への悦楽に完全に溺れている…
+	;それ以外
+	ELSE
+		PRINTFORMW 「くっ…うん、そんな、あっ、胸だけでこんなに感じるなんて…」
+		PRINTFORMW 「私に一体何を…ふあああっ♪」
+		PRINTFORMW 美鈴は胸への刺激に甘い声を上げた…
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;母乳飲み
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_204
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸自慰
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_205
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳スパンキング
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_206
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳ファック
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_207
+;PRINTFORMW 
+
+;-------------------------------------------------
+;縦パイズリ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_208
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パイズリフェラ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_209
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳合わせ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_210
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳合わせ見せつけ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_211
+;PRINTFORMW 
+
+;-------------------------------------------------
+;スパンキング
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_220
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鞭
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_221
+;PRINTFORMW 
+
+;-------------------------------------------------
+;針
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_222
+;PRINTFORMW 
+
+;-------------------------------------------------
+;蝋燭
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_223
+;PRINTFORMW 
+
+;-------------------------------------------------
+;縄
+;TEQUIP:40 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_224
+;解除時
+IF TEQUIP:40 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アイマスク
+;TEQUIP:41 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_225
+;解除時
+IF TEQUIP:41 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_230
+;PRINTFORMW 
+
+;-------------------------------------------------
+;フィストファック
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_231
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルフィスト
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_232
+;PRINTFORMW 
+
+;-------------------------------------------------
+;両穴フィスト
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_233
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ツボを突く
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_236
+;PRINTFORMW 
+
+;---------------------------------------------
+;足で踏む
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_240
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腹パン
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_241
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ビンタを張る
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_251
+;PRINTFORMW 
+
+;-------------------------------------------------
+;罵ってもらう
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_270
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足を舐める
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_271
+;PRINTFORMW 
+
+;-------------------------------------------------
+;叩いてもらう
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_272
+;PRINTFORMW 
+
+;-------------------------------------------------
+;鞭で打ってもらう
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_273
+;PRINTFORMW 
+
+;-------------------------------------------------
+;コンドーム
+;TEQUIP:31 == 0で解除口上
+;TFLAG:99により着脱者と状況が分岐
+;0=調教者奴隷双方が選択できるかつ調教者が着脱
+;1=調教者奴隷双方が選択できるかつ奴隷が着脱
+;2=調教者しか着脱できない
+;3=奴隷しか着脱できない
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_290
+SELECTCASE TFLAG:99
+	CASE 0
+		;解除
+		IF TEQUIP:PLAYER:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 1
+		;解除
+		IF TEQUIP:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 2
+		;解除
+		IF TEQUIP:PLAYER:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+	CASE 3
+		;解除
+		IF TEQUIP:31 == 0
+			;PRINTFORMW 
+		;装着時
+		ELSE
+			;PRINTFORMW 
+		ENDIF
+ENDSELECT
+
+;-------------------------------------------------
+;クンニ強制
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_300
+;PRINTFORMW 
+
+;-------------------------------------------------
+;貝あわせ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_301
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足コキする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_302
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人フェラチオ
+;奴隷と助手が主人の竿に奉仕する
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_303
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二本フェラチオ
+;奴隷が主人と助手の竿に奉仕する
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_304
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人でパイズリ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_305
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人で素股
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_306
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯させる
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_307
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯させる
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_308
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手とキスする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_309
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人の尻を叩く
+;奴隷と助手にスパンキングする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_310
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻を二人で叩く
+;主人と助手が奴隷にスパンキングする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_311
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人のＶをフィスト
+;奴隷と助手にフィストファックする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_312
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人のＡをフィスト
+;奴隷と助手にアナルフィストする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_313
+;PRINTFORMW 
+
+;-------------------------------------------------
+;優しくする
+;TFLAG:144で地の文が変化する
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_320
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫する
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_321
+;PRINTFORMW 
+
+;-------------------------------------------------
+;パイズリする
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_322
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ペニバン挿入
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_326
+;PRINTFORMW 
+
+;-------------------------------------------------
+;指チュパ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_327
+;PRINTFORMW 
+
+;-------------------------------------------------
+;首筋耳裏責め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_328
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナを拭く
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_336
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人で首筋耳裏責め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_337
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ぱふぱふ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_340
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸枕
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_341
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳繰り合う
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_342
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳ビンタ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_343
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳の揉み合い
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_344
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お風呂を楽しむ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_345
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お外を楽しむ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_346
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お嫁さんで楽しむ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_347
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ふぉーゆーっ！
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_349
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お風呂場プレイ
+;TEQUIP:53 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_350
+;解除時
+IF TEQUIP:53 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;シャワー
+;TEQUIP:54 == 0で解除口上
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_351
+;解除時
+IF TEQUIP:54 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;Ｇスポット刺激
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_600
+PRINTFORMW あなたは美鈴のＧスポットを強く摩擦した
+;Ｖ感覚Ｌｖ２以下
+IF ABL:1 <= 2
+PRINTFORMW 美鈴は予想外の強い刺激に目を白黒させている…
+PRINTL
+	PRINTFORMW 「な、なんですかそこっ！？」
+	PRINTFORMW 「ムズムズして…」
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴は腰を浮かせながら潮を勢いよく吹きだした…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あ…♪」
+		PRINTFORMW あなたがＧスポットに指を置くと美鈴は期待に満ちた目であなたを見つめる
+		PRINTFORMW 「ごくっ………お、お願いです」
+		PRINTFORMW 「滅茶苦茶にして下さ…ああぁああぁあああっ！！！」
+		PRINTFORMW 美鈴はブリッジしながらよがり狂った…
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめ…っ、ああっ、んあああああっ♪」
+		PRINTFORMW 首を必死に左右に振りながらも、美鈴は甘い声を上げる
+		PRINTFORMW 「出ちゃう！あっ、あっ、何か出ちゃいます！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ2以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:2
+SOURCE:32 += 5000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;潜望鏡
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_601
+;PRINTFORMW 
+
+;-------------------------------------------------
+;シックスナイン
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_602
+;PRINTFORMW 
+
+;-------------------------------------------------
+;６９パイズリ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_603
+;PRINTFORMW 
+
+;-------------------------------------------------
+;雁が首
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_604
+;PRINTFORMW 
+
+;-------------------------------------------------
+;二人で犯す
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_610
+;PRINTFORMW 
+
+;-------------------------------------------------
+;岩清水
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_611
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乱れ牡丹
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_612
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗乳房自慰
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_613
+;PRINTFORMW 
+
+;-------------------------------------------------
+;挿入Ｇスポ責め
+;Ｇスポといえば潮。潮といえばＧスポ。
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_614
+PRINTFORMW あなたは美鈴のＧスポットを強く摩擦した
+;Ｖ感覚Ｌｖ２以下
+IF ABL:1 <= 2
+PRINTFORMW 美鈴は予想外の強い刺激に目を白黒させている…
+PRINTL
+	PRINTFORMW 「な、なんですかそこっ！？」
+	PRINTFORMW 「知らないっ、そんな…あああっ！だめっ、やめてくださいっ！」
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴は腰を浮かせながら潮を勢いよく吹きだした…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「あああぁあっ！！ら、らめれすっ、そこっ！感じすぎちゃ…っ！」
+		PRINTFORMW 膣内でも特に敏感な部分を刺激されて美鈴は呂律すら回っていない
+		PRINTFORMW 「ふあっ、りゃめ♪ひあぁああぁっ！！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「やめ…っ、ああっ、んあああああっ♪」
+		PRINTFORMW 首を必死に左右に振りながらも、美鈴は甘い声を上げる
+		PRINTFORMW 「出ちゃう！あっ、あっ、何か出ちゃいます！」
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;挿入子宮口責め
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_615
+PRINTFORMW あなたは美鈴の最奥を勢いよく突いた
+;Ｖ感覚Ｌｖ２以下
+IF ABL:1 <= 2
+PRINTFORMW 美鈴は苦しげに目を閉じている…
+PRINTL
+	PRINTFORMW 「く、苦し…っ！もう少し手加減してください…っ！」
+	PRINTFORMW 美鈴の膣内は未だ固さが取れず、奥もあまり満足に突く事ができない…
+;Ｖ感覚Ｌｖ３以上
+ELSE
+PRINTFORMW 美鈴は子宮口を刺激され声無き悲鳴を上げた…
+PRINTL
+	;恋慕である
+	IF TALENT:150 == 1
+		PRINTFORMW 「～～～っ！！あ゛っ！あああっっ！！！」
+		PRINTFORMW 美鈴の子宮は自然と降り、あなたの精液をしきりにねだっている…
+		PRINTFORMW 「ああっ！うあっ！！種付けされちゃ、私種付けされちゃいますっ！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「～～～っ！！」
+		PRINTFORMW 美鈴は全身を震わせ目を白黒させている…
+	ENDIF
+ENDIF
+
+;なお、潤滑Ｌｖ３以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+IF PALAM:10 <= PALAMLV:3
+SOURCE:32 += 10000
+;好感度-5
+CFLAG:2 -= 5
+ENDIF
+
+;-------------------------------------------------
+;後背位愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_616
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_617
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位アナル胸愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_618
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面アナル胸愛撫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_619
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強制放尿
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_620
+;PRINTFORMW 
+
+;-------------------------------------------------
+;口移し
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_621
+;PRINTFORMW 
+
+;-------------------------------------------------
+;四肢緊縛
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_622
+;PRINTFORMW 
+
+;-------------------------------------------------
+;亀甲縛り
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_623
+;PRINTFORMW 
+
+;-------------------------------------------------
+;吊り下げ
+;解除口上は縄コマンドに書くこと
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_624
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローションプレイ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_625
+;PRINTFORMW 
+
+;-------------------------------------------------
+;搾乳
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_626
+;PRINTFORMW 
+
+;-------------------------------------------------
+;乳首甘噛み
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_627
+;PRINTFORMW 
+
+;-------------------------------------------------
+;相互自慰
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_628
+;PRINTFORMW 
+
+;-------------------------------------------------
+;サンドイッチ
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_629
+;PRINTFORMW 
+
+;-------------------------------------------------
+;後背位手淫
+;-------------------------------------------------
+@KOJO_6_TRAIN_MESSAGE_S_COM_630
+;PRINTFORMW 
+
+;========================================================
+;@KOJO_X_MESSAGE_PALAMCNG
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;========================================================
+@KOJO_6_MESSAGE_PALAMCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+
+;処女喪失時のメッセージ呼び出し
+SIF TALENT:処女 && TFLAG:1
+	TRYCALL K6_MESSAGE_LOST_VIRGIN
+;初めてPALAMがLV2超えた時の口上呼び出し
+FOR LOCAL, 0, 35
+	SIF PALAM:LOCAL + UP:LOCAL > PALAMLV:2 && CFLAG:(5320 + LOCAL) == 0
+		TRYCALLFORM K6_MESSAGE_OVERLV2_{LOCAL}
+NEXT
+;絶頂時の口上呼び出し
+FOR LOCAL, 0, 50
+	SIF NOWEX:LOCAL
+		TRYCALLFORM K6_MESSAGE_ORGASM_{LOCAL}
+NEXT
+;射精させた
+FOR LOCAL, 8, 30
+	SIF TFLAG:LOCAL
+		TRYCALLFORM K6_MESSAGE_EJAC_PLAYER_{LOCAL}
+NEXT
+PRINTL
+;-------------------------------------------------
+;Ｃ絶頂への道 CFLAG5416
+;-------------------------------------------------
+;Ｃ絶頂未経験であり、特定の調教を行った
+IF CFLAG:5400 == 0 && GROUPMATCH(SELECTCOM, 0, 1, 7, 10, 11, 14, 43, 110, 122, 123, 124, 125, 606, 611)
+;初めてC快感のパラメータが1500を超えた(PALAMLV:2に相等）
+	IF PALAM:0 >= 1500 && PALAM:0 <= 5999
+		IF CFLAG:5416 == 0
+			PRINTFORMW 「そ、そこは敏感ですからあまり触らないでください…っ」
+		CFLAG:5416 = 1
+		ELSEIF CFLAG:5416 >= 1
+			PRINTFORMW 「んんっ、くっ、もうすこし優しく…」
+		ENDIF
+	;初めて初めてC快感のパラメータが6000を超えた(PALAMLV:3に相等）
+	ELSEIF PALAM:0 >= 6000 && PALAM:0 <= 9999
+		IF CFLAG:5416 == 1
+			PRINTFORMW 「く…ふ…豆が、痺れて…」
+		CFLAG:5416 = 2
+		ELSEIF CFLAG:5416 == 2
+			PRINTFORMW 「だ、だめですっ、それ以上触ら…んんっ」
+			PRINTFORMW 美鈴のクリトリスはピクピクと震えている…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂への道 CFLAG5417
+;Ｖ経験も絶頂経験もある美鈴です。スマートにイかせなきゃ調教師の名折れです。
+;-------------------------------------------------
+;恋慕である
+IF TALENT:150 == 1
+	;Ｖ絶頂未経験であり、主人TNTN系
+	IF CFLAG:5401 == 0 && GROUPMATCH(SELECTCOM, 20, 21, 22, 23, 24, 27, 28)
+	;初めてV快感のパラメータが1500を超えた(PALAMLV:2に相等）
+		IF PALAM:1 >= 1500 && PALAM:1 <= 5999
+			IF CFLAG:5417 == 0
+				PRINTFORMW 「その…嬉しいです…あなたが感じられて…」
+				CFLAG:5417 = 1
+			ELSEIF CFLAG:5417 >= 1
+				PRINTFORMW 「ふ…くっ…、大丈夫、もっと激しく…！」
+			ENDIF
+		;初めてV快感のパラメータが6000を超えた(PALAMLV:3に相等）
+		;一気に駆け上がれ！
+		ELSEIF PALAM:1 >= 6000 && PALAM:1 <= 9999
+			IF CFLAG:5417 == 1
+				PRINTFORMW 「すごいっ、ああっ、こんな、あああっ！！」
+				CFLAG:5417 = 2
+			ELSEIF CFLAG:5417 == 2
+				PRINTFORMW 「イクっ、イきそうです…っ！！」
+			ENDIF
+		ENDIF
+	ENDIF
+;恋慕でない
+;ここからが本番ですよね。悔しい…でも…ビクンビクンさせましょう。但し中田氏、テメーは恋慕がつくまでだめだ。
+ELSEIF TALENT:150 == 0
+	;Ｖ絶頂未経験であり、主人TNTN系
+	IF CFLAG:5401 == 0  && GROUPMATCH(SELECTCOM, 20, 21, 22, 23, 24, 27, 28)
+	;初めてV快感のパラメータが1500を超えた(PALAMLV:2に相等）
+		IF PALAM:1 >= 1500 && PALAM:1 <= 5999
+			IF CFLAG:5417 == 0
+				PRINTFORMW 「くっ、ふっ…その程度ですか？」
+			CFLAG:5417 = 1
+			ELSEIF CFLAG:5417 >= 1
+				PRINTFORMW 「あ、諦めたらどうです？」
+			ENDIF
+		;初めて初めてV快感のパラメータが6000を超えた(PALAMLV:3に相等）
+		ELSEIF PALAM:1 >= 6000 && PALAM:1 <= 9999
+			IF CFLAG:5417 == 1
+				PRINTFORMW 「激しっ、んんっ、もうすこしゆっくり…っ！」
+			CFLAG:5417 = 2
+			ELSEIF CFLAG:5417 == 2
+				PRINTFORMW 「だめっ、もう…っ！！」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ絶頂への道 CFLAG5418
+;-------------------------------------------------
+;Ａ絶頂未経験であり、特定の調教を行った
+IF CFLAG:5402 == 0 && GROUPMATCH(SELECTCOM, 2, 13, 30, 31, 32, 33, 34, 37, 38, 170, 180, 182, 183)
+;初めてA快感のパラメータが1500を超えた(PALAMLV:2に相等）
+	IF PALAM:2 >= 1500 && PALAM:2 <= 5999
+		IF CFLAG:5418 == 0
+			PRINTFORMW 「痛っ、な、なんてところを！」
+		CFLAG:5418 = 1
+		ELSEIF CFLAG:5418 >= 1
+			PRINTFORMW 「ぐぅ…」
+			PRINTFORMW 美鈴はアナルを刺激されるたびにうめき声を上げている…
+		ENDIF
+	;初めて初めてA快感のパラメータが6000を超えた(PALAMLV:3に相等）
+	ELSEIF PALAM:2 >= 6000 && PALAM:2 <= 9999
+		IF CFLAG:5418 == 1
+			PRINTFORMW 「く…ふ…」
+			PRINTFORMW （な、何が！？この、感覚は…？）
+		CFLAG:5418 = 2
+		ELSEIF CFLAG:5418 == 2
+			PRINTFORMW 「だ、だめですっ！もうお尻はやめてください…」
+			PRINTFORMW 美鈴のアナルは柔らかくほぐれ、あなたの刺激を受け入れ始めているようだ…
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ絶頂への道 CFLAG5419
+;-------------------------------------------------
+;Ｂ絶頂未経験であり、特定の調教を行った
+IF CFLAG:5403 == 0 && GROUPMATCH(SELECTCOM, 0, 3, 7, 15, 42, 190, 200, 201, 202, 203, 205, 606, 627)
+;初めてB快感のパラメータが1500を超えた(PALAMLV:2に相等）
+	IF PALAM:3 >= 1500 && PALAM:3 <= 5999
+		IF CFLAG:5419 == 0
+			PRINTFORMW 「う…触られ続ければ生理反応で乳首くらい立ちますよ…」
+		CFLAG:5419 = 1
+		ELSEIF CFLAG:5419 == 1
+			PRINTFORMW 「あ…ん…」
+			PRINTFORMW 美鈴は声が抑えられなくなってきているようだ…
+			CFLAG:5419 = 2
+		ELSEIF CFLAG:5419 == 2
+			PRINTFORMW 「ん…」
+		ENDIF
+	;初めて初めてB快感のパラメータが6000を超えた(PALAMLV:3に相等）
+	ELSEIF PALAM:3 >= 6000 && PALAM:3 <= 9999
+		IF CFLAG:5419 >= 1
+			PRINTFORMW 「いつまでさわるんですか…ぁん…」
+		CFLAG:5419 = 3
+		ELSEIF CFLAG:5419 == 3
+			PRINTFORMW 「それ以上だめ…です…んんっ！」
+		ENDIF
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------
+;絶頂時の口上 CFLAG 5400～を使用
+;@KOJO_6_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;Ｃ絶頂 CFLAG:5400
+;-------------------------------------------------
+IF NOWEX:0 > 0
+	;初めて
+	IF CFLAG:5400 == 0
+		PRINTFORMW 「あ…あああっ！こ、これ以上…っ！」
+		PRINTFORMW 「痺れ…っ、あっ、だめ！イクっ、イきますっ！」
+		PRINTFORMW 美鈴は敏感なクリトリスで絶頂した…
+		CFLAG:5400 = 1
+	;２回目以降
+	ELSE
+		;今回の調教でのＣ絶頂が50以上
+		;IF EX:0 >= 50
+			;PRINTFORMW 
+		;ELSE
+			PRINTFORMW 「も、もう許してくださ…ああっ！」
+			PRINTFORMW 「イクっ！またクリトリスでイっちゃう！！」
+			PRINTFORMW 「…っ！…っ！」
+		;ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ絶頂 CFLAG:5401
+;-------------------------------------------------
+IF NOWEX:1 > 0
+	;初めて
+	IF CFLAG:5401 == 0
+		PRINTFORMW 「嘘です…こんな人に…あああっっ！！」
+		PRINTFORMW 美鈴の膣は小刻みに震え限界を迎えようとしている
+		PRINTFORMW 「嫌…っ、イきたく…っ………ぁ…………」
+		CFLAG:5401 = 1
+	;２回目以降
+	ELSE
+		;恋慕である
+		IF TALENT:150 == 1
+			;正常位だった
+			;イメージとしてはだいしゅきホールド
+			IF SELECTCOM == 20
+				PRINTFORMW 「いいっ！あ、ん、くぅ！」
+				PRINTFORML 奥を突く度膣壁がヒクヒク震えながらあなたを締め付けている
+				PRINTFORMW 「こ、これ以上我慢できな…っ！」
+				PRINTFORML 背に手が回され、腰には脚が絡みついた
+				PRINTFORMW 「お願い、そのまま、出してっ、出してっ！！あ、ああっ！っ！～～っ！」
+			;後背位だった
+			;レイポゥのごとく恋慕になってからも泣かせまくりたい
+			ELSEIF SELECTCOM == 21
+				PRINTFORMW 「深…、奥、こつこつあたって…っ！」
+				PRINTFORML 涎をたらしながら腰砕けになってしまった美鈴を押さえつけるようにしながらあなたは強く肉棒を打ちつけた
+				PRINTFORMW 「ひぐっ、あっ、あっ、ぃあっ！らめ、ひぬ、ひんりゃ…」
+				PRINTFORML 美鈴は必死にもがこうとしているが、肉体はより大きな快楽を求め逃れることを許しはしない
+				PRINTFORMW 「あっ、あ゛ああっ！イクっ！イ…っ！まっへ、私、イって…」
+			;対面座位だった
+			;開発すれば2箇所同時絶頂がデフォになりますが基本この口上が優先されるようにします
+			;幸せすぎてβエンドルフィンだだもれ
+			ELSEIF SELECTCOM == 22
+				PRINTFORMW 「んむっ、うっ、んぅ…ちゅ…、んっ…」
+				PRINTFORML 美鈴はあなたを強く抱きしめながらあなたの腰の動きに合わせ淫靡に踊っている…
+				PRINTFORMW 次第に腕に力がこもり、口内で蠢く舌が熱を帯びてくる
+				PRINTFORMW 「ぢゅ、ぷぁ、んんっ、ぢゅるっ、ちゅ、んんっ…ん！んんーー！」
+				PRINTFORMW あなたに抱きつきながら口の端から粘度の高い涎をたらし、美鈴はガクガクと痙攣している…
+			;背面座位だった
+			;開発すれば3箇所同時絶頂がデフォになりますが基本この口上が優先されるようにします
+			ELSEIF SELECTCOM == 23
+				PRINTFORML コリコリと乳首を指先で転がしながらあなたは美鈴の体を揺さぶり続ける
+				PRINTFORMW 「お、奥っ、突きながら、っ、乳首までいじめないでくださいよぉ…」
+				PRINTFORMW 美鈴は背を丸めて必死に絶頂をこらえているようだ
+				PRINTFORMW とどめを刺すべく、あなたはクリトリスをひねり上げた
+				PRINTFORML 瞬間美鈴の腰が跳ね、胸を突き出す
+				PRINTFORMW 同時に美鈴は膣を強く締め付けながら絶頂した…
+			;騎乗位だった
+			;個人的に正常位の次くらいに好きな体位です。
+			ELSEIF SELECTCOM == 24
+				PRINTFORML 「気持ちいいっ、あっ、すごっ、いいっ」
+				PRINTFORMW 美鈴は膣を満たす肉棒に夢中になって腰を振っている、次第に愛液は白く濁り始めた…
+				PRINTFORMW 「は、早くイって、出してくださ…、これ以上、も、無理…っ」
+				PRINTFORMW 「っ！あああっ！！」
+				PRINTFORMW 「そん、な、いきなり、激し、ああぁああぁあっ！！」
+			;対面立位だった
+			;イメージは48手「かなえ」、片足駅弁とか松葉崩しの立ったVerっていうと想像しやすいかな？
+			ELSEIF SELECTCOM == 27
+				PRINTFORMW 美鈴はあなたの首に腕を回し、快感のあまり涙をポロポロとながしながらなすがままになっている
+				PRINTFORMW 「はっ、あっ、ん…深…、あぁ…あっ……」
+				PRINTFORMW 次第に愛液が白く濁り始め、ガクガクと震える足は体重を支えられなくなっていった
+				PRINTFORMW 「ご、ごめんなさい、もう…っ！あっ！んんっ、ん、っ、～～っ！っ！」
+				PRINTFORMW あなたが強く抱き寄せると、あなたの首筋に口元を押し付けながら美鈴は激しく痙攣した…
+			;背面立位だった
+			;立ちバック
+			ELSEIF SELECTCOM == 28
+				PRINTFORMW あなたは絶対に膝を折るなと命令すると、勢いよく美鈴の奥を突き始めた…
+				PRINTFORMW 「はっあああっ！！いっ！む、むりっ、イっちゃ、だめです！あっ！あああっ！」
+				PRINTFORMW 痙攣して暴れる膝を無理やり伸ばし、尻を突き出す形になった美鈴を容赦なくあなたは三点責めで追い詰めてゆく
+				PRINTFORMW 「～～～っ！！っ！……あが……、…あ……っ！！」
+				PRINTFORMW 半ば白目を剥いて意識を飛ばす美鈴の足元には淫らな水溜りができていた…
+			;挿入Ｇスポ責め
+			ELSEIF SELECTCOM == 614
+				;前のコマンドが対面系
+				IF GROUPMATCH(PREVCOM, 20, 22, 24, 27)
+					PRINTFORMW あなたは大きく張った亀頭のエラでＧスポを擦り続ける…
+				;それ以外
+				ELSE
+					PRINTFORMW あなたはＧスポを抉りこむように突き続ける…
+				ENDIF
+				PRINTFORMW 「ひあ゛っ、あっ、あっ、～～～っ！っ！」
+				PRINTFORMW 美鈴は背骨が折れてしまうのではないかと思うくらい背を反らして潮を吹きながらよがり狂う
+				PRINTFORMW 「～～っ！あっ！がっ！ひぬっ、ひんりゃ…っっ！！」
+				PRINTFORMW 美鈴は強く痙攣したまま数分の間絶頂から降りることを許されなかった…
+			;挿入子宮口責め
+			ELSEIF SELECTCOM == 615
+				PRINTFORMW 「お、奥っ、キスされて、ああっ！りゃめ、溶ける、とけちゃ…っ、っ！」
+				PRINTFORMW 深く肉棒を突き刺したまま子宮口をグリグリと圧迫してやるとたちまち美鈴は全身を弛緩させてあなたのなすがままになってしまった
+				PRINTFORMW 腰を強く突き上げるたびに美鈴はガクガクと全身を揺さぶられており
+				PRINTFORMW 接合部からは愛液がとめどなくあふれ、グチュグチュと淫らな音を立てる
+				PRINTFORMW 「～～っ、あっ、……ぁ…あぁ…」
+				PRINTFORMW どこか夢見心地な表情で秘肉を痙攣させながら美鈴は涎をたらしている
+				PRINTFORMW 「ひゃめぇ…まっひろに……ぁ……らして、そのままぁ……」
+			;指挿入れだった
+			ELSEIF SELECTCOM == 4
+				PRINTFORMW 「ご、ごめんなさい…、もう…むりっ…！」
+				PRINTFORMW 膣肉が小刻みに痙攣をはじめ、美鈴の腰が次第に浮いてゆく
+				PRINTFORMW あなたは手首を返すと膣の天井を強く圧迫した
+				PRINTFORMW 「ひあああっ！？あっ！あああぁあぁ！」
+			;指挿入れでバイブまで入ってた
+			ELSEIF SELECTCOM == 4 && TEQUIP:20 > 0
+				PRINTFORMW 「あっ、これっ、すご…すぎっ」
+				PRINTFORMW あなたはペニスでは不可能なねじりこむような動きで美鈴の秘肉をこねくり回した
+				PRINTFORMW 空気と混じり愛液がぐちゃぐちゃとあわ立っている…
+				PRINTFORMW 「も、もうむりですっ！イクっ！イきますっ！ああっ、あああぁあ！？」
+			;Ｇスポ責め
+			ELSEIF SELECTCOM == 600
+				PRINTFORMW 「こすれっ…ン……ひあ゛っ！あああ゛っっ！！」
+				PRINTFORMW ぷっくりと膨れ上がってきた美鈴のＧスポットを激しく指で擦り続けると美鈴は他愛無く潮を吹き上げた
+				PRINTFORMW 「ひぅ！あっ！ああっ！でてっ、でて……るぅ……っ！」
+				PRINTFORMW 「ぉああっ！！れてるっれてますから、もうやめ…っ！～～～っっ！っ！」
+				PRINTFORMW あなたは布団のシーツがびしょびしょになるまで美鈴に潮を吹かせ続けた…
+			;Ｇスポ攻めでバイブまで入ってた
+			ELSEIF SELECTCOM == 600 && TEQUIP:20 > 0
+				PRINTFORMW 「あ……っ…っ、～～っ！！」
+				PRINTFORMW 振動するバイブを強くＧスポットに押し付けながらグリグリとねじ回してやると美鈴は声も無く痙攣を始めた
+				PRINTFORMW 「………ぎっ…………、…っ！」
+				PRINTFORMW 愛液を潮のように噴出しながら美鈴は狂うような快楽に晒され続けた…
+			ENDIF
+			
+			;美鈴の絶頂と一緒に射精した（中田氏）
+			IF TFLAG:11 > 0
+				;大量射精
+				IF TFLAG:11 >= 2
+					PRINTFORMW 美鈴の絶頂にあわせ、膣内に収まりきらないほど大量の精液を解き放つ
+					PRINTFORMW 注がれた精液は膣内と子宮を満たし、結合部からボタボタとこぼれている…
+				;射精
+				ELSEIF TFLAG:11 == 1
+					PRINTFORMW あなたも美鈴の絶頂にあわせ奥深くに精液を解き放つ
+				ENDIF
+				;精液中毒Lv3以上である
+				IF ABL:31 >= 3
+					PRINTFORMW 「あ、あぁ…、ぁー……っ……♪」
+					PRINTFORMW 膣肉は主の意思を代弁するかのように、より多くの精液を求め蠢いている…
+				;それ以外
+				ELSE
+					PRINTFORMW 「あ…すごい、でて…」
+				ENDIF
+			ENDIF
+			
+			;美鈴がおもらし癖を持ち、放尿した
+			IF TALENT:45 == 1 && NOWEX:12 > 0
+				PRINTFORMW 「あ……ぁー……はァ……♪」
+				PRINTFORMW 絶頂を終えて弛緩した美鈴の股間から小水があふれ出している…
+			ENDIF
+		;その他
+		ELSE
+			PRINTFORMW 「もう…ダメ………っ」
+			PRINTFORMW 美鈴はあなたの腕を強く掴む
+			PRINTFORMW 「イっちゃ…あ…あああぁあぁぁああ！！」
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ａ絶頂 CFLAG:5402
+;-------------------------------------------------
+IF NOWEX:2 > 0
+	;初めて
+	IF CFLAG:5402 == 0
+		PRINTFORMW 「嫌ぁ…来る…きちゃう……」
+		PRINTFORMW 美鈴は涙をこぼしながら首を横に来る
+		PRINTFORMW 「お尻でなんて…いやぁ、い、ああああぁあぁっ！！」
+		CFLAG:5402 = 1
+	;２回目以降
+	ELSE
+		PRINTFORMW 「お尻…またイクっ、ああぁあ！くる！あっ！」
+		PRINTFORMW 「イきますっ、あっ、お尻でイきますっ！！」
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;Ｂ絶頂 CFLAG:5403
+;-------------------------------------------------
+IF NOWEX:3 > 0
+	;初めて
+	IF CFLAG:5403 == 0
+		PRINTFORMW 「知らない…胸がこんなに気持ちいなんて知らない…」
+		PRINTFORMW 美鈴は人差し指を折り曲げ強く噛み締めた
+		PRINTFORMW 「ふぐっ、うっ、うううううぅうぅ！！」
+		CFLAG:5403 = 1
+	;２回目以降
+	ELSE
+		;恋慕である
+		IF TALENT:150 == 1
+			;母乳体質かつ噴乳した
+			IF TALENT:134 == 1 && NOWEX:10 > 1
+				;胸愛撫系
+				IF GROUPMATCH(SELECTCOM, 0, 3, 200, 201, 202, 203, 204, 606, 626, 627,)
+					PRINTFORMW 「ふあぁあぁああ♪」
+					PRINTFORMW 美鈴は母乳を噴出しながら悶え狂う…
+					PRINTFORMW 「あっ、ああっ！もっと！もっと搾ってくださいぃぃ♪」
+				;パイズリor縦パイズリor６９パイズリ
+				ELSEIF GROUPMATCH(SELECTCOM, 42, 208, 603)
+					PRINTFORMW 「が、我慢できません…」
+					PRINTFORMW 胸であなたの肉棒を被いながら美鈴は自分の乳首をこね回す
+					PRINTFORMW 「ふぁ…でてます…でてますぅ…」
+					PRINTFORMW 母乳まみれになった肉棒を美鈴は愛しげに摩擦している…
+				;パイズリフェラ
+				ELSEIF SELECTCOM == 209
+					PRINTFORMW 「ふぐっ…んむううぅぅ！！んんんっっ！！」
+					PRINTFORMW 美鈴は母乳を噴出し、胸で絶頂を迎えながらあなたのペニスを必死に咥えむ
+					PRINTFORMW 「ん…ふぅ……、ちゅる、ちゅ……」
+					PRINTFORMW ミルクまみれになったペニスを美鈴はおいしそうになめ回している…
+				;自慰系
+				ELSEIF GROUPMATCH(SELECTCOM, 7, 124, 125, 205, 613, 628)
+					PRINTFORMW 「……っ！だめです、手がとまらな…っ！」
+					PRINTFORMW 「出た、お乳でちゃいましたぁ♪」
+					PRINTFORMW 美鈴は夢中で自分の胸から母乳を搾り出している…
+				;乳首ローター
+				ELSEIF SELECTCOM == 190
+					PRINTFORMW 「ち、乳首震えて…やああぁあっ！！」
+					PRINTFORMW 乳首にローターを押し当ててやるたびにトロトロと母乳が噴き出してくる
+					PRINTFORMW 首を必死に振りながら悶える美鈴をあなたは苛め倒した…
+				;ＳＭ系
+				ELSEIF GROUPMATCH(SELECTCOM, 206, 207)
+					PRINTFORMW 「んっ、痛っ、嘘…痛いのに、出しながら感じちゃうなんて…」
+					PRINTFORMW 「もっと、もっとしてくださ…あああっ！！」
+				;Ｂ系装着器具による経過絶頂
+				ELSEIF TEQUIP:35 == 1
+					PRINTFORMW 「んあっ、ああああっ！！おっぱいが、ふああっ、と、とまりません…♪」
+					PRINTFORMW 器具の休む事無き刺激に、母乳を噴出しながら美鈴は悶えている…
+				;サラシ巻いてる
+				ELSEIF TEQUIP:36 == 1
+					PRINTFORMW 「胸が締まって…んく…、おっぱいでてます…」
+					PRINTFORMW 押しつぶされた胸から母乳があふれだし、布越しにボタボタと母乳がこぼれている…
+				;それ以外（器具外し系がおおいかな？）
+				ELSE
+					PRINTFORMW 「ま、まってくださ……ふあぁぁあ♪」
+					PRINTFORMW 「くひっ、ひっ、おっぱい出るたびイって…イってます…」
+				ENDIF
+			;母乳体質でない
+			ELSE
+				;胸愛撫系
+				IF GROUPMATCH(SELECTCOM, 0, 3, 200, 201, 202, 203, 204, 606, 626, 627,)
+					PRINTFORMW 「ふあぁあぁああ♪」
+					PRINTFORMW 美鈴は乳首をビンビンに勃起させながら絶頂している…
+					PRINTFORMW 「あっ、ああっ！もっと！もっと搾ってくださいぃぃ♪」
+				;パイズリor縦パイズリor６９パイズリ
+				ELSEIF GROUPMATCH(SELECTCOM, 42, 208, 603)
+					PRINTFORMW 「が、我慢できません…」
+					PRINTFORMW 胸であなたの肉棒を被いながら美鈴は自分の乳首をこね回す
+					PRINTFORMW 「ふぁ…先っぽ…ジンジンして…ひあぁっ」
+					PRINTFORMW 美鈴はあなたに奉仕しながら胸で絶頂を迎えている…
+				;パイズリフェラ
+				ELSEIF SELECTCOM == 209
+					PRINTFORMW 「ふぐっ…んむううぅぅ！！んんんっっ！！」
+					PRINTFORMW 美鈴は胸を大きく突き出しながらペニスを深く咥え込んだ
+					PRINTFORMW 「んっ、くっ、ふぐっ…う…」
+					PRINTFORMW ブルブルと震えながら美鈴は喉でペニスを味わっているようだ…
+				;自慰系
+				ELSEIF GROUPMATCH(SELECTCOM, 7, 124, 125, 205, 613, 628)
+					PRINTFORMW 「……っ！だめです、手がとまらな…っ！」
+					PRINTFORMW 「～～～っ！！あ…っっ！…っ！」
+					PRINTFORMW 美鈴は胸を自ら押しつぶしながら涎をこぼしている…
+				;乳首ローター
+				ELSEIF SELECTCOM == 190
+					PRINTFORMW 「ち、乳首震えて…やああぁあっ！！」
+					PRINTFORMW 乳首にローターを押し当ててやるたびに必死に美鈴は首を振っている
+					PRINTFORMW 「あたま…頭おかしくなっちゃいます…」
+				;ＳＭ系
+				ELSEIF GROUPMATCH(SELECTCOM, 206, 207)
+					PRINTFORMW 「んっ、痛っ、嘘…痛いのに、痛いのに気持ちいいなんて…」
+					PRINTFORMW 「もっと、もっとしてくださ…あああっ！！」
+				;Ｂ系装着器具による経過絶頂
+				ELSEIF TEQUIP:35 == 1
+					PRINTFORMW 「んあっ、ああああっ！！胸でイくの、ふああっ、と、とまりません…♪」
+					PRINTFORMW 器具の休む事無き刺激に、美鈴は悶えている…
+				;サラシ巻いてる
+				ELSEIF TEQUIP:36 == 1
+					PRINTFORMW 「あっ、サラシを巻いただけで、…っ、こんなに、感じるなんて…」
+					PRINTFORMW 「もう、イ……っちゃ……」
+				;それ以外（器具外し系がおおいかな？）
+				ELSE
+					PRINTFORMW 「ま、まってくださ……ふあぁぁあ♪」
+					PRINTFORMW 「くひっ、ひっ、おっぱいイって…イってます…」
+				ENDIF
+			ENDIF
+		;恋慕でない
+		ELSE
+			;母乳体質である
+			IF TALENT:134 == 1
+				PRINTFORMW 
+			;母乳体質でない
+			ELSE
+				PRINTFORMW 「ふあ…あんっ、ああっ！！」
+				PRINTFORMW 「我慢、出来ないっ！イくっ、おっぱいイきますっ！」
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳 CFLAG:5404
+;ただしＢ絶頂を伴う場合はＢ絶頂に統合
+;感度がよくなればよくなるほど表示されなくなるという死に口上
+;-------------------------------------------------
+IF NOWEX:31 > 0 && NOWEX:3 < 1
+	;初めて
+	IF CFLAG:5404 == 0
+		PRINTFORMW パンパンに膨れ上がった美鈴の乳房からついに母乳が迸る
+		PRINTFORMW 「うあああっ！んくっ…あ…うそ…」
+		PRINTFORMW 美鈴は母乳をたらし続ける自らの胸を凝視している…
+		CFLAG:5404 = 1
+	;２回目以降
+	ELSE
+		;大量噴乳
+		IF NOWEX:10 >= 2
+			PRINTFORMW 美鈴の胸から大量のミルクが噴き上がる…
+		;通常噴乳
+		ELSE
+			PRINTFORMW 美鈴の胸からミルクが噴き上がる…
+		ENDIF
+		;恋慕または淫乱または服従である
+		IF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 ==1
+			;淫乳または噴乳中毒Lv5である
+			IF TALENT:174 == 1 || ABL:34 == 5
+				PRINTFORMW 「んあっ、ああああっ！！おっぱいが、ふああっ、と、とまりません…♪」
+				PRINTFORMW 美鈴は噴乳の快楽に完全に溺れている…
+			;噴乳中毒Lv3以上である
+			ELSEIF ABL:34 >= 3
+				PRINTFORMW 「おっぱいが…ああっ♪乳首壊れちゃいます…♪」
+				PRINTFORMW 美鈴は噴乳の快楽に浸っている…
+			;それ以外
+			ELSE
+				PRINTFORMW 「あ…またでてる…」
+				PRINTFORMW とろとろと流れる母乳に美鈴は頬を染めている…
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうして…こんな…」
+			PRINTFORMW 胸からこぼれる母乳に美鈴は悲壮な面持ちでいる…
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;射精 CFLAG:5405
+;-------------------------------------------------
+@K6_MESSAGE_ORGASM_11
+;初めて
+IF CFLAG:5405 == 0
+	PRINTFORMW 「だ、だめです…っ、なにか、く、るぅ…っ！！」
+	PRINTFORMW ガクガクと腰を震わせながら美鈴は精通した…
+	CFLAG:5405 = 1
+;２回目以降
+ELSE
+	PRINTFORMW 「だ、だめ…っ、でちゃ……」
+	PRINTFORMW 美鈴は腰を痙攣させながら射精した…
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:5406
+;放尿または強制放尿コマンド時は呼び出さない
+;-------------------------------------------------
+@K6_MESSAGE_ORGASM_12
+SIF SELECTCOM == 111 || SELECTCOM == 620
+	RETURN 0
+;初めて
+IF CFLAG:5406 == 0
+	PRINTFORMW 「そ、それ以上触らないで…っ、で、でちゃう…っ！！」
+	PRINTFORMW 美鈴の懇願むなしくチョロチョロと黄金水が股間から流れ始めた…
+	CFLAG:5406 = 1
+;２回目以降
+ELSE
+	PRINTFORMW 「あ…ふあ……」
+	PRINTFORMW 絶頂のあまり失禁してしまった美鈴は放心している…
+ENDIF
+
+;-------------------------------------------------
+;アナルセックスで射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_12
+;主人のペニス
+IF TFLAG:35
+	;PRINTFORMW 
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精 CFLAG:5407
+;恋慕状態の場合はＶ絶頂と童子であればそちらを優先
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_11
+;主人のペニス
+IF TFLAG:35
+	;恋慕状態かつＶ絶頂（口上キャンセル）
+	IF TALENT:150 && NOWEX:1 > 0
+	;恋慕、服従、淫乱である
+	ELSEIF TALENT:150 == 1 || TALENT:160 == 1 || TALENT:170 == 1
+		PRINTFORMW 「すっ…ごい…んっ、まだ、出て…」
+		PRINTFORMW ドクドクと精液が美鈴の膣に流し込まれて行く
+		PRINTFORMW 「お腹、いっぱいです…」
+		PRINTFORMW 美鈴は嬉しそうに微笑んだ…
+	;それ以外
+	;だから中田氏しないでくれって言ったじゃないか…
+	ELSE
+		PRINTFORMW 「えっ…！？」
+		PRINTFORMW あなたの精液が注ぎ込まれた瞬間、美鈴の顔色は蒼白になった
+		PRINTFORMW 「な、何を出して…っ！？嫌っ！離して！いやああああ！！」
+		CFLAG:5407 += 1
+		;なお、潤滑Ｌｖ３以下で触ろうとした場合反感のソースと好感度マイナス補正がつきます
+		PALAM:20 += 5000*CFLAG:5407*CFLAG:5407
+		PALAM:21 += 5000*CFLAG:5407*CFLAG:5407
+		PALAM:22 += 5000*CFLAG:5407*CFLAG:5407
+		IF MARK:9 < 3
+		MARK:9 += 1
+		ENDIF
+		;好感度-50
+		CFLAG:2 -= 50
+	ENDIF
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;口で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_15
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_19
+;PRINTFORMW 
+
+;-------------------------------------------------
+;キスで射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;秘裂で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_20
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪の毛で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_13
+;PRINTFORMW 
+
+;-------------------------------------------------
+;主人が助手を犯すで射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_27
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_24
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_18
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_21
+;PRINTFORMW 
+
+;-------------------------------------------------
+;胸で射精
+;-------------------------------------------------
+@K6_MESSAGE_EJAC_PLAYER_16
+;PRINTFORMW 
+
+;-------------------------------------------------
+;処女喪失
+;いらないんじゃないかな…？復活させてわざわざ貫く人いるん？
+;-------------------------------------------------
+@K6_MESSAGE_LOST_VIRGIN
+;恋慕時かつ主人のペニス
+IF TFLAG:2
+	;PRINTFORMW 
+;それ以外
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;----------------------------------------------------------
+;初めてPALAMがLV2超えた時の口上 CFLAG 5320～5355を使用
+;@KOJO_6_MESSAGE_PALAMCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:5330
+;-------------------------------------------------
+@K6_MESSAGE_OVERLV2_10
+	PRINTFORMW つぅ…と、美鈴の太ももを透明な雫が伝う
+	PRINTFORMW 「え…私…？」
+CFLAG:5330 = 1
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:5333
+;-------------------------------------------------
+@K6_MESSAGE_OVERLV2_13
+	PRINTFORMW （体がだんだん火照って…）
+	PRINTFORMW （鎮まれ…お願い、鎮まって…）
+CFLAG:5333 = 1
+
+;========================================================
+;@KOJO_X_MESSAGE_MARKCNG
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を出力されます
+;========================================================
+@KOJO_6_MESSAGE_MARKCNG
+;眠ってる場合は戻る
+SIF EQUIP:14
+	RETURN 0
+;口枷がある場合も戻る
+SIF TEQUIP:42
+	RETURN 0
+;失神中・失神回復時も戻る
+SIF TFLAG:899 >= 1 || TFLAG:898 == 1
+	RETURN 0
+;失神回復時に戻る
+SIF TFLAG:898 == 1
+	RETURN 0
+;刻印取得口上呼び出し
+FOR LOCAL, 0, 7
+	FOR LOCAL:1, 1, 4
+		SIF TFLAG:(LOCAL + 40) == LOCAL:1 && CFLAG:(LOCAL + 5410) < LOCAL:1
+			TRYCALLFORM K6_MESSAGE_MARK{LOCAL}_{LOCAL:1}
+	NEXT
+NEXT
+
+DRAWLINE
+PRINTL
+;----------------------------------------------------------
+;刻印取得時の口上 CFLAG 5410～を使用
+;@KOJO_X_MESSAGE_MARKCNGから呼び出すのでセットで使うこと
+;----------------------------------------------------------
+;-------------------------------------------------
+;苦痛刻印取得 CFLAG:5410
+;-------------------------------------------------
+IF MARK:0 == 1 && CFLAG:5410 == 0
+	PRINTFORMW 苦痛刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 「痛っ…あまり手荒にはしないでください…」
+CFLAG:5410 = 1
+
+ELSEIF MARK:0 == 2 && CFLAG:5410 < 2
+	PRINTFORMW 苦痛刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW 「あぎっ、くううぅぅっ！！」
+	PRINTFORMW 美鈴は目じりに涙をためながら必死に痛みをこらえている…
+CFLAG:5410 = 2
+
+ELSEIF MARK:0 == 3 && CFLAG:5410 < 3
+	PRINTFORMW 苦痛刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 「嫌です…もう…やめてください…」
+CFLAG:5410 = 3
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印取得 CFLAG:5411
+;-------------------------------------------------
+IF MARK:1 == 1 && CFLAG:5411 == 0
+	PRINTFORMW 快楽刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 「体が…火照って…」
+CFLAG:5411 = 1
+
+ELSEIF MARK:1 == 2 && CFLAG:5411 < 2
+	PRINTFORMW 快楽刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW 「それ以上は…おかしくなります…」
+CFLAG:5411 = 2
+
+ELSEIF MARK:1 == 3 && CFLAG:5411 < 3
+	PRINTFORMW 快楽刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 「気持ちいい…気持ちいいのがとまらないんです…」
+CFLAG:5411 = 3
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印取得 CFLAG:5412
+;-------------------------------------------------
+IF MARK:2 == 1 && CFLAG:5412 == 0
+	PRINTFORMW 屈服刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 「これしき…これしきのことで…」
+CFLAG:5412 = 1
+
+ELSEIF MARK:2 == 2 && CFLAG:5412 < 2
+	PRINTFORMW 屈服刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW （まずい…、どんどん逆らえなくなってきてる…）
+CFLAG:5412 = 2
+
+ELSEIF MARK:2 == 3 && CFLAG:5412 < 3
+	PRINTFORMW 屈服刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 「お嬢…様…」
+	PRINTFORMW 美鈴は一滴涙を流し、ほとんど抵抗しなくなった…
+CFLAG:5412 = 3
+ENDIF
+
+;-------------------------------------------------
+;恐怖刻印取得 CFLAG:5413
+;-------------------------------------------------
+IF MARK:8 == 1 && CFLAG:5413 == 0
+	PRINTFORMW 恐怖刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 「ま、負けません…」
+CFLAG:5413 = 1
+
+ELSEIF MARK:8 == 2 && CFLAG:5413 < 2
+	PRINTFORMW 恐怖刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW 「う…く…」
+	PRINTFORMW 美鈴は気づいていないだろうが、あなたを自然と見上げるようになっている…
+CFLAG:5413 = 2
+
+ELSEIF MARK:8 == 3 && CFLAG:5413 < 3
+	PRINTFORMW 恐怖刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 「もうやめて…やめてください…」
+	PRINTFORMW 美鈴は幼子のようにぽろぽろと涙を流し始めた…
+CFLAG:5413 = 3
+ENDIF
+
+;-------------------------------------------------
+;反発刻印取得 CFLAG:5414
+;ヒャッハー！反発だー！
+;-------------------------------------------------
+IF MARK:9 == 1 && CFLAG:5414 == 0
+	PRINTFORMW 反発刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 美鈴は強く歯を食いしばり手を震わせている…
+CFLAG:5414 = 1
+
+ELSEIF MARK:9 == 2 && CFLAG:5414 < 2
+	PRINTFORMW 反発刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW 大きな音を立てて美鈴の握りこぶしが寝台を揺さぶる
+	PRINTFORMW 美鈴の目に殺意が灯り始めている…
+CFLAG:5414 = 2
+
+ELSEIF MARK:9 == 3 && CFLAG:5414 < 3
+;トライガン好きの人はこの比喩表現に反応したはず。はい、パク…リスペクトです。
+	PRINTFORMW 反発刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 死んだ------それは、大型の獣に昆虫が蹴散らされる様に------そう、あなたは錯覚した
+	PRINTFORMW 美鈴は指一つ動かしていない…だが、あなたは確実に「死」を予感した
+	PRINTFORMW これよりあなたは命を賭して美鈴を調教しなければならないようだ…
+CFLAG:5414 = 3
+ENDIF
+;-------------------------------------------------
+;恥辱刻印取得 CFLAG:5416
+;-------------------------------------------------
+IF MARK:4 == 1 && CFLAG:5416 == 0
+	PRINTFORMW 恥辱刻印Lv1　　　取得
+	PRINTL
+	PRINTFORMW 「何でこんな目に…」
+CFLAG:5416 = 1
+
+ELSEIF MARK:4 == 2 && CFLAG:5416 < 2
+	PRINTFORMW 恥辱刻印Lv2　　　取得
+	PRINTL
+	PRINTFORMW 「うう…恥ずかしいです…」
+CFLAG:5416 = 2
+
+ELSEIF MARK:4 == 3 && CFLAG:5416 < 3
+	PRINTFORMW 恥辱刻印Lv3　　　取得
+	PRINTL
+	PRINTFORMW 「尼にでもなって隠遁したい気分です…」
+CFLAG:5416 = 3
+
+ENDIF
+;========================================================
+;@KOJO_X_MESSAGE_LOOK_VIDEO
+;ビデオを一緒に鑑賞する時の口上
+;売却前の選択肢で鑑賞を選んだ場合に呼び出される
+;========================================================
+@KOJO_6_MESSAGE_LOOK_VIDEO
+;恋慕または淫乱である
+IF TALENT:150 == 1 || TALENT:170 == 1
+	PRINTFORMW 「私…こんなに乱れて…」
+	PRINTFORMW 美鈴はモジモジと股間を擦り始める…
+;反発刻印２以上
+ELSEIF MARK:9 >= 2
+	PRINTFORMW 「ええ、ですからこれがどうしたというんですか」
+;それ以外
+ELSE
+	PRINTFORMW 「な、なんでこんなもの私に見せるんですか…」
+ENDIF
+;========================================================
+;@KOJO_X_MESSAGE_IMPRESSION関係
+;ステータス画面を見る時に出力されます
+;一言表示なのでセリフを一行で収めること
+;========================================================
+@KOJO_6_MESSAGE_IMPRESSION
+;まだ一度も調教していない
+IF CFLAG:8304 == 0
+	PRINTSINGLEFORM 　　　「ここは一体…？」
+	CFLAG:8304 = 1
+	RETURN 1
+;反発刻印３
+;コノウラミハラサデオクベキカ
+ELSEIF MARK:9 >= 3
+	PRINTSINGLEFORM 　　　「必ず…この恨み晴らして見せる…」
+	RETURN 1
+;相愛
+;通常運転モード。居眠りばっかりってどういうことなの…
+ELSEIF TALENT:153 == 1
+	IF RAND:3 == 1
+		PRINTSINGLEFORM 　　　「良い気候ですね…こう、睡魔が…」
+	ELSEIF RAND:2 == 1
+		PRINTSINGLEFORM 　　　「%CSTR:90%はいったいどうされてるんでしょう」
+	ELSE
+		PRINTSINGLEFORM 　　　「zzz……はっ！？ね、寝てません！寝てませんよ！？」
+	ENDIF
+	RETURN 1
+;親愛
+;完全にラブラブモード。
+ELSEIF TALENT:152 == 1
+	IF RAND:3 == 1
+		PRINTSINGLEFORM 　　　「%CSTR:90%を想うだけで胸が熱くなります…」
+	ELSEIF RAND:2 == 1
+		PRINTSINGLEFORM 　　　「今日は着ていただけないのでしょうか…」
+	ELSE
+		PRINTSINGLEFORM 　　　「はぁ…%CSTR:90%に会えない日はため息も多くなりますね」
+	ENDIF
+	RETURN 1
+;恋慕
+;恋心があふれ出で辛抱たまらん状態
+ELSEIF TALENT:150 == 1
+	 IF RAND:3 == 0
+	 	PRINTSINGLEFORM 　　　「ど、どうしましょう…私…この気持ちは…」
+	 ELSEIF RAND:2 == 0
+	 	PRINTSINGLEFORM 　　　「うう…逆らえないです…」
+	 ELSE
+	 	PRINTSINGLEFORM 　　　「お嬢様ぁ～、私、どうしたら…」
+	 ENDIF
+	RETURN 1
+;好感度750以上
+;あっとすっこし！あっとすっこし！
+ELSEIF CFLAG:2 >= 750
+	IF RAND:3 == 0
+		PRINTSINGLEFORM 　　　「このままでは、私本当に…」
+	ELSEIF RAND:2 == 0
+		PRINTSINGLEFORM 　　　「あなたの優しさが…怖い…」
+	ELSE
+		PRINTSINGLEFORM 　　　「心臓がドキドキして…ど、どうしたら…」
+	ENDIF
+	RETURN 1
+;好感度500以上
+ELSEIF CFLAG:2 >= 500
+	IF RAND:3 == 0
+		PRINTSINGLEFORM 　　　「はぁ…なんでこんなことに」
+	ELSEIF RAND:2 == 0
+		PRINTSINGLEFORM 　　　「案外この暮らしも悪くないのかも知れませんね…」
+	ELSE
+		PRINTSINGLEFORM 　　　「あの退屈な門番に戻りたいですね…」
+	ENDIF
+	RETURN 1
+;屈服刻印３
+ELSEIF MARK:2 >= 3
+	PRINTSINGLEFORM 　　　「お嬢様…私は…もう……」
+	RETURN 1
+;快楽刻印３
+ELSEIF MARK:1 >= 3
+	IF RAND:3 == 0
+		PRINTSINGLEFORM 　　　「ん…この思考はいけない…」
+	ELSEIF RAND:2 == 0
+		PRINTSINGLEFORM 　　　「流石は調教師ということですか…」
+	ELSE
+		PRINTSINGLEFORM 　　　「あまり長くは耐えられそうにありませんね…」
+	ENDIF
+	RETURN 1
+;その他
+ELSE
+	IF RAND:3 == 0
+		PRINTSINGLEFORM 　　　「お嬢様…」
+	ELSEIF RAND:2 == 0
+		PRINTSINGLEFORM 　　　「体を動かしておきましょうか」
+	ELSE
+		PRINTSINGLEFORM 　　　「早く戻らないと…」
+	ENDIF
+	RETURN 1
+ENDIF
+
+
+;========================================================
+;イベント口上
+;調教中、調教外問わず様々な状況で呼ばれる
+;========================================================
+;========================================================
+;イベント口上前の共通関数
+;特定の条件下でイベント口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はイベント口上は表示される
+;========================================================
+@KOJO_6_MESSAGE_SUB_EVENT_BEFORE
+
+;-------------------------------------------------
+;道具装着中に毎ターン表示するメッセージ
+;TFLAG:99=0:浣腸プラグ
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE4
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教時の結果により母乳が出るようになった
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE33
+PRINTFORMW 母乳だなんて…私の体どうなってしまうんでしょう…
+
+
+;-------------------------------------------------
+;朝を迎える奴隷のイベント口上
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE49
+;PRINTFORMW 
+
+
+;-------------------------------------------------
+;恋慕取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE70
+PRINTFORMW 美鈴は調教が終わるとシーツに包まり丸まってしまった
+PRINTFORMW （ううう…私こんなに安い女だったんでしょうか）
+PRINTFORMW （もう、この気持ちを抑え切れそうにありません…）
+
+;-------------------------------------------------
+;妄信取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE71
+PRINTFORMW 「全ては%CSTR:90%の御心のままに」
+
+;-------------------------------------------------
+;親愛取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE72
+PRINTFORMW 「私の主は…、主は…」
+
+;-------------------------------------------------
+;依存イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE73
+PRINTFORMW 「もう、離れられない…離したくない…」
+
+;-------------------------------------------------
+;服従取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE74
+PRINTFORMW 「もう…逆らえ、ない…申し訳ありません…お嬢様…」
+
+;-------------------------------------------------
+;淫乱取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE75
+PRINTFORMW 「気持ちいいことで満たされて…私は…」
+
+;-------------------------------------------------
+;淫乱系全素質取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE80
+PRINTFORMW 「体が、うずいて…」
+PRINTFORMW 「触って…私をめちゃくちゃにしてください…」
+
+;-------------------------------------------------
+;淫核／淫茎取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE81
+;ペニスあり
+IF TALENT:オトコ || TALENT:ふたなり
+	PRINTFORMW 「おちんちんが…うう、馬鹿になっちゃいましたよぉ…」
+;その他
+ELSE
+	PRINTFORMW 「う…あ…下着と擦れるだけで…もう…」
+ENDIF
+
+;-------------------------------------------------
+;淫壷取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE82
+PRINTFORMW 「おちんちん…おちんちん入れてほしいんです…」
+
+;-------------------------------------------------
+;淫尻取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE83
+PRINTFORMW 「うう…用を足す時にすら濡れるようになるなんて…」
+
+;-------------------------------------------------
+;淫乳取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE84
+PRINTFORMW 「だめです…乳首が立ちっぱなしになってしまって…」
+
+;-------------------------------------------------
+;尿道狂取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE85
+PRINTFORMW 「うう…用を足すときにすらイってしまうようになるなんて…」
+
+;-------------------------------------------------
+;キス魔取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE86
+PRINTFORMW 「さみしいんです…キス…キスしてください…」
+
+;-------------------------------------------------
+;ドＳ取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE87
+PRINTFORMW 「ふふ…泣き顔って、ゾクゾクしちゃいますよね…」
+
+;-------------------------------------------------
+;ドＭ取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE88
+PRINTFORMW 「だれか…打擲を…打擲を私にください…」
+
+;-------------------------------------------------
+;淫魔取得イベント
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE89
+PRINTFORMW 美鈴はもはや性の頂点を極めたと言って過言はない
+PRINTFORMW あなたの教えをその身に受け、美鈴は完全に花開いた
+PRINTFORMW 「素晴らしいです…もう、どんな欲望にでも応えられます」
+PRINTFORMW 美鈴は見るものを虜にするような、それでいてどこか淫蕩な微笑みを浮かべた…
+
+;-------------------------------------------------
+;キャラ死亡時口上
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE98
+PRINTFORMW 「無念…」
+
+;-------------------------------------------------
+;調教前おねだり口上
+;ランダムで表示されるようにすると鬱陶しくないかも
+;表示の関係で1行に収めることを推奨
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE99
+SIF TFLAG:224 == 555 || ASSIPLAY != 0
+	RETURN 0
+IF RAND:20 < 0
+	PRINTFORML 「なんだか今日はいつもよりも体が熱くて…激しく、してください…」
+ENDIF
+
+;-------------------------------------------------
+;ふたなり取得(不思議な根or具現)時の口上
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE101
+PRINTFORMW 「そ、そんな…」
+PRINTFORMW 美鈴は自らの男根を泣きそうな目で見つめている…
+
+;-------------------------------------------------
+;おねしょイベント(おもらし癖取得)
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE102
+PRINTFORMW 「うう…変なことされすぎて我慢できなくなっちゃいました…」
+
+;-------------------------------------------------
+;助手時に雑事を手伝わせた
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE110
+PRINTFORMW 「大丈夫ですか？お手伝いしますね」
+PRINTFORMW 美鈴は微笑むとあなたの身の回りの手伝いを始めた…
+
+;-------------------------------------------------
+;ストレスの影響表示
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE111
+;PRINTFORMW 
+
+;-------------------------------------------------
+;体力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE120
+;恋慕である
+IF TALENT:150 == 1
+	PRINTFORMW 「また少し…応えられるようになりますね…」
+;それ以外
+ELSE
+	PRINTFORMW 「これを糧にして…かならずや…」
+ENDIF
+
+;-------------------------------------------------
+;気力最大値アップイベント
+;TFLAG:99で上昇量取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE121
+;恋慕である
+IF TALENT:150 == 1
+	PRINTFORMW 「また少し…応えられるようになりますね…」
+;それ以外
+ELSE
+	PRINTFORMW 「次こそは…」
+ENDIF
+
+;-------------------------------------------------
+;売却可能になった
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE122
+PRINTFORMW 「どうぞ、ご自由に」
+
+;-------------------------------------------------
+;助手可能になった
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE123
+PRINTFORMW 「いえ…深い意味はないのですが」
+PRINTFORMW 「お嬢様を探すためには良いとおもいまして」
+
+;-------------------------------------------------
+;調教対象に選抜された
+;TFLAG:99で前の調教対象番号を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE124
+;PRINTFORMW 
+
+;-------------------------------------------------
+;売却
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE130
+;反発刻印３である
+IF MARK:9 >= 3
+	PRINTFORMW 「手に負えなくなれば放棄する…そういうことですね」
+	PRINTFORMW 「ふふ…いえ、それで正解だとおもいますよ」
+	PRINTFORMW 「お嬢様を…紅魔館を取り戻した暁には、お礼に参りますので」
+	PRINTFORMW 「その日まで、御機嫌よう」
+	PRINTFORMW 冷たい微笑みを浮べると美鈴は一礼して売買人に連れられていった…
+	PRINTFORMW 完全にあなたの敗北である
+	PRINTFORMW あなたは命惜しさに調教することを拒んだのだ…
+;親愛である
+ELSEIF TALENT:152 == 1
+	PRINTFORMW 「嘘…………」
+	PRINTFORMW 呆然とする美鈴に手早くあなたは拘束具を付けてゆく
+	PRINTFORMW 「お願いです…嘘と…嘘と言ってください…」
+	PRINTFORMW 美鈴は膝から崩れ、泣きながらあなたの足の裾をつかむ
+	PRINTFORMW あなたはそれを振りほどくと背を向けた
+	PRINTFORMW 「嫌、離して…っ！%CSTR:90%っ！%CSTR:90%…っ！！」
+	PRINTFORMW 美鈴の悲痛な叫び声はいつまでもあなたの耳にこびりついて離れようとしなかった…
+;恋慕
+ELSEIF TALENT:150 == 1
+	PRINTFORMW あなたが美鈴に売却のことを伝えると呆けたような顔で立ち尽くしてしまった
+	PRINTFORMW 「え…そんな…え…？」
+	PRINTFORMW 事態が飲み込めていないのか、飲み込むことを拒んでいるのか
+	PRINTFORMW 「まって…待ってくださ…」
+	PRINTFORMW 言葉は最後まで結ばれる事無く、あなたと美鈴を隔てるドアは閉められた…
+;その他
+ELSE
+	PRINTFORMW 「お世話になりました」
+	PRINTFORMW 「お嬢様をいつか取り戻します」
+	PRINTFORMW 「ええ、大丈夫です…ここでの経験を生かせば、耐えられると思いますから」
+	PRINTFORMW 「さようなら」
+	PRINTFORMW 美鈴は奴隷商人たちに連れられて去っていった…
+ENDIF
+;-------------------------------------------------
+;朝フェラ
+;TFLAG:99でフェラ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE140
+PRINTFORMW 目覚めると美鈴は口で奉仕をしていた
+PRINTFORMW 「ちゅる…んっ、ちゅ…あ、お目覚めですか？」
+PRINTFORMW 「少しでも気持ちよくなっていただけたら嬉しいです」
+
+;-------------------------------------------------
+;朝パイズリ
+;TFLAG:99で精液経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE141
+PRINTFORMW 目覚めると美鈴は胸で奉仕をしていた
+PRINTFORMW 「んっ、硬くて…大きいです…」
+PRINTFORMW 「いつでも出してくださいね」
+
+;-------------------------------------------------
+;朝騎乗位
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE142
+PRINTFORMW 目覚めると美鈴はあなたに跨り奉仕をしていた
+PRINTFORMW 「あっ、大きくなりました…」
+PRINTFORMW あなたが寝ぼけ眼のまま腰を突き上げてやると、美鈴は体を振るわせながら倒れこんだ…
+
+;-------------------------------------------------
+;朝キス
+;TFLAG:99で増加する愛情経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE143
+PRINTFORMW 「ちゅ…」
+PRINTFORML 
+PRINTFORMW あなたが目を覚ますと美鈴が戸をあけ、日差しを取り込んでいるところだった
+PRINTFORMW 「お、おはようございます！きょ、今日もいい天気ですよ！」
+PRINTFORMW 美鈴の頬はいつもより紅く見える…
+
+;-------------------------------------------------
+;朝の搾乳
+;TFLAG:99で噴乳経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE144
+PRINTFORMW 「お、おはようございます…」
+PRINTFORMW 「その、絞りたてですのでよかったらどうぞ…」
+PRINTFORMW 美鈴は頬を染めながら自ら絞った母乳を差し出してきた…
+
+;-------------------------------------------------
+;朝の新妻プレイ
+;TFLAG:99で絶頂経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE145
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝騎乗位＋胸揉み
+;TFLAG:99でＶ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE146
+PRINTFORMW 目覚めると美鈴はあなたに跨り奉仕をしていた
+PRINTFORMW 「あっ、大きくなりました…」
+PRINTFORMW あなたが寝ぼけ眼のまま腰を突き上げてやると、美鈴は体を振るわせながら倒れこんだ
+PRINTFORMW 「だっ、だめですそんな…ふああああっ！！」
+PRINTFORMW さらに胸を鷲づかみにしてやると美鈴は背を反らしながら盛大に絶頂した…
+
+;-------------------------------------------------
+;朝騎乗位アナル
+;TFLAG:99でＡ経験増加量を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE147
+PRINTFORMW 目覚めると美鈴はペニスを尻穴でくわえ込み奉仕をしていた
+PRINTFORMW 「お、おはようございます」
+PRINTFORMW 「今日は嗜好をすこし変えてみたのですが…いかがですか？」
+PRINTFORMW 美鈴は恥ずかしそうに照れ笑いを浮べた…
+
+;-------------------------------------------------
+;朝の足コキ
+;TFLAG:99で増加する精液経験の2倍の値を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE148
+PRINTFORMW 目覚めると美鈴は健康的なその美脚で奉仕をしていた
+PRINTFORMW 「ふふふ…こんな目覚めも時にはアリだとおもいませんか…？」
+
+;-------------------------------------------------
+;調教後セックス
+;TFLAG:99=1 主人棒あり＞相手Ｖあり
+;TFLAG:99=2 主人棒あり＞相手Ｖなし
+;TFLAG:99=3 主人棒なしＶあり＞相手棒あり
+;TFLAG:99=4 主人棒なしＶあり＞相手棒なしＶあり
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE150
+PRINTFORMW 「体がうずいて…」
+PRINTFORMW 「まだ…まだしてください…」
+PRINTFORMW 美鈴の懇願に応え、あなたは再び美鈴を押し倒した…
+
+;-------------------------------------------------
+;調教後自慰
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE151
+PRINTFORMW 「うう…体がうずいて…」
+PRINTFORMW 「指が止まりません…」
+PRINTFORMW 美鈴は調教後に自慰をしていたようだ…
+
+;-------------------------------------------------
+;調教後アナニー
+;TFLAG:99で自慰の回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE152
+PRINTFORMW 「うう…体がうずいて…」
+PRINTFORMW 「しかもお尻の穴なんて…」
+PRINTFORMW 美鈴は調教後にアナニーをしていたようだ…
+
+;-------------------------------------------------
+;調教後自慰搾乳
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE153
+PRINTFORMW 「胸が張って…苦しいんです…」
+PRINTFORMW 美鈴は呼吸を粗くしながら自ら搾乳を続けた…
+
+;-------------------------------------------------
+;調教後レズプレイ
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE154
+PRINTFORMW 「んっ…ちゅ…まだできますよね…？」
+PRINTFORMW あなたが立ち去った後美鈴は%CALLNAME:ASSI%とレズプレイに及んでいたようだ…
+
+;-------------------------------------------------
+;調教後レズプレイ(69)
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE155
+PRINTFORMW 「んっ…ちゅ…ああっ、いい！もっと、もっとなめてください！」
+PRINTFORMW あなたが立ち去った後美鈴は%CALLNAME:ASSI%とレズプレイに及んでいたようだ…
+
+;-------------------------------------------------
+;調教後夜這い
+;TFLAG:99=2:主人が女性で調教対象が男性のとき
+;TFLAG:99=1:それ以外
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE158
+PRINTFORMW 「こんばんは…もうお休みですか？」
+PRINTFORMW 「はしたないとは思うのですが…その、鎮めていただきたくて…」
+PRINTFORMW 美鈴はいそいそと服を脱ぎ始めた…
+
+;-------------------------------------------------
+;調教後の自慰ができない時
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE160
+;PRINTFORMW 
+
+;-------------------------------------------------
+;調教後に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE161
+PRINTFORMW 「い、嫌っ！これ以上無理です！」
+PRINTFORMW 「嫌ああぁぁ……」
+PRINTFORMW 美鈴の悲鳴は触手の海に沈んで行った…
+
+;-------------------------------------------------
+;気絶中に触手に襲われる
+;TFLAG:99で触手に襲われる回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE162
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE163
+;PRINTFORMW 
+
+;-------------------------------------------------
+;朝の３Ｐ助手側
+;TFLAG:99でプレイ回数を取得可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE164
+;PRINTFORMW 
+
+;-------------------------------------------------
+;妊娠時
+;誰によって妊娠させられたかをTFLAG:99で分岐可能
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE170
+;親愛である
+IF TALENT:152 == 1
+	PRINTFORMW 「嬉しい…っ！」
+	PRINTFORMW 美鈴は満面の笑みを浮べるとあなたに抱きついた
+	PRINTFORMW 「%CSTR:90%の子を授かれるなんて…何物にも変えがたい慶びです」
+	PRINTFORMW 美鈴はあなたの胸に顔を埋め喜びに震えている…
+;恋慕である
+ELSEIF TALENT:150 == 1
+	PRINTFORMW 「あ…あはは…出来ちゃい、ましたか…」
+	PRINTFORMW 「いえ、わかってはいたのですが…、その、責任…とってくださいますよね？」
+	PRINTFORMW 美鈴はどこか不安げにあなたを見上げてきた…
+;それ以外
+;若さゆえの過ちは時に致命的である
+;決め技：コキャ
+ELSE
+	PRINTFORMW 美鈴は妊娠した事を知るとあなたの首を後ろからがっちりと極めた
+	PRINTFORMW 「子供が出来たら…許さないと申し上げたはずです」
+	PRINTFORMW 瞬間、世界が暗闇に包まれる
+	PRINTFORMW 「別了（さようなら）………」
+	PRINTFORMW 美鈴は確かに忠告していた…それを破ったのはあなたである…
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW …
+	PRINTFORMW 
+	PRINTL
+	DRAWLINE
+	PRINTL
+	PRINTFORML 　　　　　　　　　DEAD END
+	PRINTL
+	DRAWLINE
+	PRINTFORMW クリックするとゲームを終了します
+	QUIT
+ENDIF
+;-------------------------------------------------
+;出産時
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE171
+;PRINTFORMW 
+
+;-------------------------------------------------
+;子供が親離れ
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE172
+;PRINTFORMW 
+
+;-------------------------------------------------
+;育児部屋入り
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE173
+;PRINTFORMW 
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE200
+IF TALENT:152 == 1
+	PRINTFORMW あなたはエンゲージリングを取り出すと美鈴に結婚して欲しいと伝えた…
+	PRINTFORML 
+	PRINTFORMW 「ひぇいえやえぇぇえ！？」
+	PRINTFORMW 美鈴は奇声を上げながら飛びのく
+	PRINTFORMW 「い、いえ！お気持ちは嬉しいのですが私は従者であり奴隷ででででして！」
+	PRINTFORMW 壁に張り付いて首を必死に横に振る美鈴を捕まえると強く抱きしめた
+	PRINTFORMW 断る事を許す、とあなたは伝える…こればかりは美鈴の意思で決めてもらいたかった
+	PRINTFORMW 「こ、断る事なんてできない事を知ってるくせに…%CSTR:90%はずるいです…」
+	PRINTFORMW 困ったように美鈴は微笑むとそっと抱きしめ返してきた
+	PRINTFORMW 「絶対に私を離さないでくださいね…老公（あなた）…」
+	PRINTFORMW あなたと美鈴は抱き合いながら長く、長くキスをした………
+ELSE
+	PRINTFORMW あなたはエンゲージリングを取り出すと美鈴に結婚して欲しいと伝えた…
+	PRINTFORML 
+	PRINTFORMW 「ひぇいえやえぇぇえ！？」
+	PRINTFORMW 美鈴は奇声を上げながら飛びのく
+	PRINTFORMW 「い、いえ！お気持ちは嬉しいのですが私は従者であり奴隷ででででして！」
+	PRINTFORMW 壁に張り付いて首を必死に横に振る美鈴を捕まえると強く抱きしめた
+	PRINTFORMW 断る事を許す、とあなたは伝える…こればかりは美鈴の意思で決めてもらいたかった
+	PRINTFORMW 「こ、断る事なんてできない事を知ってるくせに…」
+	PRINTFORMW 困ったように美鈴は微笑むとそっと抱きしめ返してきた
+	PRINTFORMW 「絶対に私を離さないでくださいね…老公（あなた）…」
+	PRINTFORMW あなたと美鈴は抱き合いながら長く、長くキスをした………
+ENDIF
+;-------------------------------------------------
+;赤い首輪使用時
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SUB_EVENT_SCENE201
+PRINTFORMW あなたは奴隷の証である赤い首輪を美鈴に付けてあげた…
+PRINTFORMW 「これは…？え……ずっと、ずっとあなたの奴隷でいても、いいんですか…？」
+PRINTFORMW ぽろぽろと美鈴は涙をこぼし始める
+PRINTFORMW 「ち、違います！嫌なのではなく、嬉しい…嬉しいんです…」
+PRINTFORMW 「いつか、売られてしまうのではないかと…飽きて抱いていただけなくなるのではないかと…いつも、不安でした」
+PRINTFORMW 「どうか…私を一生お傍に置いて下さいね」
+PRINTFORMW 美鈴は最後の一滴の涙をぬぐうと可憐に微笑んだ…
+
+;=============================================================================
+;エンディング口上の処理
+;=============================================================================
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING関係
+;単体エンディング
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 「あっ、おはようございます！」
+PRINTFORMW 美鈴は草花の世話の手をとめてあなたに朝の挨拶をする
+PRINTFORMW 荒れ果てた庭も美鈴の手によってずいぶん華々しくなったものだ
+PRINTFORMW 「朝ごはんにしちゃいましょうか、いま暖めますね」
+PRINTFORMW トタトタと勝手口に走ろうとする美鈴をあなたは捕まえると頬にキスをして無理しないよう伝えた
+PRINTFORMW 「大丈夫ですよぅ…本当に心配性なんですから」
+PRINTFORMW 美鈴の胎は大きく膨れ、新たな命を宿している
+IF CFLAG:5002 == 3
+PRINTFORMW 一度ならず殺意を向けられ、大きくすれ違った時期もあった
+PRINTFORMW だが、美鈴は愛しさに満ちた笑顔で腹を撫でながらあなたに笑顔を向ける
+ENDIF
+PRINTFORMW 「もうあまり日が無いんですから…早く名前、決めて下さいね？」
+PRINTFORMW 美鈴は、今日もとても幸せそうだ………
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SINGLE_ENDING_AFTER関係
+;単体エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SINGLE_ENDING_AFTER
+PRINTFORMW 「%CSTR:90%にも困ったものですね」
+PRINTFORMW 「まぁ、お仕事なら仕方ありません」
+PRINTFORMW 「精一杯お手伝いします%CSTR:90%…」
+PRINTFORMW 美鈴はあなたの腕をとって歩み出した……
+RETURN 0
+
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING関係
+;奴隷エンディング
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――奴隷エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 美鈴の肢体が跳ねるたび、ぐちゅぐちゅと淫猥な音が響く
+PRINTFORMW 「あああぁぁ♪イク！イっちゃいます！」
+PRINTFORMW 美鈴の最奥まであなたは鈴口を密着させると大量の精を放った
+PRINTFORMW 「～～～っ！…っ！！……ぁ………」
+PRINTFORMW 子種を直接注がれる快楽に美鈴は言葉もなく絶頂を迎え続ける
+PRINTFORMW 数分間の長い絶頂を終え、美鈴があなたに倒れこんできた
+PRINTFORMW 「気持ちよすぎて…腰が抜けちゃ良そうですよぉ…」
+PRINTFORMW 美鈴はあなたの乳首に舌を這わせながら膣を締め付ける
+PRINTFORMW あなたのペニスは萎えることなく再び美鈴を貫き始めた
+PRINTFORMW これからあなたと美鈴はその身が果てるまで、永遠の快楽を貪り続けるだろう…
+PRINTFORMW  
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+RETURN 0
+;-------------------------------------------------
+;@KOJO_X_MESSAGE_SLAVE_ENDING_AFTER関係
+;奴隷エンド後に「続ける」を選んだ時に出力します
+;-------------------------------------------------
+@KOJO_6_MESSAGE_SLAVE_ENDING_AFTER
+PRINTFORMW 「はい、どこまでも御使えいたします」
+PRINTFORMW 美鈴はあなたの後ろに小走りでついてきた…
+RETURN 0
+
+;=============================================================================
+;売却後エピソード
+;エンディング時に売ったキャラのエピソードを挿入できる
+;=============================================================================
+;-------------------------------------------------
+;エピソード番号決定など
+;-------------------------------------------------
+;@KOJO_6_SET_SLAVE_AFTERWARDS
+;対象を退避してTFLAG:710を対象にする。
+;LOCAL = TARGET
+;TARGET = TFLAG:710
+
+;淫乱
+;IF TALENT:淫乱
+;	LOCAL:1 = 1
+;エピソードなし
+;ELSE
+;	LOCAL:1 = 0
+;ENDIF
+
+;退避した対象を元に戻す
+;TARGET = LOCAL
+;RETURN LOCAL:1
+
+;-------------------------------------------------
+;エピソード表示
+;-------------------------------------------------
+;@SHOW_SLAVE_AFTERWARDS_K6, ARG, ARG:1
+;DRAWLINE
+;PRINTFORMW 　%CSVCALLNAME(6,0)%のその後
+;DRAWLINE
+;IF ARG == 1
+	;PRINTFORMW 
+;ENDIF
+;DRAWLINE
+;RETURN 0
+
+;=============================================================================
+;eratohoYM用プロローグ(及びそれに対応したエピローグ)のテンプレ
+;プロローグNo.6 -(サブタイトル入力欄)-
+;=============================================================================
+;--------------------------------------------------
+;プロローグNo.6の存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_PROLOGUE_YM_6
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.6の表示
+;--------------------------------------------------
+;選択画面にてタイトルを記入する場合はここで
+@SHOW_PROLOGUE_YM_6
+PRINTL [6] プロローグNo.6 -(サブタイトル入力欄)-
+
+;--------------------------------------------------
+;プロローグNo.6 -(サブタイトル入力欄)-本文
+;--------------------------------------------------
+@EXE_PROLOGUE_YM_6
+PRINTW 　　　　　　　　―― Prologue No.6 -(サブタイトル入力欄)- (eratohoYM)
+PRINTW  
+DRAWLINE
+PRINTL -------------------------------------GOODLUCK------------------------------------
+DRAWLINE
+PRINTW 
+
+;=============================================================================
+;プロローグNo.6に対応したエピローグ
+;=============================================================================
+;表示させたプロローグに対応するエピローグをノーマルエンドの代わりに表示させることが可能
+;なお、システム上プロローグを作成していないと表示されない
+;--------------------------------------------------
+;プロローグNo.6に対応したエピローグの存在判定
+;--------------------------------------------------
+;「RETURN 0」を「RETURN 1」にすると読み込み可能になる
+@EXIST_EPILOGUE_YM_6
+RETURN 0
+
+;--------------------------------------------------
+;プロローグNo.6に対応したエピローグ本文
+;--------------------------------------------------
+@EXE_EPILOGUE_YM_6
+PRINTW  
+PRINTW 　　　　　　　　―― Ending No.01 (ノーマルエンド)
+

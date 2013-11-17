@@ -1,0 +1,6685 @@
+;-------------------------------------------------
+;YM Mk-2rev.6改用ゆうかりん口上
+;ゆうかりんは求聞史紀で[人間友好度：最悪]だそうで。……ならば！ 難易度：Ｃはおかしいだろう！ということで書いてみました。
+;-------------------------------------------------
+
+;-------------------------------------------------
+;口上設定雛形
+;34とX2をキャラ番号に置換し、Y1を助手のキャラ番号に置換する。
+;ただし、キャラ番号が3桁未満のキャラの場合、34,Y1は1、X2は001のように変える必要がある
+;そしてコマンド内の適当な条件の下のPRINTFORMWの後ろに半角スペースを置いてセリフを追加してください。
+;テンプレートが更新された際には、新しいテンプレをベースにして、
+;該等する条件のPRINTFORMWの行をコピー＆ペーストしていくことをお勧めします。（手間はかかるが、エラーは起こりえない）
+;口上を追加しないコマンドには行頭に『;』をつけましょう。後で追加した際に初めての口上が出ないなどの弊害が起こります。
+;また、口上を追加したコマンドの『;』をきちんと外しましょう。これだと条件を満たしても口上がでません
+;条件の追加や変更は自由ですが、その際には随時テストをしていくとよいでしょう。（エラーの原因は、ほぼ確実に手を加えた部分にあるため）
+;最後にできればread meも読んで下さい
+;-------------------------------------------------
+
+
+;--------------------------------------------------
+;口上ファイルの存在判定
+;--------------------------------------------------
+;口上の存在判定（YM版）
+@TRY_34
+RETURN 1
+
+;--------------------------------------------------
+;エキストラモード構文 CFLAG:5020を使用
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------;
+@KOJO_34_EXTRA_INITIALIZATION
+IF CFLAG:5020 == 0
+	PRINTFORML ゆうかりんUSC化計画を起動しますか？
+	PRINTFORML (※引き継ぎをした場合、素質変動はおこりません)
+	PRINTFORML [0] はい
+	PRINTFORML [1] いいえ
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW          ―風見幽香―
+		PRINTFORMW         ―人間友好度―
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORMW            『最悪』
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORMW ―ゆうかりんの性能が狂化されました―
+		;引き継ぎでない初調教時
+		IF TALENT:針さばき == 0
+			TALENT:気丈 = 1
+			TALENT:抵抗 = 1
+			TALENT:針さばき = 1
+			TALENT:パイパン = 1
+			TALENT:楽観的 = 0
+			MARK:反発刻印 = 2
+		ELSEIF TALENT:針さばき == 1
+			PRINTFORMW 素質等の変動はありませんでした。
+		ENDIF
+		CFLAG:5340 = 1
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML ゆうかりんはぼっちだからチンコなんていれたことないよ！
+		PRINTFORML [0]「そ、そんなわけ無いでしょう!? なんなら処女かけたっていいわよ！」
+		PRINTFORML [1]「はァ？ ……ぷっ、童貞にありがちな処女信仰ってやつかしら？」
+		$INPUT_LOOP2
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW ―孤高の強者(ぼっち)は攻めこむことのかなわぬ砦モード―
+			TALENT:0 = 1
+			ABL:Ｖ感覚 = 0
+			EXP:Ｖ経験 = 0
+		ELSEIF RESULT == 1
+			PRINTFORML ―そんなわけなかったよね！ ゆうかりんごめんね＞＜―
+			PRINTFORML          ―ゆうかりんまじレイパーモード―
+			PRINTFORMW              強姦経験が追加されました
+;			SIF EXP:強姦経験 == 0
+;				EXP:強姦経験 = 20
+		ELSE
+			GOTO INPUT_LOOP2
+		ENDIF
+
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML ゆうかりん！ 第８回東方キャラ人気投票３位入賞おめでとう！
+		PRINTFORML [0]「ふふん、それくらいどうってことないわよ」
+		PRINTFORML [1]「……で？」
+		$INPUT_LOOP3
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW ―ゆうかりんったら人気者！モード―
+			TALENT:人気 = 1
+		ELSEIF RESULT == 1
+			PRINTFORMW ―ぼっちには関係なかったよねモード―
+		ELSE
+			GOTO INPUT_LOOP3
+		ENDIF
+
+	ELSEIF RESULT == 1
+		PRINTFORMW ―通常モードで調教を開始します―
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	CFLAG:5020 = 1
+ENDIF
+CFLAG:7899 = 1
+
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG:5001～5019を使用
+;-------------------------------------------------
+@KOJO_34_SLAVE_MESSAGE_TRAIN_START
+;2週目以降、調教開始時にエクストラモードの設定を行っていなければ設定イベントをCALL
+IF CFLAG:7899 == 0
+	CALL KOJO_34_EXTRA_INITIALIZATION
+ENDIF
+
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K34_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K34_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5021 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5021 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時 CFLAG:5001
+;-------------------------------------------------
+;USCモードかの判定
+IF CFLAG:5001 == 0
+	DRAWLINE
+;USCモードを起動したか。
+	IF CFLAG:5340 == 1
+		PRINTFORML 「……ここ、は？」
+		PRINTFORML 風見幽香が目を覚ました場所は、とても殺風景な部屋だった
+		PRINTFORMW ボロボロのシーツがかかったベッド。部屋の対極に位置する2つの扉
+		PRINTFORML 片方を開けて見ると、そこはトイレと風呂が一緒になったユニットバス
+		PRINTFORML しかしもう片方。鉄で出来た分厚い扉は施錠されていたため、開くことができない
+		PRINTFORML それに見るからに頑健そうなソレを壊して通ることも不可能だろう
+		PRINTFORMW そう……
+		PRINTFORML 
+		PRINTFORML 
+		PRINTFORML          ―あくまで、普通の少女であれば―
+		SETCOLOR 210,0,0
+		PRINTFORML
+		PRINTFORMW  
+		PRINTFORML だが、ここにいるのはただの少女などとは呼べない暴力の権化
+		PRINTFORMW       孤高の花にして最強最悪の妖怪(バケモノ)だ
+		RESETCOLOR
+		PRINTFORML 
+		PRINTFORML 「哀れねぇ……こんなチャチな檻に、本気で私を閉じ込めようとしてたのだとしたら」
+		PRINTFORMW 「思わず抱きしめたくなっちゃうくらい哀れだわ……」
+		PRINTFORML 幽香は今ここにはいない人物に向けて嘲笑を浮かべる
+		PRINTFORML もし自分がいないことを知ったらどれほど慌てるのだろうか
+		PRINTFORML 復讐が怖くて怯えて過ごす？ 眼の色を変えて捜索に乗り出す？
+		PRINTFORML あるいは――わざとこの部屋に残って反応を見るというのも乙かもしれない
+		PRINTFORMW そんな益体もないことを考えながら、幽香は右腕を大きく振りかぶった―――――
+		PRINTFORMW 
+		PRINTFORMW  
+		PRINTFORMW 「――――――――ッッ！！ ―――――っ!!」
+		PRINTFORML 
+		PRINTFORMW %CALLNAME:MASTER%が部屋に入って見たものは
+		PRINTFORMW 右手を抑えながら涙目で転がりまわっている幽香の姿だった………………
+		PRINTFORML
+		PRINTFORML 
+		PRINTFORML 苦痛＋2000
+		PRINTFORML 
+		PALAM:苦痛 = 2000
+		WAIT
+	ELSEIF CFLAG:5340 == 0
+		PRINTFORMW 
+	ENDIF
+	CFLAG:5001 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG:5001
+;-------------------------------------------------
+;媚薬中毒かの判定。ぶっちゃけ俺得
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5001 < 2 && MARK:屈服刻印 == 1
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「……なに、また来たの？」
+			PRINTFORMW 部屋に入った%CALLNAME:MASTER%に、幽香は鬱陶しそうに目をやった
+			PRINTFORML 「ほんと、幸運よね……何の冗談か、あんたは未だに生きていられるんだから」
+			PRINTFORML 「神様のイタズラかなんなのかは知らないけれど、感謝しといた方がいいんじゃない？」
+			PRINTFORMW 「クスッ……『今だけは』、ね……」
+			PRINTFORMW 幽香の態度は多少の軟化を見せたものの、その強靭な精神は未だに健在な様子だった
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORMW 「…………ッ」
+			PRINTFORML %CALLNAME:MASTER%が部屋に入ろうとした途端、扉の死角に潜んでいた幽香が襲いかかってきた
+			PRINTFORML 一瞬押されかけるが、今は力のないただの少女となった幽香を跳ね飛ばすのにそう苦労はいらない
+			PRINTFORMW 取り押さえた上で様子を見てみると、幽香は半狂乱になって暴れている
+			PRINTFORMW 「どきなさいっ!! どけェっ！」
+			PRINTFORML ふと思い至って媚薬の入ったビンを目の前にぶら下げて見せると、幽香は食い入るように見入っている
+			PRINTFORML 媚薬を与え続けた結果、その中毒性に染まってしまったらしい
+			PRINTFORMW あれほど手を焼いた奴隷の醜態に、%CALLNAME:MASTER%は自然とその口元をほころばせていた……
+		ENDIF
+	ENDIF
+	CFLAG:5001 = 2
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5001 < 3 && MARK:屈服刻印 == 2
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「チッ……」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ってくるなり、幽香は舌打ちをこぼす
+			PRINTFORMW 「まったく……自分で自分が信じられないわ」
+			PRINTFORMW 幽香はこちらが促すまでもなく、自らの服をはだけていく
+			PRINTFORML 「%CALLNAME:MASTER%ごときに懐柔されたような気がするのは業腹モノだけど……」
+			PRINTFORMW 「%CALLNAME:MASTER%が与えてくれる快楽は、それを上回って余りある」
+			PRINTFORML どうやら、こちらの調教を好意的に受け止め初めているらしい
+			PRINTFORMW ベッドのスプリングをゆらし、腰掛けた幽香は%CALLNAME:MASTER%に流し目を送る
+			PRINTFORML 「……さぁ、早くはじめて頂戴。それとも今更になって腑抜けたの？」
+			PRINTFORMW 
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORMW 「あ……」
+			PRINTFORML %CALLNAME:MASTER%が部屋に入ると、幽香はおずおずとこちらに顔を向けた
+			PRINTFORML それは今までの彼女からしたら考えられないほどの弱々しい態度
+			PRINTFORMW いったいどうしたのだろうかと思っていると、幽香は意を決したように口を開いた
+			PRINTFORML 「クスリを……何でも、するから……%CALLNAME:MASTER%の望むこと、なんでもしてあげるから……」
+			PRINTFORMW 「だから……だから、私に……薬を……くだ、さ い……」
+			PRINTFORMW ………………
+			PRINTFORML 驚いた
+			PRINTFORML あろうことか、『あの』風見幽香が……誰にも屈しない孤高の存在が、自分に懇願をした
+			PRINTFORMW それと同時に先程の態度にも得心がいく
+			PRINTFORML 今まで誰かに頼みごとなどしたことが無いのだろう
+			PRINTFORML 少なくとも、自分が完全に下の立場からというのは一度も無いはずだ
+			PRINTFORMW しかし幾度の調教を経てもろくなってしまったプライドと、媚薬を求める身体の欲求が競り合い……
+			PRINTFORML とうとう欲求のほうがプライドを上回ったのだろう
+			PRINTFORML それが、今まで一度も膝をつかなかった彼女が折れた理由
+			PRINTFORMW そして、自らの調教が軌道に乗り始めたとういう、これ以上無い証拠
+			PRINTFORML %CALLNAME:MASTER%は自尊心と羞恥心により真っ赤に染まった幽香の顔を見ながら
+			PRINTFORMW 今まで以上にはかどるであろう調教に、心踊らせていた……
+		ENDIF
+	ENDIF
+	CFLAG:5001 = 3
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5001 < 4 && MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「負けたわ……」
+			PRINTFORMW 調教のために部屋にやってきた%CALLNAME:MASTER%に向けて、幽香がポツリと呟いた
+			PRINTFORML 「ホンット……訳が分からないわ」
+			PRINTFORML 「身体がどんどん淫らな快感に染まっていって……そしたら心まで流される」
+			PRINTFORML 「全部%CALLNAME:MASTER%の予想通り？ だとしたら私はまんまとその術中にはまってしまったというわけ？」
+			PRINTFORMW 「まったく……私が化物だとしたら、それを屈服させてしまう%CALLNAME:MASTER%はどんな悪魔なのかしら」
+			PRINTFORMW ただ、と幽香は言葉を止め、%CALLNAME:MASTER%をみやる
+			PRINTFORML 
+			PRINTFORML ―それも、いいのかもしれないわね―
+			PRINTFORMW 
+			PRINTFORMW 幽香はどこか寂しげな笑みを浮かべると、何かを振り払うように大きくノビをした
+			PRINTFORML 「さぁ、今日は何をするの？ ちゃんと味わわせなさいよ？」
+			PRINTFORMW 「何もかも忘れられるくらいの快感を、ね」
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORML 「%CALLNAME:MASTER%……」
+			PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、幽香がしなだれかかってきた
+			PRINTFORML 「ねぇ……今日も持ってきているんでしょう？ ア・レ♪」
+			PRINTFORMW もちろんだというように媚薬の入ったビンを揺らすと、幽香は満足そうに相好を崩す
+			PRINTFORML 「ならいいわ。さぁ、今日も始めましょう」
+			PRINTFORMW 「クフフ……ちゃぁんと気持よくしなさい？」
+			PRINTFORMW そう微笑む幽香の瞳は、まるで死人のように瞳孔が開ききっていた……
+		ENDIF
+	ENDIF
+	CFLAG:5001 = 4
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+
+
+
+;恋慕
+ELSEIF CFLAG:5001 < 5 && TALENT:恋慕 == 1
+	IF CFLAG:5340 == 1
+		DRAWLINE
+		PRINTFORMW 「ねぇ、ちょっといいかしら」
+		PRINTFORML 部屋に入ろうとした%CALLNAME:MASTER%は、ベッドに腰掛けていた幽香の声に歩みを止めた
+		PRINTFORMW 幽香は腕組をしながらこちらを挑発するように見上げてくる
+		PRINTFORML 「よかったわね。どうやらこの勝負はあなたの勝ちという結果で終わるみたい」
+		PRINTFORMW 勝負、とはどういうことだろうか。首をひねる%CALLNAME:PLAYER%に、幽香は苦笑を浮かべる
+		PRINTFORML 「……私と%CALLNAME:MASTER%の間で起こっていた戦争、よ」
+		PRINTFORML 「私は%CALLNAME:MASTER%を惚れさせ、%CALLNAME:PLAYER%は私を惚れさせることが勝利の条件。単純明快な、男と女の駆け引き」
+		PRINTFORMW 「%CALLNAME:MASTER%の行っていた調教って、要はそういうことでしょう？」
+		PRINTFORML 調教の過程で奴隷に恋心を……執着をいだいてしまう。確かにそれは調教師としては敗北に値する結末だろう
+		PRINTFORMW だが、そうはならなかったと幽香は言った。『この勝負は自分の負けだ』と。
+		PRINTFORMW それは、つまり……そういうことなのだろう
+		PRINTFORMW 「その勝負に、%CALLNAME:MASTER%は見事勝ち抜いた……そう、恋してしまったのよ。%CALLNAME:MASTER%に、ね」
+		PRINTFORMW そう言った幽香の瞳は、いつのまにか潤んでいる
+		PRINTFORML つやつやとした緑のクセッ毛も、健康的にやけたなめらかな肌も、星を散りばめたような、吸い込まれるほどに深い瞳も
+		PRINTFORMW その全てが自分のものになったのだと理解が追いつくにつれ、心の底から沸き上がってくる喜びがあった
+		PRINTFORML 「%CALLNAME:MASTER%を愛するようになってしまった私は、%CALLNAME:MASTER%のためだけに咲き誇るようになるでしょう」
+		PRINTFORMW 「それを摘みとるのも、心ゆくまで愛でるのも%CALLNAME:MASTER%次第」
+		PRINTFORML 鼓動が高まり吐息が漏れた
+		PRINTFORMW それは……幽香の気づいていない事実のひとつに気づいてしまったから
+		PRINTFORML 「それが%CALLNAME:MASTER%に愛されるためだけに咲く、私という名の『花』の生き方よ。捨てるのも売るのも、もう%CALLNAME:MASTER%次第」
+		PRINTFORMW 「%CALLNAME:MASTER%が望むと言うのなら……私はいくらだってこの身を捧げてみせるわ」
+		PRINTFORML 幽香は言った。『相手を惚れさせた方が勝ち』、そういう戦争だと
+		PRINTFORMW 　　　　　　　　　　　　　　　　　　　 イトシイヒト
+		PRINTFORML 「さぁ。今ひとときだけは私を見て頂戴、ご主人様」
+		PRINTFORMW 　　　　　　　　　　　　　　　－－－ワタシダケヲミテホシイ－－－
+		PRINTFORML ならば、この場合はどちらが勝者なのだろうか
+		PRINTFORMW 　　　　　　　　　　　　　　－－－アナタノソバニイタインデス－－－
+		PRINTFORML 「ほら、時間というのは待ってくれないんだから。はやくしましょう？」
+		PRINTFORMW 　　　　　　　　　　　　　　 －－－ワタシヲアイシテクダサイ－－－
+		PRINTFORML どちらもが、どちらともを愛してしまった場合には……
+		PRINTFORMW 　　　　　　　－－－オネガイシマス－－－
+	ENDIF
+	CFLAG:5001 = 5
+	CALL K34_RESET_CFLAG
+	RETURN 1
+	
+;-------------------------------------------------
+;前回調教時の結果で出る初期口上
+;-------------------------------------------------
+;V絶頂が多かった場合
+ELSEIF CFLAG:5351 > 20 && CFLAG:5351 > CFLAG:5352 && CFLAG:5351 > CFLAG:5355 && CFLAG:5351 > CFLAG:5362 && ABL:Ｖ感覚 >= 3 && CFLAG:5340 == 1 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORML 「%CALLNAME:MASTER%……」
+	PRINTFORMW %CALLNAME:MASTER%が部屋に入るなり、裸になっていた幽香が艶やかな声で名前を呼ぶ
+	PRINTFORML 「見て……私のココ……あなたのせいでこんなに物欲しそうにオネダリしてるんだからぁ……」
+	PRINTFORMW ベッドの上で脚を開いた幽香は、右手の人差し指とつかって性器を広げてみせた
+	PRINTFORML 
+	PRINTFORML ―――くぱぁ―――
+	PRINTFORMW 
+	PRINTFORML 幽香の手によって開かれたそこはすでに大量の密で濡れそぼり、肉棒を求めてヒクヒクと震えている
+	PRINTFORMW 「さぁ、早く来なさい……♪ たっぷり愛されてあげるから♪」
+	PRINTFORML 
+	PRINTFORML 潤滑＋20000 欲情＋10000
+	PRINTFORMW 
+	PALAM:潤滑 = 20000
+	PALAM:欲情 = 10000
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;A絶頂が多かった場合
+ELSEIF CFLAG:5352 > 20 && CFLAG:5352 > CFLAG:5351 && CFLAG:5352 > CFLAG:5355 && CFLAG:5352 > CFLAG:5362 && ABL:Ａ感覚 >= 3 && CFLAG:5340 == 1 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%が部屋に入ると、幽香がベッドの上で自らの尻穴に指を突っ込んでいた
+	PRINTFORMW 「ぁ……ん、ふぅ……%CALLNAME:MASTER%、やっっとォ……と、きてくれ……タぁっ♪」
+	PRINTFORML 幽香はビクリと震えて、だらしない顔で脱力する
+	PRINTFORMW ヌルリと指が抜けた尻穴は柔らかそうにほぐされていて、まるで呼吸するかのように開閉していた
+	PRINTFORMW 「ねぇ……早く%CALLNAME:MASTER%のチンポ……私のケツ穴マンコにつっこんでェ……♪」
+	PRINTFORML 
+	PRINTFORML 潤滑＋7000 欲情＋4000 快Ａ＋4000
+	PRINTFORMW 
+	PALAM:潤滑 = 7000
+	PALAM:欲情 = 4000
+	PALAM:快Ａ = 4000
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;射精が多かった場合
+ELSEIF CFLAG:5355 > 12 && CFLAG:5355 > CFLAG:5351 && CFLAG:5355 > CFLAG:5352 && CFLAG:5355 > CFLAG:5362 && ABL:射精中毒 >= 3 && ABL:自慰中毒 >= 3 && CFLAG:5340 == 1 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「んほぉぉおおおぉぉおぉ♪♪」
+	PRINTFORML %CALLNAME:MASTER%が部屋に入るなり、幽香の甲高い雄叫び(雌叫び?)が耳をつんざいた
+	PRINTFORML それと共に部屋中に充満する栗の花の匂いが鼻腔に入り込む
+	PRINTFORMW 下を見ると、あたり一面に幽香が放ったであろう精液がこってりと残っている
+	PRINTFORMW 「チンポッ♪ チンポごしごし扱くのすごいっ！ きも、きもちっいいィ♪」
+	PRINTFORML 呆れる%CALLNAME:MASTER%を余所に、再びチンポから精液を打ち上げる幽香
+	PRINTFORMW その姿からはかつての気高さなど、微塵も想像もできなかった……
+	PRINTFORML 
+	PRINTFORML 欲情＋8000 快Ｃ＋9999 射精経験＋7
+	PRINTFORMW 
+	PALAM:欲情 = 8000
+	PALAM:快Ｃ = 9999
+	EXP:射精経験 += 7
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;口内射精(合計)が多かった場合
+ELSEIF CFLAG:5362 > 12 && CFLAG:5362 > CFLAG:5352 && CFLAG:5362 > CFLAG:5355 && CFLAG:5362 > CFLAG:5351 && ABL:精液中毒 >= 2 && CFLAG:5340 == 1 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「あ……%CALLNAME:MASTER%……いらっしゃい」
+	PRINTFORML 幽香は%CALLNAME:MASTER%を見つけると、視線を下に移して舌なめずりをした
+	PRINTFORMW 「当然今日もヌいて…いくわよね？」
+	PRINTFORML 幽香は口を広げて舌をヌロリと蠢かせ、右手で架空の『ナニカ』を握って上下にこする
+	PRINTFORMW その動きは%CALLNAME:MASTER%の劣情を十分昂らせるほどに、いやらしかった……
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K34_KOJO2
+	CALL K34_RESET_CFLAG
+
+;-------------------------------------------------
+;簡易助手口上 CFLAG:5002
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を5003、5004と増やす
+;-------------------------------------------------
+;助手
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5002 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:恋慕 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5002 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+
+;ELSEIF NO:ASSI == Y1
+;	DRAWLINE
+	;初めて
+;	IF CFLAG:5003 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+;		IF TALENT:恋慕 && CFLAG:201 >= 5
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5003 = 1
+;			RETURN 1
+	;二回目以降
+;	ELSE
+		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			RETURN 1
+;	ENDIF
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K34_KOJO2
+	CALL K34_RESET_CFLAG
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降） CFLAGなし 
+;-------------------------------------------------
+@K34_KOJO2
+;反発刻印Lv3
+IF MARK:反発刻印 == 3
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「………………」
+			PRINTFORML 扉を開き%CALLNAME:MASTER%が部屋に入っても、幽香はこちらを見ようともしない
+			PRINTFORMW 服に手をかけようとした段階で、ようやくチラリと目を向けてくるが……
+			PRINTFORMW 「…………ペッ」
+			PRINTFORML %CALLNAME:MASTER%の顔にツバを吐きかけ、またあらぬ方向を向く
+			PRINTFORMW どうやら、完全に嫌われてしまったようだ……
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORMW 「…………」
+			PRINTFORML 扉を開き%CALLNAME:MASTER%が入ってきても、幽香はこちらを見ようともしない
+			PRINTFORMW しかし、%CALLNAME:MASTER%が媚薬の入ったビンを取り出して振って見せると
+			PRINTFORMW 「ッ…………」
+			PRINTFORML その水音に反応して、勢いよくこちらを向いてくれた。ご丁寧にヨダレまで垂らして
+			PRINTFORMW 自分の行動を自覚して憎々しげに唇を噛む幽香を、%CALLNAME:MASTER%はニヤニヤと見つめていた
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:恋慕
+	DRAWLINE
+	IF RAND:3 == 0
+		IF CFLAG:5340 == 1
+			IF TALENT:媚薬中毒 == 0
+				DRAWLINE
+				PRINTFORMW 「もう……やっと来てくれた♪」
+				PRINTFORML 幽香は%CALLNAME:MASTER%を愛おしげに見つめる
+				PRINTFORMW %CALLNAME:MASTER%はその視線に引き寄せられるまま、幽香を押し倒した
+			ELSEIF TALENT:媚薬中毒 == 1
+				DRAWLINE
+				PRINTFORMW 「いらっしゃい……」
+				PRINTFORMW 幽香は気怠そうな態度で%CALLNAME:MASTER%を出迎えた
+				PRINTFORMW 「心配しないで……ちょっと薬が切れて鬱ってるだけだから……」
+			ENDIF
+		ENDIF
+	ELSEIF RAND:2 == 0
+		IF CFLAG:5340 == 1
+			IF TALENT:媚薬中毒 == 0
+				DRAWLINE
+				PRINTFORML 「%CALLNAME:MASTER%♪」
+				PRINTFORMW 「ふふ……呼んでみただけよ♪」
+			ELSEIF TALENT:媚薬中毒 == 1
+				DRAWLINE
+				PRINTFORMW 「アアアァァアアアァァァァァァァ!!!!」
+				PRINTFORML 幽香の調教へ向かう%CALLNAME:MASTER%の耳を、突然響いた絶叫が震わせた
+				PRINTFORML 慌ててその発生源へ向かってみると、どうも幽香の部屋らしい
+				PRINTFORMW たどり着いて部屋を開け開くと、そこでは頭を振り乱してのたうちまわる幽香の姿があった
+				PRINTFORMW 「%CALLNAME:MASTER%ッ！%CALLNAME:MASTER%!! クスリ、くすりぃ！ 頂戴っ！」
+				PRINTFORML 幽香は%CALLNAME:MASTER%がいることを知ってかしらずか、繰り返し叫んでいる
+				PRINTFORMW ―――幽香が落ち着くまで、かなりの時間が必要だった―――
+			ENDIF
+		ENDIF
+	ELSE
+		IF CFLAG:5340 == 1
+			IF TALENT:媚薬中毒 == 0
+				DRAWLINE
+				PRINTFORMW 「あはは、ようやく来たわね？」
+				PRINTFORMW 部屋に入ると、幽香がやってきて%CALLNAME:MASTER%にデコピンを放つ
+				PRINTFORML 「%CALLNAME:MASTER%の分際で私を待たせるだなんて」
+				PRINTFORMW 「オ・シ・オ・キ……してあげないとね♪」
+			ELSEIF TALENT:媚薬中毒 == 1
+				DRAWLINE
+				PRINTFORMW 「いらっしゃぁい♪」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%を見るなり、淫らに蕩けた声をあげた
+				PRINTFORML 「さぁ、今日も楽しみましょう……？」
+				PRINTFORMW 「そのために必要なもの……ちゃんと、持ってるわよね？」
+			ENDIF
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:屈服刻印 == 0
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORML 「……また来たの？」
+			PRINTFORMW 「いい加減、開放してくれないかしら」
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORML 「チッ……また来たの？」
+			PRINTFORML 「…………いいわ、%CALLNAME:MASTER%の言うとおりにしてやっても」
+			PRINTFORMW 「もちろん、%CALLNAME:MASTER%が持ってるその薬を対価として支払うのならばだけど」
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:屈服刻印 == 1
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「いらっしゃい」
+			PRINTFORML 幽香は余裕の笑みで%CALLNAME:MASTER%を出迎える
+			PRINTFORMW いまだその心からプライドは失われていないようだ
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORML 「…………ちゃんと、薬は持ってきてるんでしょうね」
+			PRINTFORML 「まぁ、持ってきているのでしょうね」
+			PRINTFORMW 「だって、そうじゃないとろくに調教もできないんでしょう」
+			PRINTFORML 幽香は揶揄するように%CALLNAME:MASTER%を哂う
+			PRINTFORMW 媚薬無しにはいられなくなった体にしたことを根に持っているのだろう……
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「あぁ、いらっしゃい」
+			PRINTFORMW ベッドでくつろいでいた幽香は%CALLNAME:MASTER%を歓迎する
+			PRINTFORMW 「こうも暇だと、%CALLNAME:MASTER%が来るのが待ち遠しくなるから不思議だわ」
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORML 「あ、う……ねぇ、今日も持ってきてくれた？」
+			PRINTFORMW 「アレがないと……おかしく、なりそうなのよぉ……」
+			PRINTFORML だらしなく%CALLNAME:MASTER%にしなだれかかり懇願する幽香
+			PRINTFORMW それは、以前からするととても想像も出来ないような惨めさだった……
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	IF CFLAG:5340 == 1
+		IF TALENT:媚薬中毒 == 0
+			DRAWLINE
+			PRINTFORMW 「もう……遅いわよ」
+			PRINTFORML 幽香は%CALLNAME:MASTER%が来る頃にはすでに服を脱いでいた
+			PRINTFORMW 抜群のプロポーションを誇る体を惜しげもなく披露し、%CALLNAME:MASTER%を歓迎する
+		ELSEIF TALENT:媚薬中毒 == 1
+			DRAWLINE
+			PRINTFORMW 「あは……いらっしゃい♪」
+			PRINTFORML 幽香は%CALLNAME:MASTER%を見つけると、ニタリと笑みを浮かべた
+			PRINTFORMW 視線は虚ろ、顔色もここに来た頃より遥かに白い
+			PRINTFORML しかし……だからこそだろうか
+			PRINTFORMW 常軌から外れたその姿には……見る者を惹きつける美しさがあった
+		ENDIF
+	ENDIF
+	CALL K34_RESET_CFLAG
+	RETURN 1
+
+
+ENDIF
+RETURN 0
+
+
+
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_34_SLAVE_MESSAGE_TRAIN_END
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K34_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K34_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ
+;--------------------------------------------------
+;処女喪失直後
+IF CFLAG:5358 == 1 && CFLAG:5500 == 0 && CFLAG:5340 == 1
+	IF TALENT:恋慕 == 1
+		DRAWLINE
+		PRINTFORML 「あ～あ……とうとう%CALLNAME:MASTER%に処女あげちゃった」
+		PRINTFORMW 「別に後悔はしてないわよ？ ただ、なんというかね……」
+		PRINTFORMW そう呟いた幽香は、どこか遠くを見るような目付きで%CALLNAME:MASTER%を見つめる
+		PRINTFORML 「どんどん%CALLNAME:MASTER%が私の体に刻み込まれていくなって」
+		PRINTFORMW 「そう思っただけ」
+	CFLAG:5500 = 1
+	ELSEIF TALENT:恋慕 == 0
+		DRAWLINE
+		PRINTFORMW 「……結局、%CALLNAME:MASTER%に奪われるわけ、か」
+		PRINTFORMW 幽香の処女を奪った後、調教を終了した%CALLNAME:MASTER%に向けて幽香が呟く
+		PRINTFORML 「後悔？ ハッ、そんなものあるわけないでしょう」
+		PRINTFORML 「あの『風見幽香』の処女を、本人の意志も関係なく奪った」
+		PRINTFORMW 「そんなことが出来る奴がいたなんてね……むしろ愛おしいくらいだわ」
+		PRINTFORML 「ふふふ……覚えておきなさい。私の胎内の感触。引きちぎった膜の手応えを」
+		PRINTFORMW 「フフ……ふふふふふ……」
+	CFLAG:5500 = 1
+	ENDIF
+
+
+
+;反発刻印Lv3
+ELSEIF MARK:反発刻印 == 3 && CFLAG:5340 == 1
+	DRAWLINE
+	PRINTFORML 「……ねぇ、出来れば二度と来ないでもらえない？」
+	PRINTFORMW 幽香はゴキブリでも見るような眼で%CALLNAME:MASTER%を睨んでいる。
+	RETURN 1
+
+;恋慕
+ELSEIF TALENT:恋慕 == 1 && CFLAG:5340 == 1
+	;膣内射精されまくった
+	IF CFLAG:5359 > 18 && CFLAG:5359 > CFLAG:5360 && CFLAG:5359 > CFLAG:5361 && CFLAG:5359 > CFLAG:5362 && CFLAG:5359 > CFLAG:5355 && TALENT:恋慕 == 1
+		;主人の方が多い
+		IF CFLAG:5363 > CFLAG:5366
+			DRAWLINE
+			PRINTFORMW 「んッ……」
+			PRINTFORML 調教が終わり、解放された幽香がベッドでぐってりとなっている
+			PRINTFORML その蜜壺からは大量に出された%CALLNAME:MASTER%の精液がドロドロと流れ落ちていた
+			PRINTFORMW 「ふふ……ホント、出しすぎよ……」
+			IF TALENT:妊娠 == 1
+				PRINTFORML 「もう……お腹の赤ちゃんに障ったら、どうするつもり？」
+			ELSEIF TALENT:妊娠 == 0
+				PRINTFORML 「これじゃあ、赤ちゃんができちゃったかも……ね♪」
+			ENDIF
+			PRINTFORMW 
+		;助手の方が多い
+		ELSEIF CFLAG:5366 > CFLAG:5363
+			DRAWLINE
+			PRINTFORMW 「ん……」
+			PRINTFORML 調教が終わり、幽香は力が抜けたようにベッドに身を投げ出している
+			PRINTFORMW その蜜壺からは調教中になんども出された%CALLNAME:ASSI%の精液がコポコポと垂れている
+			IF TALENT:妊娠 == 1
+				PRINTFORML 「もう……赤ちゃんもいるんだから、あんまりムリさせないでよね」
+			ELSEIF TALENT:妊娠 == 0
+				PRINTFORMW 「%CALLNAME:MASTER%のじゃない赤ちゃん……か。……なんか、イヤ……」
+			ENDIF
+			PRINTFORMW 
+		ENDIF
+	;腸内射精されまくった
+	ELSEIF CFLAG:5360 > 12 && CFLAG:5360 > CFLAG:5359 && CFLAG:5360 > CFLAG:5361 && CFLAG:5360 > CFLAG:5362 && CFLAG:5360 > CFLAG:5355 && TALENT:恋慕 == 1
+		DRAWLINE
+		PRINTFORMW 「ハァ……アァ……」
+		PRINTFORML 激しい調教が終わり、ようやく一息つけた幽香はベッドの上で仰向けに寝転がる
+		IF CFLAG:5364 > CFLAG: 5367
+			PRINTFORMW その腹は今回の調教で注ぎこまれた%CALLNAME:MASTER%の精液でぽっこりと膨らんでいた
+		ELSEIF CFLAG:5367 > CFLAG:5364
+			PRINTFORMW その腹は今回の調教で注ぎこまれた%CALLNAME:ASSI%の精液でぽっこりと膨らんでいた
+		ENDIF
+		PRINTFORMW 「もう……お腹……いっぱい…よぉ♪」
+		PRINTFORML アヘり顔を%CALLNAME:MASTER%にさらしながら、幽香は満足そうに腹を撫で回す
+		PRINTFORML 肉棒を叩き込まれ続けぽっかりと開いた尻穴からは、とめどなく精液がたれ落ちていた……
+		PRINTFORMW 
+	;口内射精されまくった
+	ELSEIF CFLAG:5362 > 20 && CFLAG:5362 > CFLAG:5359 && CFLAG:5362 > CFLAG:5360 && CFLAG:5362 > CFLAG:5361 && CFLAG:5362 > CFLAG:5355 && TALENT:恋慕 == 1
+		DRAWLINE
+		PRINTFORML 「はぁ、あ……あぷっ……」
+		PRINTFORMW 調教中にさんざん精液を飲まされ続けた幽香は、%CALLNAME:MASTER%が終わりを告げたとたん口元を押さえてうずくまった
+		PRINTFORML 「あッ……ハァ……う、ヴぐ……ッ！」
+		PRINTFORMW 肩で大きく息をしていた幽香は一瞬ピタッと動きを止め、
+		PRINTFORMW 「ゲッ、エエェエエエェェ―――」
+		IF CFLAG:5365 >= 7 && CFLAG:5368 >= 7
+			PRINTFORML 眼に涙を浮かべ痙攣しながら、%CALLNAME:MASTER%と%CALLNAME:ASSI%の精液を喉奥から吐き出しはじめた
+		ELSEIF CFLAG:5365 > CFLAG:5368
+			PRINTFORML 眼に涙を浮かべ痙攣しながら、苦しそうに%CALLNAME:MASTER%の精液を喉奥から吐き出しはじめた
+		ELSEIF CFLAG:5368 > CFLAG:5365
+			PRINTFORML 眼に涙を浮かべ痙攣しながら、苦しそうに%CALLNAME:ASSI%の精液を喉奥から吐き出しはじめた
+		ENDIF
+		PRINTFORML その濁流はすぐには止まず、ようやく治まった頃にはドロリと白い吐瀉物の塊が出来るほどだった
+		PRINTFORMW そのほとんどは放たれたザーメンであり、胃液と混ざったためか強烈な臭気を放っている。
+		PRINTFORMW 「ゲボっ……は、ぁ……ハァ……だし、すぎよ……もう……
+		PRINTFORML 幽香は鼻水のようにザーメンを垂らし、口からも白い残滓を流しながらも
+		PRINTFORML %CALLNAME:MASTER%を安心させるためか、弱々しく微笑んだのだった……
+		PRINTFORMW 
+		
+	;体外射精されまくった
+	ELSEIF CFLAG:5361 > 16 && CFLAG:5361 > CFLAG:5359 && CFLAG:5361 > CFLAG:5360 && CFLAG:5361 > CFLAG:5362 && CFLAG:5361 > CFLAG:5355 && TALENT:恋慕 == 1
+		DRAWLINE
+		IF TALENT:精愛味覚 == 0
+			PRINTFORMW 「はぁ……は……ん、ふぅ……」
+			PRINTFORML 調教が終わり、息を整えている幽香の体は大量の精子に覆われていた
+			PRINTFORMW 精液からはもうもうと湯気が立ち上り、据えた臭いを放っている
+			PRINTFORMW 「まったく……%CALLNAME:PLAYER%も少しは加減できなかったの？」
+			PRINTFORMW バカにするように笑う幽香。しかし精液に包まれたその表情は深い喜色に染まっていた……
+		ELSEIF TALENT:精愛味覚 == 1
+			PRINTFORMW 「はぁ……は、ぁ……」
+			PRINTFORML 調教終了後、%CALLNAME:MASTER%は幽香の体中に飛び散った精液を集め始めた
+			PRINTFORML 幽香は%CALLNAME:MASTER%のその作業を、どこか期待するような瞳で眺めている
+			PRINTFORMW そして、ようやく集め終わったソレは大ジョッキひとつを満たすほどの量になっていた
+			PRINTFORML 「あは♪ ―――ねぇ、ソレ……飲ませてくれるんでしょう？」
+			PRINTFORMW 「だったら……早く ちょうだい？」
+			PRINTFORMW もちろんだ、というようにジョッキを手渡すと、幽香は何のためらいもなく口をつける
+			PRINTFORML 「んぐ―――ゴッ――ゴッ――ングっ……グ……」
+			PRINTFORMW やはり喉に引っかかるのか、若干飲みにくそうにしているものの……一度も口を離さない
+			PRINTFORML 
+			PRINTFORML 　　　　　―――そして―――
+			PRINTFORMW 
+			PRINTFORMW 「ング―――ゲェ……っぷ♪」
+			PRINTFORML とうとうジョッキ一杯分の精液を飲み干した幽香は、生臭いゲップを吐きながら背筋を震わせている
+			PRINTFORML 精液の味に、喉を通る感触に、ずっと絶頂を感じていたのだろう
+			PRINTFORMW 口元から精液の匂いを漂わせ呆ける幽香を見て
+			PRINTFORML ニヤリ、と%CALLNAME:MASTER%は楽しげに口端を吊り上げるのだった……
+			PRINTFORMW 
+		ENDIF
+			
+	;射精しまくった(幽香が)
+	ELSEIF CFLAG:5355 > 20 && CFLAG:5355 > CFLAG:5359 && CFLAG:5355 > CFLAG:5360 && CFLAG:5355 > CFLAG:5361 && CFLAG:5355 > CFLAG:5362 && TALENT:恋慕 == 1
+		DRAWLINE
+		PRINTFORMW 「も、もうダメぇ……♪」
+		PRINTFORML そろそろ頃合いか、と%CALLNAME:MASTER%が調教終了を告げると
+		PRINTFORML 幽香は顔をだらしなくアヘらせながら、ヘナヘナとベッドに崩れ落ちた
+		PRINTFORMW しかしその右手は未だビンビンに勃起したチンポを扱いており
+		PRINTFORML 「アヒャ♪ ま、またっ、イグぅ……ッ♪」
+		PRINTFORML その先端からは、壊れた蛇口のようにザーメンが垂れ流されるのであった……
+		PRINTFORMW 
+	ELSEIF BASE:0 < 500
+		DRAWLINE
+		PRINTFORML 「――ッ、は……あ……はぁ……」
+		PRINTFORMW 「もう……%CALLNAME:MASTER%ったら激しすぎよぉ……♪」
+		PRINTFORML 調教でさんざんいじられた幽香は、最後に%CALLNAME:MASTER%にキスをすると
+		PRINTFORML そのまま幸せそうに眠りについたのだった……
+		PRINTFORMW 
+	ELSE
+		DRAWLINE
+		PRINTFORML 「もう、終わり……なの？」
+		PRINTFORMW 「別にいいけど…ね。私は%CALLNAME:MASTER%に愛でられるだけの花なんだから……」
+		PRINTFORML そうはいうものの、幽香はどこか不満げだった……。
+		PRINTFORMW 
+		RETURN 1
+	ENDIF
+	
+;屈服刻印Lv1以下
+ELSEIF MARK:屈服刻印 <= 1 && CFLAG:5340 == 1
+	DRAWLINE
+	PRINTFORML 「ようやく終わり？」
+	PRINTFORMW 「ま、少しは楽しめたかもね」
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2 && CFLAG:5340 == 1
+	DRAWLINE
+	PRINTFORML 「んっ……なによ、もう終わりなの？」
+	PRINTFORMW 「ふぅん……で、次はいつなわけ？」
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0 && CFLAG:5340 == 1
+	DRAWLINE
+	PRINTFORML 「あっン……」
+	PRINTFORMW 「なによ、もう少し遊んでいかないの……？」
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係
+;コマンド実行時に出力されます
+;--------------------------------------------------
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1
+;1以外を返した場合はコマンド口上は表示される
+;========================================================
+@KOJO_34_TRAIN_MESSAGE_S_BEFORE
+
+@KOJO_34_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ・猿轡(?)・触手口屈辱時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 && (SELECTCOM != 226 && SELECTCOM != 229 && SELECTCOM != 506 && SELECTCOM != 583)
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_COM_K34_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_COM_K34_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG:9000～9999を使用（コマンド番号＋9000）
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG:9000
+;-------------------------------------------------
+IF (SELECTCOM == 0 || SELECTCOM == 606)&& CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9000 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「んッ……ふふ、中々上手じゃない？」
+			PRINTFORMW 「でも、私を感じさせたいなら、もっと頑張ってちょうだい？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「…………ふぅん」
+			PRINTFORMW 幽香は体をまさぐる%CALLNAME:PLAYER%の手つき、見下すように眺めていた……
+		ENDIF
+		CFLAG:9000 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「あッ そう、そこ! もっと強く…」
+				PRINTFORMW 幽香は体をなぞる%CALLNAME:PLAYER%の手を愛おしそうに眺めていた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「んっ、おっぱい……ほんと、大好きなのね？」
+				PRINTFORMW 胸を中心にいじっていると、幽香が揶揄するように笑った
+				PRINTFORMW なんとなく悔しくなったので乳首をつねってやる
+				PRINTFORMW 「アン!? こ、こらっ!!」
+			ELSE
+				IF SELECTCOM == 606
+					PRINTFORMW 「ん……ふぅ……」
+					PRINTFORMW キスをしながら右手で幽香の胸を、左手で陰核を弄ぶ
+				ENDIF
+				PRINTFORMW 「くちゅ……ふふ、上手ぅ♪」
+				PRINTFORMW 優しげな%CALLNAME:PLAYER%の手つきに、幽香はご満悦のようだった
+			ENDIF
+
+			CFLAG:9000 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ、はぁん……♪」
+			PRINTFORMW 幽香は%CALLNAME:MASTER%による快楽を受け入れはじめたらしく
+			PRINTFORMW こちらの手の動きにあわせて身をよじっている……
+			CFLAG:9000 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2
+			PRINTFORMW 「くっ、うぅ……ン」
+			PRINTFORMW 幽香は多少快楽を受け入れはじめたのか、
+			PRINTFORMW こちらの動きに合わせて腰をくねらせている……
+			CFLAG:9000 = 3
+		;それ以外
+		ELSEIF MARK:屈服刻印 <= 1
+			PRINTFORMW 「くっ……やめ、なさい……気持ち悪いのよ」
+			PRINTFORMW 幽香は決して反応しないようにと唇を噛み締め
+			PRINTFORMW 快楽の波をやり過ごそうとしていた……
+			CFLAG:9000 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG:9001
+;岩清水 CFLAG:9611
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:56 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9001 == 0
+		;屈服刻印Lv2以上もしくは恋慕
+		IF MARK:屈服刻印 >= 2 || TALENT:恋慕
+			PRINTFORMW 「こ、こら！ そんなところ舐めるんじゃないわよ！」
+			PRINTFORMW 幽香は%CALLNAME:MASTER%の頭を抑えようとするが
+			PRINTFORMW 「うっ、ひゃんっ」
+			PRINTFORMW 陰裂を舐め回す舌の感触で、一気に力が抜けてしまった……
+		;それ以外
+		ELSE
+			PRINTFORMW 「なに、そんなとこ舐めるの？」
+			PRINTFORMW 幽香は抵抗こそしないものの、侮蔑の眼で%CALLNAME:MASTER%を見下ろしている
+		ENDIF
+		CFLAG:9001 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「ひゃぁん♪ ちょ、ちょっと待ってェ♪」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%が動けないようにフトモモで抑えつけるが
+				PRINTFORMW こちらとしては逆に深くかぶりつけるようになっただけだ
+				PRINTFORMW 「うゃっ、あぁん♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ちょ、ちょっと待って！ 心の準備をさせて！」
+				PRINTFORMW 股間を直に舐め回されるのはさすがに恥ずかしいのか、幽香はすーはーと呼吸を整えている
+				PRINTFORMW 「――って、ちょっとこら!? まっててば―アァっ♪」
+			ELSE
+				PRINTFORMW 「う、ん……そう、そこぉ♪」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%の舌の感触に酔いしれている
+				PRINTFORMW その顔はとても幸せそうで、蕩けるような笑みを浮かべていた
+			ENDIF
+			CFLAG:9001 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「やめてっていても舐めるんでしょ？ なら、早くしなさい……ね？」
+			PRINTFORMW 幽香は多少の期待の入った眼で%CALLNAME:MASTER%を見ている
+			CFLAG:9001 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……やるならさっさとすれば？」
+			CFLAG:9001 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611
+	;恋慕+露出癖Lv3以上+C感覚Lv3以上
+	IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:Ｃ感覚 >= 3
+		PRINTFORMW 
+		CFLAG:9611 = 6
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:9611 = 5
+	;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+	ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3 && ABL:露出癖 >= 3
+		PRINTFORMW 
+		CFLAG:9611 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+		CFLAG:9611 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:9611 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG:9002
+;-------------------------------------------------
+IF SELECTCOM == 2 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香のアナルをいじくるため、はさみを取り出してタイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9002 == 0
+		PRINTFORMW 「うぇ!? え、ちょっと……どこ触ってんのよ変態！」
+		CFLAG:9002 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+			;A感覚５以上、アナル装備なし
+			IF TEQUIP:25 == 0 && ABL:Ａ感覚 == 5
+				PRINTFORMW 「あぁはっ……お尻ッほじられてっ、感じちゃうなんて♪」
+				PRINTFORMW 「私も、もぅ……十分、変態じゃないィ♪」
+				PRINTFORMW 幽香のケツ穴は%CALLNAME:PLAYER%の指をくわえ込んみ、絶妙な加減で締め付けている
+			ELSEIF TEQUIP:25 == 1 && ABL:Ａ感覚 == 5
+				PRINTFORMW 「あ、お尻ッ！ め、めくれちゃぅう♪」
+				PRINTFORMW 幽香の尻に挿っているアナルバイブを抜き差しすると、幽香の肛門が離したくないとばかりに食いついてきた
+			ELSEIF TEQUIP:25 == 5 && ABL:Ａ感覚 == 5
+				PRINTFORMW 「んひぃいいぃ♪ おひりっ、ボコボコひろがっちゃううぅぅ♪」
+				PRINTFORMW 幽香の尻穴に入ったアナルビーズを引き出すと、その直径に合わせて肛門が大きく広がっていく
+				PRINTFORMW その様をニヤニヤ見つめながら、%CALLNAME:PLAYER%は再びアナルビーズを腸内に押し戻した
+			ELSE
+				PRINTFORMW 「んぃひッ、ん、ふぅン♪」
+				PRINTFORMW 幽香のケツ穴は、%CALLNAME:PLAYER%を誘うようにヒクヒクとうごめいた
+			ENDIF
+			CFLAG:9002 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「あぁ……お尻、まだ硬い……」
+			PRINTFORMW 幽香の肛門は濡れていないためか、差し込んだ指が動けないくらいにキツイ
+			PRINTFORMW 「もっと%CALLNAME:PLAYER%の指でトロトロにして……♪」
+			CFLAG:9002 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んっ……く、ぅう……♪」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の思うようにアナルをいじられている
+			PRINTFORMW 「こんな、とで……感じちゃうなん…ヒィ♪」
+			CFLAG:9002 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふん……やるならやればいいわ」
+			PRINTFORMW 「触れば触るだけ、%CALLNAME:PLAYER%を軽蔑してやるから」
+			CFLAG:9002 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG:9003
+;-------------------------------------------------
+IF SELECTCOM == 3 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9003 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ、おっぱい触るの？」
+			PRINTFORMW 「ふふ、いいわよ……♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「胸ェ……？」
+			PRINTFORMW 「別にいいけど……男ってホント胸がスキなのねぇ」
+		ENDIF
+		CFLAG:9003 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「ん、いいわよ……もっと強くこねくり回しても♪」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の愛撫に満足しているようだ
+			CFLAG:9003 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「あハん♪ …………いや、ちょっと気持よかっただけよ」
+			CFLAG:9003 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「…………さっさと離してくれない？」
+			PRINTFORMW 「胸が腐って落ちそうだわ」
+			CFLAG:9003 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ CFLAG:9004
+;Gスポット刺激 CFLAG:9600
+;-------------------------------------------------
+;指挿入れ
+IF SELECTCOM == 4 && CFLAG:5340 == 1
+	;黒タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香の性器へタイツの上から、ショーツごと指を突っ込んだ
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9004 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「指…つっこむの？」
+				PRINTFORMW 「文句は言わないけど……」
+				PRINTFORMW （どうせなら%CALLNAME:MASTER%に奪って欲しかった……）
+				PRINTFORMW 　　―――プツッ―――
+				PRINTFORMW 「く……ぅ、ふふ……これで処女ともおさらば、かぁ」
+			;それ以外
+			ELSE
+				 PRINTFORMW 「……どうぞ勝手にすれば？ 処女なんて私にしてみたら何の価値もない、ただの粘膜よ」
+				 PRINTFORMW 　　―――プツッ―――
+				 PRINTFORMW 「…………ほらね、やっぱり呆気無い」
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「ん、指入れるの？」
+				PRINTFORMW 「指もいいけど、どうせなら%CALLNAME:MASTER%のおチンポにして欲しいわ」
+			;V感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「んッ……ん、ふぅ……♪」
+				PRINTFORMW 「やっぱりちょっと物足りないわね……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「…………指？ 勝手にすれば？」
+				PRINTFORMW 「どうせアンタの祖チンを突っ込むんでしょう？」
+				PRINTFORMW 「だとしたら、これ以上腐りようがないわけだし」
+			ENDIF
+			CFLAG:9004 = 1
+			RETURN 0
+		ENDIF
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んッ♪ ほら、私を喜ばせたいんなら、もっと激しく動かしなさい♪」
+			CFLAG:9004 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んハァ♪ んっ、中々いい動きしてくれるじゃない……♪」
+			CFLAG:9004 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「…………なに、今の愛撫でもしてたつもり？」
+			PRINTFORMW 「―――プッ」
+			CFLAG:9004 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;Gスポット刺激
+IF SELECTCOM == 600 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「イッヒャァァァァァァァァァン♪」
+		PRINTFORMW 幽香の膣内で%CALLNAME:PLAYER%が指をＧスポットにこすりつけると、まるで感電したかのような叫びがあがった
+		PRINTFORMW 「そ、そこ♪ ビンカ、ンなのぉ♪」
+		CFLAG:9600 = 4
+	;V感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「アッ♪ ……う、フフ……いいわ、もっと…もっと奉仕しなさい！」
+		CFLAG:9600 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「ン…………ふん、確かに少しはきもちよかぁ……よか、った、わよ……」
+		CFLAG:9600 = 2
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フェラする(ふたなり/オトコのみ) CFLAG:9005
+;-------------------------------------------------
+IF SELECTCOM == 5 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9005 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW ――ジュボっ、ジュズズ……ズル、チュパっ――
+			PRINTFORMW 「あひっ!? ひあぁ、ふぁぁぁぁぁん♪」
+			PRINTFORMW %CALLNAME:PLAYER%が幽香の陰茎をくわえると、幽香は腰の抜けたような嬌声をあげた
+		;それ以外
+		ELSE
+			PRINTFORMW 「うわ……」
+			PRINTFORMW 幽香は陰茎を舐め上げる%CALLNAME:PLAYER%を、生ゴミでも見たかのように顔をしかめて見下ろしている
+		ENDIF
+		CFLAG:9005 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「んふっ……いい、わ。%CALLNAME:PLAYER%の口マンコ……すごいキモチイイ……」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 幽香のチンポははちきれんばかりに勃起している
+				PRINTFORMW 鬼頭からくわえて深くスロートすると、幽香は舌をたらして悦んだ
+			ELSE
+				PRINTFORMW 「ん……は――ぁ……♪」
+				PRINTFORMW 幽香のチンポは%CALLNAME:PLAYER%の口の中で脈動しながら隆起している
+				PRINTFORMW 「もっと舌を使って舐めまわして……♪ %CALLNAME:PLAYER%ならわかるでしょう？」
+			ENDIF
+			CFLAG:9005 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「う、っん……うん、気持ちいいわ……%CALLNAME:PLAYER%、けっこう優秀じゃないの……」
+			SIF ASSIPLAY == 0
+			PRINTFORMW 「調教師なんてやめて奴隷にでもなったら？」
+			SIF ASSIPLAY > 0
+			PRINTFORMW 「%CALLNAME:PLAYER%の奴隷なんてやめて、私の奴隷にならない？」
+			CFLAG:9005 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……く――ふふ、無様な格好ね。やっぱり%CALLNAME:PLAYER%ごときが私を調教するなんておかしかったんじゃないの？」
+			CFLAG:9005 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする CFLAG:9006
+;-------------------------------------------------
+IF SELECTCOM == 6 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9006 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「くちゅ……ん、ちゅ……」
+			PRINTFORMW 顔を離すと幽香はトロンとした顔で%CALLNAME:PLAYER%を見ている
+			PRINTFORMW 「ふふ……やっぱり、キスっていいものね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「―――――――――」
+			PRINTFORMW 幽香は唇を固く結び、こちらの侵入を一切受け付けない構えだった
+		ENDIF
+		CFLAG:9006 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「んじゅ……チュル……ぷ、んちゅ……」
+				PRINTFORMW 舌と舌が絡まりあい、混ざり合った唾液が淫靡な音をたてる
+				PRINTFORMW 幽香は眼を閉じて%CALLNAME:PLAYER%の舌の動きを深く感じていた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ちゅろ……レル……くちゅ……ちゅぱッ」
+				PRINTFORMW 食い散らかすかのように互いの唇をむさぼる
+				PRINTFORMW 「ん……ぷ、はぁ……」
+				PRINTFORMW 口を離すと、幽香は自分の唇に――%CALLNAME:PLAYER%とのキスの感触をなぞるように指をなぞらせていた
+			ELSE
+				PRINTFORMW 「ん、%CALLNAME:PLAYER%……ンっ」
+				PRINTFORMW 幽香は愛情たっぷりに%CALLNAME:PLAYER%の唇をはむ
+				PRINTFORMW その動きは、まるで太陽のように情熱的だった……
+			ENDIF
+			CFLAG:9006 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2
+			PRINTFORMW 「ん……」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の動きに合わせて舌を動かす
+			PRINTFORMW 多少はこちらの意をくんでくれるようになったようだ
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「………………――ッ」
+			PRINTFORMW ガリッ、という音とともに鈍い痛みが唇にはしる
+			PRINTFORMW 慌てて口を離すと、幽香の口元は%CALLNAME:PLAYER%の血で濡れていた
+			PRINTFORMW どうやら一筋縄ではいかないようだ……
+			PRINTFORMW %CALLNAME:PLAYER% 体力-50
+			BASE:PLAYER:0 -= 50
+			CFLAG:9006 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;5650=自慰
+;5651=二穴バイブオナニー
+;5652=アナルバイブオナニー
+;5653=バイブオナニー
+;5654=ふたなりオナニー
+;5655=ふたなりオナホオナニー
+;-------------------------------------------------
+IF SELECTCOM == 7 && TEQUIP:20 == 0 && TEQUIP:25 == 0 && TALENT:ふたなり == 0 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5650 == 0
+		PRINTFORMW 「オナニー？ 何、私にしろって？」
+		PRINTFORMW 「%CALLNAME:PLAYER%の目の前で？ ハァ……呆れてモノも言えないわ」
+		CFLAG:5650 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「ふ……ふっ……ん、もっと……見てェ♪ %CALLNAME:PLAYER%ッ♪♪」
+			PRINTFORMW 幽香は口元をだらしなく緩ませ、%CALLNAME:PLAYER%に痴態を見せる行為に酔いしれていた
+			CFLAG:5650 = 5
+		;恋慕＋自慰中毒Lv3未満
+		ELSEIF TALENT:恋慕 == 1 && ABL:自慰中毒 < 3
+			PRINTFORMW 「ふ、う……まったく……そのうちハマっちゃいそうで怖いわ……ンっ♪」
+			CFLAG:5650 = 4
+		;それ以外（恋慕無し、自慰中毒Lv3未満）
+		ELSE
+			PRINTFORMW 「はぁ、あ……ん……」
+			PRINTFORMW 幽香は指先をクレバスに添わせ、快楽に身を委ねている
+			CFLAG:5650 = 3
+		ENDIF
+		RETURN 0
+	ENDIF
+;二穴バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1 && TEQUIP:20 == 1 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5651 == 0
+		IF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+			PRINTFORMW ブブブブブ……ブブブ
+			PRINTFORMW 「う、ふふ……股間にバイブを突っ込んで……それを動かせ？」
+			PRINTFORMW 「なんて鬼畜な所業なのよ……ンっ、ふゥん……♪」
+		ELSE
+			PRINTFORMW 「あ、ギ……キツイぃ……」
+			PRINTFORMW 「…コレ、使ってオナれだなんて……ぇん♪ 壊れちゃうんじゃないか、しら……」
+		ENDIF
+		CFLAG:5650 = 1
+		CFLAG:5651 = 1
+		CFLAG:5652 = 1
+		CFLAG:5653 = 1
+		CFLAG:5655 = 1
+		RETURN 0
+	ELSE
+		IF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+			IF RAND:2 == 0
+				PRINTFORMW 「あ、はぁ……気持ちい、イ……♪」
+				PRINTFORMW 「オマンコも……ケ、ツマンコもォ♪ 気持よすぎてぇ……おかじ、く……なるゥ♪」
+				CFLAG:5651 = 3
+			ELSE
+				PRINTFORMW 「はぁ、はぁ……もっと……もっと気持よく……」
+				PRINTFORMW 幽香はそう呟くと、股間に刺さった2つのバイブをさらに激しく抽挿した
+				PRINTFORMW 「うはぁぁ♪」
+				CFLAG:5651 = 3
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐ……ぃ……」
+			PRINTFORMW 「二本も、だなんて……キツすぎ、よぉ……」
+			CFLAG:5651 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;アナルバイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:25 == 1 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5652 == 0
+		IF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「アハ♪ お尻……ケツマンコ、震えて…♪」
+			PRINTFORMW 「…オナニー、していいの？ ケツ穴マンコでバイブじゅぼじゅぼしちゃっていいの？」」
+		ELSE
+			PRINTFORMW 「ぐ……あ……ふ、ぅ……お尻、きつい……」
+			PRINTFORMW 「動かせって……ムリ、よ……こんなキツイのに……あぁわかった、やればいいんでしょう、やれば！」
+		ENDIF
+		CFLAG:5650 = 1
+		CFLAG:5651 = 1
+		CFLAG:5652 = 1
+		CFLAG:5653 = 1
+		CFLAG:5655 = 1
+		RETURN 0
+	ELSE
+		IF ABL:Ａ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「お尻ッ♪ ケツ穴マンコォ♪」
+				PRINTFORMW 幽香はアナルバイブを異常な速さで抽挿し、快楽を貪っている
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ああぁ…気持よすぎィ♪ お腹ブルブルひびくぅ♪」
+				PRINTFORMW 幽香はアナルバイブを深く突き入れ、根元を中心にぐりぐりと回転させた
+				PRINTFORMW 「ンヒッ♪ これ凄いぃいぃぃいぃぃぃ♪」
+			ELSE
+				PRINTFORMW 「あっ♪ イヒィ♪ 駄目っ、これ♪ アヘる、アヘ顔さらしちゃうぅ♪」
+				PRINTFORMW 幽香ははしたなく尻を突き上げながら、アナルバイブをガシガシと突っ込んでいた
+			ENDIF
+			CFLAG:5652 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ううっ、お腹が、くるしぃ…」
+			CFLAG:5652 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:20 == 1 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5653 == 0
+		PRINTFORMW 「ん……え？」
+		PRINTFORMW 「コレを動かせって…また厄介なことを言い出したわね……」
+		CFLAG:5650 = 1
+		CFLAG:5651 = 1
+		CFLAG:5652 = 1
+		CFLAG:5653 = 1
+		CFLAG:5655 = 1
+		RETURN 0
+	ELSE
+		;淫乱＋V感覚Lv3以上
+		IF TALENT:淫乱 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あは♪ オマンコがバイブでぐちゃぐちゃぁ……♪」
+			PRINTFORMW 「もっと見て……私のいやらしいところ、%CALLNAME:PLAYER%に見てもらうのぉ！」
+			CFLAG:5653 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あはぁ……バイブ……きもっちぃいい♪」
+			CFLAG:5653 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「く、う……」
+			PRINTFORMW 幽香は親の敵でも見るかのような目付きでバイブを睨んでいる
+			CFLAG:5653 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;ふたオナホオナニー
+ELSEIF SELECTCOM == 7 && TEQUIP:30 == 2 && TALENT:ふたなり == 1 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5655 == 0
+		PRINTFORMW 「うぅ……オナホつけたチンポ晒しながらオナニーだなんて……」
+		PRINTFORMW 「イヤなのに……手が、止まらない……、い……」
+		PRINTFORMW ガッシュガッシュと手を上下にピストンしながら、幽香はオナホによる快感を味わっている
+		CFLAG:5650 = 1
+		CFLAG:5654 = 1
+		CFLAG:5655 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;自慰中毒LV3以上
+		IF ABL:自慰中毒 >= 3 && TALENT:恋慕 == 1
+			IF RAND:2 == 0
+				PRINTFORMW 「うはぁ……と まらないぃい♪」
+				PRINTFORMW 「チンポオナホール気持ちよすぎて、手が止まらないぃぃぃ！」
+				PRINTFORMW 気に入ってくれたようでなによりである
+			ELSE
+				PRINTFORMW 「ぐぅ――――ぐぅぅぅぅぅぅ――――!!!!」
+				PRINTFORMW 幽香は本気で涙目になりながらもオナホ自慰の快楽から抜け出せないのか
+				PRINTFORMW ガシュガシュガシュと両手を使って激しくオナホチンポを扱いている
+				CFLAG:5655 = 4
+			ENDIF
+		;自慰中毒LV3未満
+		ELSE
+			PRINTFORMW 「…く、はぁ……」
+			PRINTFORMW 「こんなもので自慰をさせられるなんてね……ほんと、困ったものだわ」
+			CFLAG:5655 = 3
+		ENDIF
+		RETURN 0
+	ENDIF
+;ふたなりオナニー
+ELSEIF SELECTCOM == 7 && TALENT:ふたなり == 1 && TEQUIP:50 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5654 == 0
+		PRINTFORMW 「この私にセンズリこけっていうの……？」
+		PRINTFORMW 「ふん……どうせ逆らえないのよね。いいわ、やってあげるわよ」
+		CFLAG:5650 = 1
+		CFLAG:5654 = 1
+		CFLAG:5655 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;自慰中毒Lv3以上
+		IF ABL:自慰中毒 >= 3
+			PRINTFORMW 「ああぁぁぁ……おチンポごしごしぃ……♪ ビクビクピュッピュしたいぃぃ♪」
+			PRINTFORMW 幽香は右手を激しく上下させ、あまった手で胸を揉みしだいている
+			CFLAG:5654 = 5
+		;欲望Lv3以上
+		ELSEIF ABL:欲望 >= 3
+			PRINTFORMW 「ん、は……あ……」
+			PRINTFORMW 「おチンポ……きもち、いい……っ」
+			CFLAG:5654 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ぐ、う……」
+			PRINTFORMW 「ペニス……自慰、やばい……止められなくなりそう……」
+			CFLAG:5654 = 3
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;公開オナニー CFLAG5656
+;-------------------------------------------------
+IF SELECTCOM == 7 && TEQUIP:50 == 1 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:5656 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1 && ASSIPLAY == 0
+			PRINTFORMW 「ビデオで……？ ふぅん、いい趣味してるのね」
+			PRINTFORMW 「ふふ……たぁっぷり見ててよね？」
+			PRINTFORMW 幽香は%CALLNAME:MASTER%にウィンクをすると、秘所をいじりはじめた
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぅん……私の自慰を撮って何に使おうっていうのかしら」
+			PRINTFORMW 「……まぁいいわ。どうせなんだし、しっかり眼に焼き付けなさい」
+			PRINTFORMW 幽香はそう言うと、秘所に指を這わせ始めた
+		ENDIF
+		CFLAG:5650 = 1
+		CFLAG:5656 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;露出癖Lv3以上＋自慰中毒Lv3以上
+		IF ABL:露出癖 >= 3 && ABL:自慰中毒 >= 3
+			;恋慕＋従順Lv5以上＋二穴オナニー＋V感覚Lv5以上＋A感覚Lv5以上
+			IF TALENT:恋慕 == 1 && ABL:10 >= 5 && TEQUIP:20 == 1 && TEQUIP:25 == 1 && ABL:Ｖ感覚 >= 5 && ABL:Ａ感覚 >= 5
+				PRINTFORMW 「ぃィああぁアあぁぁぁ！ バイブしゅごいぃいぃいいぃぃぃ!!」
+				PRINTFORMW 「おまんこもアナルもぐりゅぐりゅして気持ちいいのぉぉぉ♪」
+				PRINTFORMW 幽香の両穴に差し込まれたバイブは柔肉のヒダをかきむしり、快感を与え続けている
+			;二穴オナニー＋V感覚Lv3以上＋A感覚Lv3以上
+			ELSEIF TEQUIP:20 == 1 && TEQUIP:25 == 1 && ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「あ、っぅぅ……♪♪」
+				PRINTFORMW 「みな……さいぃ！ ほらぁ……私のマンコにケツマンコォ……」
+				PRINTFORMW 幽香はビクビクと崩れそうになる体を支えながら、カメラにむかって大きく股を広げた
+				PRINTFORMW 「とっても……おいし、そう……でしょう……？」
+			;アナルバイブオナニー＋A感覚Lv3以上
+			ELSEIF TEQUIP:25 == 1 && ABL:Ａ感覚 >= 3
+				PRINTFORMW 「ぐぅぅ…おひり……すご ひぃぃ♪」
+				PRINTFORMW 「おしりの穴が下品にバイブくわえ込んでる姿……撮られてる……」
+				PRINTFORMW 幽香は左手で肉付きの良い尻を大きく広げると、余った手でアナルバイブを抽挿する
+				PRINTFORMW 無心になって肛悦を貪る姿は、とても淫靡な雰囲気をかもしだしていた……
+			;バイブオナニー＋V感覚Lv3以上
+			ELSEIF TEQUIP:20 == 1 && ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「ん♪ ふぅ、う……ッ♪」
+				PRINTFORMW 「あ、あぁ……すごい、顔も知らない男に見られてるって思うと……」
+				PRINTFORMW 「どんどん……体が、熱くなっちゃうぅ」
+				PRINTFORMW 幽香は秘蜜が泡立つほどに激しくバイブを動かし、その快楽に酔っている
+			;ふたなり
+			ELSEIF TALENT:ふたなり
+				PRINTFORMW 「あぁ……みっともない……」
+				PRINTFORMW 「私のセンズリオナニーが撮られてる……顔も知らない男に見られちゃうのね……」
+				PRINTFORMW 幽香は熱く熟れた瞳でレンズの奥を通し見ている……
+				PRINTFORMW その先では、一体どんな光景が繰り広げられているのだろうか……
+			ELSE
+				PRINTFORMW 「んんっ……ほらぁ、わたしのオマンコ……こんなにトロットロぉ…♪」
+				PRINTFORMW 幽香は右手を股間に這わせ、左手で胸を揉みしだいている
+				PRINTFORMW 右手の中指がヌププと陰裂の中に沈み込み、幽香はそれに合わせて背中を仰け反らせた
+			ENDIF
+			CFLAG:5656 = 6
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 「は、ぁ……みら、れてる……私のオナニー……カメラで撮られちゃってる」
+			PRINTFORMW 幽香の秘裂からは、ドロリとした本気汁がこんこんと湧き出ていた……
+			CFLAG:5656 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ん……ふっ、は、ぁ、ぁ……」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%に言われた通りに自分を慰めている
+			PRINTFORMW 視線は%CALLNAME:MASTER%に釘付けになっていて、その動きは徐々に熱のこもったものになっていった……
+			CFLAG:5656 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「う、ぅく……はぁ、はァン……」
+			PRINTFORMW （見られてるのに……ビデオに撮られちゃってるのに……ッ）
+			PRINTFORMW （指が―――止まらないぃッ―――！）
+			CFLAG:5656 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……………」
+			PRINTFORMW 幽香は淡々と、まるで作業的に自慰を進めている……
+			CFLAG:5656 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;何もしない CFLAG:9009
+;-------------------------------------------------
+IF SELECTCOM == 9 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9009 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ん、なぁに？ なにもしないの？」
+			PRINTFORMW 「疲れちゃった……わけない、か。%CALLNAME:PLAYER%だものね」
+		;それ以外
+		ELSE
+			PRINTFORMW 「なによ、何もしないわけ？ ハッ……もしかして疲れた？」
+			PRINTFORMW 「そんなので、よくもヌケヌケと調教師だなんて言えたものね」
+		ENDIF
+		CFLAG:9009 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv3以上
+		IF TALENT:恋慕 == 1 && PALAM:13 >= PALAMLV:3
+			PRINTFORMW 「ちょっとした小休止……ってわけ？」
+			PRINTFORMW 「バカねぇ……そんなものいらないから、もっと楽しみましょう？」
+			CFLAG:9009 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「慌てない慌てない、ひと休みひと休み……ってね」
+			CFLAG:9009 = 3
+		;それ以外
+		ELSE
+			SELECTCASE RAND:9
+				CASE 0
+					PRINTFORMW 「ちょっと聞きたいんだけど」
+					PRINTFORMW 「%CALLNAME:MASTER%ってもしかして……異性と経験なかったりする？」
+					PRINTFORMW 「あぁ、違ったのならごめんなさい」
+					PRINTFORMW 「なんだか行動の節々からそんな匂いがしてたから、つい気になっちゃって」
+					PRINTFORMW 幽香は見下したようにこちらをニヤニヤと哂っている
+					PRINTFORMW …………多少、自分の立場というものを教え込んだほうが良さそうだ
+				CASE 1
+					PRINTFORMW 「ふぁ～ぁ……」
+					PRINTFORMW 幽香はこちらが手を休めると、退屈そうにあくびをする
+					PRINTFORMW 「ん、なに？ こんなバカみたいな茶番に付き合うのも結構しんどいのよ？」
+					PRINTFORMW 「もう少してから来たらどうなの。腕とか、男とか」
+				CASE 2
+					PRINTFORMW 「ハァ……休ませてくれるっていうならありがたく休ませてもらうわ」
+					PRINTFORMW そういうと幽香はポリポリと自分の背中を掻き始める
+					PRINTFORMW 「%CALLNAME:PLAYER%に触られたところが気持ち悪くて気持ち悪くて」
+					PRINTFORMW どうしたのかと問いかけた%CALLNAME:PLAYER%に、幽香はニヤリと口元を釣り上げて言った……
+				CASE 3
+					PRINTFORMW 「ゲスはゲスらしく地下にでも潜っていればいいものを……」
+					PRINTFORMW 「%CALLNAME:MASTER%の祖チン、ミミズよりはぶっといかもしれないけど……」
+					PRINTFORMW 「ミミズを突っ込むのとどっちがマシかと言われれば、私は断然ミミズを選ぶわね」
+					PRINTFORMW 幽香はこちらを見下すように肩をすくめた
+				CASE 4
+					PRINTFORMW 「何よ、もう終わり？」
+					PRINTFORMW 「……あぁそう、まだ続けるの。―――チッ、紛らわしい」
+					PRINTFORMW 「%CALLNAME:PLAYER%さぁ、どうせ生きてても何の役にも立たないんでしょう？」
+					PRINTFORMW 「だったら死なない？」
+					PRINTFORMW 「山にでも埋めて木々の養分になるっていう大役を与えてあげるから」
+				CASE 5
+					PRINTFORMW %CALLNAME:PLAYER%が息を整えていると、幽香がちょいちょいと脇腹をつっついた
+					PRINTFORMW どうしたのかと聞くと、幽香は一言だけ言い放った
+					PRINTFORML 
+					PRINTFORML 　　　　「　く　さ　い　」
+					PRINTFORMW 
+				CASE 6
+					PRINTFORMW 「なに勝手に休んでんのよ、へたれ」
+					PRINTFORMW 「足で扱いて欲しいとか踏んで欲しいとか」
+					PRINTFORMW 「変態みたいなことして欲しいですって言えばいいじゃない」
+					PRINTFORMW ……なぜ自分がドＭ設定なのだろうか……
+				CASE 7
+					PRINTFORMW 「もう終わり？ え、ちがう？ ちょっと休憩するだけだ？」
+					PRINTFORMW 「何よソレ……一息つく間も与えずにガンガン責めてこその調教でしょうが」
+					PRINTFORMW どうも調教に関しては一家言あるご様子
+					PRINTFORMW その後も続く幽香の説教を受け流しながら、ふと思う
+					PRINTFORMW ―――なぜ自分が叱られなければならないのだろうか―――
+				CASEELSE
+					PRINTFORMW 「何もしないならそれでもいいわ。私にとってマイナスにはならないわけだし」
+					PRINTFORMW 「いっそのこと後100回くらい休まない？」
+			ENDSELECT
+			CFLAG:9009 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG:9010
+;-------------------------------------------------
+IF SELECTCOM == 10 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9010 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「それ……なに？」
+			PRINTFORMW 「ピンクで震えてて……あっ」
+			PRINTFORMW その使い道にピンときたのか、幽香は頬をほんのりと染め上げる
+			PRINTFORMW 「くす……いいわよ、使って……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ローター……あぁ、なるほど。そういう器具ね」
+			PRINTFORMW 幽香はさも興味なさげに吐き捨てる
+			PRINTFORMW 「使うならどうぞご勝手に。私も少しは興味あるしね」
+		ENDIF
+		CFLAG:9010 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「ふッ♪ 、う♪　ハァ……ローター……ぶるぶる、すごいぃ……♪」 
+			ELSEIF RAND:2 == 0
+				PRINTFORM 細かく震えるローターを
+				IF TALENT:ふたなり == 0
+					PRINTFORMW クリトリスに当てる
+				ELSE
+					PRINTFORMW 勃起した陰茎に当てる
+				ENDIF
+				PRINTFORMW 「――ッヒャィ！ しゅ、すご……ヒっ♪ こ、これ、スゴィイ♪♪」
+			ELSE
+				PRINTFORMW 「ふ――ぅ、ううぅ……ン♪」
+				PRINTFORMW 幽香は手の甲を唇に押し当て、必死に声を我慢している
+				PRINTFORMW ―――%CALLNAME:PLAYER%は積極的に陰核を責め、だらしない嬌声をあげさせようとした
+			ENDIF
+			CFLAG:9010 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ふ……う……うん、気持ちいいわ……」
+			PRINTFORMW 震えるローターを、幽香は楽しげに見下ろしている
+			CFLAG:9010 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「―――ッ」
+			PRINTFORMW 幽香は必死に声を押し殺し、痴態をさらすまいとしている
+			CFLAG:9010 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩 CFLAG:9011
+;-------------------------------------------------
+IF SELECTCOM == 11 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9011 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「それは……へぇ、マッサージ器なの？」
+			PRINTFORMW 激しく振動して患部のコリをほぐすのだと教えると、幽香は関心したように頷いた
+			PRINTFORMW 「で、なんで%CALLNAME:PLAYER%はそれを手に持ってるの？」
+			PRINTFORMW 「そしてなんで%CALLNAME:PLAYER%はジリジリと私に近づいているの？」
+			PRINTFORMW 「いや、『激しく振動～』のくだりで予想はついていたけどね？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「電気あんま……へぇ、マッサージ器なんだ」
+			PRINTFORMW 幽香はまるで信じていないといった面持ちで按摩を見ている
+			PRINTFORMW 「あぁいえ、ソレがマッサージ器だというのは信じるわ」
+			PRINTFORMW 「ただソレが本当の用途で使われることはないんだろうなと思っただけよ」
+			PRINTFORMW ―――なかなか鋭いことで―――
+			PRINTFORMW ならば、その予想通りに使ってやることとしよう
+			PRINTFORMW 「ヒッ――――ッッッ!? ちょっ、まっ……つ　強すギィィィィィイ!?」
+		ENDIF
+		CFLAG:9011 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あ゛ぁ゛ぁ゛あ゛あ゛ぁ゛ぁ!!??」
+			PRINTFORM 按摩を
+			IF TALENT:ふたなり == 0
+				PRINTFORM クリトリス
+			ELSE
+				PRINTFORM 勃起したペニス
+			ENDIF
+			PRINTFORMW に当てると、幽香はひしゃげたような声で叫びをあげる
+			PRINTFORMW 「つぶっ、れ……潰れちゃう！ お豆がつぶれひゃぁぁぁぁあああ!!!!」
+			CFLAG:9011 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「あ……がっ、イギッ!? ちょ、ちょっと待っ、て…………」
+			PRINTFORML 幽香が懇願するが、%CALLNAME:PLAYER%はかまわずクリトリスを按摩で押しつぶした
+			PRINTFORMW 「―――――――――ッッッッ!!!!」
+			CFLAG:9011 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「はぐっ、うう、ぅうう！！」
+			PRINTFORMW 幽香は必死に声を押し殺そうとしているようだ
+			CFLAG:9011 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG:9012　CFLAG:8811
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9012 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「え―――？」
+				PRINTFORML %CALLNAME:MASTER%がバイブを取り出すと、幽香はきょとんとした顔になった
+				PRINTFORMW 「ちょ、っとナニソレ？ え、私の処女を――え、ぇ？」
+				PRINTFORML どうやら自分の処女は%CALLNAME:MASTER%に奪ってもらえるものだと安心していたらしい
+				PRINTFORML %CALLNAME:MASTER%がバイブを膣口にあてがうと、正気に戻った幽香が暴れだした
+				PRINTFORMW 「い、いやっ！ 嫌イヤイヤ！ 私の処女は%CALLNAME:MASTER%にもらってもらうってきめて……」
+				PRINTFORMW ―――ブツン――
+				PRINTFORMW 「!? い、いやぁぁぁぁぁぁぁぁぁぁ！！！」
+			;それ以外
+			ELSE
+				PRINTFORML 「へぇ……そんな無機物に私の処女を奪わせるの？」
+				PRINTFORML 「別に、稀少価値があるってわけじゃないけど……もったいない話よね」
+				PRINTFORMW 「ま、いいわ。やるならどうぞ？ 足でも広げてればいいのかしら」
+				PRINTFORML 幽香は言葉通り恥らいもなく大股を開く
+				PRINTFORMW その中心で固くとざされていた蜜穴に、%CALLNAME:MASTER%はバイブをつきたてた
+				PRINTFORMW ―――ブツン―――
+				PRINTFORMW 「～～ッ……ふ、ん。やっぱりあっけないものね」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「ん、何それ？ ……へぇ、私の中につっこむんだ」
+				PRINTFORMW 幽香は少しムスっとした顔で%CALLNAME:PLAYER%を睨む
+				PRINTFORML 「……別に不満はないけどね？ どうせならあなたのオチンチンがよかったなぁって」
+				PRINTFORMW 「…………それだけよ」
+			;それ以外
+			ELSE
+				PRINTFORML 「バイブねぇ……いいじゃない。私もソレは割りと好きだし」
+				PRINTFORMW 「少なくとも%CALLNAME:MASTER%の祖チンを入れるよりは百倍ね」
+			ENDIF
+		ENDIF
+		CFLAG:9012 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORML 「ん……くゥ♪」
+			PRINTFORMW 幽香はバイブの刺激に、ピクンと体を震わせた
+			CFLAG:9012 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORML 「は、ぁあ……きもち、いいわ……」
+			PRINTFORMW 幽香はうっとりとバイブの刺激に身を震わせている
+			CFLAG:9012 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「あぁ気持ちいい、気持ちいい」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%にむけ、『バイブ』の気持よさを実況している
+			CFLAG:9012 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 0 && CFLAG:5340 == 1
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香からバイブを引きぬくため、取り出したはさみで黒タイツをジョキジョキと割いた
+		CFLAG:5661 = 0
+	ENDIF
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ふ……うぅん…♪」
+		PRINTFORML バイブが引きぬかれた幽香の蜜壺はぽっかりと口を開け
+		PRINTFORMW まるで%CALLNAME:MASTER%を誘うように蠕動していた……
+		CFLAG:8811 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「く、っ……ぅん♪」
+		PRINTFORML 幽香の膣ヒダをガリガリと削りながらバイブを引き抜くと
+		PRINTFORMW その膣口からドロリとした愛液が溢れ出てきた……
+		CFLAG:8811 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ CFLAG:9013　CFLAG:8812
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香のアナルにバイブを挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9013 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORML 「お尻に……ッ――だ、大丈夫。ちょっと驚いただけだから」
+			PRINTFORMW 入れても大丈夫だという幽香に従い、%CALLNAME:PLAYER%はそのアヌスにバイブを埋めこんでいく
+			PRINTFORML 「あぁぁぁ！ やっぱりキツイいぃぃぃ！！」
+			PRINTFORML 本来は排泄器官であるアナルを押し広げられ、そして異物が入り込む感触
+			PRINTFORMW 幽香は知らずのうちに絶叫を漏らしていた
+		;それ以外
+		ELSE
+			PRINTFORML 「肛門にバイブを……ね」
+			PRINTFORML 「そのやたらゴツゴツした形状なのも、ソレ専用だからなの？」
+			PRINTFORMW 「だとしたら――使用前と使用後にはちゃんと消毒してよね」
+			PRINTFORML 余裕をみせているつもりなのか、平然とした様子の幽香
+			PRINTFORMW しかし、よくみるとその体は異常な行為への恐怖に細かく震えている
+			PRINTFORMW %CALLNAME:PLAYER%はにやりと笑い、幽香の窄まりにアナルバイブを押し入れてやった
+			PRINTFORML 「が―――ァ…ああああああぁぁぁぁぁっ!!」
+			PRINTFORMW 「お尻っ、が！！ 広がってるぅぅ！！」
+		ENDIF
+		CFLAG:9013 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3
+			PRINTFORML 「あはぁ……♪ バイブ入れるの？」
+			PRINTFORMW 「私のクパクパケツマンコにバイブ突っ込んでよがらせてェ……♪」
+			PRINTFORMW %CALLNAME:MASTER%に愛を告げた幽香は、以前に比べてとても素直に快楽を貪っている
+			IF TALENT:抵抗 == 1
+				PRINTFORML 幽香は%CALLNAME:MASTER%に深く心を許したようだ
+				PRINTFORMW 　　　　　　　　 ―――幽香は[抵抗]を失った―――
+				TALENT:抵抗 = 0
+			ENDIF
+			CFLAG:9013 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「ひぃ……いぃぃ♪」
+			PRINTFORMW 幽香は尻穴から響く刺激に、苦しそうにしながらもどこか悦楽を感じているようだ
+			CFLAG:9013 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORML 「お尻ッ、に……んふ……♪ バイブぶっさされちゃう……」
+			PRINTFORMW %CALLNAME:PLAYER%がアナルにバイブをあてがうと、幽香はどこか期待に満ちた表情でこちらを見つめてきた
+			CFLAG:9013 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「クソ虫……いえ、違うかしら？」
+			PRINTFORMW 「今の%CALLNAME:PLAYER%……まるで…そう、まるで汚物に群がるハエのようよ」
+			CFLAG:9013 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香の尻穴からバイブを引きぬくため、取り出したはさみで黒タイツをジョキジョキと割いた
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「ふぅ……んん♪ もっと――%CALLNAME:PLAYER%、もっとお尻いじってぇ……♪」
+		PRINTFORMW バイブが引きぬかれた幽香のアナルは、ピンク色の内蔵を見せながら%CALLNAME:PLAYER%に弄られるのを待ち望んていた……
+		CFLAG:8812 = 3
+	;A感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORML 「ん、ふ――ぅうっ――ンッ♪」
+		PRINTFORMW ズルズルとバイブが直腸を抉っていく感触に、幽香は喜悦の声を上げた 
+		CFLAG:8812 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「ぐ――ふ、ぅううううう―――」
+		PRINTFORMW %CALLNAME:PLAYER%がバイブを引きぬくと、幽香は長く息を吐いた
+		PRINTFORML 「クソバエ……覚えておくわ。私が味わった苦痛と屈辱を」
+		PRINTFORMW 「一片たりとも余すこと無くね……」
+		CFLAG:8812 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ CFLAG:9014　CFLAG:8813
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香にクリキャップを装着するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツを膝まで下ろし、クリトリスまで露出させる
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9014 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「まぁた変な器具もってきて……」
+			PRINTFORMW 「そんなの使わなくたって、%CALLNAME:PLAYER%と一緒にいれるならマンネリなんておきないわよ♪」
+			IF ASSIPLAY == 0
+				PRINTFORMW 幽香はそうは言うものの、%CALLNAME:PLAYER%の言うとおりに足を広げて器具をつけやすいようにした
+			ELSE
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%越しに%CALLNAME:MASTER%に微笑みかけ、器具がつけやすいように足を広げた
+			ENDIF
+			PRINTFORMW 「んっ……クリが…吸われて、る……う♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん――ッ……また、ヘンテコな道具持ってきたのね……」
+			PRINTFORMW 「なぁに？ 意外性で攻めないと女一人まともに篭絡できないの？」
+			PRINTFORMW 小馬鹿にするような態度の幽香に、%CALLNAME:PLAYER%は無言でクリキャップを取り付けた
+			PRINTFORMW 「ひ、ぅ……？ クリが……吸われ、てる……やっ！ 震えて――――」
+		ENDIF
+		CFLAG:9014 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「またクリちゃんブルブル責めちゃうんだ……」
+			PRINTFORMW クリキャップを取り出した%CALLNAME:PLAYER%を見て、幽香はホウ…と蕩けるような息をついた
+			CFLAG:9014 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また……それ？」
+			PRINTFORMW クリキャップを見た幽香は忌々しそうにソレを睨んでいる
+			CFLAG:9014 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 0 && CFLAG:5340 == 1
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に取り付けたクリキャップを外すため、取り出したはさみで黒タイツをジョキジョキと割いた
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ゥ……は、あぁ……♪」
+		PRINTFORMW もういいだろうと思った%CALLNAME:PLAYER%は、空気も抜かずそのままクリキャップを引っ張る
+		PRINTFORMW 　　―チュポンッ―
+		PRINTFORMW クリキャップが音を立てて外れる瞬間、幽香はゾクリと背筋を震わせた
+		CFLAG:8813 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「……まだ、股間が震えてるような気がするわ」
+		PRINTFORMW クリキャップを外した後も、幽香は舌打ちをしながら股座を気にしていた
+		CFLAG:8813 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ CFLAG:9015　CFLAG:8814
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9015 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「なにそれ……へぇ、おっぱいに着けるローターみたいなもの？」
+			PRINTFORMW 「なんというか……ホントに私のおっぱい大好きなのね……♪」
+			PRINTFORMW %CALLNAME:PLAYER%が幽香の乳首にキャップを取り付けると、彼女はなんとも言いがたい表情になった
+			PRINTFORMW 「なんて言えばいいのかしら……ゾワゾワ？ くすぐられてる感覚に近いわ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ニプルキャップ……ね」
+			PRINTFORMW 「どうせくだらないアイテムなんでしょう？ %CALLNAME:MASTER%と一緒で」
+			PRINTFORMW この生意気な奴隷はどうやれば従順になるのだろうか……
+		ENDIF
+		CFLAG:9015 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あッ……♪ そ、れ……つけてると――ずっと乳首愛撫されてるみたいになっちゃうの、よ……」
+			PRINTFORMW ニプルキャップを取り付けると、幽香はホニャンと頬を緩ませた……
+			CFLAG:9015 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「チッ……好きにしなさいよカスめ」
+			PRINTFORMW 幽香はたとえ道具越しであっても%CALLNAME:PLAYER%に感じさせられる、というコトがイヤなのか
+			PRINTFORMW 汚物を塗りつけられているかのごとき嫌悪感をあらわにした
+			CFLAG:9015 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ふぅン……は……あ……あ……」
+		PRINTFORMW ニプルキャップを外すと、幽香はその余韻をかみしめるように眼を閉じていた
+		CFLAG:8814 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「やっと外した……」
+		PRINTFORMW 幽香はどこか疲れたような顔でほっとした表情を浮かべている……
+		CFLAG:8814 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) CFLAG:9016　CFLAG:8815
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツを下ろし、オナホールをつけるために幽香の男根を露出させる
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9016 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「なに、これ……オナホール……擬似マンコぉ？」
+			PRINTFORMW 使い方をレクチャーすると、幽香はうへぇ……と眉をしかめた
+			PRINTFORMW ……実際に使わせて、その有用性を体験してもらうことにしよう
+		;それ以外
+		ELSE
+			PRINTFORMW 「オナホール……擬似マンコ――ねぇ」
+			PRINTFORMW 「こんなので出すくらいならその辺の本物捕まえて出せばいいじゃない」
+			PRINTFORMW %CALLNAME:PLAYER%がいくらその気持よさを説いても、幽香は懐疑的だ
+			PRINTFORMW ……ならば、実際に使って味わってもらうのが一番だろう
+		ENDIF
+		CFLAG:9016 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「あうぅぅぅ……チンポ…チンポが溶けちゃうぅぅぅ♪」
+			PRINTFORMW オナホールを装着すると、ヒダが陰茎を擦っていく感触に幽香は絶叫を上げた
+			CFLAG:9016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「く……惨め、無様、屈辱……」
+			PRINTFORMW 「今の私の心の中は全部%CALLNAME:MASTER%でいっぱいよ……%CALLNAME:MASTER%への怒りでね！」
+			PRINTFORMW 幽香はそう強がって見せるものの、オナホ快楽のためか明らかに腰が引けている
+			CFLAG:9016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 16 && TEQUIP:30 == 0 && CFLAG:5340 == 1
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香のチンポからオナホールを外すため、取り出したはさみで黒タイツをジョキジョキと割いた
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「うぁ……もう、やめちゃうの……？」
+		PRINTFORMW オナホを取り外すと、幽香はどこか物足りなさそうな声をあげた
+		CFLAG:8815 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ……は、……」
+		PRINTFORMW %CALLNAME:PLAYER%がオナホを外すと、幽香はソレをギッと睨みつける
+		PRINTFORMW 「そんなもの早く片付けなさい！」
+		PRINTFORMW 吠える幽香だが……股間に生えるチンポはどこか物足りなげにビクンビクンと脈動していた……
+		CFLAG:8815 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG:9020
+;-------------------------------------------------
+IF SELECTCOM == 20 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9020 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:恋慕
+			;俺は官能小説でも書いているつもりなのか？　めちゃくちゃ長くなってしまった
+				IF ASSIPLAY == 0
+					PRINTFORMW 「あぁ……やっと……やっと%CALLNAME:MASTER%に私の初めてを奪って貰えるんだ」
+					PRINTFORMW 幽香は覆いかぶさる%CALLNAME:MASTER%を迎えるように両手を伸ばす
+					PRINTFORMW 「きて……来て、%CALLNAME:MASTER%。私を……難攻不落の砦を……攻略した証を、刻んでッ」
+					PRINTFORMW 幽香の言葉にうなずき、腰を押し進める
+					PRINTFORMW 亀頭が粘膜に触れ、クチュッ…という音を立てる
+					PRINTFORMW 「ん、ふ……そう……そこ、よ。そのまま……一気にッ」
+					PRINTFORMW %CALLNAME:MASTER%はチンポを膣口に固定すると、幽香の言うとおりに一気に腰を叩きつけた
+					PRINTFORMW 「―――っ！―――■■■■！」
+					PRINTFORMW ギリギリギリと%CALLNAME:MASTER%の背中に鋭い痛みが走る
+					PRINTFORMW 破瓜の痛みに耐えるために抱きついていた幽香の手が、そのまま背中を掻きむしったのだ
+					PRINTFORMW だが、そんなことはどうでもよく……幽香を心配そうに見ると、彼女は震えながらもニコッと笑った
+					PRINTFORMW 「だい、じょうぶ……よッ……、はぁ……ハァ……は、ぅうう……」
+					PRINTFORMW 見るからに大丈夫そうではないが……それでも幽香は%CALLNAME:MASTER%に動いて欲しいと言った
+					PRINTFORMW %CALLNAME:MASTER%は幽香を気遣いながらも、ギュウギュウにチンポを絞めつけてくる処女孔を開拓していく
+					PRINTFORMW 「――――ハッ、う、ぎ――ィ―」
+					PRINTFORMW 律動が幽香の体を傷つけているだけだとしても、今の%CALLNAME:MASTER%にそれを止める術は思いつかなかった……
+				ELSE
+					PRINTFORMW 「え……？ %CALLNAME:PLAYER%が、処女をうば……う？」
+					PRINTFORMW %CALLNAME:MASTER%に告げられた内容を聞いた幽香は、信じられないといった様相で呆然となった
+					PRINTFORMW それでも『%CALLNAME:MASTER%の命令だから……』と%CALLNAME:PLAYER%は幽香にのしかかる
+					PRINTFORMW 「―――ッ！ いや、やめてやめてやめて！ 私の処女は%CALLNAME:MASTER%に！ %CALLNAME:MASTER%にあげるって―――――」
+					PRINTFORMW 　　　―――ブツン―――
+					PRINTFORMW 「いっ……イヤァァァァァァァァァァァァァァァァァァァァァァ!!!!」
+					PRINTFORMW %CALLNAME:PLAYER%が処女膜を突き破った感触に、幽香は悲鳴をあげた…………
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORMW 「――――ッ」
+				PRINTFORMW %CALLNAME:PLAYER%が腰を付きだした瞬間、幽香の中で何かが弾ける感触があった
+				PRINTFORMW 幽香もそれを感じたのか、どこか寂しそうな眼で自分の腹を見下ろしている
+				PRINTFORMW だがすぐにその視線は猛烈な侮蔑となって%CALLNAME:PLAYER%に向けられた
+				PRINTFORMW 「……いい気にならないで。 たかが処女が破れたくらいじゃない」
+				PRINTFORMW 「処女がステータスだなんてのは男の幻想よ。少なくとも、私にとっては何の価値もない……」
+				PRINTFORMW その言語は強がりなのだろう。本人は気づいていないかもしれないが、その瞳は潤み…目の端からは雫が筋を伝っていた
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「あの……ごめんなさい」
+				PRINTFORMW %CALLNAME:PLAYER%が挿入しようとしたその時、幽香がどこか申し訳なさそうに言った
+				PRINTFORMW 「いやあのほら……私、初めてじゃなかったでしょう……？」
+				PRINTFORMW 「だから、%CALLNAME:MASTER%にあげられなくて……ごめんなさい……」
+				PRINTFORMW ショボンとする幽香に、%CALLNAME:MASTER%は気にすることはないと言う
+				PRINTFORMW それでも、幽香はどこか寂しそうな顔を崩さなかった……
+			;それ以外
+			ELSE
+				PRINTFORMW 「チッ……まぁ、調教といえば普通はそっちに至らないほうがおかしいわよね」
+				PRINTFORMW %CALLNAME:PLAYER%が足を広げると、幽香は意外にも抵抗することなくおとなしく従った
+				PRINTFORMW 「女を監禁して、調教する。それなら陵辱しないなんて選択肢は普通でてこないものでしょう」
+				PRINTFORMW どうやら調教がはじまったころからすでにこうなることは予想していたらしい
+				PRINTFORMW それならば遠慮無く、%CALLNAME:PLAYER%は幽香の膣に屹立をあてがった
+				PRINTFORMW 「…………だからといって、私が行為に対する恨みを持たないと思ったら大間違いよ」
+			ENDIF
+		ENDIF
+		CFLAG:9020 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「ん、この体勢だと……%CALLNAME:MASTER%の顔が見れるから……好き♪」
+				PRINTFORMW 「あ、んッ、 も、もっと♪ うあぁン！」
+				SIF ASSIPLAY > 0
+					PRINTFORMW 幽香は目の前にある%CALLNAME:PLAYER%ではなく、%CALLNAME:MASTER%の顔にうっとりと見惚れている
+				PRINTFORMW 「んッ、あ、は……♪ おっきぃのが……私のナカ……削って、るぅ……♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「あっ、あッ、あふ、アン♪」
+				PRINTFORMW ヴァギナと%CALLNAME:PLAYER%の腰がぶつかる音がはじけるたび、
+				PRINTFORMW 幽香の口からは甲高い嬌声が溢れていた
+			ELSE
+				PRINTFORMW 「も、っっと！ もっと突いて！ 私のオマンコッ、もっと愛してェ♪」
+				PRINTFORMW %CALLNAME:PLAYER%を迎え入れるように抱きしめ、幽香は幸せそうに喘ぎ声を上げた
+			ENDIF
+			CFLAG:9020 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「はぁ……は、あ♪ もっと、もっと気持ちよくしてぇ！」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%にしがみつき、もっと深く、もっと気持よくと%CALLNAME:PLAYER%に懇願する
+			PRINTFORMW かつての険のある態度は、すっかり鳴りを潜めていた……
+			CFLAG:9020 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「う……ぅっ、うん……♪」
+			PRINTFORMW 幽香は唇を噛み締めながら%CALLNAME:PLAYER%の突き入れを受け入れている
+			CFLAG:9020 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……うっ、ぐ……んっ……」
+			PRINTFORMW 幽香は突き入れる度に声を漏らすものの、どこか冷めた目付きで天上を見つめていた
+			CFLAG:9020 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG:9021
+;-------------------------------------------------
+IF SELECTCOM == 21 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9021 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:恋慕
+				IF ASSIPLAY == 0
+					PRINTFORMW 「あぁ……やっと……やっと%CALLNAME:MASTER%に私の初めてを奪って貰えるんだ」
+					PRINTFORMW 「ケモノみたいなかっこうで……でも、%CALLNAME:MASTER%に……%CALLNAME:MASTER%にちゃんと奪ってもらえる……♪」
+					PRINTFORMW 四つん這いになる幽香の膣口に亀頭の先を当てると、彼女は%CALLNAME:MASTER%を振り返った
+					PRINTFORMW 「きて……来て、%CALLNAME:MASTER%。私を……難攻不落の砦を……攻略した証を、刻んで？」
+					PRINTFORMW 幽香の言葉にうなずき、%CALLNAME:MASTER%は腰を押し進める
+					PRINTFORMW 亀頭が粘膜を押し分け、クチュッ…という音が鳴った
+					PRINTFORMW 「ん、ふ……そう……そこ、よ。そのまま……一気にッ」
+					PRINTFORMW %CALLNAME:MASTER%は幽香の言うとおりに一気に腰を叩きつけた
+					PRINTFORMW 「―――っ！―――う、あぁぁぁ！」
+					PRINTFORMW 幽香の手がギリギリとシーツを握り締め、皺が寄る
+					PRINTFORMW そんな幽香を心配そうに見ると、しかし彼女は震えながらもとほほえみを浮かべた
+					PRINTFORMW 「だい、じょうぶ……よッ……、はぁ……ハァ……は、ぅうう……」
+					PRINTFORMW 見るからに大丈夫そうではないが……それでも幽香は%CALLNAME:MASTER%に動いて欲しいと言った
+					PRINTFORMW %CALLNAME:MASTER%は幽香を気遣いながらも、ギュウギュウにチンポを絞めつけてくる処女孔を開拓していく
+					PRINTFORMW 「――――ハッ、う、ぎ――ィ―」
+					PRINTFORMW 律動が幽香の体を傷つけているだけだとしても、今の%CALLNAME:MASTER%にそれを止める術は思いつかなかった……
+				ELSE
+					PRINTFORMW 「え……？ %CALLNAME:PLAYER%が、処女をうば……う？」
+					PRINTFORMW %CALLNAME:MASTER%に告げられた内容を聞いた幽香は、信じられないといった様相で呆然となった
+					PRINTFORMW それでも『%CALLNAME:MASTER%の命令だから……』と%CALLNAME:PLAYER%は四つん這いになった幽香を抑えつける
+					PRINTFORMW 「―――ッ！ いや、やめてやめてやめて！ 私の処女は%CALLNAME:MASTER%に！ %CALLNAME:MASTER%にあげるって―――――」
+					PRINTFORMW 　　　―――ブツン―――
+					PRINTFORMW 「いっ……イヤァァァァァァァァァァァァァァァァァァァァァァ!!!!」
+					PRINTFORMW %CALLNAME:PLAYER%が処女膜を突き破った感触に、幽香は悲鳴をあげた…………
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORMW 「――――ッ」
+				PRINTFORMW %CALLNAME:PLAYER%が腰を付きだした瞬間、幽香の中で何かが弾ける感触があった
+				PRINTFORMW 幽香もそれを感じたのか、どこか寂しそうな眼で自分の腹を見下ろしている
+				PRINTFORMW だがすぐにその視線は猛烈な侮蔑となって%CALLNAME:PLAYER%に向けられた
+				PRINTFORMW 「……いい気にならないで。 たかが処女が破れたくらいじゃない」
+				PRINTFORMW 「処女がステータスだなんてのは男の幻想よ。少なくとも、私にとっては何の価値もない……」
+				PRINTFORMW その言語は強がりなのだろう。本人は気づいていないかもしれないが、その瞳は潤み…目の端からは雫が筋を伝っていた
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「後ろからって……ふふ、なんだかケモノみたいね」
+				PRINTFORMW 「いいわ……ほら、来て♪」
+			;それ以外
+			ELSE
+				PRINTFORMW 「まるでケモノの交尾ね……ま、%CALLNAME:PLAYER%だもの」
+				PRINTFORMW 「人様のセックスなんて理解出来ないんでしょう？」
+				PRINTFORMW 吐き捨てるように哂う幽香に、%CALLNAME:PLAYER%は腰を突き入れた
+				PRINTFORMW 「あ――ぐっ、うぅぅ―――」
+			ENDIF
+		ENDIF
+		CFLAG:9021 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「あん、んっ！ う、もっと！おぉ♪」
+				PRINTFORMW %CALLNAME:PLAYER%が腰をがっしりと掴んで深く抽挿すると、幽香は狂ったように嬌声を響かせた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ひゃふッ♪ はげっ、しっ！」
+				PRINTFORMW %CALLNAME:PLAYER%の動きに合わせて幽香は髪を振り乱しながらよがってみせる
+			ELSE
+				PRINTFORMW 「は、ぁっん！ ひ、いぃ♪ オマンコもっと！ もっと%CALLNAME:PLAYER%のオチンチンで貫いてぇ!!」
+				PRINTFORMW 幽香は四つん這いの姿勢で腰を打ち据えられ、外聞もなく淫語をわめいている
+			CFLAG:9021 = 5
+			ENDIF
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あ、あっ、んっ、ぃッ！♪」
+			PRINTFORMW 獣のような無様な交尾でも、幽香は気にすることなく快楽を貪っている
+			CFLAG:9021 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「はぁ、あ…あッ…も、っと　しても……大丈夫、よ？」
+			PRINTFORMW 幽香はこちらを振り返り、誘うような眼で笑ってみせた
+			CFLAG:9021 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「―――ッ……――んっ」
+			PRINTFORMW 幽香は声をあげまいと固く唇を結んでいる
+			CFLAG:9021 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG:9022
+;-------------------------------------------------
+IF SELECTCOM == 22 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9022 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF ASSIPLAY == 0
+				PRINTFORMW 「向かい合ったまま？ なんだかとっても幸せな体位ね……」
+				PRINTFORMW 「なんでかって？ ふふ……決まってるじゃない」
+				PRINTFORMW 「%CALLNAME:PLAYER%の顔を見ながら%CALLNAME:PLAYER%を私の中に感じられるからよ」
+			ELSE
+				PRINTFORMW 「ん……♪ ふ、ぅ……」
+				PRINTFORMW %CALLNAME:PLAYER%は幽香と繋がりながら乳房や陰核を愛撫する
+				PRINTFORMW %CALLNAME:MASTER%の手とは違う感触に、幽香は小さな寂しさを感じていた……
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「く……ふ、う……」
+			PRINTFORMW %CALLNAME:PLAYER%が膣の中で暴れると、幽香はぴくりと体を震わせる
+			PRINTFORMW 「……ふん。へた…くそ……」
+			PRINTFORMW それでもかたくなに快感を否定するさまに、%CALLNAME:PLAYER%はいいようのない興奮を覚えた
+		ENDIF
+		CFLAG:9022 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「あっ、あ いいっ！いい、の…%CALLNAME:PLAYER%……ッ」
+				IF TEQUIP:25
+					PRINTFORMW アナルを、乳房を、クリトリスを、そしてなにより膣を荒々しく蹂躙され、幽香は悲鳴のような嬌声を放った
+				ELSEIF TEQUIP:25 == 0
+					PRINTFORMW 乳房を、クリトリスを、なにより膣を荒々しく蹂躙され、幽香は悲鳴のような嬌声をはなった
+				ENDIF
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「いぃッ！ いいの！ %CALLNAME:PLAYER%の顔みながらするの、いいィン♪」
+			ELSE
+				PRINTFORMW 「あふ……うぅん♪ %CALLNAME:PLAYER%の指ぃ…私の敏感なとこばっかり弄ってるぅ♪」
+				PRINTFORMW 
+			ENDIF
+			CFLAG:9022 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「は、あぁは♪ すご、ひいぃ♪ 私の膣内ッ、深くまで貫いてる――♪」
+			CFLAG:9022 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ん――ふ、――はぁ……あ、ぅ……ん」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%を深くまでくわえ込み、自分から腰をくねらせている
+			PRINTFORMW 「ンッ……ど、う？ きもち、いぃ……？」
+			CFLAG:9022 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……く、ふ……ん、んっ」
+			PRINTFORMW 幽香は指を噛み締めて膣を貫かれながら体中をまさぐられる快感をこらえていた
+			CFLAG:9022 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG:9023
+;乱れ牡丹 CFLAG:9612
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9023 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「う、は……ぁ……ん」
+			PRINTFORMW %CALLNAME:PLAYER%のフトモモに座り込むように幽香は肉棒を膣内に迎え入れた
+			PRINTFORMW 「ふ、ふ……これ、%CALLNAME:PLAYER%に包まれてるみたいで……あったかい」
+			PRINTFORMW 幽香は快感に震えながら%CALLNAME:PLAYER%を振り返り言った
+		;それ以外
+		ELSE
+			PRINTFORMW 「く、う……んん゛ッッ!!」
+			PRINTFORMW 幽香は狙いを定めると一気に体重を預けるようにして%CALLNAME:PLAYER%を迎え入れた
+			PRINTFORMW 「ぐ、は……ぁ……く、う……どう よ……」
+			PRINTFORMW ムリをしたためか脂汗を流しながら、幽香は%CALLNAME:PLAYER%を振り返る
+			PRINTFORMW 「%CALLNAME:MASTER%の思い通りになんて……きもち、よくなんて……なってやらないんだから」
+			
+		ENDIF
+		CFLAG:9023 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「あっ、あん……♪ 深っいっ……♪」
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%の上に座り込みながら快楽を味わっていた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW %CALLNAME:PLAYER%が愛撫をしながら腰を跳ね上げる
+				PRINTFORMW 「――っ!?　そ、それスゴ――お、オォ♪」
+			ELSE
+				PRINTFORMW 「は――ぁ―ハァン♪――い、ひ――いいぃぃ♪」
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%の愛撫に緩んだ頬からヨダレを垂らしている
+			ENDIF
+			CFLAG:9023 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「くひっ、ひんッ♪ お、くぅ……きもち、い…ぃ…」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の与える刺激に、まるで骨抜きになったように弛緩した
+			CFLAG:9023 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「……くふっ……ん、うんっ」
+			PRINTFORMW 幽香はパチュンパチュンと水音を弾けさせながら、%CALLNAME:PLAYER%に快楽を与えるためだけに腰をふる
+			PRINTFORMW その奉仕精神は、以前の彼女からは考えられなかったものだろう
+			CFLAG:9023 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「く、また……ぁ？」
+			PRINTFORMW 「いいかげんに……く、 して、よね……気持ち悪い」
+			PRINTFORMW 幽香は心底嫌そうな顔で%CALLNAME:PLAYER%を睨む
+			PRINTFORMW 「ふ―――ぅん♪」
+			PRINTFORMW ……しかし、体の方はその気持に応える気はないようだった
+			CFLAG:9023 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+;乱れ牡丹
+IF SELECTCOM == 612 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9612 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 鏡の前で幽香を抱き上げ、膝の上におろすように肉棒を挿入する
+			IF ASSIPLAY == 0
+				PRINTFORMW 「あ……挿入ってる……%CALLNAME:MASTER%の、オチンチン♪ ずっぽしってぇ……♪」
+			ELSEIF ASSIPLAY > 0
+				PRINTFORMW 「やめ、て……恥ずかしいぃ……」
+			ENDIF
+			PRINTFORMW 鏡には%CALLNAME:PLAYER%のチンポをぱっくりくわえて離さない幽香の股間がキレイに映しだされていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「は、んっ。%CALLNAME:PLAYER%のチンコが入ってるところを見せて恥ずかしがらそうって腹積もり？」
+			PRINTFORMW 「だとしたらお生憎様ね。こんなもの、私にとっては何の意味もないんだもの」
+			PRINTFORMW %CALLNAME:PLAYER%を膣内に納め、勝ち誇ったように哂う幽香だったが…よくみるとその指先は何かに恐怖するように震えている
+			PRINTFORMW 「だからそんな無駄な……う、あぁ……み、見せるなぁッ」
+			PRINTFORMW %CALLNAME:PLAYER%はニヤリと笑って幽香の頭を掴んで鏡に向ける
+			PRINTFORMW すると幽香は真っ赤になりながら目の端に涙を浮かべた
+		ENDIF
+		CFLAG:9612 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あぁっ、見て！ もっと！ 私のオマンコが%CALLNAME:PLAYER%のをズポズポくわえちゃってるところぉ！」
+			PRINTFORMW 幽香は髪を振り乱して蕩けるような視線を鏡に向けていた
+			CFLAG:9612 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「もう……本当に恥ずかしいんだから、ね……ッん♪」
+			PRINTFORMW 幽香はすねたように%CALLNAME:MASTER%を見つつ、鏡に映る結合部をチラチラと盗み見ていた
+			CFLAG:9612 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「はぁ……はずか、しぃ……い♪」
+			PRINTFORMW 幽香はニヘッと相好を崩し、白い泡をたてながら肉棒をくわえる結合部に目を向けていた
+			CFLAG:9612 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「うぅ……はずかし、ぃ……ぁふ、う♪」
+			PRINTFORMW 両手で目を覆うように隠した幽香だったが、肩越しに見る幽香の指の隙間からは、爛々とした瞳がはっきりと見て取れた
+			CFLAG:9612 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「またやるの？ 自分の祖チンを見る羽目になって悲しくならないの？」
+			PRINTFORMW %CALLNAME:PLAYER%を馬鹿にする幽香を無視し、%CALLNAME:PLAYER%は腰を突き上げた
+			PRINTFORMW 「ヒッ―― や、やめなさッ……！」
+			PRINTFORMW それならば自分のアヘる顔でも鏡で見せてやることにしよう
+			CFLAG:9612 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG:9024
+;-------------------------------------------------
+IF SELECTCOM == 24 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9024 == 0
+		;処女
+		IF TALENT:0 == 1
+			;恋慕
+			IF TALENT:恋慕
+				IF ASSIPLAY == 0
+					PRINTFORMW 幽香は寝そべる%CALLNAME:MASTER%をまたぐような姿勢でゆっくりと腰をおろす
+					PRINTFORMW 「ほら―――いく、わよ……私の初めて、もらってちょうだい……」
+					PRINTFORMW ツプ…と亀頭が沈み、そのままズブズブと肉に埋まっていく
+					PRINTFORMW 「う……あ、は……ァ！」
+					PRINTFORMW 幽香は%CALLNAME:MASTER%の胸に手を付きながら、辛そうに悲鳴をあげた
+					PRINTFORMW ―――それでも%CALLNAME:MASTER%の肉棒は幽香の膣内に収まっていく
+					PRINTFORMW 「―――う、入…った？ 全部……%CALLNAME:MASTER%のが……」
+					PRINTFORMW 根元まで%CALLNAME:MASTER%を受け入れたことを確認した幽香は、弱々しくも嬉しそうに微笑んだのだった……
+				ELSE
+					PRINTFORMW 「いや、いやぁぁぁーーーッ！」
+					PRINTFORMW %CALLNAME:MASTER%が%CALLNAME:PLAYER%に幽香の処女を奪うように命令すると、幽香はイヤイヤと首を振って拒絶する
+					IF TALENT:ASSI:ふたなり == 1
+						PRINTFORMW しかし%CALLNAME:PLAYER%は幽香に謝罪を口にすると、その体を抱え上げて自身の肉棒の上へと下ろした
+					ELSEIF TALENT:ASSI:ふたなり == 0
+						PRINTFORMW しかし%CALLNAME:PLAYER%は幽香に謝罪を口にすると、その体を抱え上げてペニスバンドの上へと下ろした
+					ENDIF
+					PRINTFORMW 「―――――	ッガ!　ア、ァ……ッ!!」
+					PRINTFORMW 膣内で処女膜が破れ、獣のようなうめき声をもらす幽香
+					PRINTFORMW その表情は痛みと……そしてなにより想い人へ処女を捧げられなかった無念さでゆがんでいた
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORMW 「ふ、ふふ……最悪ね。最悪に鬼畜な所業だわ」
+				PRINTFORMW 自分から挿入するように命令すると、幽香はどこか引きつった笑みを浮かべた
+				PRINTFORMW 「いいわよ……どうせ私に拒否権なんてないんでしょう？ だったら……やってやろうじゃない」
+				PRINTFORMW そう踏ん切りをつけた幽香はゆっくりと%CALLNAME:PLAYER%の上に腰を沈める
+				PRINTFORMW 「く……い、つっ……う、あ――――アァァァァァァァ!!!!」
+				PRINTFORMW 幽香が%CALLNAME:PLAYER%の剛直を完全に迎え入れると、その股間からは純血の証がタラタラと流れ落ちた
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕
+				PRINTFORMW 「ん、私から動けばいいいのね？」
+				PRINTFORMW 幽香は嬉々として%CALLNAME:PLAYER%にまたがり、%CALLNAME:PLAYER%を迎え入れる
+				PRINTFORMW 「う――ん、んぅ♪ すっごい……自分で動くから、どこに%CALLNAME:PLAYER%がいるのか凄くよく分かる……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「自分から動けって……はぁ、いいわよ別に」
+				PRINTFORMW 幽香は面倒くさそうに首を振ると、%CALLNAME:PLAYER%にまたがりゆっくりと腰を沈めた
+				PRINTFORMW 「ん――く、ふ……っ、う……」
+				PRINTFORMW そして淡々と腰を揺らし始めるが……次第に、その動きに熱がこもってくるのことに%CALLNAME:MASTER%は感づいた
+			ENDIF
+		ENDIF
+		CFLAG:9024 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「う、んっ、ひ、い！い！ひぁぁぁぁ♪」
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%を膣内におさめながら激しく腰を振っている
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「もっ、と……ぉ♪ %CALLNAME:PLAYER%からも腰突きあげてぇ♪」
+				PRINTFORMW 要望通り%CALLNAME:PLAYER%が腰を突きあげてやると、幽香は頭をそらせて快楽に反応した
+				PRINTFORMW 「んひぃぃぃぃぃぃぃぃぃぃぃぃ♪♪」
+			ELSE
+				PRINTFORMW 「は―――ぁひゃ♪ そこそこっ、もっともっとぉ♪」
+				PRINTFORMW 寝そべる%CALLNAME:PLAYER%の上で幽香は腰を振りながら膣快感を貪欲に求めた
+			ENDIF
+			CFLAG:9024 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んっ、…あぁ、ん……ど う、気持ち…イィ…？」
+			PRINTFORMW 幽香は自らも快楽を貪りながら、%CALLNAME:PLAYER%も気持よくなれるように淫らに腰をくねらせた
+			CFLAG:9024 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「あっ、う……う、は……ぁ、ぁ……」
+			PRINTFORMW 幽香は必死に腰を振り、%CALLNAME:PLAYER%に与えようとしている
+			PRINTFORMW 時折自身のツボにも入るのか動きが弱々しくなるのも、また緩急がついて気持よかった
+			CFLAG:9024 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「――ふっ―――う、ん……」
+			PRINTFORMW 幽香はタンッタンッと一定のリズムで音を刻みながら腰を打ち付けている
+			PRINTFORMW それはまさに嫌々やってあげている……という風情だった
+			CFLAG:9024 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG:9025
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;-------------------------------------------------
+IF SELECTCOM == 25 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツを下ろし、幽香の肉棒を露出させる
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9025 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「ん……ほうら、%CALLNAME:PLAYER%の中に……オマンコの中に、私のオチンチンがはいっちゃうわよぉ♪」
+			PRINTFORMW 幽香はそそり立つ肉竿を%CALLNAME:PLAYER%の膣内に挿入し、その柔肉の感触を味わった
+		;それ以外
+		ELSE
+			PRINTFORMW 「く、ふふ……ぶざまね……私の上で腰を振って……」
+			SIF ASSIPLAY == 0
+			PRINTFORMW 「%CALLNAME:PLAYER%って調教師よりも肉奴隷のほうが向いているんじゃないの？」
+			SIF ASSIPLAY > 0
+			PRINTFORMW 「%CALLNAME:PLAYER%も%CALLNAME:MASTER%なんかに従っているからこうなるのよ」
+			PRINTFORMW 幽香が逆レイプされているというのに、むしろこちらが奉仕しているかのような尊大さだった
+		ENDIF
+		CFLAG:9025 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「ハっ、う、んぅ♪ 気持ちいい、%CALLNAME:PLAYER%のオマンコ、ハメハメきもちいいのぉ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「フ、う、んっ……%CALLNAME:PLAYER%のオマンコが、私のオチンチン食べちゃってるぅ♪」
+			ELSE
+				PRINTFORMW 「あぁぁ、は、あぁぁ……ん」
+				PRINTFORMW %CALLNAME:PLAYER%が腰を振り乱すと、それに釣られるように幽香も喜悦の声を漏らす
+			ENDIF
+			CFLAG:9025 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ほら、もっと無様に腰振りなさいよ」
+			PRINTFORMW 「私を楽しませるんでしょう？ だったらそんなやわな動きじゃダメじゃない……ほらァ！」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の腰を掴み、思い切り引き落として剛直を深々とくわえ込ませた
+			CFLAG:9025 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す CFLAG:9026
+;-------------------------------------------------
+IF SELECTCOM == 26 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9026 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「%CALLNAME:ASSI%を犯すの？ 私じゃなくて……？」
+			PRINTFORMW 幽香はどこか寂しそうに%CALLNAME:PLAYER%と%CALLNAME:ASSI%のまぐわいを眺めさせられていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「へぇ……私の前で%CALLNAME:ASSI%を犯す？ 別にいいけど何の意味があるのかしら」
+			PRINTFORMW 「一応顔見知りではあるけど、そいつが犯されてるからって私が悔しがったりするとでも？」
+		ENDIF
+		CFLAG:9026 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF RAND:3 == 0
+				PRINTFORMW 「また%CALLNAME:ASSI%とするの？ 私はほったらかしにして……」
+				PRINTFORMW 幽香は恨みがましい眼で%CALLNAME:ASSI%を見ている
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「……%CALLNAME:MASTER%のオチンチン……私じゃない娘がくわえこんでる……美味しそうに……」
+				PRINTFORMW 幽香は指でもくわえそうな表情で%CALLNAME:ASSI%と交尾する%CALLNAME:MASTER%を眺めていた
+			ELSE
+				PRINTFORMW 「つ、次は私よね？ ちゃんと私にもしてくれるのよね……？」
+			ENDIF
+			CFLAG:9026 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぅん……こういう風にして挿入ってるのね」
+			PRINTFORMW 幽香は%CALLNAME:ASSI%との性交を興味深そうに眺めていた
+			CFLAG:9026 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+
+;-------------------------------------------------
+;アナルセックス CFLAG:9030
+;正常位、後背位の書き分けが面倒なモノグサな人向け
+;体位毎に書き分けたい方はこの項目を削除した上で各体位別の口上を書いてください
+;-------------------------------------------------
+;IF SELECTCOM == 30 && CFLAG:5340 == 1 || SELECTCOM == 31 && CFLAG:5340 == 1
+;	;初めて
+;	IF CFLAG:9030 == 0
+;		;恋慕
+;		IF TALENT:恋慕
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;		CFLAG:9030 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋A感覚Lv3以上
+;		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:9030 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕
+;			PRINTFORMW 
+;			CFLAG:9030 = 4
+;		;A感覚Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:9030 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:9030 = 2
+;		ENDIF
+;		RETURN 0
+;	ENDIF
+;ENDIF
+
+;------------------------------------------------
+;正常位アナル CFLAG:9030
+;-------------------------------------------------
+IF SELECTCOM == 30 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9030 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF ABL:Ａ感覚 >= 3
+				PRINTFORMW 「お尻に入れるのね……？ いいわよ、ほら……きてェ♪」
+				PRINTFORMW 幽香は仰向けに寝転んだまま両手で尻穴を広げる
+				PRINTFORMW その尻穴はパクパクと桃色の内蔵を見せながら%CALLNAME:PLAYER%を誘っている
+				PRINTFORMW 「あ、は……きたぁぁ♪ ケツマンコにおチンポ挿入きたぁぁぁ♪♪」
+				PRINTFORMW %CALLNAME:PLAYER%が肉棒を尻穴に挿入すると、幽香はうっとりとした声を上げた
+			ELSE
+				PRINTFORMW 「お尻で、するのね……？ いいわ……ほ、ら……」
+				PRINTFORMW 仰向けに寝転んだ幽香の尻穴に%CALLNAME:PLAYER%はゆっくりと肉棒を挿入する
+				PRINTFORMW 「う――ぎ、ひっあぁぁぁああああ.....」
+				PRINTFORMW 固くしまる括約筋が無理やり割り入れられる感触と本来ならありえない異物の挿入感
+				PRINTFORMW その両方が大きな負荷となり、幽香はうめき声をあげながら悶絶した
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「お尻……で……」
+			PRINTFORMW 幽香の顔が一瞬青ざめたが、すぐに今までとおなじ超然とした表情に戻る
+			PRINTFORMW 「ふ…ふん、いいわよ。 やってみなさい」
+			PRINTFORMW 未知の行為に恐怖があるだろうに、それをおくびにも出さずに肛門で%CALLNAME:PLAYER%を迎え入れる
+			PRINTFORMW 「―――あ、――ぐ、ぎ……がッ―――」
+			PRINTFORMW 幽香は歯を食いしばって挿入に耐えていたが、%CALLNAME:PLAYER%がすべて挿れ終わったことを告げると、ひきつりつつもニヤリと哂う
+			PRINTFORMW 「も、う入った……の？ ちいっさ……すぎて……ぜんぜん、わからなかったわよぉっ……!!」
+			PRINTFORMW ……彼女の強情も、ここまでくれば立派なものだった
+		ENDIF
+		CFLAG:9030 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「あ、お尻っ！ ケツマンコ、めくれっひゃぁ♪」
+				PRINTFORMW 幽香の直腸で%CALLNAME:PLAYER%の肉棒が抽挿されると、幽香は顔をだらしなく緩ませた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「い、ひぃ♪ ケツ、ケツマン…コぉおッ♪ こわれっ、こわれちゃううぅぅ♪♪」
+				PRINTFORMW 幽香のアナルは%CALLNAME:PLAYER%の陰茎にからみつき、抜き差しするたびに伸びたり縮んだりを繰り返す
+			ELSE
+				PRINTFORMW 「んぁ、っい！ あ、も、っと……お尻ズボズボしてぇぇ♪」
+				PRINTFORMW 「%CALLNAME:PLAYER%のチンポ！ おチンポ様で私のケツマンコにおしおきしてよぉ♪」
+			ENDIF
+			CFLAG:9030 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「んぎ、いぃ!? ち、ちょっとっ……ぐ、お尻はオマンコと違って濡れたりしない、んだから……もっと優しくぅ……」
+			PRINTFORMW %CALLNAME:PLAYER%は懇願する幽香の尻を、さらに乱暴に突きまくった
+			PRINTFORMW 「ヒッ!? 、んぐぅぅぅぅぅうう!!」
+			CFLAG:9030 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「う、あ……っお、しりっ……お尻がぁぁぁあ♪」
+			PRINTFORMW 幽香は肛門からくる快楽に頭を振り乱す
+			PRINTFORMW その尻穴は肉棒によく馴染み、絡みつくように伸び縮みしていた
+			CFLAG:9030 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「き、もちわる、い……きもち、わるい…のよっ、この変態ッ……！」
+			PRINTFORMW 「ん、ぐ……どうせ変態なことするな、ら……せめて気持よくする、のが……礼儀じゃ、ないの？」
+			CFLAG:9030 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル CFLAG:9031
+;-------------------------------------------------
+IF SELECTCOM == 31 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9031 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF ABL:Ａ感覚 >= 3
+				PRINTFORMW 「ん、バックでお尻に入れるの……？」
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%を誘うように臀部をフリフリとくねらせる
+				PRINTFORMW 「ふふ……ほら、いらっしゃい？」
+				PRINTFORMW 誘われるままに肉棒を挿入すると、幽香のアナルはすんなりと%CALLNAME:PLAYER%を受け入れ、さらにゆるゆると腸壁が絡みつく
+				PRINTFORMW そのナカは、すでに性器と言っても過言ではなかった
+			ELSE
+				PRINTFORMW 「バックで、するの……？ 確かに前からするよりは挿れやすそうだけど……」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%に不安そうな視線を向ける
+				PRINTFORMW しかし%CALLNAME:MASTER%が大丈夫だと言うと、それ以上ぐずるのをやめた
+				PRINTFORMW 「うん、それじゃあ来て……は、う…あ　あ　ぁ　ぁぁぁあ...」
+				PRINTFORMW %CALLNAME:PLAYER%が挿入すると、幽香は泣きそうな顔で括約筋が割り入れられる感触と本来ならありあえない異物感
+				PRINTFORMW その２つを必死で堪えた……
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「四つん這いになれ？ ふん、私にそんな無様な格好をさせてどうしようっていうのかしら」
+			PRINTFORMW 言いながらも逆らわずに従う幽香。しかしその視線はこちらをバカにしたように見下したものだ
+			PRINTFORMW %CALLNAME:PLAYER%はそんな幽香を気にすることもなく、肉付きの良い尻を割り広げる
+			PRINTFORMW 「あらなに、この格好のままつながるの？ しかもお尻に？ ふん、さすがは畜生外道様ってところかしら」
+			PRINTFORMW 幽香は視線に侮蔑の色をこめるが、そんなことでひるむ%CALLNAME:PLAYER%ではない
+			PRINTFORMW 「く、やるならやればいいわ……そんなことでこの私が泣き叫ぶとでもっ！―――ぐっ、い……が―ァ―ァ―!!」
+			PRINTFORMW ムリムリと音をたててアナルに侵入してやると、幽香は悲鳴こそあげなかったものの両目を見開いて体をブルブルと震わせた
+		ENDIF
+		CFLAG:9031 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「んぉっ、ふぉおお♪♪ お尻っ♪ ガシガシ掘られてるぅぅう♪」
+				PRINTFORMW バックからアナルを突いてやると、幽香はとても気持よさそうに嬌声をあげた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「そうっ、そうぅ♪ 腰掴んでっ、もっと深くまで貫いてぇぇ！！」
+				PRINTFORMW 幽香のアナルはズボズボと音を立てながら%CALLNAME:PLAYER%のペニスをくわえこんでいる
+			ELSE
+				PRINTFORMW 「う、ひい♪ 私のアナルっ、バックで突かれて%CALLNAME:PLAYER%の……%CALLNAME:PLAYER%のチンポでいっぱいぃ♪」
+			ENDIF
+			CFLAG:9031 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「あ、ぎ……ッ！ や、やめ……いたい、ぃぃ―――！！！」
+			PRINTFORMW 四つん這いの姿勢のままアナルを抉ってやると、幽香は苦悶の表情を浮かべた
+			CFLAG:9031 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「うぅ、いッ　ひ♪　あぁ、ううん♪ おしりっ、ズボ…ズボ…ォ♪♪」
+			PRINTFORMW 幽香はアナルにも慣れてきたのか、気持ちの良さそうな表情を浮かべていた
+			CFLAG:9031 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「く……ぐッ……お尻、灼ける ぅ……」
+			PRINTFORMW 幽香は必死に歯を食いしばり、肛姦の刺激を受け流そうとしていた
+			CFLAG:9031 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル CFLAG:9032
+;-------------------------------------------------
+IF SELECTCOM == 32 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9032 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF ABL:Ａ感覚 >= 3
+				PRINTFORMW 「う、……んぁ……っハ♪」
+				PRINTFORMW 抱え込むようにして幽香に挿入すると、今までの調教によってほぐされたアナルは何の抵抗もなく%CALLNAME:PLAYER%を受け入れた
+				PRINTFORMW 「は、これ……この体勢、っあんま り、激しくできない、けどっ……ん♪」
+				PRINTFORMW 「%CALLNAME:PLAYER%に、抱きしめてッ、もらいながらできるから……好き、かもぉ♪」
+			ELSE
+				PRINTFORMW 「あ、ぎ……う、ん……くっ」
+				PRINTFORMW 幽香のアナルは%CALLNAME:PLAYER%を迎え入れられたものの、本人の表情はどこか硬い
+				PRINTFORMW 「あ…しん、ぱいしないで…ちゃんっ、と……く、ぅ……気持よく、してあげるから……」
+				PRINTFORMW 苦しさをこらえながらも腰をくねらせ、%CALLNAME:PLAYER%のチンポを絞めつけた
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「くそっ……お尻なんか、で……する変態の くせ、に……こんな、恋人みたいなッ」
+			PRINTFORMW アナルに肉棒を沈めて腰を振ってやると、幽香は嫌悪感といくばくかの快楽の混じった複雑な表情を見せる
+			PRINTFORMW 「おぼ、えてなさい……ぃ！」
+		ENDIF
+		CFLAG:9032 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+			IF ABL:Ａ感覚 >= 3
+				IF RAND:3 == 0
+					PRINTFORMW 「う、は……ぁ♪ あっ、うい！ っいん♪ も、っと、おお♪」
+					PRINTFORMW 幽香は腰をぐりんぐりんと回し、%CALLNAME:PLAYER%のチンポを刺激した
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「あ、っいぃ……アナル、すごい……%CALLNAME:PLAYER%がズプズプして……気持ちいい♪」
+					PRINTFORMW 幽香は%CALLNAME:PLAYER%をぎゅっと抱きしめ、肛悦を深く噛み締めた
+				ELSE
+					PRINTFORMW 「んっ、ふ、うぅぅうう♪ そこっぉお！ 根元からグリュグリュするのらめぇぇぇ♪♪」
+					PRINTFORMW %CALLNAME:PLAYER%が腰を回すと、幽香は喉をしめられたかのような声をあげた
+				ENDIF
+			ELSE
+				PRINTFORMW 「ん、ぐ……ぅッ♪ お、しりっ、熱いィ！」
+				PRINTFORMW 幽香はアナルの刺激にビクビクと体を震わせている
+			ENDIF
+			CFLAG:9032 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「がっ、ああっぁぁぁあああ！！」
+			PRINTFORMW 濡れてない幽香のアナルは硬くとざされていて、それを無理やり押し開くと結合部から血が垂れてきた
+			PRINTFORMW 「ヒッ－－－い、たっいい！ ま、まって血がっ、血が出てるからぁぁぁ！！」
+			CFLAG:9032 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「く、っ、う……ん、ぅ ふ、ふふ……♪ おし、りも……慣れれば、中々いいも、のッね♪」
+			PRINTFORMW 幽香はそこまで激しくない動きの中で余裕を見出したのか、小さいながらもニヤリと笑んだ
+			CFLAG:9032 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、く、痛い……し、気持ち悪い、のよ……この屑!!」
+			PRINTFORMW 幽香のアナルは必死に絞めつけて%CALLNAME:PLAYER%をこれ以上進ませまいとしている
+			PRINTFORMW それが、極上の快楽を%CALLNAME:PLAYER%に与えているとも知らずに
+			CFLAG:9032 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル CFLAG:9033
+;-------------------------------------------------
+IF SELECTCOM == 33 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5663 = 1
+		CFLAG:5661 = 0
+	ENDIF
+	;初めて
+	IF CFLAG:9033 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「う、……これ、怖い……%CALLNAME:PLAYER%が、見えない……しッ」
+			PRINTFORMW 「それに、掴まる もの、がなくてっ！ %CALLNAME:PLAYER%のチンポだけじゃ……不安定、なのよっ」
+			PRINTFORMW %CALLNAME:PLAYER%がしっかりと抱きしめてやると、幽香は安心したような笑みを見せた
+			PRINTFORMW 「ん……♪ これな、ら……よし♪」
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ、う……うっ、うんっ！ お、しり……%CALLNAME:PLAYER%に、一本挿しに……されて、るっ」
+			PRINTFORMW 幽香の耳が真っ赤に色づく
+			PRINTFORMW 恥ずかしがっているのか、はたまた屈辱のあまり怒りに染まっているのか
+		ENDIF
+		CFLAG:9033 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+			IF ABL:Ａ感覚 >= 3
+				IF RAND:3 == 0
+					PRINTFORMW 「%CALLNAME:PLAYER%、%CALLNAME:PLAYER%っ♪ きもち、良すぎィィ♪」
+					PRINTFORMW 幽香は%CALLNAME:PLAYER%の名前を呼びながら、与えられる快楽を享受していた
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「♪ %CALLNAME:PLAYER%に座るみたいに乗っかかりながらするの……気持ちいい……」
+					PRINTFORMW 幽香は肩越しに%CALLNAME:PLAYER%を振り返り、そっとキスをした
+					PRINTFORMW キス経験＋１
+					EXP:キス経験 += 1
+				ELSE
+					PRINTFORMW 「ねぇ、ちょっと動かないで」
+					PRINTFORMW 幽香はそう言うと、%CALLNAME:PLAYER%に体を預けた
+					PRINTFORMW 「ふふ……落ち着く…… んっ♪ こ、らぁ……オチンチン震わせちゃだめじゃない♪」
+				ENDIF
+			ELSE
+				PRINTFORMW 「んっ－－－あっ、くぅ……」
+				PRINTFORMW いまだ慣れてはいないものの、幽香は%CALLNAME:PLAYER%を悦ばせるために腰を揺らす
+				PRINTFORMW はじめの頃に比べれば多少は柔く締め付けるようになったものの、幽香のそこはそれでもまだ硬かった
+			ENDIF
+			CFLAG:9033 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「ひっ、ぎっ!!?」
+			PRINTFORMW %CALLNAME:PLAYER%がアナルの窄まりへ無理やり突き込むと、幽香は短く悲鳴をあげる
+			PRINTFORMW 「こ、ら……もうちょっと湿らせて、からにしなさい……よぉ！」
+			CFLAG:9033 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んっ、ふ……んッ♪ お尻、キモチっいいじゃない、あぁあ♪」
+			PRINTFORMW 幽香は自分から腰を振り、ケツ穴快楽を貪っている
+			CFLAG:9033 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ、う……ふ、ぐぅ……！」
+			PRINTFORMW こちらに必定以上に触れたくないのか、こちらに背を預けてこない幽香
+			PRINTFORMW しかし、それだと体重がすべてアナルに掛かり、より深く沈み込む結果になるというのがわからないのだろうか
+			CFLAG:9033 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル CFLAG:9034
+;-------------------------------------------------
+IF SELECTCOM == 34 && CFLAG:5340 == 1
+	;タイツ穿いてたら破る
+	IF CFLAG:5661 == 1
+		PRINTFORML %CALLNAME:PLAYER%は幽香に挿入するため、取り出したはさみで黒タイツをジョキジョキと割いた
+		PRINTFORMW そしてその下の黒いショーツをずらしたまま押さえておくよう幽香に命令する
+		CFLAG:5661 = 0
+		CFLAG:5663 = 1
+	ENDIF
+	;初めて
+	IF CFLAG:9034 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「ふふ、私からすればいいの？ いいわよ……ほぉら」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%をまたぐと、ゆっくりと腰をおろしはじめた
+			PRINTFORMW 「－－－いただき、まぁす」
+			PRINTFORMW 幽香は笑顔で腰を沈め、%CALLNAME:PLAYER%を迎え入れた
+			IF ABL:Ａ感覚 >= 3
+				PRINTFORMW 幽香の肛門は歓迎するようにひくひくと蠢き、%CALLNAME:PLAYER%のペニスを締め付けている
+			ELSEIF ABL:Ａ感覚 < 3
+				PRINTFORMW 幽香の肛門はぎちぎちと%CALLNAME:PLAYER%を締め付ける
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「私から腰を下ろせって？ ……ふん、やってやろうじゃない」
+			PRINTFORMW 「それに%CALLNAME:PLAYER%を見下ろしながら、私が主導権を握れるんでしょう？」
+			PRINTFORMW 「だったら、多少は溜飲が下がるだろうしね」
+		ENDIF
+		CFLAG:9034 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		LOCAL = PALAM:10 + UP:10
+		;恋慕+潤滑Lv2以上+A感覚Lv3以上
+		IF TALENT:恋慕 && LOCAL >= PALAMLV:2
+			IF ABL:Ａ感覚 >= 3
+				IF RAND:3 == 0
+					PRINTFORMW 「んっ、はっ♪ ひ、ぃぃぃいいい♪♪」
+					PRINTFORMW ブボッ、プボッと、陰茎が出入りするたびアナルから空気が漏れる音がする
+					PRINTFORMW 幽香は恥ずかしそうに頬を染めながらも、動きをとめることはなかった
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「んっ、ぎ、いいぃ！ ケツマンコ響くッ♪ %CALLNAME:PLAYER%のオチンチン、ずぼずぼってアナルを犯してるぅ！」
+					PRINTFORMW 幽香は乱暴といってもいい腰使いで自らアナルを犯していた
+				ELSE
+					PRINTFORMW 「う、あぁ……♪ お尻っ、すごいの！ ケツマンコがぎゅっぎゅっってチンポ噛み締めちゃうぅ！」
+				ENDIF
+			ELSE
+			ENDIF
+			CFLAG:9034 = 5
+		;恋慕+潤滑Lv2未満
+		ELSEIF TALENT:恋慕 && LOCAL < PALAMLV:2
+			PRINTFORMW 「あ、ぎッ……い、たいぃ……」
+			PRINTFORMW %CALLNAME:PLAYER%は幽香にもっと腰を上下させるよう言うが、乾いたアナルでは動けば動くだけ痛みが増す
+			PRINTFORMW しかし幽香は泣きそうな顔で腰を揺すった
+			CFLAG:9034 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF LOCAL >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「んぅっ、ふっ♪ ふ、くうう♪」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%を見下ろしながら腰を振っている
+			PRINTFORMW その様は、とてもＳっ気たっぷりな愉悦に満ちていた……
+			CFLAG:9034 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぎ、ぐ……ひっ、つ……ぃ……い！」
+			PRINTFORMW 幽香は泣き言も漏らさず%CALLNAME:PLAYER%のチンポの上で腰を振っている
+			CFLAG:9034 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG:9040
+;-------------------------------------------------
+IF SELECTCOM == 40 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9040 == 0
+		IF TALENT:恋慕 == 1
+			;奉仕精神Lv3以上
+			IF ABL:奉仕精神 >= 3
+				PRINTFORMW 「手でこすればいいのね？ それじゃあたっぷり楽しんで」
+				SIF ABL:技巧 >= 5
+				PRINTFORMW 「気持よすぎて倒れちゃっても、知らないんだから♪」
+			;それ以外
+			ELSE
+				PRINTFORMW 「手で%CALLNAME:PLAYER%のを気持よくすればいいのね？」
+				PRINTFORMW 「裏筋？ ふぅん、ココがいいんだ」
+			ENDIF
+		ELSE
+			;奉仕精神Lv3以上
+			IF ABL:奉仕精神 >= 3
+				PRINTFORMW 「手で……この私に奉仕をしろってこと？ ……仕方ないわね」
+				PRINTFORMW 幽香はぶつくさ言いながらも%CALLNAME:PLAYER%の陰茎を楽しそうに扱いている
+			;それ以外
+			ELSE
+				PRINTFORMW 「硬いくせに柔らかい。熱くてビクビク跳ねまくって……」
+				PRINTFORMW 「なんで私がこんなものをキモチ良くしてやんなきゃいけないのか、不思議でならないわ」
+			ENDIF
+		ENDIF
+		CFLAG:9040 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;奉仕精神Lv5
+		IF ABL:奉仕精神 >= 5
+			IF TALENT:恋慕 == 1
+				IF RAND:3 == 0
+					PRINTFORMW 「ほぉら……%CALLNAME:PLAYER%のオチンチン握りつぶしちゃうわよぉ？」
+					PRINTFORMW 幽香はそう言いながらも優しく%CALLNAME:PLAYER%の陰茎を撫で上げた
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「ほらほら……どんどんカタくなってくる♪」
+					PRINTFORMW 「私にコスられるのがそんなにいいんだぁ？」
+				ELSE
+					PRINTFORML 「慣れてみるとけっこう可愛いわよね、%CALLNAME:PLAYER%のオチンチン♪」
+					PRINTFORMW 「－－－あ、ちっちゃいとかそういう意味じゃなくてよ!?」
+					PRINTFORMW 幽香は%CALLNAME:PLAYER%にフォローをいれながらも上下する手を休めはしない
+				ENDIF
+			ELSE
+				PRINTFORML 「ん、今日もカチカチ……♪」
+				PRINTFORMW 「いっぱい、コスってあげる……」
+			ENDIF
+			CFLAG:9040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 「ん……%CALLNAME:PLAYER%の熱いのが、手のひらでビクビクしてる……」
+			PRINTFORMW 「気持ち……いいんだ、私の手が」
+			CFLAG:9040 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「私の手が腐るのが先か。それとも%CALLNAME:PLAYER%のチンポを握りつぶすのが先か」
+			PRINTFORMW 「そういう勝負じゃないの？」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の肉棒を気味悪そうに眺めながら右手を上下にピストンした
+			CFLAG:9040 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG:9041
+;-------------------------------------------------
+IF SELECTCOM == 41 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9041 == 0
+		IF TALENT:恋慕 == 1
+			;奉仕精神Lv3以上
+			IF ABL:奉仕精神 >= 3
+				PRINTFORML 「なぁに？ 私の唇なんてじっと見て」
+				PRINTFORML 「へ？ 『幽香にフェラチオされたらすごい気持いだろうな』って……バッ、バッカじゃないの!?」
+				PRINTFORML 「なんで私がそんなこと……あぁもう、わかったわよ！ やってあげればいいんでしょう？」
+				PRINTFORMW 「もう、なによこのバカチンコめ……」
+				;技巧Lv3以上,サドッ気Lv3以上
+				IF ABL:技巧 >= 3 && ABL:サドっ気 >= 3
+					PRINTFORML 「んちゅ……れる、る……！　ふ、ふふ……」
+					PRINTFORMW おとなしく陰茎を舐めていた幽香は、ふとイタズラでも思いついたかのような顔を見せる
+					PRINTFORML 「いいこと思いついた……あ～ん、む……ぱくっ♪」
+					PRINTFORMW 「んぶっ、じゅず……じゅる、ん～～～　　　　　　がぶっ」
+					PRINTFORMW 幽香は%CALLNAME:PLAYER%の肉棒を口に含んだまま、亀頭の敏感な果肉を甘噛みした
+					PRINTFORML 「んふっ、ろぅ？ おひんひんあむってやられるほは♪（どう？おちんちんあむってやられるのは♪）」
+					PRINTFORMW %CALLNAME:PLAYER%が強烈な刺激に泣きそうになっていると、幽香はニンマリと笑ったのだった
+				;技巧Lv3以上
+				ELSEIF ABL:技巧 >= 3
+					PRINTFORMW 「ほら、こんな感じでいいんでしょう？」
+					PRINTFORML 幽香はやんわりと%CALLNAME:PLAYER%の肉棒を口に含み、ゆったりとした動きで舌をまとわりつかせる
+					PRINTFORMW 「んふふ……べふい、はひひゃっても、ひいほよ？（別に、出しちゃっても、いいのよ？）」
+				;それ以外
+				ELSE
+					PRINTFORML 「下手でも失望しないでよ……？」
+					PRINTFORMW 幽香はぎこちない舌使いで%CALLNAME:PLAYER%のペニスに舌を這わせた
+				ENDIF
+			;それ以外
+			ELSE
+				PRINTFORML 「え、舐めて欲しいって……コレ、を？」
+				PRINTFORMW %CALLNAME:PLAYER%が頷くと、幽香はさんざ逡巡し、しばらくしてようやく仕方ないとばかりにため息をつく
+				PRINTFORMW 「はぁ……特別だからね？」
+				PRINTFORML いくら愛しい人からの命令だとしても、生殖器に舌を這わせるのはさすがに抵抗があるのだろうか
+				PRINTFORMW 幽香は眉をひそめながら、チロチロと舌先を這わせてきた
+				PRINTFORMW 「ん、……ピチャ……ッ、くちゅ……うぇ、ひどい臭い……」
+			ENDIF
+		ELSE
+			;奉仕精神Lv3以上
+			IF ABL:奉仕精神 >= 3
+				PRINTFORML 「舐めろ……ね」
+				PRINTFORMW 「はいはい、わかったわよ……ん、くぷ……ぷぷっ……」
+				PRINTFORML 幽香はほんの少しの躊躇った後、あたたかくぬめる口腔の中へと%CALLNAME:PLAYER%の陰茎を飲み込んでいく
+				PRINTFORML 「ん、んぶ……あふ……ぶ、ぷっ……」
+				PRINTFORMW ただ一心不乱に奉仕する姿に、%CALLNAME:PLAYER%は得も知れぬ満足感を感じていた
+			;それ以外
+			ELSE
+				PRINTFORML 「舐めろって……コレをぉ？」
+				PRINTFORMW 『コレ』と言って%CALLNAME:PLAYER%のペニスを指差す幽香
+				PRINTFORML 「……どうしよう、やる前から吐き気してきたわ」
+				PRINTFORMW 幽香はしぶしぶ%CALLNAME:PLAYER%のペニスに舌を這わせる
+				PRINTFORML 「ピチュ……う、ぷ……凄い、臭い……ちゃんと洗ってるの？」
+				PRINTFORMW 顔をしかめながらピチャピチャと水音をたてる幽香。その姿は十分に%CALLNAME:PLAYER%の嗜虐心を満たした
+			ENDIF
+		ENDIF
+		CFLAG:9041 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv3
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3
+			IF RAND:3 == 0
+				PRINTFORMW 「あむ……クチュ、ジュズズ……じゅる、ぷ、はッ♪」
+				PRINTFORMW 幽香はズボズボと音を立てながら頬をへこませ、%CALLNAME:PLAYER%のペニスをしゃぶっている
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ジュルル、ズッ…れる……ろぉ？ ひもひいい……？」
+				PRINTFORML 口にペニスを含んだまま、モゴモゴとしゃべる幽香
+				PRINTFORMW その刺激は思いの外強く、%CALLNAME:PLAYER%は背筋を震わせた
+			ELSE
+				PRINTFORMW 「ん、チロ…れる…ふふ、こうやって……おしっこの穴、ホジホジされるの気持ちいいんでしょう？」
+				PRINTFORMW 幽香はノリノリで%CALLNAME:PLAYER%のチンポを貪っている
+			ENDIF
+			CFLAG:9041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && TALENT:恋慕 == 0
+			PRINTFORMW 「んぷ、ぶ……また、口で奉仕させられてう……」
+			PRINTFORMW 舌使いの合間合間にそう呟きつつ、幽香は奉仕を続けた
+			CFLAG:9041 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっぐ……じゅる……うぇぇ……」
+			PRINTFORMW 幽香は懸命に吐き気を堪えながら%CALLNAME:PLAYER%の陰茎を舐めまわしている
+			CFLAG:9041 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG:9042
+;-------------------------------------------------
+IF SELECTCOM == 42 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9042 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 「へっ？ おっぱいで挟め？」
+			PRINTFORMW 「え、嫌に決まってるじゃない。……え、ほんとにしなきゃだめ？」
+			PRINTFORMW 「ん～……まぁ仕方ない、か……よい、しょっ。ほら、こんな感じでいい？」
+			PRINTFORM 幽香は%CALLNAME:PLAYER%のペニスを胸で挟み込むと、
+			IF ABL:技巧 >= 3
+				PRINTFORMW 幽香は陰茎に胸をこすりつけたり、舌で亀頭を刺激したりと、絶え間ない快楽を与えてきた
+			ELSE
+				PRINTFORMW ぎこちない動きで胸を上下させる
+				PRINTFORMW もう少しなれさせる必要がありそうだ
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORML 「胸を使って奉仕しろって？ 何それ嫌に決まってるじゃない」
+			PRINTFORMW 「何度言われても絶対に嫌。 何が悲しくて%CALLNAME:PLAYER%なんかに奉仕しなきゃいけないの？」
+			PRINTFORML 幽香は断固としてパイズリすることを拒む
+			PRINTFORMW %CALLNAME:PLAYER%は仕方なく、別の命令を口にした
+			PRINTFORMW 「え？ しなくていいからベッドに寝てろって？」
+			PRINTFORML 幽香は訝しげな視線をこちらに向けつつも、それならばと従ってくれる
+			PRINTFORMW %CALLNAME:PLAYER%はそのみぞおちの上あたりに膝立ちになり、幽香の豊満な胸を鷲掴みにしてその間にペニスを挟み込んだ
+			PRINTFORML 「あー……なるほどね。 確かにこれなら%CALLNAME:PLAYER%に奉仕することにはならないわ」
+			PRINTFORMW 「それより分かってる？ 私から見ると、%CALLNAME:PLAYER%凄い滑稽な動きしてるわよ」
+			PRINTFORMW 幽香は嘲笑を浮かべながら%CALLNAME:PLAYER%の動きを追っていた
+		ENDIF
+		CFLAG:9042 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			IF ABL:技巧 >= 3
+				IF RAND:3 == 0
+					PRINTFORML 「ちゅる、ん……ふぅ……はぁ」
+					PRINTFORMW 「ンッ、乳首……ッ、こす れてェ♪ わたひ、っ、も！ 気持ちよく、なっちゃうぅ♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「はぁ…熱くて、おっぱいの中でビクビク震えてる♪」
+					PRINTFORMW 「ふふ－－－ほぉら、いっぱい気持よくしてあげるから……ね？」
+				ELSE
+					PRINTFORMW 「ほぉ～ら、%CALLNAME:PLAYER%の大好きなおっぱいですよ～♪」
+					PRINTFORMW 幽香はニヤニヤとしながら%CALLNAME:PLAYER%のペニスを愛でている
+				ENDIF
+			ELSE
+				PRINTFORMW 「ん……は、ァ……こら、暴れないでよ！」
+				PRINTFORML ペニスの位置が定まらないのは%CALLNAME:PLAYER%が暴れさせているのではなく、幽香の押さえが緩いせいなのだが
+				PRINTFORMW その辺りも含めて、まだまだ上達の余地はありそうだ
+			ENDIF
+			CFLAG:9042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「ん……ほら、これでいい……？」
+			PRINTFORMW 幽香は従順に従い、%CALLNAME:PLAYER%の剛直を胸に挟んで奉仕している
+			CFLAG:9042 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ッ……私の胸は%CALLNAME:PLAYER%のオナホールじゃあないんだけど？」
+			PRINTFORML 幽香は憤怒と侮蔑の視線を%CALLNAME:PLAYER%に向ける
+			PRINTFORMW 相変わらず自分から動こうとはしてくれないので%CALLNAME:PLAYER%自ら動いているのだが、なるほど確かにオナホールと言えなくもない
+			CFLAG:9042 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股 CFLAG:9043
+;-------------------------------------------------
+IF SELECTCOM == 43 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9043 == 0
+		;恋慕有り
+		IF TALENT:恋慕
+			PRINTFORMW 「え、入れずに？ ふとももで挟んでこする……ん～、こんなカンジかしら？」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の指示通りに肉棒を挟みこんでこすりつけるように腰を揺らした
+			PRINTFORMW 「あッ♪ これ……私も、すこし気持ちいいかも」
+		;それ以外
+		ELSE
+			PRINTFORML 「ふとももで挟んで上下に動く……？」
+			PRINTFORMW 「……%CALLNAME:PLAYER%、それに乗じて挿れようだなんて考えてないわよね？」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の挙動に注意しつつ、体を上下に動かした
+		ENDIF
+		CFLAG:9043 = 1 
+		CALL K34_SHASEI
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕有り
+		IF TALENT:恋慕
+			IF CFLAG:5661 == 0
+				IF TALENT:ふたなり == 1
+					IF RAND:3 == 0
+						PRINTFORMW 「あハ♪ すごっ、動くたびにオチンチン同士で擦れあっちゃってるぅ♪」
+						PRINTFORMW 幽香が体を揺する度に股間に生えた剛直がぶるんぶるんと上下に揺れ、%CALLNAME:PLAYER%のものとこすれ合った
+					ELSEIF RAND:2 == 0
+						PRINTFORMW 「んっ、ふ、う……ハ、ぅ♪」
+						PRINTFORMW 幽香は陰茎同士がぶつかる度にピクッ、ピクッと動きを止める
+					ELSE
+						PRINTFORML 「ふっ、これ……ちょっと、疲れる…ッ…」
+						PRINTFORMW 「ま……、%CALLNAME:PLAYER%がしてくれってっ、言うなら！ つづける、ケド　ねっ、」
+						PRINTFORMW 幽香は息を切らせながら言うと、指先で%CALLNAME:PLAYER%の亀頭をくすぐった
+					ENDIF
+				ELSE
+					IF RAND:3 == 0
+						PRINTFORMW 「ひゃうっ、う！ クリちゃんっ、こすっれッてぇ♪」
+					ELSEIF RAND:2 == 0
+						PRINTFORML 「はぁ……ちょ、ちょっと休憩させてくれない……？」
+						PRINTFORMW 「%CALLNAME:PLAYER%は動かなくて楽かもしれないけど……ちょっと、疲れちゃった……」
+					ELSE
+						PRINTFORMW 幽香が腰をくねらせると、ぷにぷにとした恥丘が%CALLNAME:PLAYER%の肉棒とこすれる
+						PRINTFORML 「んっ、どう……気持ちいい？」
+						PRINTFORMW 「私も……これ、%CALLNAME:PLAYER%に奉仕してる気分になれてけっこう好き……♪」
+					ENDIF
+				ENDIF
+			ELSEIF CFLAG:5661 == 1
+				IF RAND:3 == 0
+					PRINTFORML 幽香はナイロン繊維に覆われたふとももで%CALLNAME:PLAYER%の陰茎を挟んでいる
+					PRINTFORMW 生足とは違うつるつるとした感触に%CALLNAME:PLAYER%は酔いしれた
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「ふ、う……はっ、ん－－－なんか、もどかしいわね」
+					PRINTFORMW ショーツとタイツ越しの弱々しい刺激に、幽香は頬をふくらませた
+				ELSE
+					PRINTFORMW 「裸にッ、タイツで、素股だなんてンッ……ホント、%CALLNAME:PLAYER%の趣味には呆れてものも言えないわ……♪」
+					PRINTFORMW そう言いながらも幽香は%CALLNAME:PLAYER%の肉棒を必死で擦り上げるために腰をうねらせていた
+				ENDIF
+			ENDIF
+			CFLAG:9043 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「はぁ……ったく、こんなののナニがいいんだか」
+			PRINTFORML 幽香は腰を上下に動かせながらぼやく
+			PRINTFORMW その視線は股間に固定されていて、%CALLNAME:PLAYER%が妙な動きをしないか監視しているかのようだった
+			CFLAG:9043 = 2
+		ENDIF
+		CALL K34_SHASEI
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG:9044
+;-------------------------------------------------
+IF SELECTCOM == 44 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9044 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「%CALLNAME:PLAYER%のお尻……キレイにすればいい……の、ね」
+			PRINTFORMW 幽香は尻を舐めろという%CALLNAME:PLAYER%の命令に多少躊躇いを覚えたものの、すぐに覚悟をきめたように頷いて%CALLNAME:PLAYER%の背後にまわった
+			PRINTFORMW 「ほ、ほら……舐めるわよ……」
+			PRINTFORMW そしておそるおそる伸ばされた舌が%CALLNAME:PLAYER%の窄まりを舐め上げる
+			PRINTFORMW 「んぷ……舌、ジンジンする……」
+			PRINTFORMW 幽香は涙目になりながらも、%CALLNAME:PLAYER%への奉仕を続けた
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ……こ、のッ……」
+			PRINTFORML どこまでもプライドを突き崩す要求に、顔を真っ赤にして拳を握りしめる幽香
+			PRINTFORMW しかし%CALLNAME:PLAYER%が尻を目の前に突き出すと、屈辱に身を震わせながらも
+			PRINTFORMW 「ぐ…ペチョ……うぐ、おえ……れろ……」
+			PRINTFORMW 命令に背くことができず、%CALLNAME:PLAYER%へ奉仕を開始するのだった
+		ENDIF
+		CFLAG:9044 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+従順Lv5以上
+		IF TALENT:恋慕 && ABL:従順 >= 5
+			PRINTFORMW 「ペチャ……ん、チュ……」
+			PRINTFORML 幽香は従順に舌を使って%CALLNAME:PLAYER%の窄まりをキレイに掃除している
+			PRINTFORMW 『あの』幽香の落ちぶれた姿に、%CALLNAME:PLAYER%は興奮を隠し切れなかった
+			CFLAG:9044 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はぁい……ん、ぺろ、ぺろ……ちゅッ♪」
+			PRINTFORMW 幽香は舌先を窄まりにつき込み、ディープキスをしながら奉仕した
+			CFLAG:9044 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「うゥ……ぺろ……れる……ン」
+			PRINTFORMW 幽香は泣きそうな表情を浮かべながら%CALLNAME:PLAYER%のアナルに舌を這わせた
+			CFLAG:9044 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっぷ……おぇ……」
+			PRINTFORMW 幽香はアナルへの奉仕の最中、何度も何度もえずいて吐き気を催していた
+			CFLAG:9044 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;アナルおねだり  CFLAG:9045
+;-------------------------------------------------
+IF SELECTCOM == 45 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9045 == 0
+		;恋慕
+		IF TALENT:恋慕
+			IF ABL:Ａ感覚 >= 3
+				PRINTFORMW 「こ、う…かしら？」
+				PRINTFORMW 幽香は自ら尻を突き出し、%CALLNAME:PLAYER%に向かって尻肉をひらいてみせた
+				PRINTFORMW 「ほら、私のお尻……うぅん、ケツ穴マンコ♪ %CALLNAME:PLAYER%のチンポが欲しくてこんなにパクパクおねだりしてるの……」
+				PRINTFORML 幽香は%CALLNAME:MASTER%が教えるまでもなく淫らな言葉で%CALLNAME:PLAYER%を誘う
+				PRINTFORMW その尻穴は幽香の言葉通り、パクパクと待ちわびるように口を開いていた
+			ELSE
+				PRINTFORMW 「う……はずか、しいわ」
+				PRINTFORML 幽香は顔を真っ赤にしながら%CALLNAME:PLAYER%に向かって尻を突き出す
+				PRINTFORMW その豊かな尻肉の奥では桃色の窄まりが堅く閉まっているのが見えた
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 「くっ……屈辱よ……なんで私がお前なんかにおしりを突き出さなきゃ……」
+			PRINTFORMW 「チッ、もういい……ほら、見たいんなら早く見れば？ これ以上手間取らせないでちょうだい」
+			PRINTFORMW 幽香は開き直ったように言い捨てるが、その体は羞恥心からかプルプルと細かく震えていた……
+		ENDIF
+		CFLAG:9045 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「ほらぁ……見て、%CALLNAME:PLAYER%のが欲しくてこんなにはしたなくパクついちゃってるの……♪」
+			PRINTFORMW 幽香は尻肉を広げ、その奥の窄まりをヒクヒクと蠢かせた
+			CFLAG:9045 = 4
+		;従順Lv3以上
+		ELSEIF ABL:従順 >=3
+			PRINTFORML 「ふ……ぅ、ん……」
+			PRINTFORMW 「ほらぁ……言われた通りに広げてあげたわよ……」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%の目の前にアナルを晒しているのがつらいのか、ギリギリと歯を食いしばっていた
+			CFLAG:9045 = 3
+		;それ以外
+		ELSEIF CFLAG:5340 == 1
+			PRINTFORMW 「殺してやる殺してやる殺してやる殺してやるコロシテヤル……」
+			PRINTFORMW 羞恥と屈辱に顔を真っ赤にしながら、幽香は呪詛の言霊を垂れ流した
+			CFLAG:9045 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;足舐め強制  CFLAG:9046
+;-------------------------------------------------
+IF SELECTCOM == 46 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9046 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「%CALLNAME:PLAYER%の足……舐める……ん……ンッ」
+			PRINTFORMW かつての自分ならば舌を噛み切ってでもやりたがらなかったであろう行為に、幽香は過去の自分から罵倒されているかのような高揚を覚えた……
+		;それ以外
+		ELSE
+			PRINTFORMW 「は……ハハ……%CALLNAME:PLAYER%の足をッ……舐める!? この私が……風見幽香がッ……！？」
+			PRINTFORML 眼前に差し向けられた%CALLNAME:PLAYER%の足に、幽香は壊れたように笑みを浮かべる
+			PRINTFORMW そして……何かに取り憑かれたようにピチャピチャと%CALLNAME:PLAYER%の足裏に舌を差し出した……
+		ENDIF
+		CFLAG:9046 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「んっ、%CALLNAME:PLAYER%の足……キレイに、してあげる……」
+			PRINTFORMW 幽香は嫌がる素振りも見せずに足裏奉仕に乗り出した
+			CFLAG:9046 = 4
+		;従順Lv3以上
+		ELSEIF ABL:従順 >=3
+			PRINTFORMW 「ふッ……う……」
+			PRINTFORML ぺろぺろと控えめに幽香は%CALLNAME:PLAYER%の足を舐める
+			PRINTFORMW その表情は、今にも崩れ落ちんばかりにゆがんでいた
+			CFLAG:9046 = 3
+		;それ以外
+		ELSEIF CFLAG:5340 == 1
+			PRINTFORMW 「ふッ……ぐ、うう……」
+			PRINTFORML 幽香は射殺さんばかりの視線で%CALLNAME:PLAYER%を見上げている
+			PRINTFORMW %CALLNAME:PLAYER%は唇に押し付けていた足をグリグリとひねってやった
+			CFLAG:9046 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;足コキ  CFLAG:9047
+;-------------------------------------------------
+IF SELECTCOM == 47 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9047 == 0 && TALENT:恋慕 == 0
+		PRINTFORMW 「足で、シて欲しいって……なに、踏み潰せばいいの？」
+		PRINTFORMW 幽香は心底不思議そうに首をかしげている
+		CFLAG:9047 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			;恋慕
+			IF CFLAG:5664 == 0
+				PRINTFORML 「は？ 足でシて欲しいって……？」
+				PRINTFORMW 「ホント、どこまで変態趣味に付き合わせれば気が済むのかしら……は？ なにこれ……ショーツと……タイツ？」
+				PRINTFORMW 幽香は%CALLNAME:PLAYER%から手渡された黒い下着と、同色のタイツに混乱を隠せないようだ
+				PRINTFORML 「裸で……ショーツとタイツだけ穿けって……？ ちょ、ちょっと……%CALLNAME:PLAYER%、頭は大丈夫？」
+				PRINTFORMW 幽香にさんざん心配されたが、それよりも早くタイツを穿いてくれと頼むと、今度は哀れなモノでも見るかのような目をされた
+				PRINTFORML 「……はぁ、わかったわよ……ちょっと待ってて……」
+				PRINTFORMW 幽香はため息とともにてきぱきとショーツを身につけ、そして次にタイツをスルスルと足先から腰元までゆったりとした動作で装着する
+				PRINTFORML 「ほら、着てあげたわよ……で、これで足コキだっけ？ をすればいいの？」
+				PRINTFORMW 幽香はナイロン繊維に包まれたしなやかな足を、そっと%CALLNAME:PLAYER%の陰茎へこすりつけてみた
+				PRINTFORMW 「こ、こう……？ あ、すごい……カウパーがドロドロ出てきて……しかも、いつもよりガチガチ……」
+				CFLAG:5661 = 1
+				CFLAG:5664 = 1
+			ELSE
+				IF CFLAG:5661 == 0
+					IF CFLAG:5663 == 0
+						PRINTFORML 「え？ またタイツを穿いてシて欲しいの？」
+						PRINTFORMW 「もう、しょうがないわね……」
+						PRINTFORMW 幽香はやれやれとため息をつくと、%CALLNAME:PLAYER%の手渡した黒い下着とタイツを装着した
+					ELSE
+						PRINTFORMW 「穿かせるんなら破かないでよ、もう……」
+						PRINTFORMW 幽香はブチブチと文句を言いながらもボロボロになったタイツを脱ぎ、%CALLNAME:PLAYER%の渡したものにつけかえた
+					ENDIF
+					CFLAG:5661 = 1
+				ELSEIF CFLAG:5661 == 1
+					IF RAND:3 == 0
+						PRINTFORML 「はっ、どう？ タイツ穿いた足でゴシゴシされんのが気持ちいいんでしょ、この変態♪」
+						PRINTFORMW 幽香は頬を上気させながら%CALLNAME:PLAYER%の剛直をいじくっている
+					ELSEIF RAND:2 == 0
+						PRINTFORMW 「んふ……♪ どぉ、気持ちいい？ 気持ちいいのよねぇ、私にこんな風にされてバッキバキにしてるんだもの」
+						PRINTFORMW 幽香は肉棒のカリを足先で弾くように擦った
+					ELSE
+						PRINTFORMW 「タイツでこすられるのが、そんなにいいんだ……ふふ♪」
+						PRINTFORMW 幽香は心底楽しそうに%CALLNAME:PLAYER%の肉棒に足先を絡めている
+					ENDIF
+				ENDIF
+			ENDIF
+			CFLAG:9006 = 4
+		;従順Lv3以上
+		ELSEIF ABL:従順 >=3
+			PRINTFORML 「クスクス……素足だから、熱くなってるのわかるわよ……」
+			PRINTFORMW 「私の足でこんなガッチガチにボッキさせてるとか……ほんと、笑えるわ」
+			CFLAG:9006 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ホント、救いようのない駄チンポね……」
+			PRINTFORMW 「わかってんの？ 足って生殖器じゃないのよ？」
+			CFLAG:9047 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+
+;-------------------------------------------------
+;ローション CFLAG:9060
+;-------------------------------------------------
+IF SELECTCOM == 60 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9060 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9060 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+
+			CFLAG:9060 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9060 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬 CFLAG:9061
+;-------------------------------------------------
+IF SELECTCOM == 61 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9061 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9061 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			IF CFLAG:5340 == 1
+				IF TALENT:媚薬中毒 == 0
+					DRAWLINE
+					PRINTFORMW 
+				ELSEIF TALENT:媚薬中毒 == 1
+					DRAWLINE
+					PRINTFORMW 
+				ENDIF
+			ELSE
+				PRINTFORMW 
+			ENDIF
+			CFLAG:9061 = 3
+		;それ以外
+		ELSE
+			IF CFLAG:5340 == 1
+				IF TALENT:媚薬中毒 == 0
+					DRAWLINE
+					PRINTFORMW 
+				ELSEIF TALENT:媚薬中毒 == 1
+					DRAWLINE
+					PRINTFORMW 
+				ENDIF
+			ELSE
+				PRINTFORMW 
+			ENDIF
+			CFLAG:9061 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG:9062
+;-------------------------------------------------
+IF SELECTCOM == 62 && CFLAG:5340 == 1
+	;恋慕+おもらし癖
+	IF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 
+		CFLAG:9062 = 4
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:9062 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+		CFLAG:9062 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:9062 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン(新妻プレイ) CFLAG:9090 解除 CFLAG:8823
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9090 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9090 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9090 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9090 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8823 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:8823 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:8823 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:8823 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオ撮影（ビデオカメラ使用） CFLAG:9100
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9100 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9100 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9100 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9100 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;羞恥プレイ CFLAG:9103 解除 CFLAG:8822
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9103 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9103 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:9103 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9103 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:9103 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9103 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 103 && TEQUIP:56 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8822 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:8822 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:8822 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:8822 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ CFLAG:9104　CFLAG:8821
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 104 && TEQUIP:52 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9104 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9104 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋露出癖Lv3以上
+		IF TALENT:恋慕 && ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:9104 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:9104 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9104 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 104 && TEQUIP:52 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8821 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8821 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;放尿 CFLAG:9111
+;強制放尿 CFLAG:9620
+;-------------------------------------------------
+;放尿
+IF SELECTCOM == 111 && CFLAG:5340 == 1
+	;恋慕+おもらし癖+野外プレイ
+	IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+		PRINTFORMW 
+		CFLAG:9111 = 5
+	;恋慕+おもらし癖
+	ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 
+		CFLAG:9111 = 4
+	;露出癖Lv5
+	ELSEIF ABL:露出癖 >= 5
+		PRINTFORMW 
+		CFLAG:9111 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+		CFLAG:9111 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:9111 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+;強制放尿
+IF SELECTCOM == 620 && CFLAG:5340 == 1
+	;恋慕+おもらし癖+野外プレイ
+	IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+		PRINTFORMW 
+		CFLAG:9620 = 5
+	;恋慕+おもらし癖
+	ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+		PRINTFORMW 
+		CFLAG:9620 = 4
+	;露出癖Lv5
+	ELSEIF ABL:露出癖 >= 5
+		PRINTFORMW 
+		CFLAG:9620 = 3
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 
+		CFLAG:9620 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:9620 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル電極 開始時CFLAG:9171 終了時CFLAG:8851
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 171 && TEQUIP:25 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9171 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9171 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9171 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9171 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9171 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9171 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8851 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+		CFLAG:8851 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8851 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG:9172 終了時CFLAG:8852
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 172 && TEQUIP:25 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9172 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9172 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9172 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9172 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9172 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9172 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8852 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+		CFLAG:8852 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8852 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;拡張バルーン 開始時CFLAG:9173 終了時CFLAG:8853
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 173 && TEQUIP:25 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9173 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9173 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9173 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9173 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9173 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9173 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 173 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8853 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+		CFLAG:8853 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8853 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;浣腸 CFLAG:9174
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 174 && TEQUIP:25 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9174 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9174 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9174 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9174 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9174 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9174 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;排泄（浣腸プレイ） CFLAG:8851
+;-------------------------------------------------
+IF SELECTCOM == 174 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8854 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:8854 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:8854 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:8854 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:8854 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:8854 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;空気浣腸 開始時CFLAG:9175 終了時CFLAG:8855
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 175 && TEQUIP:25 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9175 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9175 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+		IF TALENT:恋慕 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9175 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9175 = 4
+		;A感覚Lv3以上＋マゾっ気Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9175 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9175 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 175 && TEQUIP:25 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8855 = 3
+	;A感覚Lv3以上＋マゾっ気Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+		PRINTFORMW 
+		CFLAG:8855 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8855 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め CFLAG:9180
+;-------------------------------------------------
+IF SELECTCOM == 180 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9180 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9180 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9180 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:9180 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9180 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) CFLAG:9191　CFLAG:8861
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9191 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9191 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9191 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9191 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8861 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8861 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG:9220
+;-------------------------------------------------
+IF SELECTCOM == 220 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9220 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「イッ、たッ!? ちょ、ちょっとやめて%CALLNAME:PLAYER%！ お尻叩かないでェ！」
+			PRINTFORMW 幽香は突然の暴力に、目に涙をためて悲鳴を上げた
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひッ、ウ ぐ－－－」
+			PRINTFORMW 尻たぶが真っ赤に染まっても、幽香は決して悲鳴をあげようとはしなかった
+		ENDIF
+		CFLAG:9220 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 「いっ、ひ♪ もっとぉ！ もっと私のお尻ッ、ぶったたいてぇ♪」
+			CFLAG:9220 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「うっ、ひい♪ こんな……お尻っ、叩かれて気持ちいいなんてぇ!!」
+			CFLAG:9220 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はぁ、あうぐぅぅ……」
+			PRINTFORML 幽香はうつむきながら唇を噛み締め、%CALLNAME:PLAYER%からの暴力が過ぎ去るのを待っている
+			PRINTFORMW 拒否はしないものの、それを望んでいるというわけではないようだ
+			CFLAG:9220 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「うっ、あぁぁ!! なんで……お尻、%CALLNAME:PLAYER%なんかにブッ叩かれて……気持ちよくなってんのよ私ィ－－－ッ！」
+			CFLAG:9220 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ぐ……う……ぅッ……」
+			PRINTFORML 尻をたたくたび、幽香は低いうめき声をあげる
+			PRINTFORMW その表情は怒りに染まっていて、今にも%CALLNAME:PLAYER%に牙をむきそうな程だ
+			CFLAG:9220 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG:9221
+;-------------------------------------------------
+IF SELECTCOM == 221 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9221 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 「イッ、ぎいいい!?」
+			PRINTFORML 鞭が白い肌に紅い印を刻む
+			PRINTFORMW すると幽香は痛みを逃すためなのか、体をピンと反らした
+			PRINTFORML 「い、たい……%CALLNAME:PLAYER%……痛い、痛いわ－－－ッ」
+			PRINTFORMW 幽香は涙まじりにもうやめてくれと懇願する。しかし……
+			PRINTFORMW 「ヒッ!? ああぁぁぁぁアアアア!!!!」
+			PRINTFORMW 脂汗をにじませるその背中に、%CALLNAME:PLAYER%はさらに鞭を振り下ろした
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ－－－ガッ……ぎ、ぅ……！」
+			PRINTFORML 幽香は悲鳴をあげることなく%CALLNAME:PLAYER%の暴力に耐えている
+			PRINTFORMW 「ぐ……こんな、もんで……私をなんとか出来るだなんて、思わないほうがいいわよ……？」
+			PRINTFORMW 不敵にそう笑う幽香の笑みは、とても凄絶な威圧感を持っていた
+		ENDIF
+		CFLAG:9221 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 「あ、ッひぃ♪ 痛い、イタイ♪ 鞭で叩かれるのッ、痛くて気持ちいいィィイ！！！」
+			CFLAG:9221 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「いっ、たぁ♪ 肌が、裂ける!? ヒリヒリびりびりしてイタイのぉ♪」
+			CFLAG:9221 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「はぎゃッ!!! ぐ、やめ　てェ……コレ以上痛いことしない、で……あイぁぁぁぁぁあ！？」
+			CFLAG:9221 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORML 「はぁッ－－－ギ、ィ♪ き、にいったわ……もし、私が自由になったら……ゼッタイに、%CALLNAME:PLAYER%にも同じ快感、を……味わわせてあげる……」
+			PRINTFORMW 幽香は鞭の刺激に興奮しながらも屈したわけではないということをアピールしたいのか、%CALLNAME:PLAYER%を見て笑ってみせた
+			CFLAG:9221 = 3
+		;それ以外
+		ELSE
+			PRINTFORML 「がっ、ぐ……うぐぅぅぅぅううう－－－」
+			PRINTFORMW 幽香はさすがに耐え切れなかったのか、喉の奥から獣のような叫び声をあげた
+			CFLAG:9221 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;針 CFLAG:9222
+;-------------------------------------------------
+IF SELECTCOM == 222 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9222 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORML 「え……なにそれ、針？」
+			PRINTFORMW 「それ、いったいどうするの……ね、ねぇ……」
+			PRINTFORML 答えは分かっているであろうに、幽香はすがりつくようにして%CALLNAME:MASTER%に問いつめる
+			PRINTFORMW %CALLNAME:PLAYER%はそんな幽香を押し倒し、両腕をおさえ、あまった手で幽香の肌を突き刺した
+			PRINTFORMW 「－－－－－－－－－ーッ、ャァァァアアアアアアアア！！！」
+		;それ以外
+		ELSE
+			PRINTFORML 「ふ、ふふ……何もってんの？ それって……それって、裁縫の道具じゃない」
+			PRINTFORMW 「なにに……使うつもりなの？」
+			PRINTFORML さすがに恐怖を感じるのか、震える幽香の乳房に手をかける
+			PRINTFORMW 「ンッ……な、なに？ おっぱい触りたかったの－－－」
+			PRINTFORMW 　　　　　　　　－ズブリ－
+			PRINTFORMW 「ッ、－－－－－－－－－－－－－－－－－－!!!!」
+			PRINTFORMW ……さすが　これでも悲鳴をあげないとは
+		ENDIF
+		CFLAG:9222 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 「ズブって、ズブゥって、針がっ！ おっぱいに乳首に……突き刺さってるぅうう♪」
+			PRINTFORML 幽香は壮絶な痛みにビクビクと身を震わせる
+			PRINTFORMW しかし、その表情は快楽の色に染まっていた……
+			CFLAG:9222 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORML 「っ、ぐ……ふぅう♪」
+			PRINTFORMW 幽香はぴくぴくと体を震わせ、痛みをじっくりと味わった
+			CFLAG:9222 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「－－－ぐ、い……ひぃいい……」
+			PRINTFORMW 幽香は泣き声をあげながら必死に痛みに耐えている
+			CFLAG:9222 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORML 「はぁ……あひっ、いい♪ く、この……乳首ィ……ちくび、刺すなあぁぁぁ♪」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%から与えられる痛みという名の快楽に、身を震わせている
+			CFLAG:9222 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「が－－－う、ぃ……、かふ……」
+			PRINTFORMW 幽香は痛みを必死に押し隠しながら気丈にも%CALLNAME:PLAYER%を睨んでいる
+			CFLAG:9222 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;縄 CFLAG:9224　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 224 && TEQUIP:40 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9224 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9224 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9224 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9224 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9224 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9224 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9224 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 224 && TEQUIP:40 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8872 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アイマスク CFLAG:9225　CFLAG:8871
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 225 && TEQUIP:41 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9225 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9225 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9225 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9225 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9225 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9225 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9225 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 225 && TEQUIP:41 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8871 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8871 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;ボールギャグ CFLAG:9226　CFLAG:8872
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 226 && TEQUIP:42 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9226 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9226 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9226 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9226 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9226 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9226 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9226 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 226 && TEQUIP:42 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8872 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8872 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG:9230
+;-------------------------------------------------
+IF SELECTCOM == 230 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9230 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9230 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			PRINTFORMW 
+			CFLAG:9230 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 
+			CFLAG:9230 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9230 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フィストファック CFLAG:9231
+;-------------------------------------------------
+IF SELECTCOM == 231 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9231 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9231 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9231 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9231 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9231 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9231 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9231 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルフィスト CFLAG:9232
+;-------------------------------------------------
+IF SELECTCOM == 232 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9232 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9232 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9232 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9232 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9232 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9232 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9232 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;両穴フィスト CFLAG:9233
+;-------------------------------------------------
+IF SELECTCOM == 233 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9233 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9233 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 && ABL:マゾっ気 >= 5
+			PRINTFORMW 
+			CFLAG:9233 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 && ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9233 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9233 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 
+			CFLAG:9233 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9233 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ CFLAG:9350 解除 CFLAG:8824
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9350 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9350 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9350 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9350 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 350 && TEQUIP:53 == 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8824 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:8824 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:8824 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:8824 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー CFLAG:9351
+;-------------------------------------------------
+IF SELECTCOM == 351 && TEQUIP:54 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9351 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9351 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9351 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9351 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG:9352
+;-------------------------------------------------
+IF SELECTCOM == 352 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9352 == 0
+		;奉仕精神Lv3以上
+		IF ABL:奉仕精神 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9352 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 5
+			PRINTFORMW 
+			CFLAG:9352 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 
+			CFLAG:9352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9352 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;触手召喚 CFLAG:9500　CFLAG:8901
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9500 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9500 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+触手経験20以上（消費基本値が三分の一になる）
+		IF TALENT:恋慕 && EXP:触手経験 >= 20
+			PRINTFORMW 
+			CFLAG:9500 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9500 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9500 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0 && CFLAG:5340 == 1
+	;恋慕+触手経験20以上（消費基本値が三分の一になる）
+	IF TALENT:恋慕 && EXP:触手経験 >= 20
+		PRINTFORMW 
+		CFLAG:8901 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8901 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8901 = 1
+	ENDIF
+	RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;シックスナイン CFLAG:9602
+;-------------------------------------------------
+IF SELECTCOM == 602 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9602 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9602 = 1
+		RETURN 0
+	ELSE
+		;恋慕+奉仕精神Lv3以上+C感覚Lv3以上
+		IF TALENT:恋慕 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:9602 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9602 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:9602 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:9602 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9602 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;３P CFLAG:9610
+;-------------------------------------------------
+IF SELECTCOM == 610 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:9610 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+		CFLAG:9610 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+			CFLAG:9610 = 5
+		;V感覚Lv3以上＋A感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:9610 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:9610 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:9610 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_34_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K34_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K34_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG:8001～8020を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG:8001
+;-------------------------------------------------
+LOCAL = PALAM:10 + UP:10
+IF LOCAL > PALAMLV:2 && CFLAG:8001 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORML 「はぁ……私の体、ローションまみれでドロドロ……ふふ」
+			PRINTFORMW 幽香はシーツなどに落ちた粘度の高い液体をすくい上げ、さらに両手を使って塗り広げた
+		;それ以外
+		ELSE
+			PRINTFORML 幽香の股間が潤ってきたようので、%CALLNAME:PLAYER%は指を這わせて音をたててやる
+			PRINTFORML 「やだぁ……そんなにクチュクチュ音立てないでよぉ♪ デリカシーってものがないんだからぁ……」
+			PRINTFORMW そううそぶく幽香の顔は、それ以上のコトへの期待で朱色の染まっていた
+		ENDIF
+	;それ以外
+	ELSE
+		;ローションを使った場合
+		IF SELECTCOM == 60
+			PRINTFORML 「……うぇ、ベトベト……」
+			PRINTFORMW 幽香は体中にぬられたローションを気味悪げに見下ろしていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん……ッ」
+			PRINTFORML 幽香はもじもじとふとももをこすり合わせる
+			PRINTFORMW 気になった%CALLNAME:PLAYER%が股間に指をやると、ヌチャリと湿った水音が部屋に響く
+			PRINTFORML 「……%CALLNAME:PLAYER%の下手さ加減に体が防衛機能を働かせたみたいね」
+			PRINTFORMW 幽香はそれをどこ吹く風と受け止めている
+		ENDIF
+	ENDIF
+	CFLAG:8001 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG:8002
+;-------------------------------------------------
+LOCAL = PALAM:13 + UP:13
+IF LOCAL > PALAMLV:2 && CFLAG:8002 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORML 「はぁ……はぁ……あ、ふゥ……」
+			PRINTFORMW 「体……火照っちゃった じゃ、ない……どう責任とってくれるのよぉ♪」
+			PRINTFORMW 幽香は発情しきった瞳で%CALLNAME:PLAYER%を見つめた
+		;それ以外
+		ELSE
+			PRINTFORML 「ねぇ、もっとエッチしましょう……？ 頭の中が真っ白になっちゃうくらい……いぃっぱい……♪」
+			PRINTFORMW 幽香は%CALLNAME:PLAYER%にしなだれかかり、その首筋に舌を這わせた
+		ENDIF
+	;それ以外
+	ELSE
+		;媚薬を使った場合
+		IF SELECTCOM == 61
+			PRINTFORML 「く－－－クスリに頼らないと女一人ソノ気にさせられない……大した調教師サマねぇ」
+			PRINTFORMW 幽香は火照った体を抑えながら、嘲笑するような眼でこちらを嘲笑う
+		;それ以外
+		ELSE
+			PRINTFORML 「はぁ……少し、は……やれるみたいじゃない」
+			PRINTFORML 幽香は熱に浮かされたような顔を%CALLNAME:PLAYER%に向ける
+			PRINTFORMW 「それで……女をここまで昂ぶらせた責任、ちゃんと取れるのでしょうね？」
+		ENDIF
+	ENDIF
+	CFLAG:8002 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG:8003
+;-------------------------------------------------
+LOCAL = PALAM:15 + UP:15
+IF LOCAL > PALAMLV:2 && CFLAG:8003 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+	;それ以外
+	ELSE
+		PRINTFORMW 
+	ENDIF
+	CFLAG:8003 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG:8004
+;-------------------------------------------------
+LOCAL = PALAM:17 + UP:17
+IF LOCAL > PALAMLV:2 && CFLAG:8004 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「く、ぅ……なんでそんな……ヒドイことするの……？」
+		PRINTFORMW 幽香は涙を目にたたえながら%CALLNAME:PLAYER%に怯えたような視線を向けている
+	;それ以外
+	ELSE
+		PRINTFORML 「－－－ッッ」
+		PRINTFORMW %CALLNAME:PLAYER%が行う暴力的なまでに恐怖を煽る行為に、幽香はブルブルと見た目相応に弱々しくなった体を震わせる
+		PRINTFORMW しかし、その瞳には未だにしっかりとした芯が折れずにそびえているようだった……
+	ENDIF
+	CFLAG:8004 = 1
+ENDIF
+
+;-------------------------------------------------
+;絶頂した後
+;-------------------------------------------------
+;C絶頂 CFLAG8005
+;-------------------------------------------------
+IF (NOWEX:0 > 0 || NOWEX:1 > 0 || NOWEX:2 > 0 || NOWEX:3 > 0) && CFLAG:5340 == 1
+	IF NOWEX:0 > 0 && NOWEX:1 == 0 && NOWEX:2 == 0 && NOWEX:3 == 0
+		;初めて
+		IF CFLAG:8005 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				IF (TALENT:ふたなり == 1 || TALENT:肥大陰核 == 1)
+					PRINTFORML 「んほぉぉぉ♪ おチンポっ、おチンポでぇ♪」
+					PRINTFORMW 「イックゥゥウゥゥゥゥン♪」
+				ELSEIF (TALENT:ふたなり == 0 || TALENT:肥大陰核 == 0)
+					PRINTFORML 「くぅッ……ック、イクッ♪」
+					PRINTFORMW 「クリ、で……ンっ、ハァア♪」
+				ENDIF
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				IF TALENT:ふたなり == 1 || TALENT:肥大陰核 == 1
+					PRINTFORMW 「うそ、オチンチンで……私、女なのにィ♪」
+				ELSEIF TALENT:ふたなり == 0 || TALENT:肥大陰核 == 0
+					PRINTFORMW 「嫌っ、それ以上されたら――こんな、こんな奴にイかされたくぅああああ！」
+				ENDIF
+			ENDIF
+			CFLAG:8005 = 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				IF TALENT:ふたなり == 1 || TALENT:肥大陰核 == 1
+					IF RAND:3 == 0
+						PRINTFORML 「アアァッァアァッァ!!」
+						PRINTFORMW 「おチンポイクッッ、おチンポびくびくいっくぅぅぅ♪♪」
+					ELSEIF RAND:2 == 0
+						PRINTFORML 「はぁぁぁ♪」
+						PRINTFORML 「いっちゃう、おチンポでいっちゃう♪♪」
+						PRINTFORMW 「幽香の♪ おチンポオルガきちゃうううぅぅぅぅ♪」
+					ELSE
+						PRINTFORML 「あぁぁ、いクイク♪ チンポでイクッ！」
+						PRINTFORMW 「私のチンポが♪ チンポぶっこわれるぅ♪」
+					ENDIF
+				ELSE
+					IF RAND:3 == 0
+						PRINTFORML 「んァっ♪ また、きちゃう♪ クリトリス、でっ♪」
+						PRINTFORMW 「イクッ、いくっ！ いっくぅぅぅぅぅ♪」
+					ELSEIF RAND:2 == 0
+						PRINTFORML 「くはぁ♪ くりッ、クリトリスぅ♪」
+						PRINTFORMW 「お豆でオルガ決めちゃうッ、うひぃいいィィィ♪」
+					ELSE
+						PRINTFORML 「イクッ、クリトリスいく♪」
+						PRINTFORMW 「ビンビンに勃起した女の子チンコでイッちゃううぅううぅぅ♪」
+					ENDIF
+				ENDIF
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORMW 「やめ、なさい！ やめろって言って――んっ、くぅぅゥ！」
+			ENDIF
+		ENDIF
+		CFLAG:5350 += 1
+		SIF NOWEX:0 >= 2
+			CFLAG:5350 += 1
+
+;-------------------------------------------------
+;V絶頂 CFLAG5006
+;-------------------------------------------------
+	ELSEIF NOWEX:1 > 0 && NOWEX:0 == 0 && NOWEX:2 == 0 && NOWEX:3 == 0
+		;初めて
+		IF CFLAG:8006 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORML 「あっ、あっ、イきそう、イクっ」
+				PRINTFORMW 「オマンコでっっ♪ ――――ーッアッ♪」
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORML 「い、イヤァ！ こんな、奴…にッ」
+				PRINTFORMW 「いやぁっ、あっ、アァァァァアアァっ♪」
+			ENDIF
+			CFLAG:8006 = 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				IF RAND:3 == 0
+					PRINTFORMW 「あっ、またイクっ、イクイグゥゥゥ！ うっ、ぅぅぅぅぅん♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「うっ、あぁ！ お、オマンコいっくぅぅぅ♪」
+				ELSE
+					PRINTFORMW 「ダメなのやばいのおっきいのきちゃういくいくい―――ッあぁぁぁぁぁぁっっっっ――――♪」
+				ENDIF
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORMW 「イギィ！ や、やめなさい♪ これ以上は…あっ、アアァァァァァァァァ♪」
+			ENDIF
+		ENDIF
+		CFLAG:5351 += 1
+		SIF NOWEX:1 >= 2
+			CFLAG:5251 += 1
+
+;-------------------------------------------------
+;A絶頂 CFLAG5007
+;-------------------------------------------------
+	ELSEIF NOWEX:2 > 0 && NOWEX:0 == 0 && NOWEX:1 == 0 && NOWEX:3 == 0
+		;初めて
+		IF CFLAG:5007 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORML 「あっ、お尻が、おしり、でっ」
+				PRINTFORMW 「嘘でしょ、お尻でだなんて……うぁぁぁああ♪」
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORML 「や、やめなさい……嘘、嘘よこんな――」
+				PRINTFORMW 「お尻でイクなんて……そんな変態みたいなあアァっああ――――――！！」
+			ENDIF
+				CFLAG:5007 = 1
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				IF RAND:3 == 0
+					PRINTFORML 「イギッ、いくっ！」
+					PRINTFORMW 「アナルで絶頂ぅ♪ アナルオルガでいっちゃうぅ♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「おし、りッ！ おっきいのきちゃう！ お尻でアクメきめちゃうのぉぉぉおぉ♪」
+				ELSE
+					PRINTFORML 「アッ、お尻ッ、ケツマンコ♪ キモチイイ♪ イクッ、イクイク♪」
+					PRINTFORMW 「ケツマンコでぇ♪ イクゥゥゥウウウゥゥン♪」 
+				ENDIF
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORMW 「お尻っ――嫌っ、い や ぁ、ああぁぁっっ!!」
+			ENDIF
+		ENDIF
+		CFLAG:5352 += 1
+		SIF NOWEX:2 >= 2
+			CFLAG:5352 += 1
+
+;-------------------------------------------------
+;B絶頂 CFLAG5008
+;-------------------------------------------------
+	ELSEIF NOWEX:3 > 0 && NOWEX:0 == 0 && NOWEX:1 == 0 && NOWEX:2 == 0
+		IF CFLAG:5008 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORML 「あっ、ん……おっぱい、あつぅ♪」
+				PRINTFORMW 「んっ、うくぅぅぅっ♪」
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORML 「離しなさいよ、このおっぱい魔神――」
+				PRINTFORMW 「ん、ふくぅーーッ！！」
+			ENDIF
+				CFLAG:5008 = 1
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				IF RAND:3 == 0
+					PRINTFORML 「あ♪ またおっぱい♪ おっぱいでビクビク感じちゃう♪」
+					PRINTFORMW 「んっ、んひぃぃぃん♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「お、おっぱい♪ おっぱい熱すぎて溶けちゃう！」
+					PRINTFORMW 「もっと、もっといじって……うぅうううぅぅ♪♪」
+				ELSE
+					PRINTFORMW 「はぁ……ん、おっぱい……で、イ――っくぅ♪」
+				ENDIF
+			;それ以外
+			ELSEIF TALENT:恋慕 == 0
+				PRINTFORMW 「さ、触るなってば――うう、んんんっっ！」 
+			ENDIF
+		ENDIF
+		CFLAG:5353 += 1
+		SIF NOWEX:3 >= 2
+			CFLAG:5353 += 1
+
+;-------------------------------------------------
+;四重絶頂
+;-------------------------------------------------
+	ELSEIF NOWEX:0 >= 1 && NOWEX:1 >= 1 && NOWEX:2 >= 1 && NOWEX: 3 >= 1
+		IF RAND:2 == 0
+			PRINTFORMW 「　　　　　　　　　　　　　　　　　　　　!!!」
+			PRINTFORML 体を大きくのけぞらせた幽香は、喉の底から声ともつかない叫びを上げる
+			PRINTFORMW 大きすぎる快感の波にに脳の処理が追いついていないのか、その視線はまるででたらめに動き回っていた……
+		ELSE
+			PRINTFORML 「――――ぁ――っ！ ――――ッ、が―――」
+			PRINTFORML 幽香は快感のあまり体を硬直させる
+			PRINTFORMW 快楽に快楽を重ねた体はすでにどこがイッているのかすら分かっていないだろう……
+		ENDIF
+		CFLAG:5350 += 1
+		SIF NOWEX:0 >= 2
+			CFLAG:5350 += 1
+		CFLAG:5351 += 1
+		SIF NOWEX:1 >= 2
+			CFLAG:5351 += 1
+		CFLAG:5352 += 1
+		SIF NOWEX:2 >= 2
+			CFLAG:5352 += 1
+		CFLAG:5353 += 1
+		SIF NOWEX:3 >= 2
+			CFLAG:5353 += 1
+
+;-------------------------------------------------
+;二重絶頂、三重絶頂
+;-------------------------------------------------
+	ELSE
+		IF RAND:4 == 0
+			PRINTFORML 「イクッ、イクイクイクイク♪ 体全部でイッちゃうゥゥ♪」
+			PRINTFORMW 幽香は体を弓反りにし、激しく絶頂に達したことを告げた
+		ELSEIF RAND:3 == 0
+			PRINTFORML 「あぁぁーー！ いくいく、っ、イックゥゥゥゥ♪」
+			PRINTFORMW 幽香は盛大に潮を噴き、快楽の頂きへ到達した
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「い、クッ♪ あ、あぁぁぁぁ♪」
+			PRINTFORMW ブルブルと体を小刻みに震わせ、幽香は絶頂に上り詰めた
+		ELSE
+			PRINTFORML 「アッ、いく……い……く、うぅぅぅ……！」
+			PRINTFORMW 幽香は体全体を震わせ、何度も絶頂に達しているようだった
+		ENDIF
+		SIF NOWEX:0 >= 1
+			CFLAG:5350 += 1
+		SIF NOWEX:0 >= 2
+			CFLAG:5350 += 1
+		SIF NOWEX:1 >= 1
+			CFLAG:5351 += 1
+		SIF NOWEX:1 >= 2
+			CFLAG:5351 += 1
+		SIF NOWEX:2 >= 1
+			CFLAG:5352 += 1
+		SIF NOWEX:2 >= 2
+			CFLAG:5352 += 1
+		SIF NOWEX:3 >= 1
+			CFLAG:5353 += 1
+		SIF NOWEX:3 >= 2
+			CFLAG:5353 += 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG:8009
+;-------------------------------------------------
+LOCAL = UP:20 + UP:21
+IF TFLAG:0 > 0 && CFLAG:8009 == 0
+	;恋慕かつ主人のセックスによる処女喪失
+	IF TALENT:恋慕 && TFLAG:2
+		;恋慕かつ反発刻印未取得
+		IF TALENT:恋慕 && LOCAL < 500
+			PRINTFORMW 
+		;恋慕かつ反発刻印取得
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+	ENDIF
+	CFLAG:8009 = 1
+ENDIF
+
+;-------------------------------------------------
+;セックスで射精させた CFLAG:8010 CFLAG:8011
+;-------------------------------------------------
+;アナルセックス
+IF TFLAG:12 > 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF RAND:3 == 0
+			PRINTFORML 「あっはぁぁ……でてるぅ……」
+			PRINTFORMW 「お尻の中……%CALLNAME:PLAYER%ので満たされてる……♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「んああぁぁぁ♪ %CALLNAME:PLAYER%のザーメンが私のお腹にたまってる、ぅ♪」
+		ELSE
+			PRINTFORMW 「すご、い……ケツマンコの中で…オチンチンがビクビク、っ、って……っザーメン吐き出してるぅ♪」
+		ENDIF
+		CALL K34_A
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「う、は……あ……ど、う？ 私のおしりの穴……気持よかった？」
+		CALL K34_A
+	;それ以外
+	ELSE
+		PRINTFORMW 「ぐ……おしりの中に……気持ち悪いのよ、この変態……ッ」
+		CALL K34_A
+	ENDIF
+
+;それ以外（膣内射精）
+ELSEIF TFLAG:11 > 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		IF RAND:3 == 0
+			PRINTFORMW 「あはぁっ♪ れてる……私の膣内<ナカ>に……%CALLNAME:PLAYER%のが、いっぱいぃ♪」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ビュクビュクしてる、ぅ……私の膣内<ナカ>に叩きつけられてるぅん♪♪」
+		ELSE
+			PRINTFORML 「う、いっぱい出てる……そんなに気持よかったぁ？」
+			PRINTFORMW 幽香は肩で息をしながら%CALLNAME:PLAYER%に聞いた
+		ENDIF
+		CALL K34_V
+		CFLAG:8010 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:屈服刻印 == 3
+		PRINTFORMW 「く……は、ぁ……ビュクビュク出てる……%CALLNAME:PLAYER%の、……ザー……メン……」
+		IF TALENT:妊娠 == 0
+			PRINTFORMW 幽香はナニカを恐れるように自身の腹を……正確には子宮のあるあたりを撫でていた
+		ELSEIF TALENT:妊娠 == 1
+			PRINTFORMW 「ふ、ふふ……どうせもう……お腹には子どもがいるんだもの、ね……心配なんていらな、いのよ……ね……」
+		ENDIF
+		CALL K34_V
+		CFLAG:8010 = 3
+	;それ以外
+	ELSE
+		PRINTFORML 「く、うぅぅッ―――この、ゲスがぁ―――」
+		PRINTFORMW 幽香はギラギラとした眼で%CALLNAME:PLAYER%を睨んでいる
+		CALL K34_V
+		CFLAG:8010 = 2
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG:8012
+;-------------------------------------------------
+IF TFLAG:19 > 0 && CFLAG:5340 == 1
+	;奉仕精神Lv5
+	IF ABL:奉仕精神 >= 5
+		PRINTFORML 「ん……ふふ、いっぱい出たわね……ほら、手がベトベトよ♪」
+		PRINTFORMW 幽香は糸を引く精液を見せつけるように指を開いた
+		CFLAG:8012 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORML 「ん、ビクビクって出たわね……そんなに気持よかった？」
+		PRINTFORMW 幽香は射精し続ける肉棒を刺激しながら%CALLNAME:PLAYER%に尋ねた
+		CFLAG:8012 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「うぇ……あんたの精液で手が汚れちゃった」
+		PRINTFORMW 「消毒液とかないの？ もしくは熱湯でもいいわ」
+		CFLAG:8012 = 1
+	ENDIF
+	CFLAG:5361 += 1
+	SIF TFLAG:19 == 2
+		CFLAG:5361 += 1
+ENDIF
+
+;-------------------------------------------------
+;素股で射精させた CFLAG:8015
+;-------------------------------------------------
+IF TFLAG:20 > 0 && CFLAG:5340 == 1
+	;黒タイツ履いている
+	IF CFLAG:5661 == 1
+		PRINTFORML 「……あは、ブピュブピュ出てる……タイツで擦られて、お腹まで届いてる……♪」
+		PRINTFORMW 「そんなによかったの、%CALLNAME:PLAYER%……いえ、ＨＥＮＴＡＩさん？」
+		CFLAG:8015 = 4
+		CFLAG:5662 += 1
+		SIF TFLAG:20 == 2
+			CFLAG:5662 += 1
+	ELSEIF CFLAG:5661 == 0
+		;奉仕精神Lv5
+		IF ABL:奉仕精神 >= 5
+			PRINTFORMW 「あは……どんだけ精液垂れ流してんのよこのＨＥＮＴＡＩ♪」
+			CFLAG:8015 = 3
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「なぁにぃ？ 私のフトモモ、そんなに気持良かった？」
+			CFLAG:8015 = 2
+		;それ以外
+		ELSE
+			PRINTFORMW 「…………キモチワル」
+			CFLAG:8015 = 1
+		ENDIF
+	ENDIF
+	CFLAG:5361 += 1
+	SIF TFLAG:20 == 2
+		CFLAG:5361 += 1
+ENDIF
+
+
+;-------------------------------------------------
+;足で射精させた CFLAG:8019
+;-------------------------------------------------
+IF TFLAG:24 > 0 && CFLAG:5340 == 1
+	;黒タイツ履いている
+	IF CFLAG:5661 == 1
+		PRINTFORML 「あーあ、こんなに出して……タイツがドロドロじゃない」
+		PRINTFORMW 「こんな悪いチンポは、もっと搾り出してあげないと……ね♪」
+		CFLAG:8019 = 4
+		CFLAG:5662 += 1
+		SIF TFLAG:20 == 2
+			CFLAG:5662 += 1
+	ELSEIF CFLAG:5661 == 0
+		;奉仕精神Lv5
+		IF ABL:奉仕精神 >= 5
+			PRINTFORML 「アハハハ、ねぇこんなのが気持ちいいの!?」
+			PRINTFORMW 「私の足でビクビク射精させて、あはははははは♪」
+			CFLAG:8019 = 3
+		;奉仕精神Lv3
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んッ……ふふ、足がドロドロじゃない……」
+			CFLAG:8019 = 2
+		;それ以外
+		ELSE
+			PRINTFORML 「…………」
+			PRINTFORMW 幽香は気持ち悪そうに精液の付着した足を眺めていた……
+			CFLAG:8019 = 1
+		ENDIF
+	ENDIF
+	CFLAG:5361 += 1
+	SIF TFLAG:24 == 2
+		CFLAG:5361 += 1
+ENDIF
+
+;-------------------------------------------------
+;キスで射精させた CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:26 > 0 && CFLAG:5340 == 1
+	;奉仕精神Lv5
+	IF ABL:奉仕精神 >= 5
+		PRINTFORML 「ん、ふふ……キスなんかで出しちゃうなんて……」
+		PRINTFORMW 「この……そーろぉ♪」
+		CFLAG:8014 = 3
+	;奉仕精神Lv3
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「もう……なにキスなんかでビュクビュク射精しちゃってんの？」
+		CFLAG:8014 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「……キスの感触と精液の匂い」
+		PRINTFORMW 「気持ち悪さのコラボレーションね」
+		CFLAG:8014 = 1
+	ENDIF
+	CFLAG:5361 += 1
+	SIF TFLAG:26 == 2
+		CFLAG:5361 += 1
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:15 > 0 && CFLAG:5340 == 1
+		;精液中毒Lv3
+		IF ABL:精液中毒 >= 3
+			IF TALENT:恋慕 == 1 && (TALENT:精愛味覚 == 1 || ABL:精液中毒 >= 5)
+				IF RAND:3 == 0
+					PRINTFORML 「んぐ……ん、ぷ……ハァ……♪」
+					PRINTFORML 「は…あ…あ……ヤバ」
+					PRINTFORMW 「ザーメンごっくんしただけでイッちゃいそう……♪」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「ゴクッ……ゴ―クッ―ン……」
+					PRINTFORMW 幽香の喉が上下するごとに、体全体がぴくぴくと震えている……
+				ELSE
+					PRINTFORML 「んヂュ――んぶっ……ぷは」
+					PRINTFORMW 「ふふ、美味しいザーメンごちそうさま♪」
+				ENDIF
+			ELSEIF TALENT:精愛味覚 == 0 && TALENT:恋慕 == 1
+				IF RAND:3 == 0
+					PRINTFORML 「んく……ごく……ぷっ、はぁ……」
+					PRINTFORMW 「%CALLNAME:PLAYER%のザーメン……美味しい……ん、チュ♪」
+					PRINTFORMW 幽香は唇の端からこぼれた精液を舐めとった
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「ちゅぷ……ん、ぶ――クチュ……」
+					PRINTFORML 幽香は精液をこぼさないようにと深く%CALLNAME:PLAYER%のペニスをくわえ込んでいる
+					PRINTFORMW そしてようやく%CALLNAME:PLAYER%の射精が終わると、口の中の精液を喉をならして飲み干した
+				ELSE
+					PRINTFORML 「ちゅるる……ジュズズゾゾゾ……クプっ」
+					PRINTFORMW 幽香は鈴口を吸い上げるように精液を絞りとっている
+				ENDIF
+			ELSE
+				PRINTFORML 「んぶ――、じゅ……ん」
+				PRINTFORMW 「はぁ、はぁ……もう、出しすぎ……よ……」
+			ENDIF
+			CFLAG:8013 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 「ん……んくッ……」
+			PRINTFORMW 「……うへぇ……飲めたものじゃないわね、やっぱり」
+			CFLAG:8013 = 2
+		;それ以外
+		ELSE
+			PRINTFORML 「…………ペッ」
+			PRINTFORMW 幽香は口の中の精液を吐き出した
+			CFLAG:8013 = 1
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸で射精させた CFLAG:8013 CFLAG:8014
+;-------------------------------------------------
+IF TFLAG:16 > 0 && CFLAG:5340 == 1
+		;奉仕精神Lv5
+		IF ABL:奉仕精神 >= 5
+			IF RAND:3 == 0
+				PRINTFORML 「わ……ビクビク、跳ねてる」
+				PRINTFORMW 幽香の胸でビクビクと跳ねる肉棒を、幽香は嬉しそうに眺めていた
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ん、おっぱいの間に……真っ白な精液溜りできちゃった」
+				PRINTFORMW 幽香は谷間から噴水のように噴き出す精液を愛おしげに胸で愛撫する
+			ELSE
+				PRINTFORML 「んくっ……ふふ、おっぱいがドロドロ……♪」
+				PRINTFORML 幽香はチンポを挟んだ胸を強く圧迫し、最後の一滴まで搾り取ろうとしている
+				PRINTFORMW そして胸に広がった精液を、さも美味しそうに舐めとった……
+			ENDIF
+			CFLAG:8014 = 3
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 「ジュプッ、んぶぶ……ぷ、はぁ……♪」
+			PRINTFORMW 幽香は精液を吐き出したチンポを、掃除するように舐めまわした
+			CFLAG:8014 = 2
+		;それ以外
+		ELSE
+			PRINTFORML 「ふん……%CALLNAME:PLAYER%の精液のせいで私のおっぱいが汚れちゃったわ。どうしてくれるのよ？」
+			PRINTFORMW 幽香は忌々しそうに胸を垂れていく精液を睨んでいた
+			CFLAG:8014 = 1
+		ENDIF
+ENDIF
+	
+;口内射精(合計)カウント
+	SIF TFLAG:15 > 0
+		CFLAG:5362 += 1
+	SIF TFLAG:15 == 2
+		CFLAG:5362 += 1
+		
+;主人射精カウント
+	IF ASSIPLAY == 0
+		CFLAG:5365 += 1
+		SIF TFLAG:15 == 2
+			CFLAG:5365 += 1
+;助手射精カウント
+	ELSE
+		CFLAG:5368 += 1
+		SIF TFLAG:15 == 2
+			CFLAG:5368 += 1
+	ENDIF
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG:8015
+;-------------------------------------------------
+IF TFLAG:30 > 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8015 == 0
+		SIF CFLAG:5661 == 1
+			PRINTFORML 幽香はドクドクとタイツの中に精液を吐き出した
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORML 「あぁぁ、いクイク♪ チンポでイクッ！」
+			PRINTFORML 「私のチンポがチンポ汁出してるッ♪」
+			PRINTFORMW 「女の子のはずなのに精液出して喜んでるうぅぅぅ♪」
+		;それ以外
+		ELSE
+			PRINTFORML 「アアァッァアァッァ!!」
+			PRINTFORMW 「チンポからッ……精子、が……ァぁ」
+		ENDIF
+		CFLAG:8015 = 1
+		CFLAG:5355 += 1
+		SIF TFLAG:30 == 2
+			CFLAG:5355 += 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕
+			SIF CFLAG:5661 == 1
+				PRINTFORML 幽香はタイツの中に大量のとザーメンを放出した
+			IF RAND:4 == 0
+				PRINTFORML 「アアァッァアァッァ!!」
+				PRINTFORMW 「おチンポ出るッ、せーしドクドク射精するぅうぅぅぅ♪♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「あっはぁぁぁ♪」
+				PRINTFORML 「ドロリ濃厚ゆうかりんチンポスペシャル出まくってるぅううぅ♪」
+				PRINTFORMW 「幽香の♪ 幽香のおチンポおかしくなっちゃうゥ♪」
+				SIF TFLAG:30 == 2
+					PRINTFORMW 「ってか壊れたァ♪ 私のおチンポブッ壊れたァアァァァァ♪♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あぁぁ、いクイク♪ チンポでイクッ！」
+				PRINTFORML 「私のチンポがチンポ汁出してるッ♪」
+				PRINTFORMW 「女の子のはずなのに精液出して喜んでるうぅぅぅ♪」 
+			ELSE
+				PRINTFORMW 
+			ENDIF
+			CFLAG:8015 = 3
+		;それ以外
+		ELSE
+			IF RAND:4 == 0
+				PRINTFORML 「いやぁぁぁ！」
+				PRINTFORMW 「精液なんて出したくないっ、やめてぇぇぇ！ うはぁっぁぁぁぁ♪」
+			ELSEIF RAND:3 == 0
+				PRINTFORML 「ぎっ、イィィイィィ！」
+				PRINTFORMW 「やめてやめてやめろやめろ！ これいじょうおチンポいじったラぁああああぁ♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「あぁぁ、いっちゃう、いやぁ！」
+				PRINTFORML 「チンポが、喜んじゃってる!?」
+				PRINTFORMW 「女の子のはずなのに精液出して喜んでるうぅぅぅ♪」
+			ELSE
+				PRINTFORMW 
+			ENDIF
+			CFLAG:8015 = 2
+		ENDIF
+		CFLAG:5355 += 1
+		SIF TFLAG:30 == 2
+			CFLAG:5355 += 1
+		RETURN 0
+	ENDIF
+
+ENDIF
+
+;-------------------------------------------------
+;空射精した　　CFLAG:8021
+;-------------------------------------------------
+IF NOWEX:40 > 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8021 == 0
+		IF ABL:射精中毒 >= 3
+			PRINTFORML 「いっ、また射精しちゃ―――え、えッ？ 出ない、オチンチン射精できないぃ!?!?」
+			PRINTFORML 根本で射精を抑えられた幽香の肉棒は赤黒く充血し、パンパンに膨らんでいた
+			PRINTFORMW 「射精ッ！ 射精させて！ イッたのにオチンチンでないなんて……あ、たまオカシクなるぅぅ！」
+		ELSE
+			PRINTFORML 「あ――ま、たイクっ――ぅ、でて……ない……？」
+			PRINTFORML 幽香の股間では絶頂したはずなのに射精が出来なかったことチンポが不満を訴えるようにビクビクと震えている
+			PRINTFORMW 「く―――ぅ……切ない……なん、でぇッ」
+		ENDIF
+		CFLAG:8021 = 1
+	ELSE
+		IF ABL:射精中毒 >= 3
+			IF RAND:3 == 0
+				PRINTFORML 「いいぃぎぁぁぁぁぁぁぁぁ!!!! お願いッ、お願いィィ！！ 射精！チンポ射精させてへぇぇぇ!?」
+				PRINTFORML 射精することを禁じられた幽香は、半狂乱になってわめき散らしている
+				PRINTFORMW 肉棒に至ってはこのままでは破裂するのではと危惧するほどに膨らんでいた
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「チンポっ！ チンポォ!! なんで出ないの!?　出させて、なんでもしますからっ、出させてくださいぃぃ！！」
+				PRINTFORML 幽香は%CALLNAME:PLAYER%の足にすがりついて懇願している
+				PRINTFORMW もはや、尊厳やプライドなどにこだわることも出来ないようだった
+			ELSE
+				PRINTFORML 「したいぃ……おチンポ、ビュルビュルしたいぃぃ……ッ」
+				PRINTFORMW 幽香は赤黒く張り詰めたチンポに涙をためた視線を向けていた
+			ENDIF
+		ELSE
+			PRINTFORML 「ま……たッ……射精させて、くれないならッ――いじらないで、ぇ！」
+			PRINTFORMW 幽香は空射精するチンポの震えに合わせて体全体を痙攣させていた
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG:8016
+;-------------------------------------------------
+IF TFLAG:31 > 0 && CFLAG:5340 == 1
+	;初めて
+	IF CFLAG:8016 == 0
+		;従順Lv4以上
+		IF ABL:従順 >= 4
+			PRINTFORMW 「う、うそ……おっぱい出てる……？」
+		;それ以外
+		ELSE
+			PRINTFORML 「母乳……ま、まさかっ!?」
+			PRINTFORMW 幽香は血の気の失せた顔で%CALLNAME:MASTER%を睨んだ
+		ENDIF
+		CFLAG:8016 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;従順Lv4以上
+		IF ABL:従順 >= 4
+			PRINTFORMW 「んっ、あは……私のおっぱい噴き出てるゥ♪」
+			CFLAG:8016 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「なんで……母乳なんか……」
+			CFLAG:8016 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+ENDIF
+
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_34_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42
+	RETURN 0
+;睡眠・失神時に口上をスキップする（OFFだと寝言が凄いことに）
+SIF EQUIP:14 || TFLAG:899 > 0 || TFLAG:898 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K34_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K34_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG:8096
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:8096 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「う――ギ ィ――あぁぁあアああぁァぁああああ!!!?」
+		PRINTFORMW 「いた、い……いたい……痛いいぃぃ……」
+	ELSE
+		PRINTFORMW 「がっ―――い、ぐ――」
+		PRINTFORML かつてないほどの痛みを与えたというのに、幽香は歯を食いしばってほとんど悲鳴をあげない
+		PRINTFORMW 「なめ……んじゃない、わよ……ッ！ あんたごとき、が……あぁ！」
+		PRINTFORML 今ではそこらの少女と同じような脆さだというのに……
+		PRINTFORMW 幽香のその強固な精神に、%CALLNAME:PLAYER%は思わず称賛を送りたくなった
+	ENDIF
+	CFLAG:8096 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG:8097
+;-------------------------------------------------
+IF TFLAG:41 == 3 && CFLAG:8097 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ひぃ♪ い、きっ！ きもひよす、ぎてぇ！ 息出来ないいぃいいぃぃ♪♪」
+		PRINTFORMW あまりの快楽に息を吸うという当然なこともできないらしい
+		PRINTFORMW %CALLNAME:MASTER%は苦笑すると、幽香にキスをして息を吹きこんであげた
+		PRINTFORML 
+		PRINTFORMW キス経験＋１
+		EXP:キス経験 += 1
+	ELSE
+		PRINTFORMW 「いっ、いああっぁぁぁぁぁ♪♪」
+		PRINTFORMW 突然押し寄せた快楽の波紋に、幽香は喉を開いて嬌声を上げてしまった
+	ENDIF
+	CFLAG:8097 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG:8098
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:8098 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「う……ふふ……♪ こんなことされたら……もう、%CALLNAME:MASTER%のものになっちゃうしかないじゃない……♪」
+		PRINTFORMW 激しすぎる調教に、幽香の中で%CALLNAME:MASTER%に反抗しようとする心は木っ端微塵に砕け散ったようだ
+	ELSE
+		PRINTFORML 「ひ――く、う――」
+		PRINTFORMW ふ、と幽香の瞳から一粒の涙がこぼれ落ちる
+		PRINTFORML 「ふ……ぐ……う、うぅ……」
+		PRINTFORMW 小さな粒は次の粒を呼び……ポロポロと止まない雨のように頬を流れ落ちた
+		PRINTFORML 「な、んで……涙っ、止まんないの……」
+		PRINTFORML 幽香の中で%CALLNAME:MASTER%に対抗しようとする気持ちが崩れてしまったらしい
+		PRINTFORMW %CALLNAME:MASTER%は涙を流す幽香をこれからどう料理してやろうかと思いを馳せるのだった……
+	ENDIF
+	CFLAG:8098 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG:8099
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:8099 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「ふふ……なんでかしらね？」
+		PRINTFORMW 幽香は調教の合間に、顔中に笑みを浮かべながら%CALLNAME:MASTER%を睨む
+		PRINTFORML 「私の中にはたしかに%CALLNAME:MASTER%に対する恋心があるというのに……もう一方で%CALLNAME:MASTER%に対する殺意まで芽生えてる」
+		PRINTFORMW 「不思議ね。あぁ不思議……これが『殺したいほどに愛おしい』ってことなのかしら……？」
+	ELSE
+		PRINTFORMW 「…………」
+		SETCOLOR 210,0,0
+		PRINTFORMW ------------ゾクリ------------
+		RESETCOLOR
+		PRINTFORML 突然感じた悪寒に、%CALLNAME:MASTER%はビクリと背筋を震わせる
+		PRINTFORMW 目の前……自分の目の前にいる少女から溢れる圧倒的な気配……圧力を感じるほどに濃厚な殺意
+		PRINTFORML 今はただの少女でしかないはずの幽香は、刃のごとき鋭さをもった眼で%CALLNAME:MASTER%を睨む
+		PRINTFORMW 「…………」
+		PRINTFORML 言葉は口にしない。口に出すほど安くはないとでも言うように
+		PRINTFORML しかし、%CALLNAME:MASTER%には確実に伝わっていた
+		PRINTFORMW 何があってもコロシテヤルという、彼女の決意が……
+	ENDIF
+	CFLAG:8099 = 1
+ENDIF
+
+;-------------------------------------------------
+;恥辱刻印Lv3取得 CFLAG:8100
+;-------------------------------------------------
+IF TFLAG:46 == 3 && CFLAG:8100 == 0 && CFLAG:5340 == 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORML 「やぁ…ん♪ はぁ、ぁ……は……」
+		PRINTFORMW 幽香は自身の感じる羞恥心に苛まれ、悶えるように体を掻き抱いた
+	ELSE
+		PRINTFORML 「――――ッ」
+		PRINTFORMW ブルブルときつく唇を噛み締め、幽香は赤く染まった顔で%CALLNAME:MASTER%を睨む
+		PRINTFORML 「こん、なので……こんなので勝った気にならないでよね！」
+		PRINTFORMW さすがは最強の一角といったところか。これしきでは彼女の心を折ることは難しいようだ
+	ENDIF
+	CFLAG:8100 = 1
+ENDIF
+
+;-----------------------------------------------------
+;腸内射精カウント
+;------------------------------------------------------
+@K34_A
+CFLAG:5360 += 1
+SIF TFLAG:12 == 2
+	CFLAG:5360 += 1
+IF ASSIPLAY == 0
+	CFLAG:5364 += 1
+	SIF TFLAG:12 == 2
+		CFLAG:5364 += 1
+ELSE
+	CFLAG:5367 += 1
+	SIF TFLAG:12 == 2
+		CFLAG:5367 += 1
+ENDIF
+
+;---------------------------------------------------------
+;膣内射精カウント
+;----------------------------------------------------------
+@K34_V
+CFLAG:5359 += 1
+SIF TFLAG:11 == 2
+	CFLAG:5359 += 1
+IF ASSIPLAY == 0
+	CFLAG:5363 += 1
+	SIF TFLAG:11 == 2
+		CFLAG:5363 += 1
+ELSE
+	CFLAG:5366 += 1
+	SIF TFLAG:11 == 2
+		CFLAG:5366 += 1
+ENDIF
+
+;---------------------------------------------------
+;体外射精カウント
+;---------------------------------------------------
+@K34_SHASEI
+
+SIF TFLAG:35 > 0
+	CFLAG:5361 += 1
+SIF TFLAG:35 == 2
+	CFLAG:5361 += 1
+SIF TFLAG:36 > 0
+	CFLAG:5361 += 1
+SIF TFLAG:36 == 2
+	CFLAG:5361 += 1
+
+;-------------------------------------------------
+;調教時に一時的に使用したフラグのリセット
+;-------------------------------------------------
+;前回長敬寺のフラグリセット
+@K34_RESET_CFLAG
+CFLAG:5350 = 0
+CFLAG:5351 = 0
+CFLAG:5352 = 0
+CFLAG:5353 = 0
+CFLAG:5354 = 0
+CFLAG:5355 = 0
+CFLAG:5356 = 0
+CFLAG:5359 = 0
+CFLAG:5360 = 0
+CFLAG:5361 = 0
+CFLAG:5362 = 0
+CFLAG:5363 = 0
+CFLAG:5364 = 0
+CFLAG:5365 = 0
+CFLAG:5366 = 0
+CFLAG:5367 = 0
+CFLAG:5368 = 0
+CFLAG:5660 = 0
+CFLAG:5661 = 0
+CFLAG:5662 = 0
+CFLAG:5663 = 0
+
+;-------------------------------------------------
+;イベント口上集 FLAG(TFLAG200の中身＋8100)
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_BEFORE
+;USCモードでない時はイベント口上をスキップ
+SIF CFLAG:5340 != 1
+	RESULT = 1
+
+;-------------------------------------------------
+;売却
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;恋慕+反発刻印Lv3未満
+	IF TALENT:恋慕 && MARK:反発刻印 < 3
+		PRINTFORMW 「……へぇ」
+		PRINTFORMW 幽香を売却するという旨を告げても、彼女は特に反応らしい反応はしなかった
+		PRINTFORML 「あんまり驚いてるように見えないって？ それはそうよ、だって予想はついていたんだもの」
+		PRINTFORMW ------ソウジャナイ、ウケトメキレテイナイダケ------
+		PRINTFORML 「あ～あ、%CALLNAME:MASTER%との生活も……もう終わりかぁ……」
+		PRINTFORMW ------ソンナノイヤ…アナタトイッショジャナイナンテ、タエラレナイ------
+		PRINTFORML 幽香は淋しげな瞳で、惜しむように部屋を見渡す
+		PRINTFORMW ------そんな姿に、心がズクリと鈍い痛みを叫ぶ------
+		PRINTFORML 「……うん、大丈夫。それじゃあ、行くわね」
+		PRINTFORMW ------そうじゃない。そうじゃないだろう------
+		PRINTFORML 部屋の入口で待機する奴隷商人の方へ、幽香は歩いて行く
+		PRINTFORMW ------行きたくないと、自分の元に残りたいとなぜ泣かない------
+		PRINTFORML 幽香は目尻に輝く何かを浮かべつつも、決して泣くことはしない
+		PRINTFORMW ------キメタノダ。アノヒトノマエデハ、キレイナ『花』デイルッテ------
+		PRINTFORML 「……ッ。それ…じゃぁね%CALLNAME:MASTER%。今まで楽しかったわよ？」
+		PRINTFORML ------ミットモナク、ナキワメイタリナンカシタクナイ------
+		PRINTFORMW ------幽香が望むと言えば…後押しさえしてくれるなら------
+		PRINTFORML 　　　　　　サヨウナラ
+		PRINTFORML ------------バタン------------
+		PRINTFORML 　　　　　　 イクナ!
+		PRINTFORMW 重苦しい音を残し、部屋の扉は閉ざされる
+		PRINTFORMW まるで交わることのなくなった二人の関係を表すかのように
+		PRINTFORMW 調教師としての最後のプライドと、『花』としてのせめてもの矜持
+		PRINTFORMW ２つの線は交差しそうなほど近くにありながら……決して交わることはなかった
+		PRINTFORMW お互いがほんの少し素直になっていればきっと……きっと、結末は変わったのだろう
+		PRINTFORMW だがそれも、今では絵空事
+		PRINTFORMW 調教師は奴隷を売り飛ばし、奴隷はそれを受け入れた
+		PRINTFORMW あとに残るのは、ただそれだけ
+		PRINTFORMW どこにも救いのない、赦しのない……最低最悪のエンドロールだけだった……
+	;反発刻印Lv3
+	ELSEIF MARK:反発刻印 == 3
+		PRINTFORML 「えぇ、いいわ。%CALLNAME:MASTER%から解放されるというなら、ソレ以下の地獄なんてありえないでしょうから」
+		PRINTFORMW 幽香はギロッと%CALLNAME:MASTER%を睨みつけ……すぐに視線を外して奴隷商人の元へ歩いて行く
+		PRINTFORML まるで、%CALLNAME:MASTER%にはもう価値がないとでも言うように
+		PRINTFORMW 「------------あぁ、忘れるところだった」
+		PRINTFORML しかし部屋を出て行く間際、立ち止まってこちらを流し見、そして言った
+		PRINTFORMW 「陳腐なセリフだけど言っておくわ……地獄へ落ちろ、クソ野郎」
+		PRINTFORMW たったそれだけのセリフに込められるだけの悪意と憎悪を込めて……
+	;それ以外
+	ELSE
+		PRINTFORMW 「ふーん、もう私には飽きたってわけ？」
+		PRINTFORMW 売却の旨を伝えると、幽香はおもしろがるような表情を浮かべた
+		PRINTFORMW 「それで%CALLNAME:MASTER%に飽きられた私は捨てるように売られて、また別のクズの元へ買われていくわけね」
+		PRINTFORMW 「それで、それを繰り返して私はいつか本当の意味で『棄てられる』と」
+		PRINTFORMW 幽香は愉快そうにケラケラと笑う。まるで、楽しいオモチャでも与えられたかのように
+		PRINTFORMW 「……私は絶対に覚えていてあげるわ。どれだけのクズに犯されて、玩具にされようとも」
+		PRINTFORMW 「私を最初に買った、%CALLNAME:MASTER%のことを。私は、絶対に忘れてあげない」
+		PRINTFORMW 「だから楽しみにしてなさい？ まかり間違って私が解放された日なんかには……いの一番に駆けつけて□してあげるから」
+		PRINTFORMW クスクスと笑いながら奴隷商に連れていかれる幽香
+		PRINTFORMW 彼女が解放されることなど、ありはしない。ありはしないと思うが……
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;弁当作成 CFLAG8211
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE400
+IF 1
+	;初めて
+	IF CFLAG:8211 == 0
+		;恋慕
+		IF TALENT:恋慕
+			PRINTFORML 「手作り料理を作れって？ 別にいいけど……あんまり期待はしないでちょうだいよ？」
+			PRINTFORMW 「でも、まぁ……練習しろっていうなら、やぶさかでもないんだけど……」
+			PRINTFORMW 幽香はぶつぶつ何かをつぶやきながらも台所にたった
+		;それ以外
+		ELSE
+			PRINTFORML 「飯を作れ？ この私に？」
+			PRINTFORMW 「ハッ、冗談は顔だけに……え、本気なの？」
+			PRINTFORML 幽香は眼を丸くして変なものでも見るかのように%CALLNAME:MASTER%を見た
+			PRINTFORMW 「……毒とか盛られるって心配しないわけ？」
+		ENDIF
+		CFLAG:8211 = 1
+	ELSE
+		;相愛一回目
+		IF TALENT:相愛 && CFLAG:8211 < 6
+			PRINTFORML 「えっ、ご飯作って欲しい？」
+			PRINTFORML 「……うん、いいわよ……『ア・ナ・タ』♪」
+			PRINTFORMW 「な、なんちゃって！」
+			PRINTFORMW 幽香は恥ずかしさを払うように腕を振り回した
+			CFLAG:8211 = 6
+			
+		ELSEIF TALENT:相愛 && ABL:料理技能 >= 3 
+			IF RAND:3 == 0
+				PRINTFORML 「これっくらいの、お弁当箱に♪ おにぎり、おにぎりちょっと詰めて♪」
+				PRINTFORMW 「きざみ生姜にごま塩ふって♪」
+				PRINTFORML 「ニンジンさん、さくらんぼさん、しいたけさん、ごぼうさん♪」
+				PRINTFORML 「あなのあいたレンコンさん♪ すじのとぉったふ～き……え？」
+				PRINTFORMW 「あ、あら？ もしかして口に出してたっ!?」
+				PRINTFORMW %CALLNAME:MASTER%が頷くと、幽香は顔を真赤にしてうつむいてしまった
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ア～ナ～タ♪ ふふ、なんちゃって♪」
+				PRINTFORMW 「ご飯でしょ？ わかってるからちょっと待っててねぇ♪」
+			ELSE
+				PRINTFORML 「んー、今日は何が食べたい？」
+				PRINTFORML 幽香の作る料理なら何でも(美味しいから)いい
+				PRINTFORMW 「もう……何でもいい、が一番困るんだからね？ ……ふふ♪」
+			ENDIF
+			CFLAG:8211 = 8
+			
+		ELSEIF TALENT:相愛
+			PRINTFORML 「愛妻弁当……ってやつね……」
+			PRINTFORMW 「……あの、その……あんまり美味しくないかもしれないけど……ごめんなさい？」
+			CFLAG:8211 = 7
+			
+		ELSEIF TALENT:恋慕 && ABL:料理技能 >= 3
+			IF RAND:3 == 0
+				PRINTFORML 「私のご飯食べたいの？ ふふ、わかったわ。それじゃあちょっと待っててね♪」
+				PRINTFORMW 幽香はウィンクをひとつ寄越すと、スキップでもしそうな浮かれ具合で台所へ向かった
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「んー……ん？ え、何か作って欲しいって？」
+				PRINTFORMW %CALLNAME:MASTER%の頼みを聞いた幽香はクスクスと笑う
+				PRINTFORML 「あぁ、いえ……いま、今度料理を作るとしたら献立はなにがいいかなって考えてたとこなのよ」
+				PRINTFORMW 「早速役にたったわね♪」
+			ELSE
+				PRINTFORML 「ご飯？ 食べたいの？」
+				PRINTFORML %CALLNAME:MASTER%が頷くと幽香はにっこりと笑みを浮かべて立ち上がった
+				PRINTFORMW 「はいはい、それじゃあ%CALLNAME:MASTER%のために美味しいものでも作るとします、か」
+			ENDIF
+			CFLAG:8211 = 5
+
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「りょ、料理ね……前も作ったけど、そんなに美味しくはないわよ？」
+			PRINTFORML 「……ふぅん、私『が』作るからいい……か」
+			PRINTFORMW 「ふふ、そんなこと言われたら頑張ってでも美味しいのを作りたくなっちゃうじゃない」
+			CFLAG:8211 = 4
+
+		ELSEIF ABL:料理技能 >= 3
+			PRINTFORML 「料理を作ってほしい……ねぇ」
+			PRINTFORMW 「……ま、いいわ。期待はしないでよ？」
+			PRINTFORML 幽香は面倒くさそうに言って台所へ向かう
+			PRINTFORMW %CALLNAME:MASTER%に背を向けたその口元は、歪な笑みで染まっていた
+			CFLAG:8211 = 3
+
+		ELSE
+			PRINTFORML 「料理を作ってくれって……またぁ？」
+			PRINTFORML 「この前のであんまり上手じゃないってわからなかったのかしら……」
+			PRINTFORMW 幽香はイライラとした動作で料理を作り始めた
+			CFLAG:8211 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;コマンド実行拒否(SELECTCOMで分岐)
+;-------------------------------------------------
+@KOJO_34_DENIAL_MESSAGE, ARG
+IF CFLAG:5340 == 1
+	IF TALENT:恋慕 == 1
+		PRINTFORML 「イ・ヤ♪」
+		PRINTFORMW 幽香は笑顔で%CALLNAME:PLAYER%の命令を拒絶した
+		PRINTFORMW 「%CALLNAME:MASTER%に愛されるためだけに咲く……とは言ったけど……それでも『花』としての矜持というものも存在するの」
+	ELSEIF TALENT:恋慕 == 0
+		IF RAND:3 == 0
+			PRINTFORMW 「はぁ？ なんで私がそんなことしないといけないわけ？ 冗談じゃないわ」
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「……イヤに決まってるでしょう？」
+			PRINTFORMW 「どうしてもさせたいと言うならさっさと私を陥落させてみなさい」
+		ELSE
+			PRINTFORML 「ハァ？」
+			PRINTFORMW 「あはは、%CALLNAME:PLAYER%って冗談の才能があるのねぇ」
+			PRINTFORMW そういう幽香の瞳は、まったくと言っていいほど笑っていなかった……
+		ENDIF
+	ENDIF
+	CFLAG:8101 = 1
+ENDIF
+
+;-------------------------------------------------
+;主人の料理を食べる CFLAG8216
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE431
+IF 1
+	;初めて
+	IF CFLAG:8216 == 0
+		;主人の調理技能3以上
+		IF ABL:MASTER:70 > 2
+			IF TALENT:恋慕
+				PRINTFORML 「！ お、美味しいじゃない……」
+				PRINTFORMW （これは負けていられない、わね……）
+			ELSE
+				PRINTFORML 「……くっ、不味かったら吐き出してやろうかと思ったのに……」
+				PRINTFORMW 「なんで美味しいわけ？」
+			ENDIF
+		;反発ありで調理技能0
+		ELSEIF ABL:MASTER:70 < 1 && MARK:9 > 0
+			IF TALENT:恋慕 && TALENT:相愛 == 0
+				PRINTFORML 「……うん、おい、しい……わ、よ？」
+				PRINTFORMW 幽香は苦笑しながら言うが、ムリをしているのははっきりと分かってしまった……
+			ELSE
+				PRINTFORML 「マズイ」
+				PRINTFORMW 幽香は一言だけ呟くと、それ以上箸をつけようとはしなかった
+			ENDIF
+		;それ以外
+		ELSE
+			IF TALENT:恋慕
+				PRINTFORML 「……うん、ごちそうさま」
+				PRINTFORMW 「大丈夫、美味しかったわよ？ もしかしたら愛情補正でも入ってたかもしれないけどね♪」
+				PRINTFORMW そう言った幽香は%CALLNAME:MASTER%に悪戯気な微笑みを浮かべた
+			ELSE
+				PRINTFORML 「ごちそうさま。もう下げてくれてもいいわよ？」
+				PRINTFORMW ……後片付けを手伝う気はないらしい
+			ENDIF
+		ENDIF
+		CFLAG:8216 = 1
+	ELSE
+		;相愛時
+		IF TALENT:相愛 && ABL:MASTER:料理技能 >= 3
+			IF RAND:3 == 0
+				PRINTFORML 「ね、ね、%CALLNAME:MASTER%♪」
+				PRINTFORMW 「%CALLNAME:MASTER%の料理はね、今のままだと少し不完全なのよ」
+				PRINTFORML どういうことだと聞くと、幽香はニッコリと笑って言った
+				PRINTFORMW 「『あ～ん』してくれたら、もっと美味しくなるってこと。 言わせないでよ恥ずかしいじゃない♪」
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ん……コレ、すっごい好みの味よ」
+				PRINTFORMW 幽香は上品に食事を進めている
+				PRINTFORML 「%CALLNAME:MASTER%、もしかして私のために練習してくれたりした？」
+				PRINTFORMW 「もしそうだとしたら……すっごく嬉しいわ」
+			ELSE
+				PRINTFORML 「ん～、相変わらずとっっても美味しいわ♪」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%の料理に、舌つづみを打った
+			ENDIF
+			CFLAG:8216 = 10
+		;恋慕時
+		ELSEIF TALENT:恋慕 && ABL:MASTER:料理技能 >= 5
+			IF RAND:3 == 0
+				PRINTFORML 「あむ……あむ……」
+				PRINTFORMW 「%CALLNAME:MASTER%の、料理は……本当に、なんというか、素晴らしいとしか言いようがないわね」
+				PRINTFORMW 幽香は満面の笑みで食事を終え、%CALLNAME:MASTER%に感想を述べた
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「……すごい、美味しいのよね。%CALLNAME:MASTER%の料理って」
+				PRINTFORML 幽香はどこか憂鬱そうに%CALLNAME:MASTER%の料理を見つめている
+				PRINTFORMW もしや、具合でも悪いのだろうか
+				PRINTFORML 「あ、ううん。そういうのじゃないの。……ただ、ね」
+				PRINTFORML 「%CALLNAME:MASTER%の料理って美味しすぎるから、ついつい食べ過ぎちゃって……体重が、気になっちゃうのよ」
+				PRINTFORMW ……これで気を利かせたつもりでダイエットメニューなどを覚えても、それはそれで地雷を踏むような気がしてならない
+			ELSE
+				PRINTFORML 「うん……さすがは%CALLNAME:MASTER%ね。コレ、舌がとろけちゃいそう♪」
+				PRINTFORMW 幽香は%CALLNAME:MASTER%の料理を食べ終えると、余韻を楽しむかのように目を閉じた
+			ENDIF
+			CFLAG:8216 = 8
+		;反発有り
+ 		ELSEIF MARK:反発刻印 > 0 && ABL:MASTER:料理技能 >= 5
+			PRINTFORMW 「……くっ……ま、まぁ料理だけなら誇ってもいいなじゃないの？ 他はクズだけど！」
+			CFLAG:8216 = 7
+		ELSEIF TALENT:恋慕 && ABL:MASTER:料理技能 >= 2
+			PRINTFORML 「ん、おいしい♪ もし%CALLNAME:MASTER%がお店やってたら、毎日かよっちゃうかも♪」
+			PRINTFORMW 「……まぁ今じゃ、お店なんてやってなくても毎日会いに通っちゃうかもだけど♪」
+ 		ELSEIF ABL:MASTER:70 > 2 && MARK:9 == 0
+			PRINTFORML 「……ごちそうさま」
+			PRINTFORMW 幽香は%CALLNAME:MASTER%のご飯を食べ終わると、静かに席を立った
+			PRINTFORML 「？ ……なに、感想でも欲しいの？」
+			PRINTFORMW 「…………ま、悪くは無かったわ。もし仕事にあぶれたら飯炊きとして養ってあげてもいいくらいには」
+			CFLAG:8216 = 4
+		ELSEIF ABL:MASTER:70 < 1 && MARK:9 > 0
+			IF TALENT:恋慕 || TALENT:相愛 == 0
+				PRINTFORML 「え、えーっと……うん、要練習ってところか、しら？」
+				PRINTFORMW 幽香は引きつった笑顔でバッサリと切り捨てた
+			ELSE
+				PRINTFORML 「……ペッ」
+				PRINTFORMW 幽香は一口だけ口にいれたものの、それを吐き出してそれ以上食べようとはしなかった
+			ENDIF
+			CFLAG:8216 = 3
+		ELSE
+			IF TALENT:相愛
+				PRINTFORMW 「%CALLNAME:MASTER%と一緒にご飯を食べる……ふふ、それだけなのに、なんだか幸せな気分よ」
+			ELSEIF TALENT:恋慕
+				PRINTFORMW 「ん、美味しかったわ。また作ってくれる？ それとも今度は私がご馳走してあげようかしら」
+			ELSE
+				PRINTFORMW 「……まぁ、お腹は膨れたわ。ごちそうさま」
+			ENDIF
+			CFLAG:8216 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG:8240
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 「ちゅる……じゅぶ……ん……」
+		PRINTFORML %CALLNAME:MASTER%は股間から生じる心地いい違和感にゆったりと覚醒した
+		PRINTFORMW 目を覚ましてみると、幽香が屹立した%CALLNAME:MASTER%の剛直を口にくわえてなめまわしていた
+		PRINTFORML 「ぷは……あら、目が覚めちゃった？ ふふ、%CALLNAME:MASTER%のオチンチン、いただいちゃってるわよ♪」
+		PRINTFORMW 幽香は舌なめずりをすると、フェラチオを再開した
+		CFLAG:8240 = 3
+	;奉仕精神Lv5以上
+	ELSEIF ABL:奉仕精神 >= 5
+		PRINTFORML 「じゅるっ、ずじゅ……レル……」
+		PRINTFORML 激しく何かをすする音。そして股間を襲う甘い疼きに目を覚ますと、幽香が%CALLNAME:MASTER%のペニスに奉仕をしている真っ最中だった
+		PRINTFORMW 「おはおぉ、おはまひへるわお？（おはよう、お邪魔してるわよ？）」
+		PRINTFORML ペニスを口にくわえたまま、モゴモゴと幽香は喋る
+		PRINTFORMW 狙ってやっているのか、その刺激は起き抜けの射精感をあおるには十分すぎるほど強烈だった
+		CFLAG:8240 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「んぷ……ふぁ　あら、目が覚めちゃった？」
+		PRINTFORMW 目を覚ますと幽香が朝勃ちペニスを舐めまわしているという状況だった
+		PRINTFORML 「どうしてって……別に、いつもは私が気持よくしてもらってるでしょう？ ちょっとしたギブアンドテイクよ」
+		PRINTFORMW 幽香は気だるげにそう言うと、再び%CALLNAME:MASTER%への奉仕を開始した
+		CFLAG:8240 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG:8250
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORML 「あっ、はぁ！ も、っと……もっと突きあげてぇ♪」
+		PRINTFORMW 調教が終わった後も幽香は%CALLNAME:PLAYER%を帰そうとはせず、熟れきった肉穴でペニスをくわえ込み引き止めた
+		CFLAG:8250 = 3
+	;V感覚Lv4以上
+	ELSEIF ABL:Ｖ感覚 >= 4
+		PRINTFORML 「ふ……う、んン♪」
+		PRINTFORMW 調教は終わったというのに、幽香は%CALLNAME:PLAYER%を押し倒して腰を振っている
+		PRINTFORML 「あんな下手くそな調教じゃ、前戯にもなりはしないわよ！ わかったらもっと突き上げなさい！ ハリーハリーハリー！」
+		CFLAG:8250 = 2
+	;それ以外
+	ELSE
+		PRINTFORML 「んふ……ふ、あ……あん♪」
+		PRINTFORMW 「今回の、調教……だっけ？ が……あまりにもお粗末だったからつい物足りなくて、ね」
+		PRINTFORMW 幽香はニヤリと口元を歪めると、激しく腰をグラインドした
+		CFLAG:8250 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後自慰 CFLAG:8251
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8251 = 3
+	;自慰中毒Lv3以上
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 
+		CFLAG:8251 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8251 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;レズプレイ CFLAG:8254
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE154
+IF 1
+	;恋慕
+	IF TALENT:恋慕
+		PRINTFORMW 
+		CFLAG:8254 = 4
+	;レズ中毒Lv3以上
+	ELSEIF ABL:レズ中毒 >= 3
+		PRINTFORMW 
+		CFLAG:8254 = 3
+	;レズっ気Lv3以上
+	ELSEIF ABL:レズっ気 >= 3
+		PRINTFORMW 
+		CFLAG:8254 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8254 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG:8258
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;V感覚Lv5以上
+	IF ABL:Ｖ感覚 >= 5
+		PRINTFORMW 
+		CFLAG:8258 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 
+		CFLAG:8258 = 1
+	ENDIF
+ENDIF
+
+
+
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;赤い首輪使用時
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SUB_EVENT_SCENE201
+IF 1
+	PRINTFORMW 
+ENDIF
+
+
+;-------------------------------------------------
+;@単体エンディング関係
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+
+IF CFLAG:5340 == 1
+ENDIF
+
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET} (%CALLNAME:TARGET%エンド)
+
+RETURN 0
+
+;-------------------------------------------------
+;@奴隷エンディング関係
+;-------------------------------------------------
+@KOJO_34_MESSAGE_SLAVE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+
+IF CFLAG:5340 == 1
+ENDIF
+
+PRINTFORMW 
+PRINTFORMW 　　　　　　　　―― Ending No.{1000+NO:TARGET}i (%CALLNAME:TARGET%奴隷エンド)
+
+RETURN 0
+

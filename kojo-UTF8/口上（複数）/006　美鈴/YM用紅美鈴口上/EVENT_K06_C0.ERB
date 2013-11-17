@@ -1,0 +1,2665 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-2 rev.6用 分割型口上テンプレート
+;6をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==================================================
+;●美鈴口上Ver.1.11
+;==================================================
+;==================================================
+;コマンド口上
+;初回判定にCFLAG:9000～9099までの100個を使用する
+;初回かどうかはRESULT:1が1かどうかで判別
+;==================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@K6_MESSAGE_COM_0
+;初回のみ
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:2 >= 2
+		PRINTFORMW 「ふぁんっ……！」
+		PRINTFORMW %CALLNAME:MASTER%の愛撫に、美鈴は驚いた様に身を跳ねさせた。
+	;それ以外
+	ELSE
+		PRINTFORMW 「きゃっ……！？　や、止めてください……！！」
+		PRINTFORMW 「そんな、手付きがいやらしくて……んあッ！？」
+	ENDIF
+;２回目以降
+ELSE
+	;屈服刻印Lv3+恋慕
+	IF TALENT:TARGET:恋慕 == 1 && MARK:2 == 3
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+;			IF NO:ASSI == 9
+;				PRINTFORMW 「んにゃぁっ！　さ、咲夜さぁんっ……！！」
+;				PRINTFORMW 『ふふふ、可愛いわよ美鈴♪　ん、ちゅっ』
+;				PRINTFORMW 「あふ……んむ、あむぅッ……」
+;				PRINTFORMW 美鈴は咲夜の愛撫に身を捩らせながら、唇を貪り合った。
+			;助手がルーミア
+;			ELSEIF NO:ASSI == 3
+			IF NO:ASSI == 3
+				PRINTFORMW 「あふぅっ……んふぁっ……」
+				PRINTFORMW 『んぐっ……ふふ、くりくり♪』
+				PRINTFORMW 「ひぅっ……！？　ひやぁ、そこっ……腰浮いちゃうっ……！！」
+			;助手がその他
+			ELSE
+				PRINTFORMW 「ああぁんっ、はぁあっ……！」
+				PRINTFORMW 「んはぁッ……もっと、もっとしてぇッ……！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ちゅっ、んはぁ……ご主人様の手、好きぃ……はぁぁんッ……」
+			PRINTFORMW 美鈴は愛撫する手を取ると、恍惚とした表情で自分の秘所に宛がった。
+		ENDIF
+		CFLAG:7221 = 5
+	;屈服刻印Lv3
+;	ELSEIF MARK:2 == 3
+;		PRINTFORMW 「ちゅっ……んぅッ、ふうぅんッ……！！」
+;		PRINTFORMW 美鈴は%CALLNAME:MASTER%と舌を絡ませながら、快楽に身を捩らせた。
+;		CFLAG:7221 = 4
+	;屈服刻印Lv2
+;	ELSEIF MARK:2 == 2
+;		PRINTFORMW 「いやぁ……そんな触り方、んぅッ……！？」
+;		PRINTFORMW 唐突に唇を奪われた美鈴は、%CALLNAME:MASTER%の口の中で微かな吐息を漏らした。
+;		CFLAG:7221 = 3
+	;それ以外（屈服刻印Lv1以下）
+	ELSEIF MARK:2 <= 1
+		PRINTFORMW 「い、いやっ！！　私に触らないで……っ！」
+		CFLAG:7221 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ペッティング
+;-------------------------------------------------
+@K6_MESSAGE_COM_606
+;初回のみ
+IF TFLAG:95 == 1
+	;屈服刻印Lv2以上
+	IF MARK:2 >= 2
+		PRINTFORMW 「ふぁんっ……！」
+		PRINTFORMW %CALLNAME:MASTER%の愛撫に、美鈴は驚いた様に身を跳ねさせた。
+	;それ以外
+	ELSE
+		PRINTFORMW 「きゃっ……！？　や、止めてください……！！」
+		PRINTFORMW 「そんな、手付きがいやらしくて……んあッ！？」
+	ENDIF
+;２回目以降
+ELSE
+	;屈服刻印Lv3+恋慕
+	IF TALENT:TARGET:恋慕 == 1 && MARK:2 == 3
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「んにゃぁっ！　さ、咲夜さぁんっ……！！」
+				PRINTFORMW 『ふふふ、可愛いわよ美鈴♪　ん、ちゅっ』
+				PRINTFORMW 「あふ……んむ、あむぅッ……」
+				PRINTFORMW 美鈴は咲夜の愛撫に身を捩らせながら、唇を貪り合った。
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 「あふぅっ……んふぁっ……」
+				PRINTFORMW 『んぐっ……ふふ、くりくり♪』
+				PRINTFORMW 「ひぅっ……！？　ひやぁ、そこっ……腰浮いちゃうっ……！！」
+			;助手がその他
+			ELSE
+				PRINTFORMW 「ああぁんっ、はぁあっ……！」
+				PRINTFORMW 「んはぁッ……もっと、もっとしてぇッ……！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ちゅっ、んはぁ……ご主人様の手、好きぃ……はぁぁんッ……」
+			PRINTFORMW 美鈴は愛撫する手を取ると、恍惚とした表情で自分の秘所に宛がった。
+		ENDIF
+		CFLAG:7221 = 5
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「ちゅっ……んぅッ、ふうぅんッ……！！」
+		PRINTFORMW 美鈴は%CALLNAME:MASTER%と舌を絡ませながら、快楽に身を捩らせた。
+		CFLAG:7221 = 4
+	;屈服刻印Lv2
+	ELSEIF MARK:2 == 2
+		PRINTFORMW 「いやぁ……そんな触り方、んぅッ……！？」
+		PRINTFORMW 唐突に唇を奪われた美鈴は、%CALLNAME:MASTER%の口の中で微かな吐息を漏らした。
+		CFLAG:7221 = 3
+	;それ以外（屈服刻印Lv1以下）
+	ELSEIF MARK:2 <= 1
+		PRINTFORMW 「い、いやっ！！　私に触らないで……っ！」
+		CFLAG:7221 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@K6_MESSAGE_COM_1
+;初回のみ
+IF TFLAG:95 == 1
+	PRINTFORMW 「あぁっ……！？　し、舌が入ってッ……！！」
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『んっ、ぴちゃ、ちゅぷッ』
+				PRINTFORMW 「あぁぁっ！！！　咲夜さんっ！！　舌が、舌が美鈴のアソコにぃぃッ！！」
+				PRINTFORMW 『んちゅっ♪　ずずずっ』
+				PRINTFORMW 「ひぃぃっ！！？　吸っちゃ……吸っちゃらめぇッ！！！」
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『ちゅっ、ちゅぱっ、はむぅんっ、ぷちゅっ、ぴちゃぴちゃ』
+				PRINTFORMW 「あはぁっ！！！　ひあぁんっ！！　ルーミアちゃんの舌がぁっ！！」
+				PRINTFORMW 「ひあぁぁっ！！　おかしくぅっ！！　おかしくなっちゃぅうっ！！」
+				PRINTFORMW 『んふふっ……とっても美味しいよ、お姉ちゃんのおまんこ♪』
+				PRINTFORMW 「はひぃっ……もう……もう吸わないでえぇっ……」
+			;助手がその他
+			ELSE
+				PRINTFORMW 「はぁっ……！　舐めてぇ……美鈴のアソコ、もっとべチャべチャにしてぇ……」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あはっ、あうっ……ふあぁんッ！！」
+			PRINTFORMW 「ご主人様の舌がっ、舌が気持ちよくてぇっ……！」
+			PRINTFORMW 美鈴は背を反らせながら、与えられる快楽に涎を垂らした。
+		ENDIF
+		CFLAG:7222 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「あふぅっ……！」
+		PRINTFORMW 「ク、クリを、クリをもっと舐めて下さいぃッ……！」
+		PRINTFORMW 美鈴は羞恥に顔を染めながら、懇願してきた。
+		CFLAG:7222 = 3
+	;それ以外（屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「い、いやっ！！　離して下さいっ！！」
+		PRINTFORMW %CALLNAME:MASTER%の頭から逃れようとする美鈴の股を、強引に引き寄せた。
+		CFLAG:7222 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@K6_MESSAGE_COM_2
+;初回のみ
+IF TFLAG:95 == 1
+	PRINTFORMW 「あっ！！？　そ、そっちはお尻の……あはぁ゛ッ！？」
+;２回目以降
+ELSE
+	P = PALAM:潤滑 + UP:潤滑
+	;恋慕+潤滑Lv2以上
+	IF TALENT:TARGET:恋慕 == 1 && P >= PALAMLV:2
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「んう゛ーっ！！　さ、咲夜さん、やめてぇっ……」
+				PRINTFORMW 『あら、止めても良いのかしら？　ここはこんなに締め付け来てるのに……』
+				PRINTFORMW 「ふぁぁんっ……やぁ、咲夜さんが、咲夜さんが美鈴のお尻をッ……」
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『わはー。きゅって締まるー。おもしろーい♪』
+				PRINTFORMW 「あ゛ぁっ！！？　やめっ……掻き回さないでぇっ！！」
+				PRINTFORMW 「い゛ひぃ！？　お、折り曲げちゃ……おふぅっ！！？　二本はらめぇっ……！！！」
+				PRINTFORMW まるで玩具で遊んでいるかの様なルーミアの愛撫に、
+				PRINTFORMW 美鈴は背を仰け反らせながら悶絶していた。
+			ELSE
+				PRINTFORMW 「もっとぉ……美鈴のお尻、もっと弄ってぇっ……！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ご主人様ぁ……指がうねうねって、美鈴のお尻の中でぇ……あふぅッ！」
+			PRINTFORMW 「いやぁ、お尻で感じちゃいますぅっ……！」
+			PRINTFORMW 「もっと……もっとお尻ぃッ……ふぁぁっ！！」
+		ENDIF
+		CFLAG:7223 = 5
+	;恋慕+潤滑Lv2未満
+	ELSEIF TALENT:TARGET:恋慕 == 1 && P < PALAMLV:2
+		PRINTFORMW 「あぐぅっ……お尻が、お尻が熱いぃッ……！？」
+		PRINTFORMW 「ん、んんぅっ……！！？　美鈴のっ、美鈴のお尻が壊れちゃうぅぅッ……！！」
+		CFLAG:7223 = 4
+	;潤滑Lv2以上＋A感覚Lv3以上
+	ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+		PRINTFORMW 「う、嘘ッ……お尻で感じちゃうなんてっ……！」
+		PRINTFORMW 「はぁんっ、んにゃはぁッ……！！？」
+		CFLAG:7223 = 3
+	;それ以外（恋慕無し、潤滑Lv2未満、A感覚Lv3未満）
+	ELSE
+		PRINTFORMW 「あ゛ッ！？　い、嫌っ！！」
+		PRINTFORMW 「そ、そこはッ！！　そこは止めてぇっ！！」
+		CFLAG:7223 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@K6_MESSAGE_COM_3
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「お、大きいですか……？　あぅ……けどこれ、拳法の時とかに邪魔になって……」
+		PRINTFORMW 「で、でもでもっ！！　ご主人様に喜んで頂けてるなら……」
+		PRINTFORMW 「私、自分のおっぱいが好きになれそうですっ」
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「……わ、私の胸は玩具じゃないですよっ」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『…………』
+				PRINTFORMW 「あ、あの……咲夜さん？」
+				PRINTFORMW 『まったく、いつ見てもムカつくくらい大きな胸だこと。そのくせ形も良いし……』
+				PRINTFORMW 『こんな生意気な胸は、こうしてやるんだからっ！』
+				PRINTFORMW 「あはぁっ！！？　そ、そんないきなり……うはぁんッ！！！」
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『ちゅうぅぅっ、ぴんっ。ぢゅうぅぅっ……』
+				PRINTFORMW 「あはぁんッ！！！　らめぇっ！！　そんな吸っちゃぁあっ！！！」
+				PRINTFORMW 「おっぱいが腫れちゃうっ！！！　おかしくなっちゃうっ！！！」
+				;母乳体質あり
+				IF TALENT:TARGET:130 == 1
+					PRINTFORMW 『んはぁっ。ミルクの味がしてきたぁ♪　えへへ、ルーミアに沢山飲ませて♪』
+					PRINTFORMW 「あひやぁッ！！？　すっ…吸っちゃらめぇ！！　お乳出ちゃうぅっ！！！」
+				;母乳体質なし
+				ELSE
+					PRINTFORMW 『んー……出ないなぁ。えいっ、ミルク出て来いっ』
+					PRINTFORMW 「ひあぁんっ！！　搾らないでぇっ！！　私っ、お乳なんて出せないのぉっ！！！」
+				ENDIF
+			ELSE
+				PRINTFORMW 「んふぅ……おっぱい気持ち良いっ……」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あぁっ……美鈴のおっぱいの形が変えられてぇ……凄くエッチですぅ」
+			PRINTFORMW 「もっと、もっと美鈴のおっぱいを可愛がって下さいっ……♪」
+		ENDIF
+		CFLAG:7226 = 4
+	;B感覚Lv3以上
+	ELSEIF ABL:14 >= 3
+		PRINTFORMW 「あぁあっ！　いやぁっ、胸がジンジンするぅ！！」
+		PRINTFORMW 「うぁん！！　やめてぇっ！！　もう胸はやめてぇッ！！」
+		CFLAG:7226 = 3
+	;それ以外（恋慕無し、B感覚Lv3未満）
+	ELSE
+		PRINTFORMW 「あぁっ！？　そ、そんな乱暴に揉まないでッ……！」
+		CFLAG:7226 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@K6_MESSAGE_COM_4
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あぁっ！！　あぅぅんっ！！」
+				PRINTFORMW 『ほら、ここがイイんでしょ？　こんなに締め付けて……指が痛いくらいよ』
+				PRINTFORMW 「あはぁんっ！！　咲夜さんのぉ……咲夜さんの指ぃっ……♪」
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 「はぁあっ！　ひゃぅっ！！」
+				PRINTFORMW 『あは♪　きゅうきゅう締め付けてくる♪　それじゃあ、ここをくりっとすると…』
+				PRINTFORMW 「あひぁっ！！　らめぇ！！　気持ちイイよぉっ！！！」
+				PRINTFORMW 『わはー、ビクンって跳ねたー！　おもしろーい♪』
+			;その他の助手
+			ELSE
+				PRINTFORMW 「あはぁっ……もっとぉっ！　もっとかき回してぇっ……！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あふぅっ！！　ご主人様の指ぃっ……美鈴のアソコをかき回してぇっ…！！」
+			PRINTFORMW 「おねがぃっ…上の口もぉっ……ん、んちゅぅっ……！！」
+			PRINTFORMW 愛液塗れの指を口の前に持って来ると、美鈴は恍惚とした表情で齧り付いた。
+		ENDIF
+	;V感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「ひぁっ、指挿れちゃ駄目ですぅっ……あぅっ！？　無理ぃ……三本なんてっ…！！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「いぎぅ……や、やめて下さいいぃっ……！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あぁっ！！　あぅぅんっ！！」
+				PRINTFORMW 『ほら、ここがイイんでしょ？　こんなに締め付けて……指が痛いくらいよ』
+				PRINTFORMW 「あはぁんっ！！　咲夜さんのぉ……咲夜さんの指ぃっ……♪」
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 「はぁあっ！　ひゃぅっ！！」
+				PRINTFORMW 『あは♪　きゅうきゅう締め付けてくる♪　それじゃあ、ここをくりっとすると…』
+				PRINTFORMW 「あひぁっ！！　らめぇ！！　気持ちイイよぉっ！！！」
+				PRINTFORMW 『わはー、ビクンって跳ねたー！　おもしろーい♪』
+			;その他の助手
+			ELSE
+				PRINTFORMW 「あはぁっ……もっとぉっ！　もっとかき回してぇっ……！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あふぅっ！！　ご主人様の指ぃっ……美鈴のアソコをかき回してぇっ…！！」
+			PRINTFORMW 「おねがぃっ…上の口もぉっ……ん、んちゅぅっ……！！」
+			PRINTFORMW 愛液塗れの指を口の前に持って来ると、美鈴は恍惚とした表情で齧り付いた。
+		ENDIF
+		CFLAG:7355 = 4
+	;V感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「ひぁっ、指挿れちゃ駄目ですぅっ……あぅっ！？　無理ぃ……三本なんてっ…！！」
+		CFLAG:7355 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「いぎぅ……や、やめて下さいいぃっ……！！」
+		CFLAG:7355 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@K6_MESSAGE_COM_5
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あぁッ！？　そ、そんなッ？」
+		PRINTFORMW 「そ、そんなもの、舐めないで……ふぁんっ！！！」
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやぁああぁぁッ！！？」
+		PRINTFORMW 「舐めちゃっ！！　舐めちゃ駄目えぇぇぇッ！！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『ちゅっ……やぁねぇ、美鈴ってば。こんなに腫らしちゃって……♪』
+				PRINTFORMW 「はふっ、咲夜さぁん……咲夜さんが、咲夜さんが私のおちんちんを……」
+				PRINTFORMW 『さて、次はどうして欲しいの？　ちゃんと言えれば、その通りにしてあげる♪』
+				PRINTFORMW 「あぁぁっ…………咲夜さんの綺麗なお口で、美鈴のおちんちん銜えてぇッ……」
+				PRINTFORMW 『ふふふ、良いわよ♪　んあむっ…………ちゅぷっ、くふぅんっ……』
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『ちゅっ、ちゅっ……ぴちゃ、あむっ……』
+				PRINTFORMW 「はぁあんっ！！　ルーミアちゃんのっ……ルーミアちゃんのお口ぃっ……！！」
+				PRINTFORMW 「気持ち良過ぎて狂っちゃうぅっ……！！！」
+				PRINTFORMW 『んぐっ……！？　……んふぅ、んむるっ……』
+				PRINTFORMW 快楽の余り、思わずルーミアの頭を押さえつけてしまう美鈴。
+				PRINTFORMW だがルーミアもさして気にした様子は無く、そのままフェラを続けていた。
+			ELSE
+				PRINTFORMW 「あぁぁっ！！？　きもちいぃっ……お口の中気持ちいぃッ！！」
+			ENDIF
+		ELSE
+		PRINTFORMW 「やぁ……ご主人様ぁ、舐めないでぇっ……！」
+		PRINTFORMW 「こんなもの、ご主人様に舐められるなんてぇっ……！」
+		PRINTFORMW 「凄く、気持ち良いよぉッ……！」
+		ENDIF
+		CFLAG:7225 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「あぁぁっ！！　そんなッ……美鈴の、美鈴のがッ……！！」
+		CFLAG:7225 = 3
+	;それ以外（屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「やめてぇっ！　舐めるのやめてぇっ！！！」
+		CFLAG:7225 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@K6_MESSAGE_COM_6
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んっ……ふぅぅんっ……」
+		PRINTFORMW 美鈴は自ら唇に貪り付き、舌を絡ませて来た。
+		PRINTFORMW 「あっ、ふぅ……ん、んちゅぷっ……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ……！！？　んぶっ……！！」
+		PRINTFORMW 「んはっ！！　そ、そんな……私の唇……」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『んちゅっ、ん、ぷちゅっ……』
+				PRINTFORMW 「あむぅ、はむっ……ちゅっ、ぴちゃぴちゅっ」
+				PRINTFORMW 二人は夢中になってキスをしている。
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『はふっ……んむっ……』
+				PRINTFORMW 「んふぅっ……ルーミアちゃぁん……」
+				PRINTFORMW 二人は貪る様にキスをしている。
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「んっ……あむっ……」
+				PRINTFORMW 「んふ……はふぅ、女の子同士なのに……」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あむっ……ちゅっ、ぴちゃっ」
+			PRINTFORMW 「ちゅっ、ぷふぁ……ご主人さまぁぁ、もっとキスぅ……あふぅ」
+			PRINTFORMW 美鈴はキスの快楽の虜になっている。
+		ENDIF
+		CFLAG:7227 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「んっ！　んふぅっ……ふぅんっ」
+		PRINTFORMW 拙いながら、美鈴も舌を絡ませて来る様になって来た。
+		CFLAG:7227 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ！？　んんーーっ！！！」
+		PRINTFORMW 美鈴はキスを拒み、抵抗している。
+		CFLAG:7227 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@K6_MESSAGE_COM_7
+
+;野外オナニー
+IF TEQUIP:52 == 1
+	;初めて
+	IF CFLAG:7329 == 0
+		PRINTFORMW 「こ、こんな所で……その、オナニーをしなくちゃいけないんですか……？」
+		PRINTFORMW 「い、いやぁ……だ、誰かに見られちゃいますよぉっ……」
+		CFLAG:TARGET:7329 = 1
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上＋露出癖Lv5以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:露出癖 >= 5 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「わんっ、わふっ……私ぃ、こんな所で犬みたいにオナニーしてるぅ……！！」
+			PRINTFORMW 「見られちゃうかもって思うと……きゃふぁっ！！　凄く感じちゃうのぉ！！」
+			PRINTFORMW 「ひゃぅうん！！　ご主人様っ…ご主人様ぁっ！！！」
+			PRINTFORMW 声を張り上げながらひたすらに指を動かし、快楽を貪る美鈴。
+			PRINTFORMW もはや今の彼女には、自身の周囲に出来ている人だかりに気付く事も出来なかった。
+			CFLAG:TARGET:7329 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「わふぅ……その、オナニーをすれば良いのですね？」
+			PRINTFORMW 「は、恥ずかしいですけど……今の私は、ご主人様の飼い犬ですからっ……」
+			PRINTFORMW そう言うと、美鈴は地面の上で股を開き、躊躇いがちに指を動かし始めた。
+			PRINTFORMW 「あふぅんっ……はぅっ……ひゃぁんっ……」
+			CFLAG:TARGET:7329 = 4
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやあぁ……こんな所誰かに見られたら、私っ……！！」
+			CFLAG:TARGET:7329 = 2
+		ENDIF
+	ENDIF
+;公開オナニー
+ELSEIF TEQUIP:50 == 1
+	;初めて
+	IF CFLAG:7330 == 0
+		PRINTFORMW 「そ、そんな……カメラの前でなんてっ……！！」
+		PRINTFORMW 「無理ですぅっ……恥ずかしくて絶対無理ですっ……！！」
+		CFLAG:TARGET:7330 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上＋露出癖Lv5以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:露出癖 >= 5 && ABL:自慰中毒 >= 3
+			;二穴オナニー
+			IF TEQUIP:11 == 1 && TEQUIP:13 == 1
+				PRINTFORMW 「ひあぁぁああぁっ！！！　らめへっえぇぇ！！　撮られひゃっへるうぅぅ！！！」
+				PRINTFORMW 「美鈴のおまんことアナルにじゅっぷりバイブ銜えちゃってるのぉッ！！」
+				PRINTFORMW 「はぁんッ！！　うごかふと気持ひよふぎてえぇっ！！　飛んじゃううぅっ！！」
+				PRINTFORMW 「美鈴んッ、自分でイけますからぁ……お願いぃ、見てへくだふぁぃいっ！！！」
+				PRINTFORMW 美鈴はカメラの前でよがり狂い、理性の欠片も感じさせない程に乱れていた。
+			;その他
+			ELSE
+				PRINTFORMW 「あひぃっ……撮られてるぅッ……！！　美鈴が自分で慰めてる所ぉっ……！！」
+				PRINTFORMW 「らめぇ……気持ちよくなっちゃうぅ……指が止まんないよぉッ……！！」
+			ENDIF
+			CFLAG:7330 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「はうぅっ……みっ、見て下さいぃッ…め、美鈴が自分の指で感じちゃう所ぉっ……」
+			PRINTFORMW 美鈴はカメラに向かってそう言うと、たどたどしく秘所に指を這わせ始めた。
+			CFLAG:7330 = 4
+		;その他
+		ELSE
+			PRINTFORMW 「いやぁ……お願いですっ、せめてカメラを……カメラを止めてぇっ……！」
+			CFLAG:7330 = 2
+		ENDIF
+	ENDIF
+;アナルバイブオナニー（二穴兼）
+ELSEIF TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:7331 == 0
+		PRINTFORMW 「あふぅ……こ、これを動かすんですか？」
+		PRINTFORMW 「わ、分かりました、やってみま……ひうぅんっ……」
+		;二穴判定
+		IF TEQUIP:20 == 1
+			PRINTFORMW 「そ、そんなっ……こっちもなんてッ……！」
+			PRINTFORMW 「いやぁ……二本のバイブが中で擦れてぇ……っ！！」
+		ENDIF
+		CFLAG:TARGET:7331 = 1
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:自慰中毒 >= 3
+			;二穴判定
+			IF TEQUIP:20 == 1
+				PRINTFORMW 「はひぁっ！！！　らめぇっ！！！　二本らめぇッ！！！」
+				PRINTFORMW 最初こそ苦悶の表情を浮かべていた美鈴は、暫く自身に刺さった二本の玩具を弄る内
+				PRINTFORMW やがてその快楽の渦から抜け出せなくなっていた。
+				PRINTFORMW 「ぃひいぃいっ！！？　くるひいのにっ！！　美鈴くるひぃのにぃッ！！！」
+				PRINTFORMW 「かんりひゃうぅ！！　アソコとおひりどっちもイイのおぉおおっ！！！」
+			ELSE
+				PRINTFORMW 「っ……はぅっ……お尻ぃっ、お尻がぁッ……！」
+				PRINTFORMW 美鈴は恥ずかしさの余り顔を手で覆いつつ、
+				PRINTFORMW もう片方の手で休む事無くアナルに刺さったバイブを動かしている。
+				PRINTFORMW 「はぁんっ……駄目ぇ、止まらないッ……止まらないよぉ……！」
+				PRINTFORMW 「ご主人様ぁっ……美鈴んっ、一人でお尻の穴で良くなっちゃう様な変態でぇっ……」
+				PRINTFORMW 「ごっ…ごめんなさぃぃっ……ひあぁっ！！」
+			ENDIF
+			CFLAG:7331 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ふぅんっ……いやぁ、お尻でうねってぇ……こんなぁっ……！！」
+			PRINTFORMW 「あひぃっ！　ご主人様っ……ご主人様ぁっ……！！」
+			PRINTFORMW 自慰を続ける内、不安げな表情で%CALLNAME:MASTER%の事を呼ぶ美鈴を
+			PRINTFORMW %CALLNAME:MASTER%はそっと抱き締めた。
+			CFLAG:7331 = 4
+		;その他
+		ELSE
+			PRINTFORMW 「いやぁ、こんなのぉッ……！　自分でなんて動かせないですよぉっ……！」
+			PRINTFORMW 「ただでさぇっ……あふぅっ…！　うねうね動いてぇっ……！！」
+			CFLAG:7331 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;バイブオナニー
+ELSEIF TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:7332 == 0
+		PRINTFORMW 「あぁっ……あふぅっ……あふぁっ……」
+		PRINTFORMW 美鈴は羞恥に顔を染めながら、一定のリズムでバイブを前後させている。
+		CFLAG:TARGET:7332 = 1
+		RETURN 0
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「あはっ、あふんっ、ひあぁッ、ひゃぅんっ！！！」
+			PRINTFORMW 蕩けきった表情で、秘所に刺さったバイブを激しく動かす美鈴。
+			PRINTFORMW 「いひやぁッ！！　もっとぉ！！　もっと突いてぇっご主人様ぁっ！！」
+			PRINTFORMW 「ご主人様のが気持ちよくて、私いぃっ！！　あひぃんっ！！！」
+			PRINTFORMW どうやら、すっかり%CALLNAME:MASTER%とまぐわっている気になっている様だ。
+			CFLAG:7332 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「ふぅんっ……いやぁ、アソコが抉れてぇ……こんなぁっ……！！」
+			PRINTFORMW 「あひぃっ！　ご主人様っ……ご主人様ぁっ……！！」
+			PRINTFORMW 自慰を続ける内、不安げな表情で%CALLNAME:MASTER%の事を呼ぶ美鈴を
+			PRINTFORMW %CALLNAME:MASTER%はそっと抱き締めた。
+			CFLAG:7332 = 4
+		ELSE
+			PRINTFORMW 「こんなのぉ無理ぃッ……！　自分でなんて動かすなんてぇっ……！」
+			PRINTFORMW 「あはぁっ……お腹がっ、お腹が苦しいですぅっ……！！」
+			CFLAG:7332 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;シャワーオナニー
+ELSEIF TEQUIP:54 == 1
+	IF CFLAG:7333 == 0
+		PRINTFORMW 「え、えっと……その、ここを洗えば良いんですか？」
+		PRINTFORMW 「そ、そのまま動かすって…お風呂の意味がなくなっちゃいますよぉ……」
+		CFLAG:TARGET:7333 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「あはぁんっ！！　シャワーがっ……アソコをビチビチって叩いてぇっ！！！」
+			PRINTFORMW 「いひあっ！！　これきもひぃっ！！　シャワー気持ちいいでふぅっ！！」
+			PRINTFORMW シャワーを自らの秘所に宛がいながら、涎を垂らしてよだる美鈴。
+			PRINTFORMW そんな彼女の眺めていた%CALLNAME:MASTER%は口元を歪ませると、ノズルを一気に捻った。
+			PRINTFORMW 「！！？　うふぁんっ！！　ひゃめぇっ！！　ちめたいのぉっ！！！」
+			PRINTFORMW 「あはぁぅあっ！！！　冷たくて強くなってぇっ……わらひっ、らめええぇっ！！！」
+			CFLAG:7332 = 5
+		;恋慕
+		ELSEIF TALENT:TARGET:恋慕 == 1
+			PRINTFORMW 「あはぁっ…ご主人様ぁっ……美鈴、ちょっと気持ちよくなってきちゃいましたぁ…」
+			PRINTFORMW 湯に浮かされたか、美鈴は%CALLNAME:MASTER%の方に熱っぽい視線を向ける。
+			PRINTFORMW 「あふぅっ……どんどん美鈴の中が洗い流されてぇっ……ご主人様ぁっ……！」
+			CFLAG:7333 = 4
+		ELSE
+			PRINTFORMW 「いやあぁぁっ……私っ、シャワーなんかでぇっ……！」
+			PRINTFORMW 「あうぅっ…！？　あ、熱いぃっ！！　火傷しちゃぅっ……温度下げてぇっ！！！」
+			CFLAG:7333 = 2
+		ENDIF
+		RETURN 0
+	ENDIF
+;通常の自慰
+ELSE
+	;初めて
+	IF CFLAG:7224 == 0
+		PRINTFORMW 「ッ……！？　オ、オナニー……！？」
+		PRINTFORMW 「そ、そんな恥ずかしい事、知りませんっ！　ほ、本当ですってばっ！！」
+		CFLAG:TARGET:7224 = 1
+		RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:TARGET:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「あっ、あうぅッ！！　ご主人様っ、ご主人様あぁっ！！」
+			PRINTFORMW 美鈴はしきりに叫びながら、激しく指を蠢かせている。
+			PRINTFORMW 「あはぁッ！！　もっと見てっ！！　もっと視線で美鈴を犯してぇッ！！！」
+			CFLAG:7224 = 5
+		;恋慕＋自慰中毒Lv3未満
+		ELSEIF TALENT:TARGET:恋慕 == 1 && ABL:自慰中毒 < 3
+			PRINTFORMW 「んふっ……あはぁッ、ご主人様ぁっ……」
+			PRINTFORMW 「ごめんなさい、ご主人様ぁっ……美鈴は、美鈴は自分の指でぇッ……！」
+			CFLAG:7224 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「いっ、いやぁっ……！　見られてるのにっ、見られてるのにぃッ……！！」
+			PRINTFORMW 「止まらない、指が止まらないよぉ……ッ！！」
+			PRINTFORMW 美鈴は羞恥と快楽の狭間で涙を流しながら、指を動かす事に没頭していた。
+			CFLAG:7224 = 3
+		;それ以外（恋慕無し、自慰中毒Lv3未満）
+		ELSE
+			PRINTFORMW 「んぅっ……こ、こんな恥ずかしい事させて、何が楽しいのですかッ……」
+			PRINTFORMW 美鈴は目に涙を溜めながら、恨みがましく呟いた。
+			CFLAG:7224 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@K6_MESSAGE_COM_9
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あふぅ……？　ど、どうしたんですかご主人様……？」
+		PRINTFORMW 「あ、あの……もしかして、もう終わりですか……？」
+		PRINTFORMW 美鈴は不安げな表情を浮かべている。
+	;それ以外
+	ELSE
+		PRINTFORMW 「……？　あ、あの……終わりですか？」
+		PRINTFORMW 「や、やっぱり違うんですね……うぅ」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋縄＋欲情Lv3以上
+	IF TALENT:TARGET:恋慕 == 1 && PALAM:欲情 >= PALAMLV:3 && TEQUIP:40 == 1
+		PRINTFORMW 「ひあぁっ……ふあぁぁああっ……！！」
+		PRINTFORMW 美鈴を縄に吊るしたまま放置して、数分が経った。
+		PRINTFORMW 彼女は手足を封じられている為に自慰をする事も出来ず
+		PRINTFORMW 身体中を赤く染め上げ脂汗を滲ませながら、ギシギシと縄を揺らす。
+		PRINTFORMW ふと股に目を遣ると、まだ何もしていないと言うのに愛液が滴っている。
+		PRINTFORMW すると、彼女はふと此方へ熱っぽい視線を此方へ向けた。
+		PRINTFORMW 「ご、ご主人様ぁっ……美鈴ぅ、もう限界ですぅっ……！！」
+		PRINTFORMW 「お願いしますぅっ……早くぅ、早く美鈴を犯してぇ……滅茶苦茶にしてぇっ！！！」
+		PALAM:潤滑 += 500
+		CFLAG:7228 = 7
+	;恋慕＋アイマスク
+	ELSEIF TALENT:TARGET:恋慕 == 1 && TEQUIP:41 == 1
+		PRINTFORMW 「ご……ご主人いた様に身を縮込ませ……様？　そ、そこに居るのですか……？」
+		PRINTFORMW 美鈴は不安げに尋ねながら、こちらに手を伸ばす。
+		PRINTFORMW そんな彼女の手から逃れる様に%CALLNAME:MASTER%が身を翻し避け回ると、
+		PRINTFORMW 段々と美鈴の顔に浮かぶ不安の色が色濃くなり……とうとう、泣き出してしまう。
+		PRINTFORMW 「ふえぇんっ……ご主人様ぁ、ご主人様ぁっ……！」
+		PRINTFORMW 「お願いですぅっ……これ以上、これ以上意地悪しないで……あっ！？」
+		PRINTFORMW そんな彼女の肩を%CALLNAME:MASTER%が抱き寄せると、驚
+		PRINTFORMW そして、%CALLNAME:MASTER%の胸の中で泣き崩れてしまった。
+		CFLAG:7228 = 6
+	;恋慕＋欲情Lv3以上
+	ELSEIF TALENT:TARGET:恋慕 == 1 && PALAM:欲情 >= PALAMLV:3
+		PRINTFORMW 「いやぁ……やめちゃいやぁ……」
+		PRINTFORMW 「キスでもおっぱいでもアソコでも、何処でも良いから犯してぇ……」
+		CFLAG:7228 = 5
+	;反発刻印Lv3＋縄＋アイマスク＋二穴バイブ＋クリ＆ニプルキャップ
+	ELSEIF MARK:反発刻印 == 3 && TEQUIP:40 == 1 && TEQUIP:41 == 1 && TEQUIP:20 == 1 && TEQUIP:25 == 1 && TEQUIP:30 == 1 && TEQUIP:35 == 1
+		PRINTFORMW 「あ゛ひぁぁ゛ぁぁ゛ああ゛あぁ゛っ！！！　い゛ぎあぁぁあ゛ああ！！！？」
+		PRINTFORMW 「あ゛ぎぃいいっ！！　ごめんなさいっ、ごめんなさいっ、ごめんなさいぃいっ！！！」
+		PRINTFORMW 「も゛うっ……もうさがらいまぜ……んから……っ！！　はうぅああ゛ああ゛んっ！！？」
+		PRINTFORMW 「を゛っ……お願っ……ゆるじでくださぃぃいいひやあぁぁぁぁあああ！！！？」
+		PRINTFORMW 身体の自由を奪われた上に視界を遮られ、電動の調教器具を至る所に装着された美鈴は
+		PRINTFORMW ひたすらに絶叫を上げながら、%CALLNAME:MASTER%に許しを請うていた。
+		PRINTFORMW 「いぎひぃいぃあぁぁ！！！！　こわれりゅぅっ！！！　こわれひゃううぅっ！！！」
+		PRINTFORMW 段々と彼女の声にも余裕が無くなって来た様だ。
+		PRINTFORMW 今解放してやれば、飴と鞭の効果を望めるかも知れない。
+		PRINTL 美鈴を許しますか？
+		PRINTL [0] はい（口上内での能力変化が起きます）
+		PRINTL [1] いいえ
+		$INPUT_LOOP
+		INPUT
+		IF RESULT == 0
+			PALAM:TARGET:恭順 += 1000
+			PALAM:TARGET:屈服 += 1000
+			MARK:TARGET:反発刻印 = 1
+			TEQUIP:40 = 0
+			TEQUIP:41 = 0
+			TEQUIP:20 = 0
+			TEQUIP:25 = 0
+			TEQUIP:30 = 0
+			TEQUIP:35 = 0
+			PRINTFORMW 「いあ゛っ……ひぁはぁっ……！」
+			PRINTFORMW 拘束から解放し、全ての調教器具を取り外しても尚、
+			PRINTFORMW 美鈴は荒い息を吐きながら身体を震わせている。
+			PRINTFORMW そして最後にアイマスクを外すと、彼女の大きな目は涙で潤んでいて。
+			PRINTFORMW 「…………っ！！」
+			PRINTFORMW かと思うと、未だ反抗の意の宿る視線を、こちらに向けて来た。
+			PRINTFORMW それにより、%CALLNAME:MASTER%がより一層美鈴への嗜虐心を煽られた事は、言うまでも無い。
+			WAIT
+			PRINTFORMW 恭順が1000上がりました。
+			PRINTFORMW 屈服が1000上がりました。
+			PRINTFORMW 反発刻印が1になりました。
+			PRINTFORMW バイブ・アナルバイブ・ニプル＆クリキャップ・縄・アイマスクが外れました。
+		ELSEIF RESULT == 1
+			PRINTFORMW 「あぎぃいいいいぃいっ！！　もうっ……もうぅっ……！！！」
+			PRINTFORMW 「許してえぇえぇええっ！！！　ぎっ、ひあぁぁぁぁああああっ！！！」
+			PRINTFORMW %CALLNAME:MASTER%は美鈴の泣き叫ぶ声を聞きながら、ただその様子を観続けていた。
+			PALAM:TARGET:11 += 200
+		ELSE
+			GOTO INPUT_LOOP
+		ENDIF
+		CFLAG:7228 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「んっ……あ、あれ？」
+		PRINTFORMW 「な、何もされてないのに、身体が熱い……？」
+		CFLAG:7228 = 3
+	;それ以外（屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「……あ、あの、こうしているとかえって不気味なんですけど……」
+		CFLAG:7228 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@K6_MESSAGE_COM_10
+;初回のとき
+IF TFLAG:95 == 1
+	;屈服刻印Lv3+恋慕
+	IF MARK:2 == 3 && TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あっ、それは……」
+		PRINTFORMW ピンク色のローターを見るや、恥ずかしげに視線を逸らす美鈴。
+		PRINTFORMW そんな彼女のクリトリスに、震えるローターを一気に押し当てた。
+		PRINTFORMW 「あはっぁっ！！！？　す、凄いぃっ！！！」
+	;それ以外（恋慕無し、屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「ちょっ……そ、そんな物使わないで下さいっ！！」
+		PRINTFORMW ローターを見るや、慌てて逃げ出そうとする美鈴。
+		PRINTFORMW そんな彼女を覆い被さる様にして押さえつけると
+		PRINTFORMW 股間に手を滑り込ませ、震えるローターを押し当てた。
+		PRINTFORMW 「はぁっ！！？　いやぁぁ！！　震えてるぅっ！！」
+	ENDIF
+;２回目以降
+ELSE
+	;屈服刻印Lv3+恋慕
+	IF MARK:2 == 3 && TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はあぁんっ！！　ひやぁッ！！！」
+				PRINTFORMW 『随分な感じ様ね。そんなにコレが好きなのかしら？』
+				PRINTFORMW 『あぁっ！！　好きぃっ！！　ローター好きなのぉっ！！』
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『わはー……これおもしろーい♪』
+				PRINTFORMW 「いひぃんっ！！！　そんな乱暴に……ふあぁんっ！！！？」
+				PRINTFORMW 『あ、今ビクッて跳ねたー！　ここが良いのかな？』
+			ELSE
+				PRINTFORMW 「はあぁんっ！！　ひやぁッ！！！」
+				PRINTFORMW 美鈴はローターから与えられる刺激に、身を捩じらせている。
+			ENDIF
+		ELSE
+		PRINTFORMW 「あはぁあぁああぁぁぁあっ！！！」
+		PRINTFORMW 美鈴は嬌声を上げながら、背を仰け反らせている。
+		ENDIF
+		CFLAG:7229 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「はあぁあんっ！！　いやぁっ！！　ブルブルするの感じちゃうぅっ！！」
+		CFLAG:7229 = 3
+	;それ以外（屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「あ゛ぁ゛ぁ゛あ゛あ゛！！？　も、もっと弱く……ふにゃぁっ！！？」
+		CFLAG:7229 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@K6_MESSAGE_COM_11
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「え？　あの、それって何ですか？」
+		PRINTFORMW 見慣れない機械に首を傾げる美鈴。
+		PRINTFORMW その用途（勿論性的な意味で）を説明すると、美鈴は見る見る顔を赤く染める。
+		PRINTFORMW 「あ、その……それ、ちょっと怖いですけど、ご主人様が望むのでしたら、私……」
+		PRINTFORMW 言いながら、足を開いて秘所を顕にする美鈴。
+		PRINTFORMW だが、いざマッサージャーを宛がうと、彼女は強すぎる刺激に身を嘶かせた。
+	;それ以外
+	ELSE
+		PRINTFORMW 「え？　あの、それって何ですか？」
+		PRINTFORMW 見慣れない機械に首を傾げる美鈴。
+		PRINTFORMW その用途（勿論性的な意味で）を説明すると、美鈴は見る見る顔を青ざめさせる。
+		PRINTFORMW 「いやぁっ！！　そんなのいやあぁっ！！」
+		PRINTFORMW 必死に逃げ惑う美鈴を捕まえると、半ば無理矢理マッサージャーを秘所に押し付ける。
+		PRINTFORMW すると彼女は、断続的に与えられる刺激にビクンビクンと身体を跳ねさせた。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はあぁぅああぁぁあっ！！　いひあぁぁぁぁぁああ！！！？」
+				PRINTFORMW 『声が獣じみてるわよ、美鈴？』
+				PRINTFORMW 「ひぎいぃぃい！！？　ふにゃあぁぁぁぁあああぁぁぁああっ！！！」
+				PRINTFORMW 秘所をマッサージャーに刺激され、機械同様痙攣を繰り返す美鈴に、咲夜の声は届いていなかった。
+			ELSE
+				PRINTFORMW 「はあぁぅああぁぁあっ！！　いひあぁぁぁぁぁああ！！！？」
+				PRINTFORMW マッサージャーから秘所に与えられる凄まじい刺激に
+				PRINTFORMW 美鈴は視線を虚ろにしながら喘ぐばかりだった。
+			ENDIF
+		ELSE
+		PRINTFORMW 「ふああぁぁぁあああぁぁぁっ！！？　いぎひぃいいいぃぃぃぃッ！！！」
+		PRINTFORMW 美鈴は悲鳴とも取れる嬌声を上げながら、海老の様に身体を仰け反らせた。
+		ENDIF
+		CFLAG:7231 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「あひいぃぃいいいいぃいいいっ！！？　らめっらめえぇぇぇっ！！！」
+		CFLAG:7231 = 3
+	;それ以外（屈服刻印Lv3未満）
+	ELSE
+		PRINTFORMW 「ひぎいぃぃっ！！？　それいやあぁぁぁああっ！！」
+		CFLAG:7231 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;-------------------------------------------------
+@K6_MESSAGE_COM_12
+;外したとき
+IF TEQUIP:20 == 0
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「はっ……はうぅんっ…！」
+		PRINTFORMW バイブを引き抜くと、美鈴の止め処なく溢れる愛液が糸を引く。
+		PRINTFORMW 見れば、彼女の秘裂は未だ物欲しそうにピクピクと震えている。
+		;マスターが男ないしふたなり
+		IF TALENT:MASTER:オトコ == 1 || TALENT:MASTER:ふたなり == 1
+			PRINTFORMW 「ごっ……ご主人様ぁっ……お願いですぅっ」
+			PRINTFORMW 「美鈴のここぉっ……ご主人様のぶっといおちんちんで蓋して下さいぃっ……」
+			PRINTFORMW 美鈴はそう言いながら、自ら誘うかの様に陰唇を拡げて見せた。
+		ENDIF
+		CFLAG:7334 = 4
+	;それ以外
+	ELSE
+		PRINTFORMW 「んっ……んはっ！　はぁっ……はぁっ……」
+		PRINTFORMW 美鈴からバイブを引き抜くと、苦しげに胸を上下させながら深い息を吐いていた。
+		CFLAG:7334 = 1
+	ENDIF
+;初回のとき
+ELSEIF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あ、あの……それって……」
+		PRINTFORMW 「わ、私、そんな物よりもご主人様のが……あふぁっ！！？」
+		PRINTFORMW 恥ずかしげに呟く美鈴の不意を狙って、バイブを秘所に埋め込んだ。
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「そ、それはっ……！！」
+		PRINTFORMW 男根模した道具を見るや、顔を青ざめさせる美鈴。
+		PRINTFORMW 嫌がる彼女を無理矢理押さえつけると、秘所にバイブを飲み込ませていった。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あぁぁああっ！！　入ってくるぅぅ……！」
+				PRINTFORMW 『ふふ、手元まで埋まっちゃったわよ？　そんなにこれが気に入った？』
+				PRINTFORMW 「は、はぃいっ！！　で、でも、やっぱりご主人様のッ……」
+				PRINTFORMW 『あらそう。だったら、もっとよく味わいなさいっ！』
+				PRINTFORMW そう言うと、咲夜は更に奥深くまでバイブを捻じ込んだ。
+				PRINTFORMW 「はぎゅっ！！？　かふぁっ！！！　らめっ、ふかいぃぃッ！！！」
+			ELSE
+				PRINTFORMW 「はぅうっ！！　バイブがぁ、バイブが私のアソコにぃッ……！！」
+			ENDIF
+		ELSE
+		PRINTFORMW 「あふぁあっ！！！　バイブぅ、ご主人様のバイブぅッ！！！」
+		PRINTFORMW 美鈴は歓喜とも取れる声を上げながら、バイブを受け入れた。
+		ENDIF
+		CFLAG:7230 = 4
+	;V感覚Lv3以上
+	ELSEIF ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「いやぁっ！！　それ、感じすぎちゃうぅっ！！」
+		CFLAG:7230 = 3
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「そ、そんな物入れないで……あ゛あ゛あ゛っ！！
+		CFLAG:7230 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;-------------------------------------------------
+@K6_MESSAGE_COM_13
+;外したとき
+IF TEQUIP:25 == 0
+	;淫尻
+	IF TALENT:TARGET:淫尻 == 1
+		PRINTFORMW 「ひあはっ！？　おほぉぉあっ……！！」
+		PRINTFORMW アナルからバイブを引き抜くと、美鈴は虚ろな目で舌を突き出しながら快感に溺れる。
+		PRINTFORMW 塞いでいたものを失った彼女の菊門はだらしなく開かれ、
+		PRINTFORMW 涎を垂らしながらヒクヒクと蠢いていた。
+		CFLAG:7335 = 5
+	ELSEIF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「うふぅんっ……あはぅっ……！！」
+		PRINTFORMW バイブを抜かれる感覚に、歯を食いしばる美鈴。
+		PRINTFORMW その声には、明らかに苦痛とは違う艶っぽいものが混じっていた。
+		CFLAG:7335 = 4
+	;それ以外
+	ELSE
+		PRINTFORMW 「あぐぅっ……！？　はっ……はぁっ……ひぐぅっ……」
+		PRINTFORMW 美鈴のアナルからバイブを抜くと、彼女は荒い息を吐く、
+		PRINTFORMW いつしかその中には、押し殺すような鳴咽が混じり始めていた。
+		CFLAG:7335 = 1
+	ENDIF
+;初回のとき
+ELSEIF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あ、あの……それって……」
+		PRINTFORMW 「……え？　アソコに入れるものじゃないんですか？」
+		PRINTFORMW 「お、お尻に……！？　う、うぅ……こ、怖いですけど、ご主人様が望むのなら……」
+		PRINTFORMW 「あのっ、優しくして下さいね？」
+		PRINTFORMW 怯える美鈴に頷くと、アナルにバイブをゆっくりと沈めていった。
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「ひっ！？　そ、それって……」
+		PRINTFORMW 「……え？　あの、前に入れる物じゃないんですか？」
+		PRINTFORMW そう聞いて、美鈴が胸を撫で下ろすのも束の間、
+		PRINTFORMW 後ろを攻める為の道具だと聞くと、見る見る顔が青ざめる。
+		PRINTFORMW 嫌がる彼女を押さえつけながら、バイブはアナルへとゆっくり埋まっていった。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋A感覚Lv3以上
+	IF TALENT:TARGET:恋慕 == 1 && ABL:Ａ感覚 >= 3
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はあぁぁっ！！　お尻がぁ！！　お尻がうねってぇッ！！」
+				PRINTFORMW 『お尻にバイブ入れてそんなによがるなんて……とんでもない変態ね、中国は』
+				PRINTFORMW 「はいぃっ！！　私変態ですぅっ！！　お尻で感じちゃう様な変態ですぅッ！！」
+			ELSE
+				PRINTFORMW 「はあぁぁっ！！　お尻がぁ！！　お尻がうねってぇッ！！」
+			ENDIF
+		ELSE
+				PRINTFORMW 「はあぁぁっ！！　お尻いぃ！！　お尻いいぃッ！！」
+		PRINTFORMW 菊門にバイブを埋めると、美鈴は大きく開かれた口から嬌声を上げた。
+		ENDIF
+		CFLAG:7232 = 5
+	;恋慕
+	ELSEIF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はぅっ……うあぁあ……」
+				PRINTFORMW 『どうしたの？　まだ辛いのかしら？』
+				PRINTFORMW 「は、はい、少し……。で、でも、大丈夫です……」
+				PRINTFORMW そう言って、美鈴は気丈な笑みを浮かべた。
+			ELSE
+				PRINTFORMW 「はぅっ……うあぁあ……」
+				PRINTFORMW アナルへと侵入してくる異物の感覚に、美鈴は苦しそうな呻き声を上げた。
+			ENDIF
+		ELSE
+				PRINTFORMW 「はぅっ……うあぁあ……」
+				PRINTFORMW 「だ、大丈夫です……私は大丈夫ですから、続けて下さいっ……」
+				PRINTFORMW 額に脂汗を浮かべながら、気丈に微笑む美鈴。
+				PRINTFORMW そんな彼女に%CALLNAME:MASTER%は軽くキスをしながら、少しずつバイブを埋めていった。
+		ENDIF
+		CFLAG:7232 = 4
+	;A感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「はぁあんっ！？　そ、そんなっ！？」
+		PRINTFORMW 「私っ、お尻にこんな物挿れられてっ、悦んでるっ……！？」
+		CFLAG:7232 = 3
+	;それ以外（恋慕無し、A感覚Lv3未満）
+	ELSE
+		PRINTFORMW 「あぐっ……かはっ！！」
+		PRINTFORMW 「無理ッ……無理ですぅっ！！」
+		PRINTFORMW 侵入を頑なに拒んでくる菊門に、力任せにバイブを捻じ込んだ。
+		CFLAG:7232 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;-------------------------------------------------
+@K6_MESSAGE_COM_14
+;外したとき
+IF TEQUIP:30 == 0
+	;PRINTFORMW 「クリキャップ解除口上です」
+;初回のとき
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用クリキャップ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「クリキャップ口上です」
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;-------------------------------------------------
+@K6_MESSAGE_COM_15
+;外したとき
+IF TEQUIP:35 == 0
+	;PRINTFORMW 「ニプルキャップ解除口上です」
+;初回
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ニプルキャップ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ニプルキャップ口上です」
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;-------------------------------------------------
+@K6_MESSAGE_COM_16
+;外したとき
+IF TEQUIP:30 == 0
+	;PRINTFORMW 「オナホール解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用オナホール口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「オナホール口上です」
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;-------------------------------------------------
+@K6_MESSAGE_COM_17
+;外したとき
+IF TEQUIP:30 == 0
+	;PRINTFORMW 「電極オナホール解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用電極オナホール口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「電極オナホール口上です」
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@K6_MESSAGE_COM_20
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕＋従順Lv5
+	IF TALENT:TARGET:恋慕 == 1 && ABL:従順 >= 5
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『美鈴、足を開きなさい』
+				PRINTFORMW 「は、はい……」
+				PRINTFORMW 言われるがまま、股を開き自身の秘所を顕にする美鈴。
+				PRINTFORMW 咲夜はそんな彼女のあられもない姿を前に生唾を飲み込むと
+				PRINTFORMW 自身の肉棒を握り締めながら身体ごと美鈴に覆い被さる。
+				PRINTFORMW 「あの……優しくして下さいね？」
+				PRINTFORMW 『……。ええ、勿論よ』
+				PRINTFORMW 言いながら一つ美鈴にキスをすると、割れ目に先端を宛がう咲夜。
+				PRINTFORMW そして、彼女がゆっくりと腰を進めると
+				PRINTFORMW 美鈴は苦痛とも歓喜とも取れる喘ぎ声を上げながら、肉棒を飲み込んだ。
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「はぁっ……そのままゆっくり……はぅんっ！？」
+				PRINTFORMW 「あふぁっ！？　そんな慌てて入れられるとっ……ひゃぅうっ！！？」
+			ENDIF
+		ELSE
+		PRINTFORMW 「ご主人様……」
+		PRINTFORMW 美鈴はベッドに寝転がり、こちらへ向けて股を開いた。
+		PRINTFORMW 「私のここは、準備が出来ています。その……ですからっ……」
+		PRINTFORMW 「ご主人様を……下さいっ」
+		PRINTFORMW 美鈴の言葉に頷くと、肉棒を秘所の入口に宛がい、ゆっくりと先端から埋めて行く。
+		PRINTFORMW 「はぁあんっ！！　ご主人様がぁ、ご主人様のおちんちんが美鈴の中にぃっ！！」
+		PRINTFORMW 「ふあぁぁあっ！！　嬉しいぃっ……嬉しくて、アソコが良くなっちゃうぅっ！！」
+		PRINTFORMW やがて全てが埋まってから顔を見遣ると、美鈴は目に沢山涙を溜めていた。
+		PRINTFORMW やはり辛かったのだろうか……そう思って声を掛けようとした瞬間
+		PRINTFORMW 彼女は%CALLNAME:MASTER%の頬を両掌で包み込み、そして精一杯の笑顔を浮かべた。
+		PRINTFORMW 「ご主人様……愛しています」
+		ENDIF
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「い、いやっ……！　それだけは、それだけは許して……はうぅっ！！？」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はぁん！　あぁっ！！　咲夜さぁんっ……！！」
+				PRINTFORMW 『んっ、ふぁっ……美鈴のおまんこ、熱くて蕩けてて、とっても良いわよ』
+				PRINTFORMW 「はぁっ！！　わ、私もっ！！　咲夜さんのおちんちんッがとっても美味しくてぇ！！」
+				PRINTFORMW 「もうダメぇ！！　私、壊れちゃいますぅ！！」
+				PRINTFORMW 『んふっ、ならばっ、壊れっ、ちゃい、なさいっ！！』
+				PRINTFORMW 言葉に合わせる様に、大きなグラインドで咲夜が肉棒を打ち付けると、
+				PRINTFORMW 美鈴は弓なりに仰け反り、舌を突き出しながら言葉にならない喘ぎ声を漏らした。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 == 1
+				PRINTFORMW 『ミルクっ、ミルクッ♪　お姉ちゃんのミルク～っ♪』
+				PRINTFORMW 「はぁっ！？　ひあぁぁんっ！！！　ルーミアちゃんっ、もっとゆっくりぃ……！！」
+				PRINTFORMW 『だぁめ♪　だって……んふっ……ルーミアも腰が止まらないんだもん♪』
+				PRINTFORMW 「いひぃっ……！？　はぁぅうん！？　壊れるぅ、アソコ壊れちゃうぅうっ！！！」
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「はぁああっ！！　感じるぅ！！　アソコの中が拡げられてるぅ！！」
+				PRINTFORMW 「もっとぉ！！　もっと突いて下さぁ……ひあぁんっ！！」
+			ENDIF
+		ELSE
+		PRINTFORMW 「あぁんっ！！　ご主人様ぁ、ご主人様あぁぁっ！！」
+		PRINTFORMW %CALLNAME:MASTER%の事を呼びながら、腰の動きに合わせてピクンピクンと身体を震わせる美鈴。
+		PRINTFORMW その口の端からは涎が垂れ、もはや膣内からの快楽の虜となって居る。
+		PRINTFORMW 「ひあぁんっ！！　やっぱりぃっ！！　ご主人様のおちんちんが一番好きぃっ！！」
+		PRINTFORMW 「ご主人様ぁっ！！　もっとぉ、美鈴をご主人様だけのものにして下さいぃっ！！！」
+		ENDIF
+		CFLAG:7237 = 5
+	;屈服刻印Lv3＋V感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「はぁう……アソコが痺れますぅ……」
+		PRINTFORMW 「こんなのってぇ……ふぅうっ、気持ちよくてぇッ……！」
+		CFLAG:7237 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「……うぅ、またアソコに挿れるんですか？」
+		PRINTFORMW 「お願いです、今度はもっと優しく……はぅうっ！」
+		CFLAG:7237 = 3
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「あぁああっ……そんなっ！」
+		PRINTFORMW 「私、挿れられてぇ……いやぁ……」
+		CFLAG:7237 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@K6_MESSAGE_COM_21
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕＋従順Lv5
+	IF TALENT:TARGET:恋慕 == 1 && ABL:従順 >= 5
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『美鈴、こっちにお尻を向けなさい』
+				PRINTFORMW 「は、はいぃ……ひゃぅっ！」
+				PRINTFORMW 美鈴が言われた通りにすると、咲夜はその肉付きの言い尻肉を愛撫する。
+				PRINTFORMW 『まったく、本当に良い身体ね。私だけで頂いちゃうのが、勿体無いくらい』
+				PRINTFORMW 「あぁっ……私の身体は、ご主人様と咲夜さんの物ですぅ……。ですから、早く下さいぃッ」
+				PRINTFORMW 『っ……い、言われなくてもっ！！』
+				PRINTFORMW 咲夜が力任せに肉棒を捻じ込むと、美鈴は大きく仰け反りながら嬌声を上げた。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「あはぁ……後ろからっ……後ろから突いて下さいぃっ！」
+				PRINTFORMW 言いながら美鈴は尻を向け、誘うかの様に秘所を指で広げて見せた。
+				PRINTFORMW 「あぁんっ……早くぅ……」
+			ENDIF
+		ELSE
+		PRINTFORMW 「ご主人様ぁ……この格好、恥ずかしいですぅ」
+		PRINTFORMW %CALLNAME:MASTER%の命令通りにこちらへ尻を向けた体制の美鈴は、消え入りそうな声で言う。
+		PRINTFORMW 「でも、ご主人様が望むのであれば……。さぁ、来て下さい……ご主人様」
+		PRINTFORMW 「あっ……ふぁあっ！　入って……来るぅっ……！！　ふ、深いいぃっ！！」
+		PRINTFORMW 「んぅっ！？　そ、そんな奥までっ！？」
+		PRINTFORMW 「子宮にっ……あはぁっ！！　先がコツンってぇっ！！」
+		PRINTFORMW 亀頭の先端が最奥を叩くと、美鈴は背を仰け反らせて舌を突き出し
+		PRINTFORMW 目を虚ろにしながら快楽に打ち震えた。
+		PRINTFORMW そのまま糸の切れた人形の様に崩れ落ちる彼女を見据えていると
+		PRINTFORMW ふとその涙混じりの顔だけがこちらへ向けられ。
+		PRINTFORMW 「ごっ……ご主人様ぁっ……。美鈴は大丈夫ですからぁっ……！」
+		PRINTFORMW 「好きな様に動いてっ……美鈴の奥まで、獣の様に沢山犯して下さいぃっ！！」
+		ENDIF
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「そ、そんな……こんな格好、嫌ですっ……！！」
+		PRINTFORMW 「あっ！！　いやぁ……入ってきちゃうぅっ！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『はふぁっ……堪らないわね、この体位。美鈴をお仕置きしてるって感じがしてっ』
+				PRINTFORMW 「はあぁぁっ！！　咲夜さぁんっ！！」
+				PRINTFORMW 「美鈴はっ！！　美鈴は夜な夜な咲夜さんのブラを持ち出しちゃう様な悪い子ですぅっ！！」
+				PRINTFORMW 「ですからもっとぉ！！　もっと激しくお仕置きして下さいいぃっ！！！」
+				PRINTFORMW 『…………よく言ったわ。それっ、壊れちゃいなさいっ！！！』
+				PRINTFORMW 「あ゛っ！！？　ひひゃあぁぁっ！！　アソコの奥があぁぁああああぁっ……！！！」
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 == 1
+				PRINTFORMW 『この格好の方が、良くミルクが出る様になるんだっけ？』
+				PRINTFORMW 「あふうぅん！！　そ、そんなに突かないでぇっ！！！　わらひぃっ！！！」
+				PRINTFORMW 『あはは、お姉ちゃんのおっぱいがぶるぶる揺れてるぅ♪』
+				PRINTFORMW 『早くミルク出る様になれー♪』
+				PRINTFORMW 「いひぃっ！？　掴まないでぇぇっ！！」
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「はぁうっ！！！　私ぃ、女の子に犯されてぇっ！！！」
+				PRINTFORMW 「あぁあんっ！！　良いのぉ！！　後ろから犯されるの凄く良いのぉ！！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ご主人様ぁっ！！　私ぃっ！！　獣みたいに犯されてぇっ！！」
+			PRINTFORMW 腰の動きに合わせて身体を揺らす美鈴が、%CALLNAME:MASTER%の顔を見ようと身体を捻ると、
+			PRINTFORMW その豊満な胸がプルンプルンと揺れる様が目に入る。
+			PRINTFORMW 「あふぁぁっ！！？　急に激しくっ……！！　ダメぇ！！　壊れちゃううぅっ！！！」
+			PRINTFORMW 「あんっ！！　ふぁっ！！！　ぉふぅっ！！　はうっ！！　ひあぁんっ！！！」
+			PRINTFORMW 犯される美鈴ももはや獣の如く、言葉にならない喘ぎ声ばかりを漏らしていた。
+		ENDIF
+		CFLAG:7238 = 5
+	;屈服刻印Lv3＋V感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「ひあぁっ！！？　そ、そんなっ、奥まで……ダメですぅ……！」
+		PRINTFORMW 「はうぁ！！　そんな激しく動いたら、当たっちゃうっ！！」
+		CFLAG:7238 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「……うぅ。美鈴、また犯されちゃうんですね……？」
+		CFLAG:7238 = 3
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「この格好、怖くて嫌です……けど、聞いてはくれないですよね……」
+		CFLAG:7238 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@K6_MESSAGE_COM_22
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「ん、ちゅっ……ちゅぅっ……」
+				PRINTFORMW 『ぴちゃっ……んふぅ…。挿れるわよ、美鈴？』
+				PRINTFORMW 「は、はい……優しくして下さいね……？」
+				PRINTFORMW 潤んだ目で美鈴が言うと、咲夜は気恥ずかしくなったのか顔を赤く染めながら、
+				PRINTFORMW 自らの怒張の上に美鈴の身体を降ろしていった。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「んちゅっ……はふぁっ……んっ！　ふぅんんんんんっ……！！」
+				PRINTFORMW キスをしながら埋められた肉棒の感覚を、美鈴は目を引き絞りながら味わっていた。
+			ENDIF
+		ELSE
+			PRINTFORMW 「うふっ……この姿勢だと、ご主人様のお顔が良く見えますね♪」
+			PRINTFORMW 「んっ……♪　来て下さい、ご主人様♪」
+			PRINTFORMW 美鈴の唇に軽く口付けると、ゆっくりと彼女の腰を落としていく。
+			PRINTFORMW 膣に怒張が埋まっていく感覚に、美鈴は%CALLNAME:MASTER%に抱き付きながら耐えていた。
+		ENDIF
+	;それ以外
+	ELSE
+		PRINTFORMW 「あぁっ……挿れちゃいやですぅっ……！！　はぅぁっ……！！」
+		PRINTFORMW すぐ目の前で涙を流す美鈴の身体を抱き上げると、一気に肉棒の上に降ろさせた。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 
+		CFLAG:7358 = 5
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はぁっ！！　咲夜さぁんっ、咲夜さぁんっ……！！」
+				PRINTFORMW 『んふぅっ、美鈴のよがってる顔……とっても可愛いわよ♪』
+				PRINTFORMW 「あふっ……ほ、ほんとぅんむっ……！？　んふぅっ……！！」
+				PRINTFORMW 言葉が終わらない内に、咲夜は美鈴の唇を塞いでしまった。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 == 1
+				PRINTFORMW 『あはぁっ♪　お姉ちゃんのおまんこ気持ちイイ♪　それにおっぱいも……んちゅぅ』
+				PRINTFORMW 「ふあぁうっ！？　ち、乳首吸わないでぇ……吸っちゃらめぇ！！」
+				PRINTFORMW 『んぷっ。おいひぃ……♪　あむっ、ちゅうぅっ……かりかり』
+				PRINTFORMW 「あひあゃぁっ！？　らめっ……らめらのぉっ！！！」
+				PALAM:TARGET:快Ｂ += 500
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「あぁんっ！！　イイっ！！　女の子のおちんちん気持ちイイぃっ！！！」
+				PRINTFORMW 「もっとぉ……もっと突いてぇ！！　美鈴を滅茶苦茶にぃ……はぅうんっ！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「んっ……ぷぅっ…！　ひぅっ、んむぅ……かふぅ！！」
+			PRINTFORMW 激しく舌を交わらせながら、膣内を突き上げられる感覚に身悶える美鈴。
+			PRINTFORMW やがてどちらとも無く唇が離れると、同時に美鈴は%CALLNAME:MASTER%にしがみ付いてきた。
+			PRINTFORMW 「あひぁっ！！　恐いぃ…ご主人様ぁ！！　美鈴…ご主人様にこんなに愛されてぇ…」
+			PRINTFORMW 「幸せすぎてぇ、おかしくなっちゃいそうで恐いのぉっ…！！　ご主人様ぁあっ…！」
+			PRINTFORMW 快楽と不安に包まれながら、涙を流す美鈴。
+			PRINTFORMW そんな彼女の頭を、%CALLNAME:MASTER%は腰を休める事無く、そっと撫でてやった。
+		ENDIF
+	;それ以外
+	ELSE
+		PRINTFORMW 「やだぁっ…見ないで下さいっ……！！　こんな私の顔、見ないでぇぇっ……！！」
+		PRINTFORMW そう言う美鈴の表情には、明らかに苦痛とは違う艶が混じってきていた。
+		CFLAG:7358 = 2
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@K6_MESSAGE_COM_23
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あはぁっ……！　咲夜さんのモノが、お尻に当たってぇ……！」
+				PRINTFORMW 『んっ……腰を擦り付けないのっ。ほら、挿れるわよ美鈴？』
+				PRINTFORMW 「は、はいぃ……咲夜さんを下さいぃ……あはぁぁぁあああっ…！！」
+				PRINTFORMW 咲夜が後ろから抱き抱えながら美鈴の膣を貫くと、歓喜にも似た喘ぎ声を上げた。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「んふぅ……早くぅ、早く挿れて下さいぃ…♪」
+				PRINTFORMW 「んんっ…ふぁっ！　入ってぇ…来たぁ……！」
+				PRINTFORMW そそり立つ肉棒を、美鈴は涎を垂らしながら受け入れた。
+			ENDIF
+		ELSE
+			PRINTFORMW 「ご主人様ぁ……美鈴、ご主人様のお顔が見たいですぅ……」
+			PRINTFORMW 「あっ♪　ご主人様ぁ……んっ、んちゅっ………んふうぅううっ！！？」
+			PRINTFORMW 美鈴がキスに夢中になっている間に、抱えられた身体を肉棒の上に降ろしていく。
+			PRINTFORMW 「んふぅ…あふっ！！　ご主人様がぁ…ご主人様が美鈴を貫いてぇ…はあぁぁんっ♪」
+			PRINTFORMW 美鈴は%CALLNAME:MASTER%に背中を預けながら、歓喜に打ち震えた。
+		ENDIF
+	;それ以外
+	ELSE
+		PRINTFORMW 「こ、この体勢、恐いですよぅ……」
+		PRINTFORMW 「いっ…ひゃあぁっ！！？　もっとっ…もっとゆっくりぃっ……！！」
+		PRINTFORMW 怯える美鈴を後ろから持ち上げると、その秘所を一気に貫いた。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あふっ…はぁんっ！！　咲夜さんのおちんちんがぁっ……！！」
+				PRINTFORMW 『そんなに気持ち良い？　だったら、もっと良くしてあげるわ♪』
+				PRINTFORMW 「んひぃっ！！？　胸ぇっ！！　やはっ…クリまでぇ！！　らめぇっ！！」
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 == 1
+				PRINTFORMW 『えぃっ、えぃっ♪　お姉ちゃんのおまんこ、突き上げちゃうぞー♪』
+				PRINTFORMW 「あはぁっ！！　イイよぉルーミアちゃんっ！！　もっとぉ……」
+				PRINTFORMW 『あ、でもこの格好だと、ミルク出た時飲めないなぁ……』
+				PRINTFORMW 「ひゃぅっ！！？　ち、乳首ぃやめっ……！！」
+				PRINTFORMW 『んー、せめてこっちからミルク出てくれれば……変わんないか』
+				PRINTFORMW 「はひぁっ！！？　クリもぉっ！？　らめっ、そんな一度にぃ……！！」
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「あふぅっ！！　イイですぅ…美鈴下から突かれちゃってますぅっ…！！」
+				PRINTFORMW 「あはぁんっ！！　もっと突いてぇっ！！　壊れちゃうくらいにぃっ！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ご主人様ぁ、あはぁっ！！　ご主人様あぁぁっ！！」
+			PRINTFORMW 「お願いですぅっ！！　ご主人様をぉっ……もっと感じさせてぇっ！！！」
+			PRINTFORMW 自らの指を銜えよがりながら、懇願する美鈴。
+			PRINTFORMW それに応える様に、%CALLNAME:MASTER%は胸と股間に手を伸ばした。
+			PRINTFORMW 「ひぅうっ！！　イイひぃっ！！　ご主人様の指もおちんちんもイイぃのぉっ！！！」
+		ENDIF
+		CFLAG:7359 = 5
+	;それ以外
+	ELSE
+		PRINTFORMW 「いやぁっ……あはぁっ……！！　突き上げられてぇっ……！！」
+		CFLAG:7359 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@K6_MESSAGE_COM_24
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕＋従順Lv5
+	IF TALENT:TARGET:恋慕 == 1 && ABL:従順 >= 5
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「そ、それでは、失礼致しますね……」
+				PRINTFORMW 美鈴はそう言うと、咲夜の上に跨って、ゆっくりとそそり立つ肉棒に腰を沈める。
+				PRINTFORMW 『んっ……良いわよ、美鈴。もっと奥まで……』
+				PRINTFORMW 「はっ、はいぃっ……あはぁっ！！　ふぁっ……！！」
+				PRINTFORMW 「な、中で脈打ってぇ……ひあぁんっ！！！」
+				PRINTFORMW やがて咲夜の肉棒全てが秘所に埋まりきると、たどたどしく腰を動かし始めた。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に腰を掴まれて肉棒の上へに押し付けられ、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「そ、それでは、失礼致しますね……」
+				PRINTFORMW 美鈴はそう言うと、ゆっくりとそそり立つ肉棒に腰を沈める。
+				PRINTFORMW 「あはぁっ！！　ふぁっ……！！　か、硬いぃっ……！！」
+				PRINTFORMW 「な、中で脈打ってぇ……ひあぁんっ！！！」
+				PRINTFORMW やがて肉棒全てが秘所に埋まりきると、たどたどしく腰を動かし始めた。
+			ENDIF
+		ELSE
+			PRINTFORMW 「そ、それでは、失礼致しますね……」
+			PRINTFORMW 美鈴はそう言うと、%CALLNAME:MASTER%の上に跨り、ゆっくりとそそり立つ肉棒に腰を沈める。
+			PRINTFORMW 「あはぁっ！！　ふぁっ……！！　ご主人様のっ、おっきくてぇっ……！！」
+			PRINTFORMW 「ひゃぁっ！！　美鈴の体重でっ……埋まっちゃうぅっ……！！」
+			PRINTFORMW やがて肉棒全てが秘所に埋まりきると、たどたどしく腰を動かし始めた。
+		ENDIF
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「じ、自分で挿れるだなんて……そ、そんな事できませんっ……！！」
+		PRINTFORMW 「いっ……いやぁっ！！　お願いっ、許してぇっ……！！！」
+		PRINTFORMW 美鈴はポロポロと涙を溢しながらも、自ら肉棒を秘所へと埋めていった。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「あっ！！　はぅんっ！！　ひゃぁんっ！！」
+				PRINTFORMW 『あふっ……！　自分からそんなに腰を振って、胸を揺らせて……』
+				PRINTFORMW 『まったく、とんだ痴女だことっ……ふぁっ』
+				PRINTFORMW 「はぁぅっ！！　だ、だってぇっ！！」
+				PRINTFORMW 「咲夜さんのおちんちんがっ！！　気持ち良いんですぅっ！！」
+				PRINTFORMW 『あら、そうなの。だったら、もっと気持ちよくしてあげるわっ！！』
+				PRINTFORMW 「ひあぁぁあっ！！　激しっ……激しいぃよおおぉっっ！！！」
+				PRINTFORMW 咲夜が下から腰を突き上げると、美鈴はより一層激しく胸を揺らせながら、嬌声を上げた。
+			;助手がルーミア（初めての時はミルク）
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 <= 0
+				PRINTFORMW 『私、知ってるよ』
+				PRINTFORMW 『お姉ちゃんのおまんこにチンポミルク注ぐと、おっぱい出る様になるんだよね♪』
+				PRINTFORMW 「そ、それはかなり歪んだ知識の様な……」
+				PRINTFORMW 『そーなのかー。でも私、お姉ちゃんのミルクが飲みたいの♪　だから、挿れるね？』
+				PRINTFORMW 「え！？　ちょ、まっ……ふあぁぁああぁぁあああんんッ！！！？」
+				PRINTFORMW 唐突に膣内へと突き立てられたルーミアの肉棒に、美鈴は苦痛混じりの艶声を上げた。
+				CFLAG:7338 = 1
+			ELSEIF NO:ASSI == 3 && CFLAG:7338 == 1
+				PRINTFORMW 『わはー……お姉ちゃんのおっぱい、すごぉい。ブルンブルン揺れてるぅ♪』
+				PRINTFORMW 「あはんっ！　ひあぁっ……お腹の奥にぃッ、突き刺さってぇ……ひあぁんっ！！？」
+				PRINTFORMW 『この中に、お姉ちゃんのミルクが……早く出ないかなぁ？』
+				PRINTFORMW 「やめっ……乳首クリクリしちゃやぁあっ！！」
+				PRINTFORMW 『あふっ…ん、おまんこがきゅってなったよ？　おっぱい気持ち良いんだね♪』
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「あっ！！　はぅんっ！！　ひゃぁんっ！！」
+				PRINTFORMW 美鈴は自ら腰を振り、肉棒から与えられる快楽を貪っている。
+				PRINTFORMW 彼女が動く度に、その豊満な胸が激しく上下に揺れた。
+			ENDIF
+		ELSE
+			PRINTFORMW 「あっ！！　はぅんっ！！　ひゃぁんっ！！」
+			PRINTFORMW 美鈴は自ら腰を振り、胸を上下に揺らしながら、快楽を貪っている。
+			PRINTFORMW 「ご主人様ぁっ！！　ご主人様のっ、すっごく良くてぇっ！！　はぅんっ！！」
+			PRINTFORMW 「美鈴っ、腰が蕩けちゃいますぅ……ひあぁんっ！！」
+			PRINTFORMW やがて美鈴は、前のめりに%CALLNAME:MASTER%の胸の上へもたれかかって来る。
+			PRINTFORMW それでも腰を動かす事はやめず、美鈴は目を引き瞑り舌を突き出しながら、よがり続けた。
+		ENDIF
+		CFLAG:7245 = 5
+	;屈服刻印Lv3＋V感覚Lv3以上
+	ELSEIF MARK:2 == 3 && ABL:Ｖ感覚 >= 3
+		PRINTFORMW 「やあぁっ……私、串刺しにされ……ひあぁんっ！！」
+		PRINTFORMW 「あふぅっ！！　いやぁ、腰が止まらないよぉっ……！！」
+		CFLAG:7245 = 4
+	;屈服刻印Lv3
+	ELSEIF MARK:2 == 3
+		PRINTFORMW 「はぅっ……だめっ、そんなっ……」
+		PRINTFORMW 「も、もっと激しくですか？　わ、分かりました……んふぁっ！」
+		CFLAG:7245 = 3
+	;それ以外（恋慕無し、従順Lv5未満）
+	ELSE
+		PRINTFORMW 「あっ……いやぁっ、腰を突き上げないで……はあうっ！！」
+		CFLAG:7245 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@K6_MESSAGE_COM_25
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用逆レイプ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「逆レイプ口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@K6_MESSAGE_COM_26
+;初回のみ
+IF TFLAG:95 == 1
+	;美鈴が恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		;助手が咲夜で恋慕
+		IF NO:ASSI == 9 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『あんっ、ふぁっ！！！　ご、ご主人様ぁぁあっ！！　もっと下さいぃ♪』
+			PRINTFORMW 「うっ……ぐすっ……」
+			PRINTFORMW 『んっちゅっ、ぷあっ！！　ほら中国っ……目を背けないで、ちゃんと見なさいっ』
+			PRINTFORMW 『ご主人様と私がっ……交わってる所っ……はあぁぁんっ！！　そこイイっ！！』
+			PRINTFORMW 『あふぅっ！！　ご主人様ぁっ！！　咲夜もうイクっ！！　イッちゃいますぅっ！！』
+			PRINTFORMW 「いやぁぁ！！　もうやめて咲夜さんっ！！　びえぇぇぇっ！！！」
+			PRINTFORMW 咲夜が一際高い嬌声を上げたと同時に、美鈴は泣き崩れてしまった。
+			PRINTFORMW %CALLNAME:MASTER%が彼女以外…それも彼女にとって特別な存在である咲夜を抱いていると言う現実に
+			PRINTFORMW 耐え切れなくなった様だ。
+		;助手がルーミアで恋慕
+		ELSEIF NO:ASSI == 3 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『んはぁっ！！　あふぅっ！！　イイよぉ……犯されるのすっごく気持ちイイっ♪』
+			PRINTFORMW 「うぅっ……ご主人様ぁっ……。お願いですっ、美鈴もぉ……」
+			PRINTFORMW 『だぁめ♪　お姉ちゃんは…ぅんっ…そこで見てろって言われたでしょっ？』
+			PRINTFORMW 「で、でも、こんなの……こんなのってぇ……」
+			PRINTFORMW 美鈴は涙を溜めた目で、ルーミアが%CALLNAME:MASTER%に犯される光景を恨みがましく見詰めながら
+			PRINTFORMW 切なげに太腿を擦り合わせている。
+			PRINTFORMW 『あはっ……チンポが中でピクピクしてるぅ♪　もうっ…あふっ！！　出ちゃうの？』
+			PRINTFORMW 『いいよぉっ…！　ルーミアのおまんこにぃ…ひぅんっ！　いっぱいちょーだいっ♪』
+			PRINTFORMW 「だっ……だめぇっ！！！　それだけはだめぇえぇっ！！！」
+			PRINTFORMW 突然、半狂乱になりながら行為の間に割り込んでくる美鈴。
+			PRINTFORMW その後罰として、予定よりも数倍長い時間、ルーミアを犯す様を見せ付け続けた。
+		;助手がその他
+		ELSE
+			PRINTFORMW 「うぅっ……ぐすっ……どうしてこんなぁ……」
+			PRINTFORMW %CALLNAME:ASSI%が犯される様を、涙を溜めながら見詰める美鈴。
+			PRINTFORMW 自分以外にも奴隷が居ると言う事の意味を頭では分かっているつもりだったが、
+			PRINTFORMW その光景を目の当たりにすると、現実を受け止める事が出来なくなっている様だ。
+		ENDIF
+	;それ以外（恋慕無し）
+	ELSE
+		;助手が咲夜で恋慕
+		IF NO:ASSI == 9 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『あんっ、ふぁっ！！！　ご、ご主人様ぁぁあっ！！　もっと下さいぃ♪』
+			PRINTFORMW 「さ、咲夜さん……！！　お願いです、目を覚ましてっ……！！」
+			PRINTFORMW 『何言ってるのよ美鈴っ。私は至って……ふぁんっ！！　まともよっ……あひんっ♪』
+			PRINTFORMW 「ど、何処がですかっ！！　完全で瀟洒で、皆の憧れだった咲夜さんがっ……！！」
+			PRINTFORMW 『ご主人様に犯されている今の私にはっ…見る影も無いとでも言うの？　ぁふっ！』
+			PRINTFORMW 『そりゃそうよ。だってぇ…ひぅっ！！　ふあぁっ……！！』
+			PRINTFORMW 『私だって、ご主人様とのセックスの前では、唯の雌犬だものっ♪　あはぁんっ！！』
+			PRINTFORMW 「そ、そんな……っ……！！」
+			PRINTFORMW もはや完全に%CALLNAME:MASTER%の性奴隷となってしまっている咲夜の言葉に、
+			PRINTFORMW 美鈴は信じられないと言った面持ちで放心してしまう。
+			PRINTFORMW その後、犯され尽くした咲夜が失神するまで、美鈴は虚ろな視線を向け続けていた。
+		;助手がルーミアで恋慕
+		ELSEIF NO:ASSI == 3 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『んはぁっ！！　あふぅっ！！　イイよぉ……犯されるのすっごく気持ちイイっ♪』
+			PRINTFORMW 「っ……こんな小さな子までっ……！」
+			PRINTFORMW さも憎々しげな視線で、ルーミアを犯す%CALLNAME:MASTER%の事を睨み続ける美鈴。
+			PRINTFORMW そんな事お構い無しに腰を振っていると、ルーミアが美鈴の方に熱っぽい視線を向け。
+			PRINTFORMW 『あふぅっ……お姉ちゃんも一緒にヤろうよっ。すっごく気持ちイイんだからっ…♪』
+			PRINTFORMW 「っっ……！！　え、遠慮しますっ！！」
+			PRINTFORMW 『そぉ、なの……かぁはっ♪　はぁあん！！　来るッ！！　来ちゃうよぉっ！！！』
+			PRINTFORMW その後ルーミアが満足するまで、ずっと美鈴は行為から目を逸らし続けていた。
+		;助手がその他
+		ELSE
+			PRINTFORMW %CALLNAME:MASTER%が%CALLNAME:ASSI%を犯す様を、食い入る様に見詰める美鈴。
+			PRINTFORMW だがその視線には情欲と言った物よりも、%CALLNAME:MASTER%を焼き殺さんばかりの殺気が
+			PRINTFORMW 肌越しに伝わる程に篭められていた。
+		ENDIF
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		;助手が咲夜で恋慕
+		IF NO:ASSI == 9 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『ひぅんっ！！　あはぁっ…ご主人様、いつもよりも激しっ……あぁっ！』
+			PRINTFORMW 「……っ……んぅっ……」
+			PRINTFORMW 「あぁっ……咲夜さんのアソコに、ご主人様のがあんなにぃ……」
+			PRINTFORMW 美鈴は咲夜が犯されよがり狂う様子を見て、興奮してきている様だ。
+		;助手がルーミアで恋慕
+		ELSEIF NO:ASSI == 3 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『ひにゅぅっ！！　あふぅっ！！　イイよぉ、もっと犯してぇ♪』
+			PRINTFORMW 「うっ……うぅっ……ふぅっ……」
+			PRINTFORMW 目の前でルーミアを犯され、美鈴は声を殺して泣いているかと思えば、
+			PRINTFORMW もじもじと切なげに太腿を擦り合わせていた。
+		;助手がその他
+		ELSE
+			PRINTFORMW 「ふぅっ……いやぁ……いやなのにっ……！」
+			PRINTFORMW 「どうしてっ…私、どきどきが収まらなくてっ……！」
+			PRINTFORMW 美鈴は%CALLNAME:ASSI%が犯される様を、息を荒げながら食い入る様に見詰めている。
+		ENDIF
+		CFLAG:7259 = 3
+	;それ以外（恋慕無し）
+	ELSE
+		;助手が咲夜で恋慕
+		IF NO:ASSI == 9 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『ひぅんっ！！　あはぁっ…ご主人様ぁ、咲夜はぁ……ご主人様の雌犬ですぅ！！』
+			PRINTFORMW 『ご主人様のブッといリードで咲夜を繋いでぇ！！　離れられない様にぃしてぇ！！』
+			PRINTFORMW 「さ、咲夜さんが……」
+			PRINTFORMW 「完全に壊れた……（汗」
+			PRINTFORMW 確かにリードと言う表現には無理がある。
+		;助手がルーミアで恋慕
+		ELSEIF NO:ASSI == 3 && TALENT:ASSI:恋慕 == 1
+			PRINTFORMW 『あひぃっ！！　もうらめぇ……ルーミア、チンポなしじゃ生きらんないぃ…♪』
+			PRINTFORMW 「……………」
+			PRINTFORMW 美鈴はじっと目を伏せながら、ルーミアの喘ぎ声だけを聞いている。
+		;助手がその他
+		ELSE
+			PRINTFORMW 「………っ！　無節操で背徳的で嗜虐的……貴方と言う人は……！」
+			PRINTFORMW 相変わらず美鈴は凄みの効いた視線を向けてくる。
+		ENDIF
+		CFLAG:7259 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@K6_MESSAGE_COM_27
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用対面立位口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「対面立位口上です」
+ENDIF
+
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@K6_MESSAGE_COM_28
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用背面立位口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「背面立位口上です」
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_30
+CALL K6_MESSAGE_COM_ANALSEX
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_31
+CALL K6_MESSAGE_COM_ANALSEX
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_32
+CALL K6_MESSAGE_COM_ANALSEX
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_33
+CALL K6_MESSAGE_COM_ANALSEX
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_34
+CALL K6_MESSAGE_COM_ANALSEX
+
+;-------------------------------------------------
+;アナルセックス系（アナル正常位・後背位・対面座位・背面座位・騎乗位は共通にする）
+;-------------------------------------------------
+@K6_MESSAGE_COM_ANALSEX
+;初回のとき
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「お、お尻に……挿れるんですか？」
+		PRINTFORMW 「は、はい、分かりました…どうぞ美鈴のお尻の穴で、気持ち良くなって下さい……」
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「そ、そんな……お尻に入れるだなんて、そんなの普通じゃないですっ！！」
+		PRINTFORMW 「あ゛ッ！！？　いやあぁっ！！　やめてぇ！！　裂けちゃううぅっ！！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋A感覚Lv3以上
+	IF TALENT:TARGET:恋慕 == 1 && ABL:Ａ感覚 >= 3
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 『あっ……良いわよ、美鈴のアナル。きつくて、チンポが食い千切られそうっ……』
+				PRINTFORMW 「ふにゃっ！！　はふっ！！　咲夜さんのおちんちんに抉られてぇっ！！」
+				PRINTFORMW 「はあぁあっ！！　お尻いぃっ！！　お尻が気持ちいぃっ！！！」
+				PRINTFORMW 『うんっ……こんなに汁を垂らして……はしたない子ねっ』
+				PRINTFORMW 「あひぃっ！！　気持ちよくてっ！！　気持ちよくて飛んじゃうぅっ！！！」
+			ELSE
+				PRINTFORMW 「はふっ！！　ダメぇ！！　お尻感じちゃうのぉっ！！！」
+			ENDIF
+		ELSE
+			PRINTFORMW 「はふぅっ！！！　ご主人様がぁ！！　ご主人様が美鈴のお尻の中にぃっ！！！」
+			PRINTFORMW 「ダメぇ！！　それだけでお尻が蕩けちゃうぅ！！　あはぁっ！！！」
+			PRINTFORMW 「ご主人様あぁ！！　美鈴にっ、お尻に入れられてよがっちゃう美鈴の中にっ！！」
+			PRINTFORMW 「沢山精液を注いで下さいいぃっ！！！」
+		ENDIF
+		CFLAG:7239 = 5
+	;恋慕
+	ELSEIF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「うくっ…ふぅんっ……だ、大丈夫ですっ！　ご主人様の為なら、このくらいっ……」
+		PRINTFORMW 「あっ……！！？　ま、まだ動かれると…はぎゅっ！！？　め、捲れぢゃうぅっ！！」
+		CFLAG:7239 = 4
+	;A感覚Lv3以上
+	ELSEIF ABL:Ａ感覚 >= 3
+		PRINTFORMW 「はひゅっ……！！　そ、そんなっ！！　わ、私、お尻の穴でこんなっ……！！！」
+		PRINTFORMW 「ダ、ダメぇ！！　突かないでぇっ！！　頭がっ、頭の中が蕩けちゃうっ！！！」
+		CFLAG:7239 = 3
+	;それ以外（恋慕無し、A感覚Lv3未満）
+	ELSE
+		PRINTFORMW 「ぎうぅぅっ……！！　ひ、酷いですっ……！！　こんなっ……！！」
+		PRINTFORMW 美鈴は肉棒から与えられる苦痛に耐えながら、涙を流していた。
+		CFLAG:7239 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@K6_MESSAGE_COM_35
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用逆アナルレイプ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「逆アナルレイプ口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@K6_MESSAGE_COM_36
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手のＡを犯す口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手のＡを犯す口上です」
+ENDIF
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_37
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用対面立位アナル口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「対面立位アナル口上です」
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@K6_MESSAGE_COM_38
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用背面立位アナル口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「背面立位アナル口上です」
+ENDIF
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@K6_MESSAGE_COM_40
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上
+	IF ABL:奉仕精神 >= 3
+		PRINTFORMW 「えっと……手で擦れば良いんですね？」
+		PRINTFORMW 「んっ……あ、何だか手触りが気持ち良いかも……」
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「そ、そんな物を握るだなんてっ……わ、私には出来ませんっ！！」
+		PRINTFORMW 頑なに嫌がる美鈴の手を無理矢理掴み、自らの肉棒へと導かせた。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:TARGET:恋慕 == 1 && ABL:奉仕精神 == 5
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「これが咲夜さんのおちんちん……硬くてとっても立派です……」
+				PRINTFORMW 『はぅっ！！　そ、そう、その調子よ美鈴。もっと先まで、後は筋も一緒に弄って…』
+				PRINTFORMW 「は、はいぃ……あ、咲夜さんの先っぽが濡れてきました。気持ち良いんですね？」
+				PRINTFORMW 『うんっ……まあまあね。あぅっ！？　ちょっ、そんないきなり強くっ……！』
+				PRINTFORMW 「うふふ、素直にならない咲夜さんに、チョットだけお仕置きです♪」
+				PRINTFORMW 『このっ……後で覚えておきなさ…ひゃうんっ！！！』
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『はぅんっ！！　イイよぉ、お姉ちゃんっ……もっと搾ってぇ！！』
+				PRINTFORMW 「はいはい♪　んっ……すごい、ルーミアちゃんのおちんちん、こんなに硬く……」
+				PRINTFORMW 『ひぅぅ……出ちゃうぅ…ルーミアのチンポミルク出ちゃうよぉ……！！』
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「うわぁ…女の子のおちんちんでも、形はご主人様とあんまり変わらないんですねぇ」
+				PRINTFORMW 「あ、でも袋が無い……じゃあ、ここをこうすると気持ち良いのかな？」
+			ENDIF
+		ELSE
+			PRINTFORMW 「ご主人様の……とっても立派で大きくて、素敵ですぅ……」
+			PRINTFORMW 手で肉棒を扱きながら、蕩けきった表情で言う美鈴。
+			PRINTFORMW 「あぁっ、先からお汁が……美鈴の手で気持ち良くなってくれたんですね？」
+			PRINTFORMW 「……嬉しいです♪」
+		ENDIF
+		CFLAG:7241 = 4
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「んぅっ……相変わらず元気ですね」
+		PRINTFORMW 「あら？　今ビクンって跳ねましたね？　気持ち良かったんですか？」
+		CFLAG:7241 = 3
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「ま、また手で握るんですか？　分かりましたよぉ……」
+		PRINTFORMW 「うぅっ、形がおぞましくて……慣れられそうにないですぅ……」
+		PRINTFORMW 美鈴は終始肉棒から目を逸らしながら、手を動かしていた。
+		CFLAG:7241 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@K6_MESSAGE_COM_41
+;初回のみ
+IF TFLAG:95 == 1
+	;奉仕精神Lv3以上or恋慕
+	IF ABL:奉仕精神 >= 3 || TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「は、はい……美鈴の口で、精一杯御奉仕させて頂きますっ……」
+		PRINTFORMW 美鈴は行儀良く足下に跪くと、丁寧な手付きでに肉棒を取り出した。
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「い、嫌です！！　そんなものを舐めるなんてっ……！」
+		PRINTFORMW 美鈴は嫌がりながらも、言われた通りに肉棒に舌を這わせ始めた。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「はむっ、んむっ……ふぅん」
+				PRINTFORMW 『あぁっ！！　良いわ、美鈴っ……もっと舌で舐めほぐしてっ』
+				PRINTFORMW 「ふひゃぃ♪　んひゅっ……ぴちゅ、ちゅぷっ、はふぁ……」
+				PRINTFORMW 『はぁあんっ！！　駄目ッ、出ちゃいそう……！！』
+				PRINTFORMW 「んっ……いいでふよ♪　咲夜はんの濃いへーえき、美鈴に飲ませてくだふぁい♪」
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 「ちゅぷっ……んっ、はむっ……ん、どう？　気持ち良い？」
+				PRINTFORMW 『はふぅ……とってもイイよぉ…！』
+				PRINTFORMW 『お姉ちゃんにチンポ食べられちゃうのが、こんなに気持ちイイなんてぇッ………！』
+				PRINTFORMW 涎を垂らしながら、美鈴の奉仕に身を震わせるルーミア。
+				PRINTFORMW そんな彼女の表情に満足げに微笑むと、美鈴はより激しく舌を這わせ始めた。
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「はむっ、んむっ……ふぅん」
+				PRINTFORMW 「ほくひのなはでピクピクして……きもひいいんでふね♪」
+				PRINTFORMW 「もっとひてあげまふ♪　……んむっ」
+			ENDIF
+		ELSE
+			PRINTFORMW 「んっ、ちゅぷっ、ぴちゃっ、ちゅっ……はあぁんっ、ごひゅりんはまぁ……」
+			PRINTFORMW 「ごひゅりんはまのおちんちん、ふごくおいひいでふぅ……♪」
+			PRINTFORMW 「味も臭いもふごくへ、ビクンビクンってなみうっへ……」
+			PRINTFORMW 「はふっ、んくっ……ごひゅりんはまぁ……！」
+			PRINTFORMW 「美鈴にごひゅりんさまのへーえき、飲ませてくだふぁいぃ……」
+		ENDIF
+		CFLAG:7242 = 4
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「んっ……ちゅぷっ、ふぅん………ふぁっ」
+		PRINTFORMW 「……え？　舐める姿が様になってきたって？　そ、そんなの嬉しく無いですっ！！」
+		CFLAG:7242 = 3
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「ぴちゃっ、ちろちろ……ぴちゅっ」
+		PRINTFORMW 「えっ……こ、今度は銜えるんですか？　う、うぅ～……」
+		PRINTFORMW 美鈴は表情を曇らせながらも、命じられた通りに肉棒を銜え始めた。
+		CFLAG:7242 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@K6_MESSAGE_COM_42
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「えっ……私のおっぱいで、ですか？」
+		PRINTFORMW 「ふふっ、分かりました♪　どうぞ美鈴のおっぱいを、沢山犯して下さい♪」
+		PRINTFORMW 美鈴はそう言うと、その豊満な双丘で肉棒を挟み上げた。
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「えっ……私の胸で、ですか？」
+		PRINTFORMW 「うぅん……わ、分かりました」
+		PRINTFORMW 美鈴は怪訝な様な表情を浮かべながら、戸惑いがちに肉棒を胸で挟んだ。
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		IF ASSI >= 0 && ASSIPLAY 
+			;助手が咲夜
+			IF NO:ASSI == 9
+				PRINTFORMW 「んっ、しょっ……ふふ、気持ち良さそうですね、咲夜さん♪」
+				PRINTFORMW 『あはぁっ！？　やぁっ……あ、貴女のその胸は卑怯よっ……！』
+				PRINTFORMW 『大きい上に、こんな気持ち良いだなんて……はぅんっ！！』
+				PRINTFORMW 「ふぅんっ……あっ、腰が跳ねましたよ？　ふふ、もう出ちゃいそうなんですね♪」
+				PRINTFORMW 『はぁあっ！！　そうっ、出そうなのッ！！　美鈴っ、もっと激しくしてぇっ！！』
+			;助手がルーミア
+			ELSEIF NO:ASSI == 3
+				PRINTFORMW 『はうぅっ！！　お姉ちゃんのおっぱいがルーミアのチンポ食べちゃってぇっ…！！』
+				PRINTFORMW 『ひぁあ！？　気持ちっ……気持ちイイぃぃいいッ……♪』
+				PRINTFORMW 「んっ…んふっ……そう？　嬉しいな、ルーミアちゃんに喜んで貰えて♪」
+				PRINTFORMW 「あふっ……それになんだか、私も気持ちよくなって……んふぁっ…」
+			;それ以外の助手
+			ELSE
+				PRINTFORMW 「んしょっ……ふふ、何だかおちんちんが可愛いです♪」
+				PRINTFORMW 「それに、こうしてると何だか私まで……んっ、あふぅんっ……」
+			ENDIF
+		ELSE
+			PRINTFORMW 「あはぁっ……ご主人様のおちんちんが、美鈴の胸に埋まって……」
+			PRINTFORMW 「やぁっ……おっぱいに熱くて硬い物が当たって……気持ち良いですぅっ」
+			PRINTFORMW 「もっとっ……もっと美鈴のおっぱいで気持ち良くなって下さい……」
+			PRINTFORMW 「もっとおっぱい犯して下さいぃ！！」
+		ENDIF
+		CFLAG:7243 = 4
+	;奉仕精神Lv3以上
+	ELSEIF ABL:奉仕精神 >= 3
+		PRINTFORMW 「んっ、ふぅんっ……あ、先から何か出て来ました」
+		PRINTFORMW 「き、気持ち良いんですか？　そ、それは良かったです……♪」
+		CFLAG:7243 = 3
+	;それ以外（奉仕精神Lv3未満）
+	ELSE
+		PRINTFORMW 「んっ……やぁっ、思ったよりもこれ、恥ずかしいですぅ……」
+		CFLAG:7243 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@K6_MESSAGE_COM_43
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕有り
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「お股に挟むんですか？　えっと……それだけで良いんですか？」
+		PRINTFORMW 「はぁ……分かりました。ご主人様のお望み通りに、美鈴のお股を犯して下さい」
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「お、お股に……？　は、はぁ……それだけなら……」
+		PRINTFORMW 「んっ…けど、その、お、お願いですから……ア、アソコには挿れないで下さいね？」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕有り
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あふぅぅっ！！！　おちんちんがっ……おちんちんがクリに擦れてぇ！！！」
+		PRINTFORMW 「やあぁっ……欲しいっ！！　おちんちん欲しくなっちゃいますぅっ！！！」
+		PRINTFORMW 美鈴は身を捩らせながら、自身の指を銜え、熱っぽい視線を向けて来た。
+		CFLAG:7244 = 3
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「あふっ！？　そ、そんな所擦らないで……やあっ！？」
+		CFLAG:7244 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@K6_MESSAGE_COM_44
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@K6_MESSAGE_COM_45
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナルおねだり口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナルおねだり口上です」
+ENDIF
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@K6_MESSAGE_COM_46
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用足舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「足舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_47
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用足扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「足扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_48
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用髪扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「髪扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_49
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用腋扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「腋扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_50
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用全身扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「全身扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_51
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用尻扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「尻扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@K6_MESSAGE_COM_52
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用竿扱き口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「竿扱き口上です」
+ENDIF
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@K6_MESSAGE_COM_53
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用玉揉み強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「玉揉み強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@K6_MESSAGE_COM_54
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用玉舐め強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「玉舐め強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@K6_MESSAGE_COM_55
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル愛撫強制口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル愛撫強制口上です」
+ENDIF
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@K6_MESSAGE_COM_60
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んっ……これを身体に塗るんですね？　私も手伝います♪」
+		PRINTFORMW 「ひゃんっ、冷たい……あ、でも、このぬるぬるが気持ち良いかも……♪」
+		PRINTFORMW 美鈴が自らの豊満な肉体に艶光するローションを塗りこんでいく姿は、
+		PRINTFORMW とても扇情的だった。
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「な、何ですかこれ……ま、まさか変な薬じゃないですよね！？」
+		PRINTFORMW 「ひっ……！？　ちょっ、つ、冷たいですっ！！　やめて下さいっ……！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「あふぅ……なんだかこれ塗ってる時のご主人様の手付きが、凄くいやらしいです…♪」
+		PRINTFORMW 「あっ…もっと、下の方にも塗って下さぁい♪」
+		PRINTFORMW 美鈴は甘える様な口調で言うと、%CALLNAME:MASTER%の手を取って自らの秘所へと導いた。
+		CFLAG:7255 = 3
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「うぅっ……またそれですか？」
+		PRINTFORMW 「ま、まあ、無いよりはマシかも知れないですけど……やっぱり気持ち悪いですぅ」
+		PRINTFORMW 美鈴は涙目で言いながら、つやつやと光る自らの肢体を眺めた。
+		CFLAG:7255 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_61
+;初回のみ
+IF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んっ……んぢゅるっ……」
+		PRINTFORMW 美鈴は貪る様に口移しされた媚薬を飲み込むと、途端に腰が砕け地面に座り込んだ。
+		PRINTFORMW 「はぁぅっ……身体がぁ、頭があつぅいっ……熱くて蕩けちゃいますぅ……！！」
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「な、なんですかその薬はっ……もしかして、催淫剤の類っ……！！？」
+		PRINTFORMW 早々に薬の正体を察し、逃げようとする美鈴に、無理矢理薬を飲み込ませた。
+		PRINTFORMW 「ん゛っ！？　んむーーーっ！！！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「んっ……んぢゅるっ……」
+		PRINTFORMW 美鈴は貪る様に口移しされた媚薬を飲み込むと、途端に腰が砕け地面に座り込んだ。
+		PRINTFORMW 「はぁぅっ……身体がぁ、頭があつぅいっ……熱くて蕩けちゃいますぅ……！！」
+		CFLAG:7256 = 3
+	;それ以外（恋慕無し）
+	ELSE
+		PRINTFORMW 「いやぁ……その薬、もういやですぅ……」
+		PRINTFORMW 美鈴はべそをかきながらも、諦めた様子で大人しく薬を飲み込んだ。
+		CFLAG:7256 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_62
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用利尿薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「利尿薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_63
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用座薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「座薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@K6_MESSAGE_COM_64
+;初回のとき
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用座薬(膣)口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「座薬(膣)口上です」
+ENDIF
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_65
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用強精神薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「強精神薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@K6_MESSAGE_COM_66
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用排卵誘発剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「排卵誘発剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_67
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用緊急避妊薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「緊急避妊薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@K6_MESSAGE_COM_68
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用産卵促進剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「産卵促進剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@K6_MESSAGE_COM_69
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用陰核成長剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「陰核成長剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@K6_MESSAGE_COM_70
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用興奮剤口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「興奮剤口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_71
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手避妊薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手避妊薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@K6_MESSAGE_COM_72
+;初回の場合
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用感覚増幅薬口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「感覚増幅薬口上です」
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_80
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用クリトリス注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「クリトリス注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_81
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用ヴァギナ注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「ヴァギナ注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_82
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用アナル注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「アナル注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_83
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用バスト注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「バスト注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_84
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用尿道注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「尿道注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_85
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用Ｃ肥大注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「Ｃ肥大注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_86
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用Ｃ強精神薬注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「Ｃ強精神薬注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@K6_MESSAGE_COM_88
+;初回のみ
+IF TFLAG:95 == 1
+	;PRINTFORMW 「初回用採血注射口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「採血注射口上です」
+ENDIF
+
+;-------------------------------------------------
+;裸エプロン
+;-------------------------------------------------
+@K6_MESSAGE_COM_90
+;外す
+IF TEQUIP:59 == 0
+	;PRINTFORMW 「裸エプロン解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「わぁ……可愛いエプロンです♪」
+		PRINTFORMW 裸の上にエプロンと言う扇情的な身形をしながら
+		PRINTFORMW 美鈴はそんな事気にした様子も無く、くるっと一回転してみせる。
+		PRINTFORMW 「うふふ♪　なんだかこうしていると、ご主人様の奥さんになれた気分です♪」
+	;それ以外
+	ELSE
+		PRINTFORMW 「え？　そのエプロンを着けるんですか？　は、はぁ、そんな事なら……」
+		PRINTFORMW 「……え゛？　は、裸の上にって…！！　ちょっ、恥ずかし過ぎますってこれっ……！」
+	ENDIF
+;２回目以降
+ELSE
+	;恋慕
+	IF TALENT:TARGET:恋慕 == 1
+		PRINTFORMW 「えへへ♪　お帰りなさい、あ・な・た♪」
+		PRINTFORMW 美鈴はウィンクをしながら、誘うかの様に胸の谷間を強調するポーズをとった。
+		CFLAG:7367 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「う゛ぅ～…………」
+		PRINTFORMW 美鈴は恥ずかしげに唸りながら、部屋の隅で縮こまっている。
+		CFLAG:7367 = 2
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;-------------------------------------------------
+@K6_MESSAGE_COM_91
+;外す
+IF TEQUIP:59 == 0
+	;PRINTFORMW 「スク水プレイ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用スク水プレイ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「スク水プレイ口上です」
+ENDIF
+
+;-------------------------------------------------
+;お医者プレイ
+;-------------------------------------------------
+@K6_MESSAGE_COM_92
+;外す
+IF TEQUIP:57 == 0
+	;PRINTFORMW 「お医者プレイ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用お医者プレイ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「お医者プレイ口上です」
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;-------------------------------------------------
+@K6_MESSAGE_COM_93
+;脱ぐ
+IF  TEQUIP:59 == 0
+	;PRINTFORMW 「コスプレ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用コスプレ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「コスプレ口上です」
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;-------------------------------------------------
+@K6_MESSAGE_COM_94
+;外す
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 「助手コスプレ解除口上です」
+;初回のみ
+ELSEIF TFLAG:95 == 1
+	;PRINTFORMW 「初回用助手コスプレ口上です」
+;２回目以降
+ELSE
+	;PRINTFORMW 「助手コスプレ口上です」
+ENDIF

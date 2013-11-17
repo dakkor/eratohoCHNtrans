@@ -1,0 +1,6091 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;27をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;○○口上
+;==============================================================
+;========================================================
+;コマンド口上前の共通関数
+;特定の条件下でコマンド口上を表示させないようにする場合はRETURN 1を返す
+;========================================================
+@KOJO_27_TRAIN_MESSAGE_S_BEFORE
+;眠ってる場合は表示しない
+SIF EQUIP:14
+	RETURN 1
+;口枷がある場合は表示しない
+SIF TEQUIP:42
+	RETURN 1
+;失神回復時は表示しない
+SIF TFLAG:898 == 1
+	RETURN 1
+;精神崩壊の場合は表示しない
+SIF TALENT:167
+	RETURN 1
+
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;「IF TFLAG:95 == 1」で初回か2回目以降なのかで表示内容を変えることが出来る
+;========================================================
+;-------------------------------------------------
+;愛撫
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_0
+;コピペが大変になるので媚薬風呂には非対応です(キリッ
+;自分で付けたコメのはずなのに何のことか分けわかんね。こういうコメントはよくない例です。
+;初回実行時
+IF TFLAG:95 == 1
+;	PRINTFORMW 
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あー、ほんと。永遠亭でだらだら暮らしてる頃はこんなことされるとは思ってもなかったわ」
+					PRINTFORMW 『その頃は悪戯される度てゐをこうやってなかせてあげようとか考えてたわよ』
+					PRINTFORMW 「……よ、よかったわ。あの頃の鈴仙にそういう度胸がなくて」
+					CFLAG:8800 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あー、ほんと。永遠亭でだらだら暮らしてる頃はこんなことされるとは思ってもなかったわ」
+					PRINTFORMW 『え、あ、そうだったの？』
+					PRINTFORMW 「……何なのよこの反応。あたしどういう目で見られてたワケ？」
+					CFLAG:8800 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「な、なんかえろい事しようってんじゃなくて実験台にでもされる気分なんですけど」
+					PRINTFORMW 『あら？　私はそのつもりだけど？』
+					PRINTFORMW 「ッ！　ちょっ！　冗談に聞こえないからやめてってばー！」
+					CFLAG:8801 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「な、なんかえろい事しようってんじゃなくて実験台にでもされる気分なんですけど」
+					PRINTFORMW 『私ってそういったマッドな雰囲気があるのかしら……ちょっと落ち込むわね』
+					PRINTFORMW 「まあ服装からしてマッド一直線ですからね」
+					PRINTFORMW 『……てゐ？　ちょっと永琳お姉さんやる気出ちゃったわよ？』
+					PRINTFORMW （ぎゃー！！　藪蛇だったー！！！）
+					CFLAG:8801 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あー。なんかちょっとドキドキしてきましたよ姫様」
+					PRINTFORMW 『そんなにヘンなことするわけじゃないんだから、リラックスなさいな』
+					PRINTFORMW 「こういう行為に疎そうな姫様のことですし、何するかわかんないなぁと」
+					PRINTFORMW 『あのねえ、私一応ご主人様直々に調教受けてるんだけど？』
+					CFLAG:8802 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あー。なんかちょっとドキドキしてきましたよ姫様」
+					PRINTFORMW 『大丈夫よ。出来る限り痛くないように気をつけるから』
+					PRINTFORMW 「え、いやちょっと待ってくださいってっ！　何で痛いことするのが前提になってるのよー！」
+					CFLAG:8802 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「アンタがこうやってあたしに手を出してくる日が来るとは夢にも思わなかったわ」
+					PRINTFORMW 『それはこっちもよ』
+					PRINTFORMW 「案外上手いなー。その指で姫様やハクタクとネチョネチョするの？」
+					PRINTFORMW 『私のこと何か誤解してない？』
+					CFLAG:8803 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「アンタがこうやってあたしに手を出してくる日が来るとは夢にも思わなかったわ」
+					PRINTFORMW 『そうね……復讐するって言っても、こういった方法は考えたこともなかったし』
+					PRINTFORMW 「アンタが姫様にこういう復讐やったとしても、姫様ってこういうのすら楽しみそうだけどね」
+					CFLAG:8803 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+				PRINTFORMW 「んっ、あっ……はあぁっ。ご主人様ぁ、もっとイッパイお願いしますっ」
+			;その他の場合
+			ELSE
+				;Ｃ感覚Lv3以上
+				IF ABL:Ｃ感覚 >= 3
+					PRINTFORMW 「あは……手つきやらしいわねアンタ」
+					PRINTFORMW （それがいいって思うようになってんだから、あたしも十分やらしいわね）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ほらほら、ガンバってあたしを気持ちよくさせてみなさいよね」
+				ENDIF
+			ENDIF
+		;服従かつ隷属
+		ELSEIF TALENT:服従 == 1 && TALENT:隷属 == 1
+			PRINTFORMW 「ご主人様、その……嬉しいんですけど、あたしがやんなくていいんですか？」
+			PRINTFORMW 「あたしなら、ご主人様をずっとずっとキモチよくしてあげられますよ！」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あっ、ひぁっ！　れーせん……んちゅっ、ふぁ」
+					PRINTFORMW 『こういうてゐも悪くはない……のかなぁ』
+					CFLAG:8800 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あっ、ひぁっ！　れーせん……んちゅっ、ふぁ」
+					PRINTFORMW 『てゐ……これだけでもそんなに感じちゃうの？』
+					CFLAG:8800 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ほら、てゐ。こっちに来なさい』
+					PRINTFORMW 「お師匠様ぁ……何するんですかぁ？」
+					PRINTFORMW 『……少し複雑な気分ですね、こんなに従順っていうのもこの子らしくなくて』
+					CFLAG:8801 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『こっちに来てちょうだい。してあげる』
+					PRINTFORMW 「ん……ふぁい、お師匠様ぁ」
+					PRINTFORMW 『ごめんなさい、てゐ……』
+					CFLAG:8801 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『多少なりとも矯正が必要では？　これじゃ、元飼い主としては立つ瀬がありませんもの』
+					PRINTFORMW 「気持ちよければあたしはそれでいいんですけどねぇ……」
+					CFLAG:8802 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『……私もこうなる、ってことなの？』
+					PRINTL 「住めば都って言いますし、ここでアイツに気持ちよくしてもらうのもいいんじゃないですか？
+					PRINTFORMW 　ほら、ちょっと触られただけでこんなになっちゃうんですよ……♪」
+					CFLAG:8802 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「姫様といつも喧嘩してるの見てると、ギャップがスゴいわね……あっ、か、そこ噛むのいいっ♪」
+					PRINTFORMW 『う、うるさいなぁ……いいでしょ別に』
+					CFLAG:8803 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「姫様といつも喧嘩してるの見てると、ギャップがスゴいわね……あっ、か、そこ噛むのいいっ♪」
+					PRINTFORMW 『……こうなりたくはなかったんだけどねえ』
+					CFLAG:8803 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+				;服従である
+				IF TALENT:服従 == 1
+					PRINTFORMW 「ご主人様、その……嬉しいんですけど、あたしがやんなくていいんですか？」
+					PRINTFORMW 「あたしなら、ご主人様をずっとずっとキモチよくしてあげられますよ！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あ、やぁっ！　ご主人様激しっ、きゃんっ♪」
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、あっ♪　アンタがちゃんと責任もってぇ、キモチよくしなさいよねっ！」
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「鈴仙も不憫よねえ、あんな男に口ではとても言えないようなことされちゃったなんてさあ」
+				PRINTFORMW 『そういうタブーは破った時の快感が大きいわけじゃない』
+				PRINTFORMW 「相手を選びなさいよって話よ」
+				CFLAG:8800 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「鈴仙も不憫よねえ、あんな男に口ではとても言えないようなことされちゃったなんてさあ」
+				PRINTFORMW 『べ、別にそんなにひどいことはされてないし！』
+				PRINTFORMW 「動揺し過ぎ。心当たりあんでしょ」
+				PRINTFORMW 『う……』
+				CFLAG:8800 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「お師匠様ってこういうの好みなんですね」
+				PRINTFORMW 『まあ姫様とも色々あったからねえ』
+				PRINTFORMW 「いやそれは知ってるんですけど」
+				PRINTFORMW 『あら……覗き見でもしてたのかしら』
+				PRINTFORMW 「障子全開で姫様とくんずほぐれつされて、気付かない方がどうかと思いますけど」
+				PRINTFORMW 『そ、そんなことあったかしら……』
+				CFLAG:8801 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お師匠様ってこういうの好みなんですね」
+				PRINTFORMW 『好み……ってわけじゃないわね』
+				PRINTFORMW 「好きじゃないならやめればいいのにって言いたいです」
+				PRINTFORMW 『残念だけどそれは無理なのよ。だって好きになるようにやらされてるんですもの』
+				CFLAG:8801 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「姫様もすっかり染まっちゃってまあ」
+				PRINTFORMW 『ふふっ、仕方がないわ。ご主人様は黒、どんな色にも負けないんだもの』
+				PRINTFORMW 「染まるにしてももうちょっとマシな色になってほしかったところですけどー」
+				CFLAG:8802 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なっ、なんか姫様にこういうことされるのって妙な感じがしますよ」
+				PRINTFORMW 『まあ私もこういった痴れ事とは無縁だと思っていたからねえ……』
+				CFLAG:8802 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「こういうのする相手、もう少し選んだ方がいいんじゃない？　アイツのこと好きなら好きで、いいとしてもさ」
+				PRINTFORMW 『ご主人様がしてくれって言ったんだ。ご主人様が喜ぶ顔が見れれば私はそれでいい』
+				PRINTFORMW 「はぁ、恋は盲目とはよく言ったもんだわ。ミスティアに鳥目にされたんじゃないの？」
+				CFLAG:8803 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「こういうのする相手、もう少し選んだ方がいいんじゃない？」
+				PRINTFORMW 『そりゃ、迷いが無いわけじゃないけどね』
+				PRINTFORMW 「迷いながらもだらだら流されてる。ばっかみたい」
+				CFLAG:8803 = 1
+			ENDIF
+		;Ｃ感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「やっ、そこらめだってえっ！　むぐっ！　んーっ！」
+			PRINTFORMW （あ、あれ？　あたしちょっと声出過ぎじゃない？）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うげっ、気持ち悪っ。ちょっ、そんなとこ触んないでよ！」
+			PRINTFORMW 慣れない感覚と嫌悪感に耐えられないのか、じたばたと暴れている。
+		ENDIF
+		RETURN 0
+;2回目以降
+ELSE
+;	PRINTFORMW 
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8000 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（鈴仙）
+					IF CFLAG:8800 == 1
+						PRINTFORMW 『さて、っと。てゐー、おっぱいとクリとどっちがいいー？』
+						PRINTFORMW 「うげ、そういうの聞くかな普通。存外意地悪になったわね、鈴仙も」
+						PRINTFORMW 『てゐに言われたくはないけどね』
+					;その他の場合
+					ELSE
+						CFLAG:8800 = 1
+						PRINTFORMW 「あー、ほんと。永遠亭でだらだら暮らしてる頃はこんなことされるとは思ってもなかったわ」
+						PRINTFORMW 『その頃は悪戯される度てゐをこうやってなかせてあげようとか考えてたわよ』
+						PRINTFORMW 「……よ、よかったわ。あの頃の鈴仙にそういう度胸がなくて」
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（鈴仙）
+					IF CFLAG:8800 == 1
+						PRINTFORMW 『てゐもこうやってる分にはかわいいんだけどなぁ』
+						PRINTFORMW 「なによ、いつものあたしじゃかわいくないってえの？」
+						PRINTFORMW 『うん』
+						PRINTFORMW 「……はっきり言うようになったわねえ」
+					;その他の場合
+					ELSE
+						CFLAG:8800 = 1
+						PRINTFORMW 「あー、ほんと。永遠亭でだらだら暮らしてる頃はこんなことされるとは思ってもなかったわ」
+						PRINTFORMW 『え、あ、そうだったの？』
+						PRINTFORMW 「……何なのよこの反応。あたしどういう目で見られてたワケ？」
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（永琳）
+					IF CFLAG:8801 == 1
+						PRINTL 『さあ全国四千万のてゐちゃんファンの皆様ぁ、
+						PRINTL 　どっちのてゐちゃんでSHOWの時間がやってまいりました～！
+						PRINTFORMW 　司会は私、八意永琳17歳☆』
+						PRINTFORMW 「……お師匠様。あたしが言うのもなんですけど、他人を騙すコツとか教えましょうか？」
+						PRINTFORMW 『てゐちゃんのおっぱいか！　それともてゐちゃんのあそこか！　今日のてゐちゃんはDOTCH!』
+						PRINTFORMW 「うわ完全にスルーしてるし！　幾らなんでも17歳はどうなのってあ、ちょ、やめっ、アッー！！」
+					;その他の場合
+					ELSE
+						CFLAG:8801 = 1
+						PRINTFORMW 「な、なんかえろい事しようってんじゃなくて実験台にでもされる気分なんですけど」
+						PRINTFORMW 『あら？　私はそのつもりだけど？』
+						PRINTFORMW 「ッ！　ちょっ！　冗談に聞こえないからやめてってばー！」
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（永琳）
+					IF CFLAG:8801 == 1
+						PRINTFORMW 『あの人に好きにしていいとは言われたけど、どう好きにしていいものだか困るわねえ……』
+						PRINTFORMW 「調教師の助手と調教対象なわけですから、適当にえろい事やってればいいんじゃないですか」
+						PRINTFORMW 『成る程……ということは、ええと』
+						PRINTFORMW 「いやなんでそこで注射器持ってくるんですか！？　普通に手でいじってもらえばそれでいいですってば！」
+					;その他の場合
+					ELSE
+						CFLAG:8801 = 1
+						PRINTFORMW 「な、なんかえろい事しようってんじゃなくて実験台にでもされる気分なんですけど」
+						PRINTFORMW 『私ってそういったマッドな雰囲気があるのかしら……ちょっと落ち込むわね』
+						PRINTFORMW 「まあ服装からしてマッド一直線ですからね」
+						PRINTFORMW 『……てゐ？　ちょっと永琳お姉さんやる気出ちゃったわよ？』
+						PRINTFORMW （ぎゃー！！　藪蛇だったー！！！）
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（輝夜）
+					IF CFLAG:8802 == 1
+						PRINTFORMW 『大丈夫よ、すぐ良くしてあげる』
+						PRINTFORMW 「あぅ、くひっ！　んはぁ……」
+						PRINTFORMW 『あらあら。結構弱いのね、かわいいわよ』
+					;その他の場合
+					ELSE
+						CFLAG:8802 = 1
+						PRINTFORMW 「あー。なんかちょっとドキドキしてきましたよ姫様」
+						PRINTFORMW 『そんなにヘンなことするわけじゃないんだから、リラックスなさいな』
+						PRINTFORMW 「こういう行為に疎そうな姫様のことですし、何するかわかんないなぁと」
+						PRINTFORMW 『あのねえ、私一応ご主人様直々に調教受けてるんだけど？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（輝夜）
+					IF CFLAG:8802 == 1
+						PRINTFORMW 『そういえば、一応兎も人型だし感じるところって同じなのかしら？』
+						PRINTFORMW 「まあ、多分大体同じだと思いますよ」
+						PRINTFORMW 『そう。なら私が気持ちいいところを踏まえてやっていけばいいのね』
+					;その他の場合
+					ELSE
+						CFLAG:8802 = 1
+						PRINTFORMW 「あー。なんかちょっとドキドキしてきましたよ姫様」
+						PRINTFORMW 『大丈夫よ。出来る限り痛くないように気をつけるから』
+						PRINTFORMW 「え、いやちょっと待ってくださいってっ！　何で痛いことするのが前提になってるのよー！」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（妹紅）
+					IF CFLAG:8803 == 1
+						PRINTFORMW 『よくわかんないんだけどさ、上手く出来てる？』
+						PRINTFORMW 「う、うん。きもちい……んちゅっ、ぷぁ……」
+						PRINTFORMW 『んっ……そっか。それならいいんだ』
+						PRINTFORMW （やたらキス上手いし……やっぱりアイツに仕込まれたのかなぁ）
+					;その他の場合
+					ELSE
+						CFLAG:8803 = 1
+						PRINTFORMW 「アンタがこうやってあたしに手を出してくる日が来るとは夢にも思わなかったわ」
+						PRINTFORMW 『それはこっちもよ』
+						PRINTFORMW 「案外上手いなー。その指で姫様やハクタクとネチョネチョするの？」
+						PRINTFORMW 『私のこと何か誤解してない？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（妹紅）
+					IF CFLAG:8803 == 1
+						PRINTFORMW 『よくわかんないんだけどさ、上手く出来てる？』
+						PRINTFORMW 「んー……もうちょっと強くしてもいいかも」
+						PRINTFORMW 『そっか。ごめん、加減がわからないんだよ。兎の身体のこと知らないからさ』
+					;その他の場合
+					ELSE
+						CFLAG:8803 = 1
+						PRINTFORMW 「アンタがこうやってあたしに手を出してくる日が来るとは夢にも思わなかったわ」
+						PRINTFORMW 『そうね……復讐するって言っても、こういった方法は考えたこともなかったし』
+						PRINTFORMW 「アンタが姫様にこういう復讐やったとしても、姫様ってこういうのすら楽しみそうだけどね」
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+				PRINTFORMW 「ご主人様ぁ……触るだけじゃ足りないんです、ご主人様のがほしくてたまんないんですっ」
+				PRINTFORMW （ご主人様とずっと一緒に居られたら、シアワセなんだけどなぁ）
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぁ……アンタって結構キス好きよね」
+				PRINTFORMW 「キスは愛されてるって気がしてくるから好きなの」
+				PRINTFORMW （まあ、コイツの場合そうしてても売る気かもしんないけどさ）
+				PRINTFORMW （売る気なくなるくらい、メロメロにしてやんだから）
+			ENDIF
+;			CFLAG:8000 = 9
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8000 <= 7)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（鈴仙）
+					IF CFLAG:8800 == 1
+						PRINTFORMW 「れーせんっ、もっとしてぇ！　あっ、ああぅ！」
+						PRINTFORMW 『何にも考えなくていいくらい、してあげるからね……ちゅっ』
+					;その他の場合
+					ELSE
+						CFLAG:8800 = 1
+						PRINTFORMW 「あっ、ひぁっ！　れーせん……んちゅっ、ふぁ」
+						PRINTFORMW 『こういうてゐも悪くはない……のかなぁ』
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（鈴仙）
+					IF CFLAG:8800 == 1
+						PRINTFORMW 「れーせんっ、もっとしてぇ！　あっ、ああぅ！」
+						PRINTFORMW 『もう元には戻れないのかなぁ……こんなに変わっちゃって』
+					;その他の場合
+					ELSE
+						CFLAG:8800 = 1
+						PRINTFORMW 「あっ、ひぁっ！　れーせん……んちゅっ、ふぁ」
+						PRINTFORMW 『てゐ……これだけでもそんなに感じちゃうの？』
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（永琳）
+					IF CFLAG:8801 == 1
+						PRINTFORMW 「あっ、やっ！　そこすごくイイよぉ、お師匠様ぁ！」
+						PRINTFORMW 『……少しだけ時間を頂戴。それまでは……ね』
+					;その他の場合
+					ELSE
+						CFLAG:8801 = 1
+						PRINTFORMW 『ほら、てゐ。こっちに来なさい』
+						PRINTFORMW 「お師匠様ぁ……何するんですかぁ？」
+						PRINTFORMW 『……少し複雑な気分ですね、こんなに従順っていうのもこの子らしくなくて』
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（永琳）
+					IF CFLAG:8801 == 1
+						PRINTFORMW 「あっ、やっ！　そこすごくイイよぉ、お師匠様ぁ！」
+						PRINTFORMW 『もう暫く待っていて、必ず元に戻してあげる』
+					;その他の場合
+					ELSE
+						CFLAG:8801 = 1
+						PRINTFORMW 『こっちに来てちょうだい。してあげる』
+						PRINTFORMW 「ん……ふぁい、お師匠様ぁ」
+						PRINTFORMW 『ごめんなさい、てゐ……』
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（輝夜）
+					IF CFLAG:8802 == 1
+						PRINTFORMW 『てゐはご主人様の奴隷でしょう。自分の快楽を奉仕より優先しては意味がないわ』
+						PRINTL 「姫様はアイツのことが好きだからそう思うだけでしょ？
+						PRINTFORMW 　あたしは気持ちよければ何でもいいんですよ」
+					;その他の場合
+					ELSE
+						CFLAG:8802 = 1
+						PRINTL 『多少なりとも矯正が必要では？
+						PRINTFORMW 　これじゃ、元飼い主としては立つ瀬がありませんもの』
+						PRINTFORMW 「気持ちよければあたしはそれでいいんですけどねぇ……」
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（輝夜）
+					IF CFLAG:8802 == 1
+						PRINTFORMW 『……こうは、なりたくないものね』
+						PRINTFORMW 「抗うだけ無駄ですよ、ほらぁ……アイツの命令なんですから、気持ちよくしてください……♪」
+					;その他の場合
+					ELSE
+						CFLAG:8802 = 1
+						PRINTFORMW 『……私もこうなる、ってことなの？』
+						PRINTL 「住めば都って言いますし、ここでアイツに気持ちよくしてもらうのもいいんじゃないですか？
+						PRINTFORMW 　ほら、ちょっと触られただけでこんなになっちゃうんですよ……」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;愛撫（妹紅）
+					IF CFLAG:8803 == 1
+						PRINTL 「姫様にもしてあげれば？　お師匠様とたまにこういうことしてたし、
+						PRINTFORMW 　案外喜ばれるんじゃ……ん、ちぅ……んふ……」
+						PRINTFORMW 『アイツに喜ばれてもなぁ……』
+					;その他の場合
+					ELSE
+						CFLAG:8803 = 1
+						PRINTFORMW 「姫様といつも喧嘩してるの見てると、ギャップがスゴいわね……
+						PRINTL 　あっ、か、そこ噛むのいいっ♪」
+						PRINTFORMW 『う、うるさいなぁ……いいでしょ別に』
+					ENDIF
+				;その他の場合
+				ELSE
+					;愛撫（妹紅）
+					IF CFLAG:8803 == 1
+						PRINTL 「姫様にもしてあげれば？　お師匠様とたまにこういうことしてたし、
+						PRINTFORMW 　案外喜ばれるんじゃ……ん、ちぅ……んふ……」
+						PRINTFORMW 『な、なんか聞いちゃいけないこと聞いた気がするんだけど』
+					;その他の場合
+					ELSE
+						CFLAG:8803 = 1
+						PRINTFORMW 「姫様といつも喧嘩してるの見てると、ギャップがスゴいわね……
+						PRINTL 　あっ、か、そこ噛むのいいっ♪」
+						PRINTFORMW 『……こうなりたくはなかったんだけどねえ』
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+				;服従である
+				IF TALENT:服従 == 1
+					PRINTFORMW 「あ、ごしゅじんっ…さ、…や、ぁ！　はー、はーっ」
+					PRINTFORMW こちらに奉仕しようという意志を見せるも、開発されきった身体に抗いきれないようだ。
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やっ…はぁあ……ごしゅ、じんさまぁ……」
+					PRINTFORMW 一度に何箇所も責められ言葉を出す余裕もないようだ。
+				ENDIF
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はっ、はっ、は……くぁ、ぷちゅ……ちゅる」
+			ENDIF
+;			CFLAG:8000 = 8
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8000 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;愛撫（鈴仙）
+				IF CFLAG:8800 == 1
+					PRINTFORMW 『どっちがいいかとか全然言わないし、じゃー両方って事でいいよね？』
+					PRINTFORMW 「……勝手にすれば」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙も不憫よねえ、あんな男に口ではとても言えないようなことされちゃったなんてさあ」
+					PRINTFORMW 『そういうタブーは破った時の快感が大きいわけじゃない』
+					PRINTFORMW 「相手を選びなさいよって話よ」
+					CFLAG:8800 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;愛撫（鈴仙）
+				IF CFLAG:8800 == 1
+					PRINTFORMW 『てゐも黙ってれば結婚相手の一人や二人困らなかったんじゃない？』
+					PRINTFORMW 「……うっさいわね」
+					PRINTFORMW （ああ、もう。鈴仙のせいでヤな事思い出しちゃったじゃない。）
+					PRINTFORMW （なんでこういうときに大国様のこと思い出すかな……余計につらくなっちゃうじゃない）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙も不憫よねえ、あんな男に口ではとても言えないようなことされちゃったなんてさあ」
+					PRINTFORMW 『べ、別にそんなにひどいことはされてないし！』
+					PRINTFORMW 「動揺し過ぎ。心当たりあんでしょ」
+					PRINTFORMW 『う……』
+					CFLAG:8800 = 1
+				ENDIF
+			ENDIF
+;			CFLAG:8000 = 7
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8000 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;愛撫（永琳）
+				IF CFLAG:8801 == 1
+					PRINTFORMW 『帰ることがあったら、永遠亭の改築を検討すべきね』
+					PRINTFORMW 「今更改築したところで隠せるわけでもないんじゃ……」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様ってこういうの好みなんですね」
+					PRINTFORMW 『まあ姫様とも色々あったからねえ』
+					PRINTFORMW 「いやそれは知ってるんですけど」
+					PRINTFORMW 『あら……覗き見でもしてたのかしら』
+					PRINTFORMW 「障子全開で姫様とくんずほぐれつされて、気付かない方がどうかと思いますけど」
+					CFLAG:8801 = 1
+				ENDIF
+			;効果[媚薬]
+			ELSEIF TEQUIP:11 == 1
+				PRINTFORMW 「っ、お師匠様って案外プライドとかないタイプなんですね」
+				PRINTFORMW 『違うわね、てゐ。”手段を選ばない”のよ』
+				PRINTFORMW （やば。この展開はマズいわ……）
+				CFLAG:8801 = 1
+			;その他の場合
+			ELSE
+				;愛撫（永琳）
+				IF CFLAG:8801 == 1
+					PRINTFORMW 「お師匠様、得意の薬は使わないんで？」
+					PRINTFORMW 『まるで私は薬を使わないとダメって言いたげね』
+					PRINTFORMW 「あれ、違うんですか？」
+					PRINTFORMW （お師匠様の媚薬なんか使われちゃたまんないよ！　挑発でもして使わせないようにしないと）
+					CFLAG:7802 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様ってこういうの好みなんですね」
+					PRINTFORMW 『好み……ってわけじゃないわね』
+					PRINTFORMW 「好きじゃないならやめればいいのにって言いたいですけど」
+					PRINTFORMW 『残念だけどそれは無理なのよ。だって好きになるようにやらされてるんですもの』
+					CFLAG:8801 = 1
+				ENDIF
+			ENDIF
+;			CFLAG:8000 = 6
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8000 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;愛撫（輝夜）
+				IF CFLAG:8802 == 1
+					PRINTFORMW 「不思議なことに姫様にはあんまり失望とかしないんですよ」
+					PRINTFORMW 『あら？　私が助けるかもってこと？』
+					PRINTFORMW 「逆です。大体いつもこんな感じだよねーと」
+					PRINTFORMW 『……それなりに自覚あるから言い返せないわね』
+				;その他の場合
+				ELSE
+					CFLAG:8802 = 1
+					PRINTFORMW 「姫様もすっかり染まっちゃってまあ」
+					PRINTFORMW 『ふふっ、仕方がないわ。ご主人様は黒、どんな色にも負けないんだもの』
+					PRINTFORMW 「染まるにしてももうちょっとマシな色になってほしかったところですけどー」
+				ENDIF
+			;その他の場合
+			ELSE
+				;愛撫（輝夜）
+				IF CFLAG:8802 == 1
+					PRINTFORMW 「姫様ー」
+					PRINTFORMW 『なによ、やめてって話なら聞かないわよ』
+					PRINTFORMW 「いや、ド下手ですねって言おうと思って」
+					PRINTFORMW 『は、はっきり言うわね……』
+					PRINTFORMW 「ええ、だから無駄だと思いますよホント」
+					PRINTFORMW 『しょうがないじゃない、永琳と”する”時だって私が”される”側だったんだから』
+				;その他の場合
+				ELSE
+					CFLAG:8802 = 1
+					PRINTFORMW 「なっ、なんか姫様にこういうことされるのって妙な感じがしますよ」
+					PRINTFORMW 『まあ私もこういった痴れ事とは無縁だと思っていたからねえ……』
+				ENDIF
+			ENDIF
+;			CFLAG:8000 = 5
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8000 <= 3)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;愛撫（妹紅）
+				IF CFLAG:8803 == 1
+					PRINTFORMW 『私が傷とかあんまり気にしないでいい体質だからさ。どれくらいの力入れるのがいいのかわからないの』
+					PRINTFORMW 「それならやめてくれると嬉しいんだけど」
+					PRINTFORMW 『まあ頑張ってみるよ、痛かったらすぐに言ってよね』
+					PRINTFORMW （対応に困るタイプねえ……適当に痛い痛いって言ってればやめてくれたりしないかな）
+				;その他の場合
+				ELSE
+					CFLAG:8803 = 1
+					PRINTFORMW 「こういうのする相手、もう少し選んだ方がいいんじゃない？　アイツのこと好きなら好きで、いいとしてもさ」
+					PRINTFORMW 『ご主人様がしてくれって言ったんだ。ご主人様が喜ぶ顔が見れれば私はそれでいい』
+					PRINTFORMW 「はぁ、恋は盲目とはよく言ったもんだわ。ミスティアに鳥目にされたんじゃないの？」
+				ENDIF
+			;その他の場合
+			ELSE
+				;愛撫（妹紅）
+				IF CFLAG:8803 == 1
+					PRINTFORMW 『あのさ、あんたの耳触っていい？』
+					PRINTFORMW 「まあ、千切ったりしてくれなきゃ大丈夫だけど」
+					PRINTFORMW 『そっか！　じゃあちょっと触らせてよ。うわ、ふかふか！　柔らかいなぁ！』
+					PRINTFORMW （調子狂うなぁ……）
+				;その他の場合
+				ELSE
+					CFLAG:8803 = 1
+					PRINTFORMW 「こういうのする相手、もう少し選んだ方がいいんじゃない？」
+					PRINTFORMW 『そりゃ、迷いが無いわけじゃないけどね』
+					PRINTFORMW 「迷いながらもだらだら流されてる。ばっかみたい」
+				ENDIF
+			ENDIF
+;			CFLAG:8000 = 4
+		;Ｃ感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3 && (CFLAG:8000 <= 2)
+			PRINTFORMW 「え、ちょっと……なんでこんなにっ……んひぃっ！」
+			PRINTFORMW （なんでこんなに気持ちいいのよっ！　意味わかんないっ！）
+;			CFLAG:8000 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「だから気安く触んないでよっ！　鬱陶しいわね！」
+;			CFLAG:8000 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_1
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『うわぁ……』
+					PRINTFORMW 「ちょっと！　人の見て『うわぁ』なんて言わないでよ！　恥ずかしくなってくるじゃない！」
+					CFLAG:8810 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『私こういうの見慣れてないんだけどさ。生えてないのって普通なの？』
+					PRINTFORMW 「ッ！」
+					PRINTFORMW てゐは顔を真っ赤にして俯いている。
+					PRINTFORMW 鈴仙にクンニされていることよりも恥ずかしさの方が勝っているようだ。
+					CFLAG:8810 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ふふ、こうやってあなたを手玉にとるのもなかなか楽しいわね』
+					PRINTFORMW 「……うー」
+					PRINTFORMW 『不満そうね？　ご主人様じゃないとダメかしら？』
+					PRINTFORMW 「うぇ！？　いっ、いやそんな事はないと思いますよ！？」
+					PRINTFORMW 『あらあら』
+					CFLAG:8811 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『あなたとこういう事をすることになるとはね、あの頃は想像もしていなかったわ……』
+					PRINTL 「いや、あたしはそのうちやられるんじゃないかなーって思ってましたよ。
+					PRINTFORMW 　お師匠様って思いついたら何でも即やるタイプに見えるんで」
+					CFLAG:8811 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『奉仕する側って本当なら逆じゃないかしら』
+					PRINTFORMW 「いやこれ奉仕じゃなくて調教ですし」
+					CFLAG:8812 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ねえ、ちゃんと洗ってるんでしょうね？』
+					PRINTFORMW 「勿論ですよ、姫様に舐めていただくのに失礼があったらいけませんし」
+					PRINTFORMW 『何故かしら。てゐが言うと嘘に聞こえるのよ』
+					PRINTFORMW 「……いやほんとに洗ってますから。%CALLNAME:MASTER%も知ってますって」
+					CFLAG:8812 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『あのさ、舌の上で少しだけ火を出してから舐めると新感覚になりそうじゃない？』
+					PRINTFORMW 「うわ、ちょっとそれ怖いからやめてよ。あたしでさえやられたらさすがに泣くと思う」
+					PRINTFORMW 『そうか……いい案だと思ったんだがなぁ』
+					PRINTFORMW 「そもそも舌の上で発火なんて出来るの？」
+					PRINTFORMW 『さあ？』
+					CFLAG:8813 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ひたへらめつづけるのっへ、へっほうふたれるね』
+					PRINTFORMW 「舐めるか喋るかどっちかにしなよ」
+					CFLAG:8813 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;Ｃ感覚Lv3以上
+				IF ABL:Ｃ感覚 >= 3
+					PRINTFORMW 「あー、ぅあ、んあぁ……」
+					PRINTFORMW 言葉を作る余裕がないらしい。
+					PRINTFORMW 口の端からよだれを垂らしているのにすら気付いていないようだ。
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やだ、くすぐった……あははは！」
+					PRINTFORMW まだあまり感度は良くないようだ。
+					PRINTFORMW しばらくいじってやる必要があるだろう。
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「れーせんそこもっと吸って……あっ、あっ！　はぁ、ふぁ」
+					PRINTFORMW 『前よりワガママになってる気がするわ……』
+					CFLAG:8810 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「れーせんそこもっと吸って……あっ、あっ！　はぁ、ふぁ」
+					PRINTFORMW 『ちゅ……まったく、だらしなくなったわね。こんなにしてっ……』
+					CFLAG:8810 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「ふふ、お師匠様があたしの股間舐めてるなんて、ぞくぞくしますね」
+					PRINTFORMW 『まあ多少なりとも負い目もあることだしね』
+					CFLAG:8811 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ふふ、お師匠様があたしの股間舐めてるなんて、ぞくぞくしますね」
+					PRINTFORMW 『……治るまでは、そうして優越感に浸っているといいわ』
+					CFLAG:8811 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『盛るのもいいけど程ほどになさいな』
+					PRINTFORMW 「えー、こうしたアイツが悪いんであってあたしは悪くないですよ」
+					CFLAG:8812 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『兎の発情期ってこんななのかしら』
+					PRINTFORMW 「まあ兎って年中発情期ですし」
+					CFLAG:8812 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あ、そこっ♪　くりくりってぇ……きもちいーよぉ……」
+					PRINTFORMW 『そりゃ良かったね、もうちょっと色々試してあげよっか』
+					CFLAG:8813 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あ、そこっ♪　くりくりってぇ……きもちいーよぉ……」
+					PRINTFORMW 『……貴方って永遠亭でもこんなだったの？』
+					CFLAG:8813 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うあぁ、舐められるのすごくいい……ねえ、もっといっぱい舐めてぇ」
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『ふふっ、てゐのココ……つるっつるで可愛いわ』
+				PRINTFORMW 「ひぅん！　ちょ、まってへぇっ！」
+				PRINTFORMW （ううっ、覚えてなさいよ鈴仙ー！）
+				CFLAG:8810 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『いいなぁ。子供っぽくはあるけど、水着とか着るとき処理しなくて楽だよね』
+				PRINTFORMW 「……出るなら今すぐ小便ひっかけてあげたい気分だわ」
+				CFLAG:8810 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『あら、あなたって生えてなかったのね』
+				PRINTFORMW 「……あー、はい」
+				PRINTFORMW 『見た目相応ということかしら。面白いわね』
+				CFLAG:8811 = 1
+			;その他の場合
+			ELSE
+				PRINTL 『クリトリスはペニスと比較して極端に小さい。
+				PRINTL 　けれど神経はペニスと同じように詰まってる。
+				PRINTFORMW 　だからクリトリスが敏感なのは当たり前の話なのよね』
+				PRINTFORMW 「えーと、つまり何が言いたいんでしょうか」
+				PRINTFORMW 『我慢しなくてもいいわよ、って事。恥ずかしいことではなくて、むしろ当然なのだから』
+				PRINTFORMW 「まああたしにもそれなりにプライドって物がありますから」
+				CFLAG:8811 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『てゐは、ご主人様の物になる気はないの？』
+				PRINTFORMW 「あるわけっ……ないじゃないですか」
+				PRINTFORMW 『ふーん。私の言うこと聞けないんだ？　じゃあもっといじめてあげるわ』
+
+				CFLAG:8812 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「その気はなかったんですけど、こうしてあたしのを舐めてる姫様見てるとちょっとくらっとくるかも」
+				PRINTFORMW 『あら。それじゃあ気兼ねせずやっていいのかしら？』
+				CFLAG:8812 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『それじゃ、舐めるよ』
+				PRINTFORMW 「……」
+				PRINTFORMW 『つれないね、まあ当然なんだろうけどさ』
+				CFLAG:8813 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『それじゃ、舐めるよ』
+				PRINTFORMW 「……」
+				PRINTFORMW 『まあ不快なだけだろうし、せめて早く終われるよう気張ってみるよ』
+				PRINTFORMW （そんなところに気を遣うくらいなら私と一緒に逃げようくらい言ってくれればいいのにさ）
+				CFLAG:8813 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;Ｃ感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「うぁ……あたしのあそこ、バカになりそ……」
+			PRINTFORMW （ぬるぬるしたのが這い回ってる……気持ち悪いはずなんだけど、なんかヘンだ……）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うげ、変態っ！　なんでそういう発想が出てくんのよ！」
+			PRINTFORMW 
+			PRINTFORMW げしげしと足で押し返そうとしてくるが、気にせず舐めてぬらしていく。
+		ENDIF
+		CFLAG:8001= 1
+		RETURN 0
+ELSE
+;2回目以降
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8001 <= 9)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（鈴仙）
+					IF CFLAG:8810 == 1
+						PRINTFORMW 『でもさ、んっ。舐めてる側としてはこの方が……楽でいいかも』
+						PRINTFORMW 「フォローになってないし……うわ、れーせん顔やらしぃ……」
+					;その他の場合
+					ELSE
+						CFLAG:8810 = 1
+						PRINTFORMW 『うわぁ……』
+						PRINTFORMW 「ちょっと！　人の見て『うわぁ』なんて言わないでよ！　恥ずかしくなってくるじゃない！」
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（鈴仙）
+					IF CFLAG:8810 == 1
+						PRINTFORMW 『んちゅ、ちゅ……ぺろ……』
+						PRINTFORMW 鈴仙は一心不乱にてゐにクンニをしている。
+						PRINTFORMW てゐはといえば、その鈴仙の様子を見て邪な笑みを浮かべている。
+						PRINTFORMW どっちが調教してるんだか分かりゃしない。
+					;その他の場合
+					ELSE
+						CFLAG:8810 = 1
+						PRINTFORMW 『私こういうの見慣れてないんだけどさ。生えてないのって普通なの？』
+						PRINTFORMW 「ッ！　こんなところで言う事じゃないでしょー！」
+						PRINTFORMW てゐは顔を真っ赤にして喚いている。
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（永琳）
+					IF CFLAG:8811 == 1
+						PRINTFORMW 『ふふっ、あなたのココ、ひくついてるわ。期待してるの？』
+						PRINTFORMW 「そんなことっ……ないです」
+						PRINTFORMW 『あらあら。身体を強張らせちゃって。ご主人様以外でイくところを見せたくないのかしら？』
+						PRINTFORMW 「なっ、ちがっ……」
+						PRINTFORMW てゐは顔を真っ赤にして否定している。
+					;その他の場合
+					ELSE
+						CFLAG:8811 = 1
+						PRINTFORMW 『ふふ、こうやってあなたを手玉にとるのもなかなか楽しいわね』
+						PRINTFORMW 「……うー」
+						PRINTFORMW 『不満そうね？　ご主人様じゃないとダメかしら？』
+						PRINTFORMW 「うぇ！？　いっ、いやそんな事はないと思いますよ！？」
+						PRINTFORMW 『あらあら』
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（永琳）
+					IF CFLAG:8811 == 1
+						PRINTFORMW 『少し舐めただけで妙に反応してるじゃない。彼にだいぶ開発されたようね？』
+						PRINTFORMW 「うぁ……そんなことっ」
+						PRINTL 『別にいいんじゃない？　私の前だからって我慢しなくても。
+						PRINTFORMW 　所詮兎だものねえ、快楽に順応するのも仕方がないわ』
+						PRINTFORMW 「お師匠様もこういうこと手伝うくらいにはなってるくせに……」
+					;その他の場合
+					ELSE
+						CFLAG:8811 = 1
+						PRINTFORMW 『あなたとこういう事をすることになるとはね、あの頃は想像もしていなかったわ……』
+						PRINTL 「いや、あたしはそのうちやられるんじゃないかなーって思ってましたよ。
+						PRINTFORMW 　お師匠様って思いついたら何でも即やるタイプに見えるんで」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（輝夜）
+					IF CFLAG:8812 == 1
+						PRINTFORMW 『今度するときは私が調教される側かしら』
+						PRINTFORMW 「あたしもどっちかっていうとそっちの方がやりやすいかな……」
+					;その他の場合
+					ELSE
+						CFLAG:8812 = 1
+						PRINTFORMW 『ねえ、ちゃんと洗ってるんでしょうね？』
+						PRINTFORMW 「勿論ですよ、姫様に舐めていただくのに失礼があったらいけませんし」
+						PRINTFORMW 『何故かしら。てゐが言うと嘘に聞こえるのよ』
+						PRINTFORMW 「……いやほんとに洗ってますから。%CALLNAME:MASTER%も知ってますって」
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（輝夜）
+					IF CFLAG:8812 == 1
+						PRINTFORMW 『大体なんで私が助手なのよ。一応姫なんですけど！　この扱いの悪さはおかしくない？』
+						PRINTFORMW 「元がつくかつかないかで大違いですから。あたしら一応奴隷扱いですしね」
+						PRINTFORMW 『せめて外界の漫画を大量においておくべきよ』
+						PRINTFORMW 「あたしに、しかもこういうことしてる時にそんなの求められても……真面目にやる気ゼロですね姫様」
+					;その他の場合
+					ELSE
+						CFLAG:8812 = 1
+						PRINTFORMW 『奉仕する側って本当なら逆じゃないかしら』
+						PRINTFORMW 「いやこれ奉仕じゃなくて調教ですし」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（妹紅）
+					IF CFLAG:8813 == 1
+						PRINTFORMW 妹紅は執拗にてゐの股間を舐め続けている。
+						PRINTFORMW 時折声が漏れているものの、てゐは反応を見せないように努めているようだ。
+					;その他の場合
+					ELSE
+						CFLAG:8813 = 1
+						PRINTFORMW 『あのさ、舌の上で少しだけ火を出してから舐めると新感覚になりそうじゃない？』
+						PRINTFORMW 「うわ、ちょっとそれ怖いからやめてよ。あたしでさえやられたらさすがに泣くと思う」
+						PRINTFORMW 『そうか……いい案だと思ったんだがなぁ』
+						PRINTFORMW 「そもそも舌の上で発火なんて出来るの？」
+						PRINTFORMW 『さあ？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（妹紅）
+					IF CFLAG:8813 == 1
+						PRINTFORMW 『なんだかなー、あまり貴方のを舐めるのには慣れられないわ』
+						PRINTFORMW 「アイツとは立場も印象も違うし、そうでしょうよ」
+					;その他の場合
+					ELSE
+						CFLAG:8813 = 1
+						PRINTFORMW 『ひたへらめつづけるのっへ、へっほうふたれるね』
+						PRINTFORMW 「舐めるか喋るかどっちかにしなよ」
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;Ｃ感覚Lv3以上
+				IF ABL:Ｃ感覚 >= 3
+					PRINTFORMW （やば……%CALLNAME:MASTER%に惚れてから、舐められるだけで我慢できなくなっちゃう……）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「やだ、くすぐった……あははは！」
+					PRINTFORMW 
+					PRINTFORMW まだあまり感度は良くないようだ。
+					PRINTFORMW しばらくいじってやる必要があるだろう。
+				ENDIF
+			ENDIF
+;			CFLAG:8001 = 10
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8001 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（鈴仙）
+					IF CFLAG:8810 == 1
+						PRINTFORMW 「あ、あっ！　唇で引っ張んないでよぉ！」
+						PRINTFORMW 『ちゅ……そんなこと、言って……もっとしてって言ったの誰よ、はむっ』
+					;その他の場合
+					ELSE
+						CFLAG:8810 = 1
+						PRINTFORMW 「れーせんそこもっと吸って……あっ、あっ！　はぁ、ふぁ」
+						PRINTFORMW 『前よりワガママになってる気がするわ……』
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（鈴仙）
+					IF CFLAG:8810 == 1
+						PRINTFORMW 「あ、あっ！　唇で引っ張んないでよぉ！」
+						PRINTFORMW 『ちゅ……もう少しくらい、我慢して見せなさいよっ、はむっ』
+					;その他の場合
+					ELSE
+						CFLAG:8810 = 1
+						PRINTFORMW 「れーせんそこもっと吸って……あっ、あっ！　はぁ、ふぁ」
+						PRINTFORMW 『ちゅ……まったく、だらしなくなったわね。こんなにしてっ……』
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（永琳）
+					IF CFLAG:8811 == 1
+						PRINTFORMW 「ほらほら、もっと舐めてくださいよっ！　犬みたいにですよ！」
+						PRINTFORMW 『……躾を間違ったかしら？』
+					;その他の場合
+					ELSE
+						CFLAG:8811 = 1
+						PRINTFORMW 「ふふ、お師匠様があたしの股間舐めてるなんて、ぞくぞくしますね」
+						PRINTFORMW 『まあ多少なりとも負い目もあることだしね』
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（永琳）
+					IF CFLAG:8811 == 1
+						PRINTFORMW 「ほらほら、もっと舐めてくださいよっ！　犬みたいにですよ！」
+						PRINTFORMW 『まったく、しょうがない子だこと……戻ったらお仕置きね』
+					;その他の場合
+					ELSE
+						CFLAG:8811 = 1
+						PRINTFORMW 「ふふ、お師匠様があたしの股間舐めてるなんて、ぞくぞくしますね」
+						PRINTFORMW 『……治るまでは、そうして優越感に浸っているといいわ』
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（輝夜）
+					IF CFLAG:8812 == 1
+						PRINTFORMW 『そこまで堕落したのはてゐのせいでしょう？』
+						PRINTFORMW 「そもそもアイツがあたしと関わらなきゃ堕落してないんですよ」
+					;その他の場合
+					ELSE
+						CFLAG:8812 = 1
+						PRINTFORMW 『盛るのもいいけど程ほどになさいな』
+						PRINTFORMW 「えー、こうしたアイツが悪いんであってあたしは悪くないですよ」
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（輝夜）
+					IF CFLAG:8812 == 1
+						PRINTFORMW 「ちなみに本来兎は妊娠中でも妊娠できたりしますよ」
+						PRINTFORMW 『兎って恐ろしい生き物だったのね……』
+					;その他の場合
+					ELSE
+						CFLAG:8812 = 1
+						PRINTFORMW 『兎の発情期ってこんななのかしら』
+						PRINTFORMW 「まあ兎って年中発情期ですし」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;クンニ（妹紅）
+					IF CFLAG:8813 == 1
+						PRINTFORMW 「うはぁ……豆を吸われるとそれだけでイっちゃいそ……」
+						PRINTFORMW 『こんなんで……結構かわいいね、貴方』
+					;その他の場合
+					ELSE
+						CFLAG:8813 = 1
+						PRINTFORMW 「あ、そこっ♪　くりくりってぇ……きもちいーよぉ……」
+						PRINTFORMW 『そりゃ良かったね、もうちょっと色々試してあげよっか』
+					ENDIF
+				;その他の場合
+				ELSE
+					;クンニ（妹紅）
+					IF CFLAG:8813 == 1
+						PRINTFORMW 「うはぁ……豆を吸われるとそれだけでイっちゃいそ……」
+						PRINTFORMW 『これじゃあの兎も苦労してたろうなあ』
+					;その他の場合
+					ELSE
+						CFLAG:8813 = 1
+						PRINTFORMW 「あ、そこっ♪　くりくりってぇ……きもちいーよぉ……」
+						PRINTFORMW 『……貴方って永遠亭でもこんなだったの？』
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ほらぁ、もっとぺろぺろ舐めてよぉ……♪」
+			ENDIF
+;			CFLAG:8001 = 9
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8001 <= 7)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;クンニ（鈴仙）
+				IF CFLAG:8810 == 1
+					PRINTFORMW 『さあてゐー、今日もここを綺麗にしましょうねー』
+					PRINTFORMW 「子供をあやすみたいにいわないでよ……鬱陶しいなぁ」
+				;その他の場合
+				ELSE
+					CFLAG:8810 = 1
+					PRINTFORMW 『ふふっ、てゐのココ……つるっつるで可愛いわ』
+					PRINTFORMW 「ひぅん！　ちょ、まってへぇっ！」
+					PRINTFORMW （ううっ、覚えてなさいよ鈴仙ー！）
+				ENDIF
+			;その他の場合
+			ELSE
+				;クンニ（鈴仙）
+				IF CFLAG:8810 == 1
+					PRINTFORMW 『そういえば、どこかのお店に水着とか売ってるってあの人が言ってたわ』
+					PRINTFORMW 「どうせ変態が着るようなのでしょ」
+				;その他の場合
+				ELSE
+					CFLAG:8810 = 1
+					PRINTFORMW 『いいなぁ。子供っぽくはあるけど、水着とか着るとき処理しなくて楽だよね』
+					PRINTFORMW 「……出るなら今すぐ小便ひっかけてあげたい気分だわ」
+				ENDIF
+			ENDIF
+;			CFLAG:8001 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8001 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;クンニ（永琳）
+				IF CFLAG:8811 == 1
+					PRINTFORMW 『そのうち毛を生やしてあげようかしら。それはもう目を疑うくらいに』
+					PRINTFORMW 「……遠慮しときます」
+				;その他の場合
+				ELSE
+					CFLAG:8811 = 1
+					PRINTFORMW 『あら、あなたって生えてなかったのね』
+					PRINTFORMW 「……あー、はい」
+					PRINTFORMW 『見た目相応ということかしら。面白いわね』
+				ENDIF
+			;その他の場合
+			ELSE
+				;クンニ（永琳）
+				IF CFLAG:8811 == 1
+					PRINTFORMW 『気持ちよかったら声を出してもいいわよ？』
+					PRINTFORMW 「誰がそんなっ……」
+				;その他の場合
+				ELSE
+					CFLAG:8811 = 1
+					PRINTL 『クリトリスはペニスと比較して極端に小さい。
+					PRINTL 　けれど神経はペニスと同じように詰まってる。
+					PRINTFORMW 　だからクリトリスが敏感なのは当たり前の話なのよね』
+					PRINTFORMW 「えーと、つまり何が言いたいんでしょうか」
+					PRINTFORMW 『我慢しなくてもいいわよ、って事。恥ずかしいことではなくて、むしろ当然なのだから』
+					PRINTFORMW 「まああたしにもそれなりにプライドって物がありますから」
+				ENDIF
+			ENDIF
+;			CFLAG:8001 = 7
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8001 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;クンニ（輝夜）
+				IF CFLAG:8812 == 1
+					PRINTFORMW 『ほらほら、気持ち良いでしょう？　ご主人様のものになったら、なーんにも我慢しなくていいのよ？』
+					PRINTFORMW （ああっもう姫様の声で誘わないでよッ！　少しでも『いいかも』なんて思っちゃうじゃない……！）
+				;その他の場合
+				ELSE
+					CFLAG:8812 = 1
+					PRINTFORMW 『てゐは、ご主人様の物になる気はないの？』
+					PRINTFORMW 「あるわけっ……ないじゃないですか」
+					PRINTFORMW 『ふーん。私の言うこと聞けないんだ？　じゃあもっといじめてあげるわ』
+
+				ENDIF
+			;その他の場合
+			ELSE
+				;クンニ（輝夜）
+				IF CFLAG:8812 == 1
+					PRINTFORMW （姫様はやっぱり妙な魅力があると思うのよ、普段はあんなだし今はこんななのに）
+					PRINTFORMW 『大丈夫。痛かったりはしないから……力を抜いて楽にしてなさい』
+					PRINTFORMW （もしかしたら、姫様の言う通りにするのがいいんじゃないか、なんて思わされるしさ）
+					PRINTFORMW （……ダメだってっ！　今の姫様はあたしの味方じゃないんだから！）
+				;その他の場合
+				ELSE
+					CFLAG:8812 = 1
+					PRINTFORMW 「その気はなかったんですけど、こうしてあたしのを舐めてる姫様見てるとちょっとくらっとくるかも」
+					PRINTFORMW 『あら。それじゃあ気兼ねせずやっていいのかしら？』
+				ENDIF
+			ENDIF
+;			CFLAG:8001 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8001 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;クンニ（妹紅）
+				IF CFLAG:8813 == 1
+					PRINTFORMW 「焼き鳥屋はアイツに逆らおうとはもう思ってないわけ？」
+					PRINTFORMW 『……まあ、ね。貴方もそのうち分かると思うよ』
+				;その他の場合
+				ELSE
+					CFLAG:8813 = 1
+					PRINTFORMW 『それじゃ、舐めるよ』
+					PRINTFORMW 「……」
+					PRINTFORMW 『つれないね、まあ当然なんだろうけどさ』
+				ENDIF
+			;その他の場合
+			ELSE
+				;クンニ（妹紅）
+				IF CFLAG:8813 == 1
+					PRINTFORMW 「焼き鳥屋はアイツに逆らおうとはもう思ってないわけ？」
+					PRINTFORML 『ええ、私はもうダメなのよ。%CALLNAME:MASTER%にはひどい目にしか遭わされてないのに、
+					PRINTFORMW 　一緒に居るとホッとしはじめてるの。笑っちゃうでしょう？』
+					PRINTFORMW （笑い事じゃないなぁ……）
+				;その他の場合
+				ELSE
+					CFLAG:8813 = 1
+					PRINTFORMW 『それじゃ、舐めるよ』
+					PRINTFORMW 「……」
+					PRINTFORMW 『まあ不快なだけだろうし、せめて早く終われるよう気張ってみるよ』
+					PRINTFORMW （そんなところに気を遣うくらいなら私と一緒に逃げようくらい言ってくれればいいのにさ）
+				ENDIF
+			ENDIF
+;			CFLAG:8001 = 5
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8001 <= 3)
+;			CFLAG:8001 = 4
+		;Ｃ感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3 && (CFLAG:8001 <= 2)
+			PRINTFORMW （うぁ、やば。口押さえてないと声でちゃうよこれ……）
+;			CFLAG:8001 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うへぇ、やめてやめてってば！　ナメクジ這ってるみたいで気持ち悪いってーの！」
+;			CFLAG:8001 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_2
+;PRINTFORMW 
+IF TFLAG:95 == 1
+;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『……』
+					PRINTFORMW 「……」
+					PRINTFORMW 『……座薬は入れないからね？』
+					PRINTFORMW 「ああ……うん」
+					CFLAG:8820 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「うわ、鈴仙そこはやめとこうよ！　確かに兎って出したの食べたりとかするけどさ」
+					PRINTFORMW 『いや触るだけだから！　なんで私変態扱いになってるの！？』
+					CFLAG:8820 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あーお師匠様、触るのはいいんですけどそーっとお願いします」
+					PRINTFORMW 『はいはい。デリケートな場所なのは分かってるわよ』
+					CFLAG:8821 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様、触るのはともかくとして手術するようなはめになる真似は勘弁してください」
+					PRINTFORMW 『大丈夫よ。……多分』
+					PRINTFORMW 「……すっごい不安です」
+					PRINTFORMW 『私は肛門科医じゃないから大丈夫！』
+					PRINTFORMW 「何が大丈夫かすらわかんないんですけどそれ！」
+					CFLAG:8821 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『不浄の穴での行為って私はそれほど違和感ないのよ、貴族が稚児連れてるなんてざらだったし』
+					PRINTFORMW 「そういう話は聞きますけどあたしはその頃あんまり人と関わったりしてなかったんで」
+					PRINTFORMW 『私の場合貴族豪族との交友とかほとんど義務だったからね』
+					CFLAG:8822 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『私がこちらを弄ったりすることになるとはねえ、世の中分からないものね』
+					PRINTFORMW 「あれ、姫様が外界に居た頃って衆道とかなかったんですか？」
+					PRINTFORMW 『あったしそういう話は聞いてたけど、男同士の話でしょそれ。女同士でってのは考えたことなかったわ』
+					CFLAG:8822 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『うわ、結構固いなぁ。これ指とかちんことか入る気しないんだけど』
+					PRINTFORMW 「前読んだえっちい本にはローションとかつけて少しずつ慣れてくしかないって書いてあったけど」
+					PRINTFORMW 『先は長そうだなぁ』
+					CFLAG:8823 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『うわ、結構固いなぁ。これ指入れるの危ないんじゃない？』
+					PRINTFORMW 「少しずつ広げてくしかないって話だけど」
+					PRINTFORMW 『怖いなぁ……入れられてる側でもないのに緊張してくるよ』
+					CFLAG:8823 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3以上
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW 「結構……んっ、よくなってきたかも」
+					PRINTFORMW （気を抜くとイっちゃいそうだわ……）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ま、まあちょっと怖いけどさ……アンタがしたいなら、我慢する」
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「えへへ……お尻のアナいじくるなんて、鈴仙もヘンタイになったものねぇ」
+					PRINTFORMW 『何それ、てゐはしてほしくないっての？』
+					PRINTFORMW 「ううん、いっぱいしてほしい……」
+					CFLAG:8820 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「えへへ……お尻のアナいじくるなんて、鈴仙もヘンタイになったものねぇ」
+					PRINTFORMW 『う……確かに抵抗はなくなったけど』
+					CFLAG:8820 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『あらあら、お尻突き出しちゃって。はしたないわね』
+					PRINTFORMW 「しょうがないじゃないですかぁ……こうなったのはあたしのせいじゃないです」
+					CFLAG:8821 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『準備万端って感じね、こっちを弄られるのがそんなに楽しみ？』
+					PRINTFORMW 「今はどんなことでもやってみようって気になるんですよ……♪」
+					CFLAG:8821 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『まるで獣のようだわ。まあ、元々てゐは兎なのだけど』
+					PRINTFORMW 「あっ、姫様ぁっ！　もっとほじってくださぃ！！」
+					CFLAG:8822 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『これがてゐ、とはあまり考えたくないわね』
+					PRINTFORMW 「あっ、姫様ぁっ！　もっとほじってくださぃ！！」
+					CFLAG:8822 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ホントに変わったねぇ、まあ私も人のこと言えないけど』
+					PRINTFORMW 「少なくともあたしのお尻弄れるくらいには、変わってるわね。焼き鳥屋も」
+					CFLAG:8823 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『私もいずれはこうなるってことかしら？』
+					PRINTFORMW 「少なくともあたしのお尻弄れるくらいには、もう変わってるわね。焼き鳥屋も」
+					CFLAG:8823 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んぐ、ん～っ！　おしりでもキモチよくなれるものねぇー……ほら、もっとしてよ？」
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「勘弁してよ……」
+				PRINTFORMW 『ああ、なんか嫌がるてゐに無理矢理するとかちょっと興奮するかも』
+				PRINTFORMW 「なにさそれ……鈴仙ってそういう趣味なわけ？」
+				PRINTFORMW 『どっちかっていうと日頃の憂さ晴らしというか仕返しというか』
+				PRINTFORMW 「こんなとこでやんなくてもいいじゃんか！」
+				CFLAG:8820 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「勘弁してよ……」
+				PRINTFORMW 『まあ犬に噛まれたとでも思って我慢してよ』
+				PRINTFORMW 「兎が犬に噛まれたら致命傷になりかねないと思うんですけどー」
+				CFLAG:8820 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『ゆっくり広げていかないとね』
+				PRINTFORMW 「あんまり痛くないだけマシと思うしかないんですかね……」
+				PRINTFORMW 『そうよ。ご主人様が本気なら注射打って浣腸してプラグ差し込んで腹部にパンチを』
+				PRINTFORMW 「ああはい分かりました分かりましたからもう言わないでくださいほんと勘弁してください」
+				CFLAG:8821 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『ゆっくり広げていかないとね』
+				PRINTFORMW 「あんまり痛くないだけマシと思うしかないんですかね……」
+				PRINTFORMW 『そうね、まあ助手が私で良かったじゃない。下手な相手だと腸壁を傷つけるかもしれないし』
+				PRINTFORMW 「喜んでいいポイントなんですかねそこ」
+				CFLAG:8821 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『まあ少しずつ慣らしていきましょう』
+				PRINTFORMW 「あたしは別に慣れたくないんですけど……」
+				PRINTFORMW 『あら、いずれご主人様のが入るんでしょう？　慣れとかないと痛いわよ』
+				PRINTFORMW 「慣れてなければそもそも入れようと思わないんじゃないですかね」
+				CFLAG:8822 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『まあ少しずつ慣らしていきましょう』
+				PRINTFORMW 「あたしは別に慣れたくないんですけど……」
+				PRINTFORMW 『うーん、そう言われてもねえ。%CALLNAME:MASTER%に直談判して頂戴』
+				PRINTFORMW 「アイツが言って聞くようなら苦労しませんけどね」
+				CFLAG:8822 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『これ慎重にやらないと傷ついちゃいそうね、ゆっくりやるよ』
+				PRINTFORMW 「あー……うん、よろしく」
+				PRINTFORMW （なんでよろしくとか言ってんだろあたしってば……）
+				CFLAG:8823 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『これ慎重にやらないと傷ついちゃいそうね、ゆっくりやるよ』
+				PRINTFORMW 「やらなければ傷もつかない、一石二鳥ってやつじゃない？」
+				PRINTFORMW 『頭いいわね、って言いたいところだけどさすがにそれはねえ』
+				CFLAG:8823 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「うあ、ナニ……これぇ、しらない！　こんなのしらないっ！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぐ……うう～っ！　やめてよぉ……汚いってば……」
+		ENDIF
+;		CFLAG:8002= 1
+		RETURN 0
+ELSE
+;2回目
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8002 <= 9)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（鈴仙）
+					IF CFLAG:8820 == 1
+						PRINTFORMW 『そういえばお店にさ、坐剤が売ってたんだよね』
+						PRINTFORMW 「入れる気！？」
+					;その他の場合
+					ELSE
+						CFLAG:8820 = 1
+						PRINTFORMW 『……』
+						PRINTFORMW 「……」
+						PRINTFORMW 『……座薬は入れないからね？』
+						PRINTFORMW 「ああ……うん」
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（鈴仙）
+					IF CFLAG:8820 == 1
+						PRINTFORMW 「さすがのあたしもそれはひくわ」
+						PRINTFORMW 『……もうツッコまないわ』
+					;その他の場合
+					ELSE
+						CFLAG:8820 = 1
+						PRINTFORMW 「うわ、鈴仙そこはやめとこうよ！　確かに兎って出したの食べたりとかするけどさ」
+						PRINTFORMW 『いや触るだけだから！　なんで私変態扱いになってるの！？』
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（永琳）
+					IF CFLAG:8821 == 1
+						PRINTFORMW 『そっとっていうと、こんな感じかしら？』
+						PRINTFORMW （うあ、なんかヘンな声でちゃいそ……）
+					;その他の場合
+					ELSE
+						CFLAG:8821 = 1
+						PRINTFORMW 「あーお師匠様、触るのはいいんですけどそーっとお願いします」
+						PRINTFORMW 『はいはい。デリケートな場所なのは分かってるわよ』
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（永琳）
+					IF CFLAG:8821 == 1
+						PRINTFORMW 『まあ万が一間違いがあったら、薬を処方するから心配しないで』
+						PRINTFORMW 「そういう薬を使ったって事実だけで結構ヤなんですけど」
+					;その他の場合
+					ELSE
+						CFLAG:8821 = 1
+						PRINTFORMW 「お師匠様、触るのはともかくとして手術するようなはめになる真似は勘弁してください」
+						PRINTFORMW 『大丈夫よ。……多分』
+						PRINTFORMW 「……すっごい不安です」
+						PRINTFORMW 『私は肛門科医じゃないから大丈夫！』
+						PRINTFORMW 「何が大丈夫かすらわかんないんですけどそれ！」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『そういえば昔はどうやって不浄の穴でシてたのかしらね？　ローションなんて便利なものもないわけだし』
+						PRINTFORMW 「案外そのままだったりするんじゃないですかねー」
+						PRINTFORMW 『うわ不衛生。この時代に生きててよかったわね』
+						PRINTFORMW 「衛生面とか姫様関係ないじゃないですか……」
+					;その他の場合
+					ELSE
+						CFLAG:8822 = 1
+						PRINTFORMW 『不浄の穴での行為って私はそれほど違和感ないのよ、貴族が稚児連れてるなんてざらだったし』
+						PRINTFORMW 「そういう話は聞きますけどあたしはその頃あんまり人と関わったりしてなかったんで」
+						PRINTFORMW 『私の場合貴族豪族との交友とかほとんど義務だったからね』
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『あんまり抵抗はないのだけれど、それと上手く出来るかは全く関係ないわよね』
+						PRINTFORMW 「今度逆でしてみます？」
+					;その他の場合
+					ELSE
+						CFLAG:8822 = 1
+						PRINTFORMW 『私がこちらを弄ったりすることになるとはねえ、世の中分からないものね』
+						PRINTFORMW 「あれ、姫様が外界に居た頃って衆道とかなかったんですか？」
+						PRINTFORMW 『あったしそういう話は聞いてたけど、男同士の話でしょそれ。女同士でってのは考えたことなかったわ』
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（妹紅）
+					IF CFLAG:8823 == 1
+						PRINTFORMW 『少しはこなれてきた？』
+						PRINTFORMW 「少しはね」
+						PRINTFORMW 『ローションつけたりしなくても入るくらい？』
+						PRINTFORMW さすがにそれはどんなに慣れてても危険だ。
+					;その他の場合
+					ELSE
+						CFLAG:8823 = 1
+						PRINTFORMW 『うわ、結構固いなぁ。これ指とかちんことか入る気しないんだけど』
+						PRINTFORMW 「前読んだえっちい本にはローションとかつけて少しずつ慣れてくしかないって書いてあったけど」
+						PRINTFORMW 『先は長そうだなぁ』
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（妹紅）
+					IF CFLAG:8823 == 1
+						PRINTFORMW 『なんだか初めて迷いの竹林を歩いてる気分よ』
+						PRINTFORMW 「うわー。すっごい不安になること言ってくれるわね」
+					;その他の場合
+					ELSE
+						CFLAG:8823 = 1
+						PRINTFORMW 『うわ、結構固いなぁ。これ指入れるの危ないんじゃない？』
+						PRINTFORMW 「少しずつ広げてくしかないって話だけど」
+						PRINTFORMW 『怖いなぁ……入れられてる側でもないのに緊張してくるよ』
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;Ａ感覚Lv3以上
+				IF ABL:Ａ感覚 >= 3
+					PRINTFORMW （なんていうか……これ慣れると一番気持ちいいとこかも）
+					PRINTFORMW （気持ちいいのがずんずん迫ってきて、押しつぶされちゃいそ……）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「日頃から自分でいじってた方がいいのかなぁ」
+					PRINTFORMW まだ感度が良くない。しばらく続ける必要があるだろう。
+				ENDIF
+			ENDIF
+;			CFLAG:8002 = 10
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8002 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（鈴仙）
+					IF CFLAG:8820 == 1
+						PRINTFORMW 「はぁぁあぁ……鈴仙上手……」
+						PRINTFORMW 『私もそれなりに付き合わされたからね』
+					;その他の場合
+					ELSE
+						CFLAG:8820 = 1
+						PRINTFORMW 「えへへ……お尻のアナいじくるなんて、鈴仙もヘンタイになったものねぇ」
+						PRINTFORMW 『何それ、てゐはしてほしくないっての？』
+						PRINTFORMW 「ううん、いっぱいしてほしい……」
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（鈴仙）
+					IF CFLAG:8820 == 1
+						PRINTFORMW 「はぁぁあぁ……鈴仙上手……」
+						PRINTFORMW 『別に上手くなりたかったわけじゃないのに……』
+					;その他の場合
+					ELSE
+						CFLAG:8820 = 1
+						PRINTFORMW 「えへへ……お尻のアナいじくるなんて、鈴仙もヘンタイになったものねぇ」
+						PRINTFORMW 『う……確かに抵抗はなくなったけど』
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（永琳）
+					IF CFLAG:8821 == 1
+						PRINTFORMW 『なんというか、本当に動物を躾ける感覚なのよね』
+						PRINTFORMW 「何言ってるんです……？　早くいじってくださいよぉ」
+					;その他の場合
+					ELSE
+						CFLAG:8821 = 1
+						PRINTFORMW 『あらあら、お尻突き出しちゃって。はしたないわね』
+						PRINTFORMW 「しょうがないじゃないですかぁ……こうなったのはあたしのせいじゃないです」
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（永琳）
+					IF CFLAG:8821 == 1
+						PRINTFORMW 『本当に、ダメになってしまったものね』
+						PRINTFORMW 「何言ってるんです……？　早くいじってくださいよぉ」
+					;その他の場合
+					ELSE
+						CFLAG:8821 = 1
+						PRINTFORMW 『準備万端って感じね、こっちを弄られるのがそんなに楽しみ？』
+						PRINTFORMW 「今はどんなことでもやってみようって気になるんですよ……♪」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『乱れるのはいいのだけれど、これじゃ調教に差し支えそうね』
+						PRINTFORMW 「姫様ぁ……まだ足りないんです、お尻いじくってくださいっ！」
+					;その他の場合
+					ELSE
+						CFLAG:8822 = 1
+						PRINTFORMW 『まるで獣のようだわ。まあ、元々てゐは兎なのだけど』
+						PRINTFORMW 「あっ、姫様ぁっ！　もっとほじってくださぃ！！」
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『私もいずれこうなるのかしら？　いえ、気付いてないだけでもうなっているのかもしれないけれど……』
+						PRINTFORMW 「姫様ぁ……まだ足りないんです、お尻いじくってくださいっ！」
+					;その他の場合
+					ELSE
+						CFLAG:8822 = 1
+						PRINTFORMW 『これがてゐ、とはあまり考えたくないわね』
+						PRINTFORMW 「あっ、姫様ぁっ！　もっとほじってくださぃ！！」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;アナル愛撫（妹紅）
+					IF CFLAG:8823 == 1
+						PRINTFORMW 『これはこれで憎めなくなっていいけど、手がかかること』
+						PRINTFORMW 「あはっ、いいからいっぱい気持ちよくしてよっ！」
+					;その他の場合
+					ELSE
+						CFLAG:8823 = 1
+						PRINTFORMW 『ホントに変わったねぇ、まあ私も人のこと言えないけど』
+						PRINTFORMW 「少なくともあたしのお尻弄れるくらいには、変わってるわね。焼き鳥屋も」
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（妹紅）
+					IF CFLAG:8823 == 1
+						PRINTFORMW 『ここまでにはなりたくない……けど、自分のことも最近把握出来てないからねぇ』
+						PRINTFORMW 「あはっ、いいからいっぱい気持ちよくしてよっ！」
+					;その他の場合
+					ELSE
+						CFLAG:8823 = 1
+						PRINTFORMW 『私もいずれはこうなるってことかしら？』
+						PRINTFORMW 「少なくともあたしのお尻弄れるくらいには、もう変わってるわね。焼き鳥屋も」
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そんなんじゃ全然たんないよっ！　アンタはあたしを気持ちよくさせる義務があるんだからね？」
+			ENDIF
+;			CFLAG:8002 = 9
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8002 <= 7)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;アナル愛撫（鈴仙）
+				IF CFLAG:8820 == 1
+					PRINTFORMW 『わざと強く弄ってあげよっかなー』
+					PRINTFORMW （鈴仙ー！　立場良いからっていい気になってー！　覚えてなさいよ！）
+				;その他の場合
+				ELSE
+					CFLAG:8820 = 1
+					PRINTFORMW 「勘弁してよ……」
+					PRINTFORMW 『ああ、なんか嫌がるてゐに無理矢理するとかちょっと興奮するかも』
+					PRINTFORMW 「なにさそれ……鈴仙ってそういう趣味なわけ？」
+					PRINTFORMW 『どっちかっていうと日頃の憂さ晴らしというか仕返しというか』
+					PRINTFORMW 「こんなとこでやんなくてもいいじゃんか！」
+				ENDIF
+			;その他の場合
+			ELSE
+				;アナル愛撫（鈴仙）
+				IF CFLAG:8820 == 1
+					PRINTFORMW 『ほら力抜いてよ。はいんないでしょ？』
+					PRINTFORMW 「入ってほしくないから力入れてるに決まってるでしょー！」
+				;その他の場合
+				ELSE
+					CFLAG:8820 = 1
+					PRINTFORMW 「勘弁してよ……」
+					PRINTFORMW 『まあ犬に噛まれたとでも思って我慢してよ』
+					PRINTFORMW 「兎が犬に噛まれたら致命傷になりかねないと思うんですけどー」
+				ENDIF
+			ENDIF
+;			CFLAG:8002 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8002 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;アナル愛撫（永琳）
+				IF CFLAG:8821 == 1
+					PRINTFORMW 『大丈夫よ大丈夫。力を抜いて……』
+					PRINTFORMW 「うう……恥ずかしいなぁ」
+				;その他の場合
+				ELSE
+					CFLAG:8821 = 1
+					PRINTFORMW 『ゆっくり広げていかないとね』
+					PRINTFORMW 「あんまり痛くないだけマシと思うしかないんですかね……」
+					PRINTFORMW 『そうよ。ご主人様が本気なら注射打って浣腸してプラグ差し込んで腹部にパンチを』
+					PRINTFORMW 「ああはい分かりました分かりましたからもう言わないでくださいほんと勘弁してください」
+				ENDIF
+			;その他の場合
+			ELSE
+				;アナル愛撫（永琳）
+				IF CFLAG:8821 == 1
+					PRINTFORMW 『大丈夫よ大丈夫。力を抜いて……』
+					PRINTFORMW 「力を抜けって言われても触られるって分かってるんですから無理ですよ……」
+				;その他の場合
+				ELSE
+					CFLAG:8821 = 1
+					PRINTFORMW 『ゆっくり広げていかないとね』
+					PRINTFORMW 「あんまり痛くないだけマシと思うしかないんですかね……」
+					PRINTFORMW 『そうね、まあ助手が私で良かったじゃない。下手な相手だと腸壁を傷つけるかもしれないし』
+					PRINTFORMW 「喜んでいいポイントなんですかねそこ」
+				ENDIF
+			ENDIF
+;			CFLAG:8002 = 7
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8002 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;アナル愛撫（輝夜）
+				IF CFLAG:8822 == 1
+					PRINTL 『まあ慣れておきなさいよ、貴族の男達も好んでいたみたいだし、
+					PRINTFORMW 　案外悪いものでもないんじゃない？』
+					PRINTFORMW 「いやあたし貴族じゃないんで」
+				;その他の場合
+				ELSE
+					CFLAG:8822 = 1
+					PRINTFORMW 『まあ少しずつ慣らしていきましょう』
+					PRINTFORMW 「あたしは別に慣れたくないんですけど……」
+					PRINTFORMW 『あら、いずれご主人様のが入るんでしょう？　慣れとかないと痛いわよ』
+					PRINTFORMW 「慣れてなければそもそも入れようと思わないんじゃないですかね」
+				ENDIF
+			;その他の場合
+			ELSE
+				;処女である
+				IF TALENT:処女 == 1
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『まあ処女奪われるよりマシと思って諦めれば？』
+						PRINTFORMW 「……納得できないですけど、まあ……そうなんですかね」
+					;その他の場合
+					ELSE
+						PRINTFORMW 『まあ少しずつ慣らしていきましょう』
+						PRINTFORMW 「あたしは別に慣れたくないんですけど……」
+						PRINTFORMW 『うーん、そう言われてもねえ。%CALLNAME:MASTER%に直談判して頂戴』
+						PRINTFORMW 「アイツが言って聞くようなら苦労しませんけどね」
+						CFLAG:8822 = 1
+					ENDIF
+				;その他の場合
+				ELSE
+					;アナル愛撫（輝夜）
+					IF CFLAG:8822 == 1
+						PRINTFORMW 『で、直談判の結果はどうだったの？』
+						PRINTFORMW 「聞かなくても分かるんじゃないですか？」
+					;その他の場合
+					ELSE
+						PRINTFORMW 『まあ少しずつ慣らしていきましょう』
+						PRINTFORMW 「あたしは別に慣れたくないんですけど……」
+						PRINTFORMW 『うーん、そう言われてもねえ。%CALLNAME:MASTER%に直談判して頂戴』
+						PRINTFORMW 「アイツが言って聞くようなら苦労しませんけどね」
+						CFLAG:8822 = 1
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8002 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8002 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;アナル愛撫（妹紅）
+				IF CFLAG:8823 == 1
+					PRINTFORMW 「くぅ……な、なんかおしりがむずむずする……」
+					PRINTFORMW 『もう少ししたら本格的に良くなってくると思うから、頑張ってね』
+				;その他の場合
+				ELSE
+					CFLAG:8823 = 1
+					PRINTFORMW 『これ慎重にやらないと傷ついちゃいそうね、ゆっくりやるよ』
+					PRINTFORMW 「あー……うん、よろしく」
+					PRINTFORMW （なんでよろしくとか言ってんだろあたしってば……）
+				ENDIF
+			;その他の場合
+			ELSE
+				;アナル愛撫（妹紅）
+				IF CFLAG:8823 == 1
+					PRINTFORMW 「くぅ……な、なんかおしりがむずむずする……」
+					PRINTFORMW 『痛みはなくなってきたのかな、少し強くしていこうね』
+				;その他の場合
+				ELSE
+					CFLAG:8823 = 1
+					PRINTFORMW 『これ慎重にやらないと傷ついちゃいそうね、ゆっくりやるよ』
+					PRINTFORMW 「やらなければ傷もつかない、一石二鳥ってやつじゃない？」
+					PRINTFORMW 『頭いいわね、って言いたいところだけどさすがにそれはねえ』
+				ENDIF
+			ENDIF
+;			CFLAG:8002 = 5
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8002 <= 3)
+;			CFLAG:8002 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && (CFLAG:8002 <= 2)
+			PRINTFORMW 「ひっ、ぉはぁ……な、なにこれ……すっご……」
+			PRINTFORMW （悪態すらつけそうにないんですけど……気持ちいい……）
+;			CFLAG:8002 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ああもう、そんなの繰り返したって気持ちよくなんてならないってば！」
+;			CFLAG:8002 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_3
+;PRINTFORMW 
+IF TFLAG:95 == 1
+;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あたしの触っても面白くないと思うんだけどねえ」
+					PRINTFORMW 『そう？　小さい方がいじくってて面白いなぁ。おっきくてもいいことないよ』
+					PRINTFORMW 「……今さらっと乳自慢された気が」
+					CFLAG:8830 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あたしの触っても面白くないと思うんだけどねえ」
+					PRINTFORMW 『まあこれが今の私の仕事だから』
+					PRINTFORMW 「大体なんであまり乗り気じゃない鈴仙に任せてんのアイツ。自分でやればいいのに」
+					PRINTFORMW 『ああ、好きな人にしてほしいってこと？　てゐって結構かわいいとこあるじゃない』
+					PRINTFORMW 「な、ちがうし！」
+					CFLAG:8830 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『相変わらず貧相な乳房ねえ』
+					PRINTFORMW 「ほっといてください」
+					PRINTFORMW 『力を貸してあげましょうか？　私は作れるわよ。胸を大きくするクスリ、と・か』
+					PRINTFORMW 「えっ」
+					PRINTFORMW 『あははは、冗談よ！　作ってあーげない』
+					PRINTFORMW 
+					PRINTFORMW さりげに外道だなこの女医――%CALLNAME:MASTER%はてゐに少々同情した。
+					CFLAG:8831 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『相変わらず貧相な乳房ねえ』
+					PRINTFORMW 「ほっといてください」
+					PRINTFORMW 『成長するクスリとか売ってたし、飲んでみたら？　彼も気に入るかもよ？』
+					PRINTFORMW 「えっ……」
+					PRINTFORMW 
+					PRINTFORMW 調教終了後てゐに本気で懇願された。
+					PRINTFORMW %CALLNAME:MASTER%は個性を摘むことになる、巨乳が好みなわけではないと断った。
+					PRINTFORMW てゐは顔を真っ赤にして「アンタのためじゃない」と言いつつも一応納得してくれたようだ。
+					CFLAG:8831 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『……お互い千年以上生きてるはずなのに、成長しないわね』
+					PRINTFORMW 「……もうその話やめましょうよ」
+					PRINTFORMW 
+					PRINTFORMW 思いもかけずお通夜のような雰囲気になってしまった。
+					CFLAG:8832 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙とお師匠様はともかく、あたしらは仲間ですよね」
+					PRINTFORMW 『落ち込む事言わないでよ……』
+					CFLAG:8832 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「焼き鳥屋はやっぱりここに来る前はハクタクと乳繰り合ってたわけ？」
+					PRINTFORMW 『……いや、慧音とはしてないよ。そりゃあ仲はよかったけどね』
+					PRINTFORMW 「ただの友達なわけ？」
+					PRINTFORMW 『親友なのは間違いないけど、恋愛対象としては見れなかったね……今は、ちょっとわからないかな』
+					CFLAG:8833 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「焼き鳥屋はやっぱりここに来る前はハクタクと乳繰り合ってたわけ？」
+					PRINTFORMW 『はっ、そりゃあ仲はよかったけどそういう間柄じゃないよ。なんでそう思ったのよ？』
+					PRINTFORMW 「幻想郷の性生活って爛れてそうだからなんとなく」
+					PRINTFORMW 『私たちまで一緒にしないでよ！』
+					CFLAG:8833 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;Ｂ感覚Lv3以上
+				IF ABL:Ｂ感覚 >= 3
+					PRINTFORMW 「ね、ねえ。もうちょっと強くしていいよ？」
+					PRINTFORMW （……そんなに優しくされたら、我慢できなくなっちゃうじゃない）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ぷ、くくっ。まだくすぐったいねぇ。ほらほらもっと気張んなさいよー！」
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「鈴仙と違っておっきくはないけど、おっきくはないけどサボんないでよ」
+					PRINTFORMW 『え、私責められてる？』
+					CFLAG:8830 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙と違っておっきくはないけど、おっきくはないけどサボんないでよ」
+					PRINTFORMW 『なんでムネの大きさがサボる理由に……』
+					CFLAG:8830 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『あら、どうしたの？　私の胸ばっかりみて』
+					PRINTFORMW 「いや、なんでもないですよ？　ええ、本当に」
+					CFLAG:8831 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ほら、胸出しなさいな……どうしたの？』
+					PRINTFORMW 「いや、なんでもないですよ？　ええ、本当に」
+					CFLAG:8831 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「姫様もやっぱり自分でいじったりしてるんでしょ？」
+					PRINTFORMW 『妹紅が居なかったりするとあまりやることもないからね、当然じゃない？』
+					CFLAG:8832 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「姫様もやっぱり自分でいじったりしてるんでしょ？」
+					PRINTFORMW 『ま、まあしないわけじゃないわね……こんな事平然と聞く子だったっけ、てゐってば』
+					CFLAG:8832 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『へえ、結構かわいいおっぱいしてるんだな』
+					PRINTFORMW 「う、うるさいわね……ほら、早く舐めてよっ」
+					CFLAG:8833 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ねえ、全体的にするのと乳首の先をするのとどっちがいいの？』
+					PRINTFORMW 「どっちもいいけど、あたしは先の方かな……」
+					CFLAG:8833 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あはは、そうやって吸い付いてるとこ……赤ちゃんみたいね、ひぅん！」
+				PRINTFORMW 「ほらほら、もっと吸い付いていいよ？　あたしもキモチいいしさ」
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「あたしとしては鈴仙の胸を揉みたいんだけど」
+				PRINTFORMW 『えええ！？　なんでよ！』
+				PRINTFORMW 「いや、だってもちもちしてて気持ちよさそうじゃん」
+				PRINTFORMW 『そ、そうなんですか？　ご主人様』
+				PRINTFORMW こっちに振るなよ。
+				CFLAG:8830 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あたしとしては鈴仙の胸を揉みたいんだけど」
+				PRINTFORMW 『えええ！？　なんでよ！』
+				PRINTFORMW 「いや、だってもちもちしてて気持ちよさそうじゃん」
+				PRINTFORMW 『そんなこと言われても……自分のお尻でも揉んでればいいじゃない！』
+				CFLAG:8830 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『ふふっ、びくびく反応しちゃって。面白いわね』
+				PRINTFORMW 「お、お師匠様あたしのことおもちゃと勘違いしてません？」
+				CFLAG:8831 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『貧乳のほうが感度はいいって言うから、お得かもしれないわよ』
+				PRINTFORMW 「なんですかいきなり」
+				PRINTFORMW 『こういう状況に巻き込まれてしまった以上、楽しんでもいいって事』
+				CFLAG:8831 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『豆類を食べるといいらしいわ、胸に』
+				PRINTFORMW 「……はぁ」
+				PRINTFORMW 
+				PRINTFORMW 次の食事は豆尽くしだった。どうやら輝夜が取り計らったらしい。
+				CFLAG:8832 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『湯に浸かっている時揉むといいらしいわ、今度やりましょう』
+				PRINTFORMW 「……はぁ」
+				PRINTFORMW 
+				PRINTFORMW 後日、風呂場でのぼせている二人を介抱するハメになった。
+				CFLAG:8832 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『少し我慢してたら、気持ちよくなってくるからね』
+				PRINTFORMW 「気持ちよくなったとしてもあたしは歓迎出来ないけどね」
+				CFLAG:8833 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あー、もう。なんでこんなことになったんだろ」
+				PRINTFORMW 『運が悪かったって言うしかないよ』
+				PRINTFORMW 「一応幸運を運ぶ兎なはずなんだけどねえ、ヤキがまわったかな」
+				CFLAG:8833 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「はひっ！？　な、なんかぴりって……」
+			PRINTFORMW （い、今のが気持ちいいって事、なの？）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「変態！　ロリコン！　強姦魔！　気安く触んないでよ！」
+		ENDIF
+;		CFLAG:8003= 1
+		RETURN 0
+ELSE
+;2回目
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8003 <= 9)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（鈴仙）
+					IF CFLAG:8830 == 1
+						PRINTFORMW 「そうですかぁ大きくてもいいことないんですかそうですかぁ」
+						PRINTFORMW 『な、なによ。何かおかしいことでも言った？』
+						PRINTFORMW 「鈴仙の無駄にでかいおっぱいもげろ！」
+						PRINTFORMW 『ちょ、あんたねえ！』
+					;その他の場合
+					ELSE
+						CFLAG:8830 = 1
+						PRINTFORMW 「あたしの触っても面白くないと思うんだけどねえ」
+						PRINTFORMW 『そう？　小さい方がいじくってて面白いなぁ。おっきくてもいいことないよ』
+						PRINTFORMW 「……今さらっと乳自慢された気が」
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（鈴仙）
+					IF CFLAG:8830 == 1
+						PRINTFORML 『ほら、頼んでみなさいよ。%CALLNAME:MASTER%の手で直接揉んでほしい！　ってさ。
+						PRINTFORMW 　私この人好きじゃないけど、てゐが本気なら応援してあげるわよ？』
+						PRINTFORMW 「ばっ、バッカじゃないの！？」
+					;その他の場合
+					ELSE
+						CFLAG:8830 = 1
+						PRINTFORMW 「あたしの触っても面白くないと思うんだけどねえ」
+						PRINTFORMW 『まあこれが今の私の仕事だから』
+						PRINTFORMW 「大体なんであまり乗り気じゃない鈴仙に任せてんのアイツ。自分でやればいいのに」
+						PRINTFORMW 『ああ、好きな人にしてほしいってこと？　てゐって結構かわいいとこあるじゃない』
+						PRINTFORMW 「な、ちがうし！」
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（永琳）
+					IF CFLAG:8831 == 1
+						PRINTL 『ほら、土下座して謝ってみなさいな。
+						PRINTFORMW 　今までの悪戯の数々を！　そうすればクスリを作るのを考えてあげるわ！』
+						PRINTFORMW （ゼッッタイ考えるだけだよねお師匠様）
+					;その他の場合
+					ELSE
+						CFLAG:8831 = 1
+						PRINTFORMW 『相変わらず貧相な乳房ねえ』
+						PRINTFORMW 「ほっといてください」
+						PRINTFORMW 『力を貸してあげましょうか？　私は作れるわよ。胸を大きくするクスリ、と・か』
+						PRINTFORMW 「えっ」
+						PRINTFORMW 『あははは、冗談よ！　作ってあーげない』
+						PRINTFORMW 
+						PRINTFORMW さりげに外道だなこの女医――%CALLNAME:MASTER%はてゐに少々同情した。
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（永琳）
+					IF CFLAG:8831 == 1
+						PRINTFORMW 『結局却下されたんですって？　よかったわね、もしかしたら貧乳好きなのかもしれないわよ』
+						PRINTFORMW 「そ、そうなんですか？」
+						PRINTFORMW だから拘ってないと何度言ったら。
+					;その他の場合
+					ELSE
+						CFLAG:8831 = 1
+						PRINTFORMW 『相変わらず貧相な乳房ねえ』
+						PRINTFORMW 「ほっといてください」
+						PRINTFORMW 『成長するクスリとか売ってたし、飲んでみたら？　彼も気に入るかもよ？』
+						PRINTFORMW 「えっ……」
+						PRINTFORMW 
+						PRINTFORMW 調教終了後てゐに本気で懇願された。
+						PRINTFORMW %CALLNAME:MASTER%は個性を摘むことになる、巨乳が好みなわけではないと断った。
+						PRINTFORMW てゐは顔を真っ赤にして「アンタのためじゃない」と言いつつも一応納得してくれたようだ。
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（輝夜）
+					IF CFLAG:8832 == 1
+						PRINTFORMW 「姫様、もう諦めましょうよ」
+						PRINTFORMW 『まだよ、こうなったら永琳に土下座して頼むしか……』
+					;その他の場合
+					ELSE
+						CFLAG:8832 = 1
+						PRINTFORMW 『……お互い千年以上生きてるはずなのに、成長しないわね』
+						PRINTFORMW 「……もうその話やめましょうよ」
+						PRINTFORMW 
+						PRINTFORMW 思いもかけずお通夜のような雰囲気になってしまった。
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（輝夜）
+					IF CFLAG:8832 == 1
+						PRINTFORMW 『胸がないとだめなのよ！！！』
+						PRINTFORMW 「あ、え？　何がですか」
+						PRINTFORMW 『はさむ時とか困るの！　どうしろってのあれ！　幾らあれの頼みとはいえ”無い胸は擦れない”わけじゃない』
+						PRINTFORMW 「……ああ、姫様。上手い事いったつもりかもしれませんけど全然上手くないですからね」
+						PRINTFORMW 無い袖は振れない、か。
+					;その他の場合
+					ELSE
+						CFLAG:8832 = 1
+						PRINTFORMW 「鈴仙とお師匠様はともかく、あたしらは仲間ですよね」
+						PRINTFORMW 『落ち込む事言わないでよ……』
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（妹紅）
+					IF CFLAG:8833 == 1
+						PRINTL 「ハクタクももう少し頭を柔らかくしないかな。
+						PRINTFORMW 　悪戯する度怒りにくるんだもの。命に関わるような真似はしてないのにさ」
+						PRINTFORMW 『子供が引っかかってるからじゃないの？』
+						PRINTFORMW 「子供もだけど鈴仙もね」
+					;その他の場合
+					ELSE
+						CFLAG:8833 = 1
+						PRINTFORMW 「焼き鳥屋はやっぱりここに来る前はハクタクと乳繰り合ってたわけ？」
+						PRINTFORMW 『……いや、慧音とはしてないよ。そりゃあ仲はよかったけどね』
+						PRINTFORMW 「ただの友達なわけ？」
+						PRINTFORMW 『親友なのは間違いないけど、恋愛対象としては見れなかったね……今は、ちょっとわからないかな』
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（妹紅）
+					IF CFLAG:8833 == 1
+						PRINTL 「ハクタクももう少し頭を柔らかくしないかな。
+						PRINTFORMW 　悪戯する度怒りにくるんだもの。命に関わるような真似はしてないのにさ」
+						PRINTFORMW 『そりゃ、人里を護るのが慧音の役目だから仕方ないだろうさ』
+						PRINTFORMW 「別にあたしは”人里を滅亡させる悪の兎！”　ってわけじゃないんだから大目に見てほしいなぁ」
+					;その他の場合
+					ELSE
+						CFLAG:8833 = 1
+						PRINTFORMW 「焼き鳥屋はやっぱりここに来る前はハクタクと乳繰り合ってたわけ？」
+						PRINTFORMW 『はっ、そりゃあ仲はよかったけどそういう間柄じゃないよ。なんでそう思ったのよ？』
+						PRINTFORMW 「幻想郷の性生活って爛れてそうだからなんとなく」
+						PRINTFORMW 『私たちまで一緒にしないでよ！』
+					ENDIF
+				ENDIF
+			;Ｂ感覚Lv3以上
+			ELSEIF ABL:Ｂ感覚 >= 3
+				PRINTFORMW 「相変わらず変態ね、アンタって」
+				PRINTFORMW （でもその変態に触られて喜んでるんだから、あたしはもっと……）
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「もうちょっと慣れたら気持ちよくなってくるのかな」
+			ENDIF
+;			CFLAG:8003 = 10
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8003 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（鈴仙）
+					IF CFLAG:8830 == 1
+						PRINTFORMW 「これが格差社会というヤツね……」
+						PRINTFORMW 『あーもう！　そんなことばっかり言ってるともうしてあげないよ！』
+					;その他の場合
+					ELSE
+						CFLAG:8830 = 1
+						PRINTFORMW 「鈴仙と違っておっきくはないけど、おっきくはないけどサボんないでよ」
+						PRINTFORMW 『え、私責められてる？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（鈴仙）
+					IF CFLAG:8830 == 1
+						PRINTFORMW 「これが格差社会というヤツね……」
+						PRINTFORMW 『もっと大きい人が身近にいるじゃない、お師匠様とか……』
+					;その他の場合
+					ELSE
+						CFLAG:8830 = 1
+						PRINTFORMW 「鈴仙と違っておっきくはないけど、おっきくはないけどサボんないでよ」
+						PRINTFORMW 『なんでムネの大きさがサボる理由に……』
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（永琳）
+					IF CFLAG:8831 == 1
+						PRINTFORMW 「お師匠様って胸の扱い上手いですよね」
+						PRINTFORMW 『姫様の件もあるからね』
+					;その他の場合
+					ELSE
+						CFLAG:8831 = 1
+						PRINTFORMW 『あら、どうしたの？　私の胸ばっかりみて』
+						PRINTFORMW 「いや、なんでもないですよ？　ええ、本当に」
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（永琳）
+					IF CFLAG:8831 == 1
+						PRINTFORMW 「お師匠様って胸の扱い上手いですよね」
+						PRINTFORMW 『そ、そう？　気のせいじゃないかしら』
+					;その他の場合
+					ELSE
+						CFLAG:8831 = 1
+						PRINTFORMW 『ほら、胸出しなさいな……どうしたの？』
+						PRINTFORMW 「いや、なんでもないですよ？　ええ、本当に」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（輝夜）
+					IF CFLAG:8832 == 1
+						PRINTFORMW 「今度はあたしが助手で姫様をキモチよくしますから、今日はお願いします」
+						PRINTFORMW 『はいはい、期待しないで待ってるわ』
+					;その他の場合
+					ELSE
+						CFLAG:8832 = 1
+						PRINTFORMW 「姫様もやっぱり自分でいじったりしてるんでしょ？」
+						PRINTFORMW 『妹紅が居なかったりするとあまりやることもないからね、当然じゃない？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（輝夜）
+					IF CFLAG:8832 == 1
+						PRINTFORMW 「今度はあたしが助手で姫様をキモチよくしますから、今日はお願いします」
+						PRINTFORMW 『別にいいわよ……もう』
+					;その他の場合
+					ELSE
+						CFLAG:8832 = 1
+						PRINTFORMW 「姫様もやっぱり自分でいじったりしてるんでしょ？」
+						PRINTFORMW 『ま、まあしないわけじゃないわね……こんな事平然と聞く子だったっけ、てゐってば』
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;胸愛撫（妹紅）
+					IF CFLAG:8833 == 1
+						PRINTFORMW 『んっ、ちろちろ……ちゅ』
+						PRINTFORMW 「うあ、アンタ上手いわね……ひゃんっ！　アイツよりいいかもっ」
+						PRINTFORMW 『そんなことはないと思うけどねぇ』
+					;その他の場合
+					ELSE
+						CFLAG:8833 = 1
+						PRINTFORMW 『へえ、結構かわいいおっぱいしてるんだな』
+						PRINTFORMW 「う、うるさいわね……ほら、早く舐めてよっ」
+					ENDIF
+				;その他の場合
+				ELSE
+					;胸愛撫（妹紅）
+					IF CFLAG:8833 == 1
+						PRINTFORMW 『んっ、ちろちろ……ちゅ』
+						PRINTFORMW 「うあ、アンタ上手いわね……ひゃんっ！　アイツよりいいかもっ」
+						PRINTFORMW 『それはそれで、れろ……複雑なんだけど』
+					;その他の場合
+					ELSE
+						CFLAG:8833 = 1
+						PRINTFORMW 『ねえ、全体的にするのと乳首の先をするのとどっちがいいの？』
+						PRINTFORMW 「どっちもいいけど、あたしは先の方かな……」
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ほらほら、慌てなくてもあたしのおっぱいは逃げないわよー。あっ、ほらもっと吸ってぇ」
+			ENDIF
+;			CFLAG:8003 = 9
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8003 <= 7)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;胸愛撫（鈴仙）
+				IF CFLAG:8830 == 1
+					PRINTFORMW 「揉ませて。揉ませなさい。揉ませろー！」
+					PRINTFORMW 『……ご主人様ぁ～どうすればいいですかぁ～……？』
+					PRINTFORMW 鈴仙のおっぱいを揉む権利十回と、てゐのおっぱいを弄る権利二分
+					PRINTFORMW この二つの品を武器に二人の熾烈な争いが繰り広げられようとしていた。
+				;その他の場合
+				ELSE
+					CFLAG:8830 = 1
+					PRINTFORMW 「あたしとしては鈴仙の胸を揉みたいんだけど」
+					PRINTFORMW 『えええ！？　なんでよ！』
+					PRINTFORMW 「いや、だってもちもちしてて気持ちよさそうじゃん」
+					PRINTFORMW 『そ、そうなんですか？　ご主人様』
+					PRINTFORMW こっちに振るなよ。
+				ENDIF
+			;その他の場合
+			ELSE
+				;胸愛撫（鈴仙）
+				IF CFLAG:8830 == 1
+					PRINTFORMW 「自分の揉んだって面白くもなんともないわけで」
+					PRINTFORMW 『あ、そう。それなら諦めれば？』
+					PRINTFORMW 「嫌がる鈴仙の顔を見ながら揉むから意味があるのよ！」
+				;その他の場合
+				ELSE
+					CFLAG:8830 = 1
+					PRINTFORMW 「あたしとしては鈴仙の胸を揉みたいんだけど」
+					PRINTFORMW 『えええ！？　なんでよ！』
+					PRINTFORMW 「いや、だってもちもちしてて気持ちよさそうじゃん」
+					PRINTFORMW 『そんなこと言われても……自分のお尻でも揉んでればいいじゃない！』
+				ENDIF
+			ENDIF
+;			CFLAG:8003 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8003 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;胸愛撫（永琳）
+				IF CFLAG:8831 == 1
+					PRINTFORMW 『元からそうだったでしょう、あなた達は私と姫様のペット。違う？』
+					PRINTFORMW 「そりゃ、まあ……そうかもしれないですけど」
+					PRINTFORMW 『なら何も問題はないわね』
+				;その他の場合
+				ELSE
+					CFLAG:8831 = 1
+					PRINTFORMW 『ふふっ、びくびく反応しちゃって。面白いわね』
+					PRINTFORMW 「お、お師匠様あたしのことおもちゃと勘違いしてません？」
+				ENDIF
+			;その他の場合
+			ELSE
+				;胸愛撫（永琳）
+				IF CFLAG:8831 == 1
+					PRINTL 『残念ながら私にも現状を打開する方法が思い浮かばなくてね。
+					PRINTFORMW 　それなら、まあそれなりに楽しめばいいんじゃないかしら』
+					PRINTFORMW 「……はぁ」
+					PRINTFORMW （死なないからって危機意識が薄いのね、やっぱり）
+				;その他の場合
+				ELSE
+					CFLAG:8831 = 1
+					PRINTFORMW 『貧乳のほうが感度はいいって言うから、お得かもしれないわよ』
+					PRINTFORMW 「なんですかいきなり」
+					PRINTFORMW 『こういう状況に巻き込まれてしまった以上、楽しんでもいいって事』
+				ENDIF
+			ENDIF
+;			CFLAG:8003 = 7
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8003 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;胸愛撫（輝夜）
+				IF CFLAG:8832 == 1
+					PRINTFORMW 『てゐ』
+					PRINTFORMW 「……お互いダメですねえ」
+					PRINTFORMW 『……まだ、まだよ！　諦めるには早いのよ！』
+				;その他の場合
+				ELSE
+					CFLAG:8832 = 1
+					PRINTFORMW 『豆類を食べるといいらしいわ、胸に』
+					PRINTFORMW 「……はぁ」
+					PRINTFORMW 
+					PRINTFORMW 次の食事は豆尽くしだった。どうやら輝夜が取り計らったらしい。
+				ENDIF
+			;その他の場合
+			ELSE
+				;胸愛撫（輝夜）
+				IF CFLAG:8832 == 1
+					PRINTFORMW 『てゐ』
+					PRINTFORMW 「……もうお湯に入って耐久揉み合いっことかやめましょうよ」
+					PRINTFORMW 『……まだ、まだよ！　諦めるには早いのよ！』
+				;その他の場合
+				ELSE
+					CFLAG:8832 = 1
+					PRINTFORMW 『湯に浸かっている時揉むといいらしいわ、今度やりましょう』
+					PRINTFORMW 「……はぁ」
+					PRINTFORMW 
+					PRINTFORMW 後日、風呂場でのぼせている二人を介抱するハメになった。
+				ENDIF
+			ENDIF
+;			CFLAG:8003 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8003 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;胸愛撫（妹紅）
+				IF CFLAG:8833 == 1
+					PRINTFORMW 『どう？　ちょっとはマシになってきた？』
+					PRINTFORMW 「あー、うん。まあ、ね」
+					PRINTFORMW （困ったわね、やめてくれそうもないし……）
+				;その他の場合
+				ELSE
+					CFLAG:8833 = 1
+					PRINTFORMW 『少し我慢してたら、気持ちよくなってくるからね』
+					PRINTFORMW 「気持ちよくなったとしてもあたしは歓迎出来ないけどね」
+				ENDIF
+			;その他の場合
+			ELSE
+				;胸愛撫（妹紅）
+				IF CFLAG:8833 == 1
+					PRINTFORMW 『幸運を呼ぶ能力で外から助け呼べたりしないかな』
+					PRINTFORMW 「アンタが幸運を受けて逃げるって考えは？」
+					PRINTFORMW 『……それがさ、頭では出るべきと分かってても……もう身体が言うこときかないんだよ』
+				;その他の場合
+				ELSE
+					CFLAG:8833 = 1
+					PRINTFORMW 「あー、もう。なんでこんなことになったんだろ」
+					PRINTFORMW 『運が悪かったって言うしかないよ』
+					PRINTFORMW 「一応幸運を運ぶ兎なはずなんだけどねえ、ヤキがまわったかな」
+				ENDIF
+			ENDIF
+;			CFLAG:8003 = 5
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8003 <= 3)
+;			CFLAG:8003 = 4
+		;Ｂ感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3 && (CFLAG:8003 <= 2)
+			PRINTFORMW 「も、もうやめてよ！　ぴりぴりきてとまんないのよぉ……」
+			PRINTFORMW 我慢が出来ないとばかりにてゐの乳首がひくついている。
+;			CFLAG:8003 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「気持ち悪っ。アンタみたいなのに触られたって気持ちよくなんてならないってーのよ！」
+;			CFLAG:8003 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_4
+;PRINTFORMW 
+IF TFLAG:95 == 1
+;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『てゐ、腰そのままにしてて。指入れてあげるから』
+					PRINTFORMW 「あ……うん」
+					CFLAG:8840 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ある程度慣らしておかないとね』
+					PRINTFORMW 「自分でするのって、なんか怖いのよね……」
+					CFLAG:8840 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ふふ、愛しいご主人様の為に一所懸命準備するなんて、てゐも変わったわね』
+					PRINTFORMW 「……そうですか？」
+					PRINTFORMW （根はあまり変わってないつもりなんだけどねえ）
+					CFLAG:8841 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ほら。しっかり慣らしておかないと後が怖いわよ。裂けたりしちゃうかも』
+					PRINTFORMW 「……笑えませんよお師匠様」
+					CFLAG:8841 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『手伝ってあげる。ほら、ご主人様に抱かれたいんでしょう？　だったら、ね』
+					PRINTFORMW 「そう、ですけど……」
+					PRINTFORMW 『まあ、ご主人様の本妻は私だけれどね』
+					CFLAG:8842 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『てゐも穢れの影響を受けたのね、昔とはだいぶ変わってしまって』
+					PRINTFORMW 「大丈夫ですよ、姫様は気付いてないだけですから」
+					CFLAG:8842 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『いい子になったもんだ』
+					PRINTFORMW 「……へ？」
+					PRINTFORMW 『嘘付く印象しかなかったんだけど。今は妹みたいに見えててさ』
+					CFLAG:8843 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ははっ、嘘付き兎がなんともかわいくなったもんだ』
+					PRINTFORMW 「うるさいなぁ……焼き鳥屋もそのうちかわいくなるんじゃん？」
+					CFLAG:8843 = 1
+				ENDIF
+			;Ｖ感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 「もう慣れてるからさ、今更指じゃなくてもいいんじゃない？
+				PRINTFORMW 　まあ気持ちよくないわけじゃないけど……」
+				PRINTFORMW （……アンタのちんこじゃないと寂しいって言ってんのよ、分かりなさいよね）
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「指とか入れなくていいんだけどなー、アンタのそれじゃダメなわけ？」
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「鈴仙、激しくやっちゃってもいいからね？」
+					PRINTFORMW 『……は、はい。善処します』
+					PRINTFORMW 「なんでそんなに他人行儀なのよ」
+					CFLAG:8840 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙、激しくやっちゃってもいいからね？」
+					PRINTFORMW 『てゐ……ごめんね』
+					PRINTFORMW 「なんで謝ってんのよ、どうでもいいから早くキモチよくさせてくれない？」
+					CFLAG:8840 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「お師匠様なら遠慮せずあたしのおまんこ壊してくれそうですよね」
+					PRINTFORMW 『残念だけどそこまではしないわよ？　あなたはご主人様の物だし、それ以上に私の家族だもの』
+					PRINTFORMW 「もうあたしには家族ってのがどういうものなのかわかんないんで、どうでもいいです」
+					CFLAG:8841 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様なら遠慮せずあたしのおまんこ壊してくれそうですよね」
+					PRINTFORMW 『……出来るわけがないじゃない。貴方は私の家族だもの』
+					PRINTFORMW 「もうあたしには家族ってのがどういうものなのかわかんないんで、どうでもいいです」
+					CFLAG:8841 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「遠慮せずにガツガツ出し入れしちゃっていいですから」
+					PRINTFORMW 『ペットは大事にするものよ？』
+					PRINTFORMW 「そのペットとしてはキモチよければそれでいいんで、汲んでもらえません？」
+					CFLAG:8842 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「遠慮せずにガツガツ出し入れしちゃっていいですから」
+					PRINTFORMW 『……そういわれてもね』
+					PRINTFORMW 「やり方わかんないとかなら、教えますけど？」
+					CFLAG:8842 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「見た目は子供、頭脳は大人ってやつだから遠慮しないでやっちゃいなさいよ」
+					PRINTFORMW 『遠慮しないでっていってもね……まあやるうちに慣れるかな』
+					CFLAG:8843 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「見た目は子供、頭脳は大人ってやつだから遠慮しないでやっちゃいなさいよ」
+					PRINTFORMW 『見た目が子供な時点でやっちゃダメじゃないの、普通』
+					CFLAG:8843 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「んっ、あふぁ……もっとじゅぽじゅぽしてぇ……」
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「鈴仙も変わったね」
+				PRINTFORMW 『そう？　嬉しいなぁ。ご主人様に逆らってたあの頃とは違うのね』
+				PRINTFORMW （……鈴仙、もうダメなのかな）
+				CFLAG:8840 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『……うう』
+				PRINTFORMW 「どうせ逆らう気ないんだったら、さっさとやんなさいよ」
+				PRINTFORMW （これくらい言えば逆らう気に……ならない？）
+				CFLAG:8840 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「はぁ……」
+				PRINTFORMW 『あら、不満そうね？　躾が必要かしら』
+
+				CFLAG:8841 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「はぁ……」
+				PRINTFORMW 『我慢なさいな。出来る限り優しくしてあげる』
+
+				CFLAG:8841 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『ご主人様に抱かれるんだったら、ちゃんと用意しておかないとダメよ？』
+				PRINTFORMW 「なんであたしが好きで抱かれてるみたいな言い草なんですか」
+				CFLAG:8842 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『身体を慣らしておくにこしたことはないわ』
+				PRINTFORMW 「それは、まあ……そうでしょうけど」
+				CFLAG:8842 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『逆らっても無駄だからさ、おとなしくしときなよ』
+				PRINTFORMW （コイツが言うと説得力あるから嫌なのよ……）
+				CFLAG:8843 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『どの辺擦ればいいのかな……ねえ』
+				PRINTFORMW 「な、なんであたしに聞くのよ！？」
+				CFLAG:8843 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「……今更指でしないでよ、最初そうやって慣らしてくれればよかったじゃない」
+			PRINTFORMW 「そしたらまだ痛くなかったでしょうに」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やっ……そこは、触らないでよっ！」
+		ENDIF
+;		CFLAG:8004= 1
+		RETURN 0
+
+ELSE
+;2回目
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8004 <= 9)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 10
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8004 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+				;その他の場合
+				ELSE
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 9
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8004 <= 7)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8004 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 7
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8004 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8004 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+			;その他の場合
+			ELSE
+			ENDIF
+;			CFLAG:8004 = 5
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8004 <= 3)
+;			CFLAG:8004 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8004 <= 2)
+			PRINTFORMW 「あっ……ん、あっ、っくぁ……」
+			PRINTFORMW てゐは必死に声を出すまいと堪えている。
+;			CFLAG:8004 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「っぐ、うう……っいたい、アンタ才能ないんじゃないのっ」
+			PRINTFORMW 強気に笑ってみせているが、ぴくぴくと身体が震えているようじゃ隠し切れているとはいえない。
+			PRINTFORMW まあ震えている理由がまだ快楽によるものではないのは確かだ。
+;			CFLAG:8004 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_5
+;PRINTFORMW 
+IF TFLAG:95 == 1
+;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ふふっ、てゐったら立派なおちんちんを生やしちゃって。
+					PRINTFORMW 　私のお口でそんなにシてほしいの？　ピクピクしてるよ？』
+					PRINTFORMW 「う、うん。れーせんにイッパイシてほしいよ……ねえ、お願い」
+					CFLAG:8850 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『うわぁ……てゐ、こんなに大きくしちゃって……』
+					PRINTFORMW 「そうだよ。だからさぁ、これ……キモチよくして？」
+					CFLAG:8850 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『これは、また……さすがというかなんというか』
+					PRINTFORMW 「お師匠様ー、アイツの命令なんでしゃぶってくださいー。ほら、ぐいっと」
+					CFLAG:8851 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『うっ……てゐ、それ』
+					PRINTFORMW 「お師匠様ー、アイツの命令なんでしゃぶってくださいー。ほら、ぐいっと」
+					CFLAG:8851 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『うわ。ご主人様ほどじゃないけど、おっきいわね』
+					PRINTFORMW 「アイツを追い越したら絶対へこむじゃないですか、これでいいんですよ」
+					CFLAG:8852 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『え……な、に』
+					PRINTFORMW 「姫様ー。これ処理してくれません？　ほら、そのクチで」
+					CFLAG:8852 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「ねえねえ、これちょーっと処理してくれない？」
+					PRINTFORMW 『いいけど……あんまり期待しないでよ？』
+					CFLAG:8853 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ねえねえ、これちょーっと処理してくれない？」
+					PRINTFORMW 『は！？　え、これを？　私が！？』
+					CFLAG:8853 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;マスターがオトコである
+				IF TALENT:MASTER:オトコ == 1
+					PRINTFORMW 「は！？　あたしのを舐めるの！？　ってちょっ……うぁ、ひぅっ！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あたしのを舐めるの？　まあいいけど、ってちょっ……いきなりぃっ！？」
+				ENDIF
+			ENDIF
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『ふふっ、てゐったら立派なおちんちんを生やしちゃって。
+					PRINTFORMW 　私のお口でそんなにシてほしいの？　ピクピクしてるよ？』
+					PRINTFORMW 「うん、れーせんのクチマンコでいーっぱい出したいなぁ……いいでしょ？」
+					CFLAG:8850 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『うわぁ……てゐ、こんなの付いたんだ』
+					PRINTFORMW 「そうだよ。でも、これ……全然治まんないんだ。
+					PRINTFORMW 　れーせんのクチマンコでキモチよくして？」
+					CFLAG:8850 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『これは、また……さすがというかなんというか』
+					PRINTFORMW 「お師匠様ぁ、これ治まんないんです……鎮めてくれませんかぁ？」
+					CFLAG:8851 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『うっ……てゐ、それ』
+					PRINTFORMW 「お師匠様ぁ、これ治まんないんです……鎮めてくれませんかぁ？」
+					CFLAG:8851 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『うわ。ご主人様ほどじゃないけど、おっきいわね』
+					PRINTFORMW 「姫様ぁ……おっきいのはいいんですけど、治まんないんですよぉ……」
+					CFLAG:8852 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『え……な、に』
+					PRINTFORMW 「姫様ぁ！　これ、治まんないんですよぉ……処理手伝ってくださぃ……」
+					CFLAG:8852 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「ねえ、あたしのちんこのボッキが全然治まんなくってさぁ……イッパイ出させてくれないかなぁ？」
+					PRINTFORMW 『ああ、かまわないけど……私でいいのかな』
+					CFLAG:8853 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ねえ、あたしのちんこのボッキが全然治まんなくってさぁ……イッパイ出させてくれないかなぁ？」
+					PRINTFORMW 『う……な、なんで私に頼むのよ……』
+					CFLAG:8853 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;マスターがオトコである
+				IF TALENT:MASTER:オトコ == 1
+					PRINTFORMW 「アハハッ、アンタオトコのくせにあたしのちんこ舐めるんだぁ……
+					PRINTFORMW 　ほらほら、喉の奥でいっぱい味わってぇ♪　ちゃぁんとセーシ飲みなさいよね！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「アハハッ、ほらほら、喉の奥でいっぱい味わってぇ♪　ちゃぁんとセーシ飲みなさいよね！」
+				ENDIF
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+				PRINTFORMW 『そうよー。ご主人様の程じゃないわね、これ』
+				PRINTFORMW 「大きさなんてどうでもいいですよ……」
+				CFLAG:8852 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+				PRINTFORMW 『……まあ、ペットの盛りは鎮めてあげないといけないでしょうからね』
+				CFLAG:8852 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+				PRINTFORMW 『私の口が不満なら器具で出させてあげましょうか？』
+				PRINTFORMW 「……いや、いいです」
+				CFLAG:8851 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+				PRINTFORMW 『貴方が苦しんでいるなら私が何とかしないといけないでしょうね』
+				CFLAG:8851 = 1
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『動かないで、じっとしてて』
+				PRINTFORMW 「うう……鈴仙、怖いよ……」
+				CFLAG:8850 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『大丈夫、きっと刺激はそんなには強くないから……』
+				PRINTFORMW 「うう……鈴仙、怖いよ……」
+				CFLAG:8850 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『ご主人様は出しても平気な顔してるし、大丈夫だよ』
+				PRINTFORMW 「アイツとあたしを一緒にしないでよー！」
+				CFLAG:8853 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『%CALLNAME:MASTER%は出しても平気な顔してるし、大丈夫だよ』
+				PRINTFORMW 「アイツとあたしを一緒にしないでよー！」
+				CFLAG:8853 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;その他の場合
+		ELSE
+			;マスターがオトコである
+			IF TALENT:MASTER:オトコ == 1
+				PRINTFORMW 「う、うそでしょっ！？　まさかオトコなのにそんな、っひいいっ！　何コレぇ！？」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「えっ、何コレぇ……すっごいヘンな感じ……っふぁあっ！」
+			ENDIF
+		ENDIF
+;		CFLAG:8005= 1
+		RETURN 0
+ELSE
+;2回目
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8005 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（鈴仙）
+					IF CFLAG:8850 == 1
+						PRINTFORMW 『そんなに潤んだ目で見なくっても、ちゃんとしてあげるから♪』
+						PRINTFORMW 「ひっ、お……ぁは、れーせっ、それだめぇ……」
+					;その他の場合
+					ELSE
+						CFLAG:8850 = 1
+						PRINTFORMW 『ふふっ、てゐったら立派なおちんちんを生やしちゃって。
+						PRINTFORMW 　私のお口でそんなにシてほしいの？　ピクピクしてるよ？』
+						PRINTFORMW 「う、うん。れーせんにイッパイシてほしいよ……ねえ、お願い」
+					ENDIF
+				;助手がふたなりである
+				ELSEIF TALENT:ASSI:ふたなり == 1
+					;フェラする（鈴仙）
+					IF CFLAG:8850 == 1
+						PRINTFORMW 『まだ満足できないの？　そりゃ、兎は万年発情期っていうけど……』
+						PRINTFORMW 「鈴仙も自分がされたらこんなもんなんでしょ」
+					;その他の場合
+					ELSE
+						CFLAG:8850 = 1
+						PRINTFORMW 『ふふっ、てゐったら立派なおちんちんを生やしちゃって。
+						PRINTFORMW 　私のお口でそんなにシてほしいの？　ピクピクしてるよ？』
+						PRINTFORMW 「う、うん。れーせんにイッパイシてほしいよ……ねえ、お願い」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（鈴仙）
+					IF CFLAG:8850 == 1
+						PRINTFORMW 『まだ満足できないの？　そりゃ、兎は万年発情期っていうけど……』
+						PRINTFORMW 「しょうがないじゃない、鈴仙もこれ付けたら分かるわよ」
+					;その他の場合
+					ELSE
+						CFLAG:8850 = 1
+						PRINTFORMW 『うわぁ……てゐ、こんなに大きくしちゃって……』
+						PRINTFORMW 「そうだよ。だからさぁ、これ……キモチよくして？」
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（永琳）
+					IF CFLAG:8851 == 1
+						PRINTFORMW 『あらあら。またこんなにしちゃって……』
+						PRINTFORMW 「文句はアイツに言ってください、あたしがつけたわけじゃないんで」
+						PRINTFORMW 『ふふ、素直じゃないわね』
+					;その他の場合
+					ELSE
+						CFLAG:8851 = 1
+						PRINTFORMW 『これは、また……さすがというかなんというか』
+						PRINTFORMW 「お師匠様ー、アイツの命令なんでしゃぶってくださいー。ほら、ぐいっと」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（永琳）
+					IF CFLAG:8851 == 1
+						PRINTFORMW 『またこんなにしちゃって……』
+						PRINTFORMW 「文句はアイツに言ってください、あたしがつけたわけじゃないんで」
+						PRINTFORMW 『その割にはヨダレ垂らして悦んでるじゃない、貴方のそれ』
+					;その他の場合
+					ELSE
+						CFLAG:8851 = 1
+						PRINTFORMW 『うっ……てゐ、それ』
+						PRINTFORMW 「お師匠様ー、アイツの命令なんでしゃぶってくださいー。ほら、ぐいっと」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（輝夜）
+					IF CFLAG:8852 == 1
+						PRINTL 「そもそも大きくてイイコトなんてほとんど無いですけどね、
+						PRINTFORMW 　舐めにくいし咥えにくいし入れにくいしで」
+						PRINTFORMW 『確かに顎外れちゃうんじゃないか、って思うことはあるわね』
+					;その他の場合
+					ELSE
+						CFLAG:8852 = 1
+						PRINTFORMW 『うわ。ご主人様ほどじゃないけど、おっきいわね』
+						PRINTFORMW 「アイツを追い越したら絶対へこむじゃないですか、これでいいんですよ」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（輝夜）
+					IF CFLAG:8852 == 1
+						PRINTFORMW 『ま、またなの？』
+						PRINTL 「ええ、またです。姫様の口って妙に気持ちいいんですよ。
+						PRINTFORMW 　あたしも知らないうちに鬱憤溜まってたんですかね」
+						PRINTFORMW 『……もう少し日頃から優しくしてあげればよかったかしら？』
+					;その他の場合
+					ELSE
+						CFLAG:8852 = 1
+						PRINTFORMW 『え……な、に』
+						PRINTFORMW 「姫様ー。これ処理してくれません？　ほら、そのクチで」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（妹紅）
+					IF CFLAG:8853 == 1
+						PRINTFORMW 「それじゃ、またよろしく」
+						PRINTFORMW 『はいはい。んちゅっ、じゅるっ……くぷ、くぷっ』
+						PRINTFORMW 「あ、あっ、やっぱ、はげし……んぁあっ！」
+
+					;その他の場合
+					ELSE
+						CFLAG:8853 = 1
+						PRINTFORMW 「ねえねえ、これちょーっと処理してくれない？」
+						PRINTFORMW 『いいけど……あんまり期待しないでよ？』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（妹紅）
+					IF CFLAG:8853 == 1
+						PRINTFORMW 「それじゃ、またよろしく」
+						PRINTFORMW 『ああ……もう、分かったよ。れろ……ちゅっ』
+
+					;その他の場合
+					ELSE
+						CFLAG:8853 = 1
+						PRINTFORMW 「ねえねえ、これちょーっと処理してくれない？」
+						PRINTFORMW 『は！？　え、これを？　私が！？』
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;マスターがオトコである
+				IF TALENT:MASTER:オトコ == 1
+					PRINTFORMW 「な、なんでアンタはオトコの癖にちんこ舐められるのよー……」
+					PRINTFORMW （好きな女のだから……って事なら、嬉しいなぁ……）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「うひぃっ！　ちょ、ちょっとタンマーっ！」
+					PRINTFORMW （やだやだやだ、ヘンな声でちゃうっ！　我慢できないじゃない！）
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 9
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8005 <= 7)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（鈴仙）
+					IF CFLAG:8850 == 1
+						PRINTFORMW 「れーせん、またオネガイっ」
+						PRINTFORMW 『もう……すっかりクセになっちゃったのね』
+					;その他の場合
+					ELSE
+						CFLAG:8850 = 1
+						PRINTFORMW 『ふふっ、てゐったら立派なおちんちんを生やしちゃって。
+						PRINTFORMW 　私のお口でそんなにシてほしいの？　ピクピクしてるよ？』
+						PRINTFORMW 「うん、れーせんのクチマンコでいーっぱい出したいなぁ……いいでしょ？」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（鈴仙）
+					IF CFLAG:8850 == 1
+						PRINTFORMW 「れーせん、またオネガイっ」
+						PRINTFORMW 『あんまり出しすぎるとバカになるよ？』
+					;その他の場合
+					ELSE
+						CFLAG:8850 = 1
+						PRINTFORMW 『うわぁ……てゐ、こんなの付いたんだ』
+						PRINTFORMW 「そうだよ。でも、これ……全然治まんないんだ。
+						PRINTFORMW 　れーせんのクチマンコでキモチよくして？」
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（永琳）
+					IF CFLAG:8851 == 1
+						PRINTFORMW 「お師匠様ぁ、まだ出し足りないですよぉ」
+						PRINTFORMW 『節操のないこと。そのうち触らなくても出るようになるんじゃない？』
+					;その他の場合
+					ELSE
+						CFLAG:8851 = 1
+						PRINTFORMW 『これは、また……さすがというかなんというか』
+						PRINTFORMW 「お師匠様ぁ、これ治まんないんです……鎮めてくれませんかぁ？」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（永琳）
+					IF CFLAG:8851 == 1
+						PRINTFORMW 「お師匠様ぁ、まだ出し足りないですよぉ」
+						PRINTFORMW 『仕方ないわね……』
+					;その他の場合
+					ELSE
+						CFLAG:8851 = 1
+						PRINTFORMW 『うっ……てゐ、それ』
+						PRINTFORMW 「お師匠様ぁ、これ治まんないんです……鎮めてくれませんかぁ？」
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（輝夜）
+					IF CFLAG:8852 == 1
+						PRINTFORMW 『いっその事去勢してしまったらどう？』
+						PRINTFORMW 「う、怖いこと言わないでくださいよ……」
+						PRINTFORMW 『……そう言いながら何で大きくしてるのよ？』
+					;その他の場合
+					ELSE
+						CFLAG:8852 = 1
+						PRINTFORMW 『うわ。ご主人様ほどじゃないけど、おっきいわね』
+						PRINTFORMW 「姫様ぁ……おっきいのはいいんですけど、治まんないんですよぉ……」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（輝夜）
+					IF CFLAG:8852 == 1
+						PRINTFORMW 『また、なのね』
+						PRINTFORMW 「はい……姫様のクチマンコでずぼずぼさせてくださいぃ♪」
+					;その他の場合
+					ELSE
+						CFLAG:8852 = 1
+						PRINTFORMW 『え……な、に』
+						PRINTFORMW 「姫様ぁ！　これ、治まんないんですよぉ……処理手伝ってくださぃ……」
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラする（妹紅）
+					IF CFLAG:8853 == 1
+						PRINTFORMW 『まだ足りないの？　困った子だね』
+						PRINTFORMW 「こんなの我慢できるわけないよぉ」
+					;その他の場合
+					ELSE
+						CFLAG:8853 = 1
+						PRINTFORMW 「ねえ、あたしのちんこのボッキが全然治まんなくってさぁ……イッパイ出させてくれないかなぁ？」
+						PRINTFORMW 『ああ、かまわないけど……私でいいのかな』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラする（妹紅）
+					IF CFLAG:8853 == 1
+						PRINTFORMW 『また私がそれを鎮めるの？』
+						PRINTFORMW 「その為に来たんじゃないの？」
+					;その他の場合
+					ELSE
+						CFLAG:8853 = 1
+						PRINTFORMW 「ねえ、あたしのちんこのボッキが全然治まんなくってさぁ……イッパイ出させてくれないかなぁ？」
+						PRINTFORMW 『う……な、なんで私に頼むのよ……』
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;マスターがオトコである
+				IF TALENT:MASTER:オトコ == 1
+					PRINTFORMW 「あはははっ、何よ！　そんなにあたしのセーシ美味しかったの！？
+					PRINTFORMW 　喉の奥でシゴきなさいよっ！　胃の中にたっぷりご馳走したげるからさっ！」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「なぁに、またあたしのゴックンしたいのぉ？　クセになったとか？　あはははっ」
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 8
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8005 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;フェラする（輝夜）
+				IF CFLAG:8852 == 1
+					PRINTFORMW 「また舐めるんですか？　仮にも月の姫じゃないですか」
+					PRINTFORMW 『月の姫とて伽くらいしても不思議ではないでしょう？』
+					PRINTFORMW 「いや、あたしはオトコじゃないんで……」
+				;その他の場合
+				ELSE
+					CFLAG:8852 = 1
+					PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+					PRINTFORMW 『そうよー。ご主人様の程じゃないわね、これ』
+					PRINTFORMW 「大きさなんてどうでもいいですよ……」
+				ENDIF
+			;その他の場合
+			ELSE
+				;フェラする（輝夜）
+				IF CFLAG:8852 == 1
+					PRINTFORMW 「また舐めるんですか？　仮にも月の姫じゃないですか」
+					PRINTFORMW 『残念だけれど、月の姫なんて肩書きはもう意味がないのよ』
+				;その他の場合
+				ELSE
+					CFLAG:8852 = 1
+					PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+					PRINTFORMW 『……まあ、ペットの盛りは鎮めてあげないといけないでしょうからね』
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 7
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8005 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;フェラする（永琳）
+				IF CFLAG:8851 == 1
+					PRINTFORMW 『搾って搾って、からっからになるまで搾り尽くしたらいい子になるかしら？』
+					PRINTFORMW 「今まであたしが懲りたことってありましたっけ」
+					PRINTFORMW （やだなぁ……お師匠様は本当に手加減しなさそうだし……）
+				;その他の場合
+				ELSE
+					CFLAG:8851 = 1
+					PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+					PRINTFORMW 『私の口が不満なら器具で出させてあげましょうか？』
+					PRINTFORMW 「……いや、いいです」
+				ENDIF
+			;その他の場合
+			ELSE
+				;フェラする（永琳）
+				IF CFLAG:8851 == 1
+					PRINTFORMW 『また苦しんでいるのね、楽にしてあげるわ』
+					PRINTFORMW 「い、いいですよっ！　やらなくても！！」
+				;その他の場合
+				ELSE
+					CFLAG:8851 = 1
+					PRINTFORMW 「あたしのこれを舐めるっていうんですか……？」
+					PRINTFORMW 『貴方が苦しんでいるなら私が何とかしないといけないでしょうね』
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 6
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8005 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;フェラする（鈴仙）
+				IF CFLAG:8850 == 1
+					PRINTFORMW 『じっとしてれば、気持ちよくなるよ。本当にすぐ済んじゃうから楽にしてて』
+					PRINTFORMW 「それやだよ……鈴仙ってばぁ、勘弁してよぉ」
+				;その他の場合
+				ELSE
+					CFLAG:8850 = 1
+					PRINTFORMW 『動かないで、じっとしてて』
+					PRINTFORMW 「うう……鈴仙、怖いよ……」
+				ENDIF
+			;その他の場合
+			ELSE
+				;フェラする（鈴仙）
+				IF CFLAG:8850 == 1
+					PRINTFORMW 『優しくしてあげるから、気をしっかりもって』
+					PRINTFORMW 「優しくなんてしなくていいから、触るのやめてよ……」
+				;その他の場合
+				ELSE
+					CFLAG:8850 = 1
+					PRINTFORMW 『大丈夫、きっと刺激はそんなには強くないから……』
+					PRINTFORMW 「うう……鈴仙、怖いよ……」
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 5
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8005 <= 3)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;フェラする（妹紅）
+				IF CFLAG:8853 == 1
+					PRINTFORMW 『オトコって精液出すの大好きなんじゃないの？　だったら貴方だって好きになるよ、きっと』
+					PRINTFORMW 「好きになりたくないっていってんのよ！」
+				;その他の場合
+				ELSE
+					CFLAG:8853 = 1
+					PRINTFORMW 『ご主人様は出しても平気な顔してるし、大丈夫だよ』
+					PRINTFORMW 「アイツとあたしを一緒にしないでよー！」
+				ENDIF
+			;その他の場合
+			ELSE
+				;フェラする（妹紅）
+				IF CFLAG:8853 == 1
+					PRINTFORMW 『オトコって精液出すの大好きなんじゃないの？　だったら貴方だって好きになるよ、きっと』
+					PRINTFORMW 「好きになりたくないっていってんのよ！」
+				;その他の場合
+				ELSE
+					CFLAG:8853 = 1
+					PRINTFORMW 『%CALLNAME:MASTER%は出しても平気って言ってたし、大丈夫だよ』
+					PRINTFORMW 「アイツとあたしを一緒にしないでよー！」
+				ENDIF
+			ENDIF
+;			CFLAG:8005 = 4
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8005 <= 2)
+;			CFLAG:8005 = 3
+		;その他の場合
+		ELSE
+			;マスターがオトコである
+			IF TALENT:MASTER:オトコ == 1
+				PRINTFORMW 「な、なんでよぉ……なんでオトコなのにそんなこと出来るワケ！？
+				PRINTFORMW 　うううっ！　気持ち悪いっ！　気持ち悪い気持ち悪いっ！！」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「ま、また舐めるのっ！？　それヤダぁっ！　気持ち悪いからヤダってばぁっ！」
+			ENDIF
+;			CFLAG:8005 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_6
+;PRINTFORMW 
+IF TFLAG:95 == 1
+;初めて
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 『はぁ、ちゅっ……ふぁ』
+					PRINTFORMW 「んっ……れーせん……」
+					PRINTFORMW 二人は瞳を潤ませながら唇を重ね続けている。
+					CFLAG:8860 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 『ごめんね、てゐ』
+					PRINTFORMW 「んっ、謝るくらいなら……やんないでよ、ちゅ」
+					CFLAG:8860 = 1
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「うぇ！？　お師匠様今何か飲ませませんでした！？」
+					PRINTFORMW 『ふふ、どうかしらねえ？』
+					CFLAG:8861 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様も案外好きなんでしょ、こういうの」
+					PRINTFORMW 『わ、私は別に……命令だから仕方なく』
+					PRINTFORMW 「命令だからって普通ペット扱いだったあたしと本気のキスなんてします？」
+					PRINTFORMW これではどちらが攻めているのか分からない。
+					CFLAG:8861 = 1
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「姫様とキスするなんて、ちょっと優越感ありますね」
+					PRINTFORMW 『あら、そうなの？』
+					PRINTL 「だってほら、男共からすればかぐや姫なわけですから。
+					PRINTL 　男共の狙ってる姫様を兎が取るなんてそりゃプライド傷つくんじゃないですかね？
+					PRINTFORMW 　ああ、アイツからすると別かもしれませんけど」
+					PRINTFORMW 『まあご主人様は例外でしょう。一緒にしては失礼よ』
+					CFLAG:8862 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「姫様もどんどんダメになってきてますね」
+					PRINTFORMW 『そう、ねえ。ほら、私も姫なわけだし知らない刺激に弱いのよ』
+					PRINTFORMW 「見てる分には面白いからいいんですけどね、あたしとしては」
+					CFLAG:8862 = 1
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「あたしも昔は惚れてた人に初めてのキスを捧げようとか考えてたわけよ」
+					PRINTFORMW 『ああ、それ私も。でもここに居たことのある娘達は下手するとちんこに初キス捧げてるわけで』
+					PRINTFORMW 「改めて考えると外道よねえ」
+					PRINTFORMW 『ほんとよねー』
+					CFLAG:8863 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あたしも昔は惚れてた人に初めてのキスを捧げようとか考えてたわけよ」
+					PRINTFORMW 『それ私も。ああ、あの頃はなんて純だったのかしら』
+					PRINTFORMW 「その頃はえろい事とか聞くだけで顔真っ赤だったりしたのにさあ」
+					PRINTFORMW 『ほんと、なんでこんなことになったんだろうねー』
+					CFLAG:8863 = 1
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「そういえば、あたしらこういう普通のキスしたことなかったわね……んっ」
+				PRINTFORMW （なんでかな……これだけのことなのに、凄くドキドキする）
+				CFLAG:7800 = 1
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「鈴仙ってキス慣れしてなさそうよね」
+				PRINTFORMW 『試してみる？』
+				CFLAG:8860 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「鈴仙ってキス慣れしてなさそうよね」
+				PRINTFORMW 『あ、はは……そうかしらねー？』
+				CFLAG:8860 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「お師匠様、鈴仙にもこんなことやってるんですか？」
+				PRINTFORMW 『さあ、それはどうかしらねえ』
+				CFLAG:8861 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「お師匠様にキスの講義をすればいいの？」
+				PRINTFORMW 『逆よ、逆。まあ私も出来る自信ないんだけど』
+				PRINTFORMW 「それはこっちもですよ」
+				CFLAG:8861 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 『くちゅ、はむ……んん、ぷぁ』
+				PRINTFORMW 「はぁ、姫様しつこすぎ……っく」
+				CFLAG:8862 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 『まさかうちのペットとキスするハメになるとはねえ』
+				PRINTFORMW 「面白半分でやりかねないと思ってた分、こっちは気楽といえば気楽ですけどね」
+				CFLAG:8862 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				PRINTFORMW 「うわ、焼き鳥屋上手いわね」
+				PRINTFORMW 『まあ、ご主人様に仕込まれたからしょうがないのよ』
+				PRINTFORMW 「ああ、それはしょうがないね」
+				CFLAG:8863 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「焼き鳥屋割りと上手いわね」
+				PRINTFORMW 『ああ、まあ……さ。私も色々あったからね』
+				CFLAG:8863 = 1
+			ENDIF
+		;隷属である
+		ELSEIF TALENT:隷属 == 1
+		;従順Lv3以上
+		ELSEIF ABL:従順 >= 3
+			PRINTFORMW 「うぁ……お願い、やめ……むぐっ！　んーっ！」
+			PRINTFORMW （ああ、とうとう奪われちゃった……でも、言うほど嫌じゃない、かも……）
+			CFLAG:7800 = 1
+		;その他の場合
+		ELSE
+			PRINTFORMW 「いやっ！　やだっ！　やめっ……嫌ぁ！」
+			PRINTFORMW （嘘ぉ……こんなっ、こんな事であたしのっ……！）
+			CFLAG:7800 = 1
+		ENDIF
+		CFLAG:8006= 1
+		RETURN 0
+ELSE
+;2回目
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8006 <= 8)
+			;助手が鈴仙で助手が調教
+			IF ASSIPLAY && NO:ASSI == 28
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;キスする（鈴仙）
+					IF CFLAG:8860 == 1
+						PRINTFORMW 『てゐかわいいわね、前は気付かなかったけど……ふふ、ご主人様に感謝しないと』
+						PRINTFORMW 「あぇ……ちょっとコーフンしてきたかも……」
+					;その他の場合
+					ELSE
+						PRINTFORMW 『はぁ、ちゅっ……ふぁ』
+						PRINTFORMW 「んっ……れーせん……」
+						PRINTFORMW 二人は瞳を潤ませながら唇を重ね続けている。
+						CFLAG:8860 = 1
+					ENDIF
+				;その他の場合
+				ELSE
+					;キスする（鈴仙）
+					IF CFLAG:8860 == 1
+						PRINTFORMW 「別に謝んなくていーからさ、もっとシてよ……」
+						PRINTFORMW 『てゐもえっちになったなぁ……』
+						PRINTFORMW 「う……アイツのせいだからしょうがないのよっ」
+					;その他の場合
+					ELSE
+						PRINTFORMW 『ごめんね、てゐ』
+						PRINTFORMW 「んっ、謝るくらいなら……やんないでよ、ちゅ」
+						CFLAG:8860 = 1
+					ENDIF
+				ENDIF
+			;助手が永琳で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 29
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;キスする（永琳）
+					IF CFLAG:8861 == 1
+						PRINTFORMW 「妙な薬作って実験台にされたりってのは、もうこりごりですからね」
+						PRINTFORMW 『あら、私はそんなことしているつもりはなかったのだけど』
+						PRINTFORMW 「……後ろにしか歩けなくなる薬なんての、飲まされたこと覚えてますよ？」
+					;その他の場合
+					ELSE
+						PRINTFORMW 「うぇ！？　お師匠様今何か飲ませませんでした！？」
+						PRINTFORMW 『ふふ、どうかしらねえ？』
+						CFLAG:8861 = 1
+					ENDIF
+				;その他の場合
+				ELSE
+					;キスする（永琳）
+					IF CFLAG:8861 == 1
+						PRINTL 「ほら、遠慮しないでください。言われて仕方なくしてるんでしょ？
+						PRINTFORMW 　仕方ないんですよ、仕方ないんです」
+						PRINTFORMW 『そ、そうよね……仕方ないのよ、私は悪くないのよ……』
+						PRINTFORMW 案外てゐには調教師の素養があるのだろうか？
+					;その他の場合
+					ELSE
+						PRINTFORMW 「お師匠様も案外好きなんでしょ、こういうの」
+						PRINTFORMW 『わ、私は別に……命令だから仕方なく』
+						PRINTFORMW 「命令だからって普通ペット扱いだったあたしと本気のキスなんてします？」
+						PRINTFORMW これではどちらが攻めているのか分からない。
+						CFLAG:8861 = 1
+					ENDIF
+				ENDIF
+			;助手が輝夜で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 30
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;キスする（輝夜）
+					IF CFLAG:8862 == 1
+						PRINTL 『ご主人様は私に難題を出させない、という難題を見事突破した方だもの。
+						PRINTFORMW 　あの方の為なら私は何だって出来るわよ』
+						PRINTFORMW 「たとえあたしみたいなのとキスしろって命令でもですか？」
+						PRINTFORMW 『ふふ、これは別。ペットをかわいがるのに理由は要らないでしょう？』
+					;その他の場合
+					ELSE
+						PRINTFORMW 「姫様とキスするなんて、ちょっと優越感ありますね」
+						PRINTFORMW 『あら、そうなの？』
+						PRINTL 「だってほら、男共からすればかぐや姫なわけですから。
+						PRINTL 　男共の狙ってる姫様を兎が取るなんてそりゃプライド傷つくんじゃないですかね？
+						PRINTFORMW 　ああ、アイツからすると別かもしれませんけど」
+						PRINTFORMW 『まあご主人様は例外でしょう。一緒にしては失礼よ』
+						CFLAG:8862 = 1
+					ENDIF
+				;その他の場合
+				ELSE
+					;キスする（輝夜）
+					IF CFLAG:8862 == 1
+						PRINTFORMW 『残念ながらというべきか、退屈しなくなってきているのよねえ』
+						PRINTFORMW 「退屈しのげれば何でもよさそうですよね」
+						PRINTFORMW 『ええ、貴方を調教するのもそれなりに新鮮なのよ。退屈しないわ』
+					;その他の場合
+					ELSE
+						PRINTFORMW 「姫様もどんどんダメになってきてますね」
+						PRINTFORMW 『そう、ねえ。ほら、私も姫なわけだし知らない刺激に弱いのよ』
+						PRINTFORMW 「見てる分には面白いからいいんですけどね、あたしとしては」
+						CFLAG:8862 = 1
+					ENDIF
+				ENDIF
+			;助手が妹紅で助手が調教
+			ELSEIF ASSIPLAY && NO:ASSI == 31
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;キスする（妹紅）
+					IF CFLAG:8863 == 1
+						PRINTFORMW 『でも、私はあんまり後悔してないのよね。ご主人様と会えたわけだし』
+						PRINTFORMW 「うわ、超前向きねアンタ」
+					;その他の場合
+					ELSE
+						PRINTFORMW 「あたしも昔は惚れてた人に初めてのキスを捧げようとか考えてたわけよ」
+						PRINTFORMW 『ああ、それ私も。でもここに居たことのある娘達は下手するとちんこに初キス捧げてるわけで』
+						PRINTFORMW 「改めて考えると外道よねえ」
+						PRINTFORMW 『ほんとよねー』
+						CFLAG:8863 = 1
+					ENDIF
+				;その他の場合
+				ELSE
+					;キスする（妹紅）
+					IF CFLAG:8863 == 1
+						PRINTFORMW 『あーあ、もっと優しい人が身近に居ればなあ』
+						PRINTFORMW 「もっとかっこいい男が身近に居ればねえ」
+					;その他の場合
+					ELSE
+						PRINTFORMW 「あたしも昔は惚れてた人に初めてのキスを捧げようとか考えてたわけよ」
+						PRINTFORMW 『それ私も。ああ、あの頃はなんて純だったのかしら』
+						PRINTFORMW 「その頃はえろい事とか聞くだけで顔真っ赤だったりしたのにさあ」
+						PRINTFORMW 『ほんと、なんでこんなことになったんだろうねー』
+						CFLAG:8863 = 1
+					ENDIF
+				ENDIF
+			;隷属である
+			ELSEIF TALENT:隷属 == 1
+			;その他の場合
+			ELSE
+				;キスする判定
+				IF CFLAG:7800 == 1
+					PRINTFORMW 「なんかさぁ……キスしてると、アタマぼぉーっとしてこない？」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「そういえば、あたしらこういう普通のキスしたことなかったわね……んっ」
+					PRINTFORMW （なんでかな……これだけのことなのに、凄くドキドキする）
+					CFLAG:7800 = 1
+				ENDIF
+			ENDIF
+			CFLAG:8006 = 9
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8006 <= 7)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;キスする（輝夜）
+				IF CFLAG:8862 == 1
+					PRINTFORMW 「ほ、ほんとにしつっこいですね姫様」
+					PRINTFORMW 『ペットの躾は大事だもの、しつこくもするわ』
+				;その他の場合
+				ELSE
+					PRINTFORMW 『くちゅ、はむ……んん、ぷぁ』
+					PRINTFORMW 「はぁ、姫様しつこすぎ……っく」
+					CFLAG:8862 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;キスする（輝夜）
+				IF CFLAG:8862 == 1
+					PRINTFORMW 『私は純情なのに、妙なイメージばかりもたれてるわねえ』
+					PRINTFORMW 「それ焼き鳥屋辺りに言ったら、鼻で笑われますよ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 『まさかうちのペットとキスするハメになるとはねえ』
+					PRINTFORMW 「面白半分でやりかねないと思ってた分、こっちは気楽といえば気楽ですけどね」
+					CFLAG:8862 = 1
+				ENDIF
+			ENDIF
+			CFLAG:8006 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8006 <= 6)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;キスする（永琳）
+				IF CFLAG:8861 == 1
+					PRINTFORMW 「患者に手出してたりとか……」
+					PRINTFORMW 『てゐは私にそういうイメージしかないのかしら？』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様、鈴仙にもこんなことやってるんですか？」
+					PRINTFORMW 『さあ、それはどうかしらねえ』
+					CFLAG:8861 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;キスする（永琳）
+				IF CFLAG:8861 == 1
+					PRINTFORMW 「すっごい不服ですけど講義お願いしまーす」
+					PRINTL 『キスの一種であるディープキス、別名フレンチキスは唇を触れ合うだけでなく、
+					PRINTL 　互いに舌を相手の口腔内に挿入、舌を絡め合うものなの。唇を重ねるだけならソフトキスと言って』
+					PRINTFORMW 「いやあの、ごめんなさい。あたしが悪かったです」
+					PRINTFORMW 出典：Yagopedia
+				;その他の場合
+				ELSE
+					PRINTFORMW 「お師匠様にキスの講義をすればいいの？」
+					PRINTFORMW 『逆よ、逆。まあ私も出来る自信ないんだけど』
+					PRINTFORMW 「それはこっちもですよ」
+					CFLAG:8861 = 1
+				ENDIF
+			ENDIF
+			CFLAG:8006 = 7
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8006 <= 5)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;キスする（鈴仙）
+				IF CFLAG:8860 == 1
+					PRINTFORMW 『どう？　キス慣れしてないと思う？』
+					PRINTFORMW 「……そうでもなかった、アイツと会う前からこうなの？」
+					PRINTFORMW 『……さあ？　そこまでは教えられないわね』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙ってキス慣れしてなさそうよね」
+					PRINTFORMW 『試してみる？』
+					CFLAG:8860 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;キスする（鈴仙）
+				IF CFLAG:8860 == 1
+					PRINTFORMW 「あれ？」
+					PRINTFORMW 『う……？　ど、どうしたのよ』
+					PRINTFORMW 「んー……なんでもない」
+					PRINTFORMW （ヘンねー。なんか慣れてるのを無理矢理下手に見せてるような……）
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙ってキス慣れしてなさそうよね」
+					PRINTFORMW 『あ、はは……そうかしらねー？』
+					CFLAG:8860 = 1
+				ENDIF
+			ENDIF
+			CFLAG:8006 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8006 <= 4)
+			;助手が恋慕である
+			IF TALENT:ASSI:恋慕 == 1
+				;キスする（妹紅）
+				IF CFLAG:8863 == 1
+					PRINTFORMW 「こういうのって焼き鳥屋は得意じゃないイメージあったんだけどねえ」
+					PRINTFORMW 『そのイメージを払拭したのがご主人様なわけで』
+					PRINTFORMW 「閻魔も恐れない、って感じねえ」
+				;その他の場合
+				ELSE
+					PRINTFORMW 「うわ、焼き鳥屋上手いわね」
+					PRINTFORMW 『まあ、ご主人様に仕込まれたからしょうがないのよ』
+					PRINTFORMW 「ああ、それはしょうがないね」
+					CFLAG:8863 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;キスする（妹紅）
+				IF CFLAG:8863 == 1
+					PRINTFORMW 「何があったかとかって、聞かない方がいいの？」
+					PRINTFORMW 『聞いてほしくはないね。昔の話だし、今がこうだもの』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「焼き鳥屋割りと上手いわね」
+					PRINTFORMW 『ああ、まあ……さ。私も色々あったからね』
+					CFLAG:8863 = 1
+				ENDIF
+			ENDIF
+			CFLAG:8006 = 5
+		;隷属である
+		ELSEIF TALENT:隷属 == 1 && (CFLAG:8006 <= 3)
+			CFLAG:8006 = 4
+		;従順Lv3以上
+		ELSEIF ABL:従順 >= 3 && (CFLAG:8006 <= 2)
+			;キスする判定
+			IF CFLAG:7800 == 1
+				PRINTFORMW 「うぅ……ああ、もう！　わかったわよ！　やればいいんでしょ！」
+			;その他の場合
+			ELSE
+				CFLAG:7800 = 1
+				PRINTFORMW 「うぁ……お願い、やめ……むぐっ！　んーっ！」
+				PRINTFORMW （ああ、とうとう奪われちゃった……でも、言うほど嫌じゃない、かも……）
+			ENDIF
+			CFLAG:8006 = 3
+		;その他の場合
+		ELSE
+			;キスする判定
+			IF CFLAG:7800 == 1
+				PRINTFORMW 「何なのよアンタはあっ！　こんなことして楽しいワケ！？」
+				PRINTFORMW てゐは涙目で叫んでいる。
+			;その他の場合
+			ELSE
+				CFLAG:7800 = 1
+				PRINTFORMW 「いやっ！　やだっ！　やめっ……嫌ぁ！」
+				PRINTFORMW （嘘ぉ……こんなっ、こんな事であたしのっ……！）
+			ENDIF
+			CFLAG:8006 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;自慰
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_7
+;PRINTFORMW 
+;特に付加状況なし
+IF TEQUIP:50 == 0 && TEQUIP:52 == 0 && TEQUIP:54 == 0 && TEQUIP:20 == 0 && TEQUIP:25 == 0
+	IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あたしのオナニー見たいって？　普通こういうのって見せるもんじゃないと思うんだけど」
+			PRINTFORMW 「……そ、そんなにがっかりしないでよ。分かったから！　見せたげるから！」
+		;自慰中毒Lv1以上
+		ELSEIF ABL:自慰中毒 >= 1
+			PRINTFORMW 「人前でオナニーとか普通するわけないじゃないっ……何考えてんのよ」
+			PRINTFORMW （見られてると思うと興奮しちゃうじゃない……）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「アンタの前でおなっ、オナニーしろって！？　アンタほんと馬鹿じゃないの！？
+			PRINTFORMW 　……うううっ、分かったわよやるわよやればいいんでしょ！？」
+		ENDIF
+		CFLAG:8007 = 1
+	ELSE
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8007 <= 3)
+			PRINTFORMW 「また見たいの？　他人の見ても面白くないと思うんだけどねー」
+			PRINTFORMW 「……自分の見るのはもっと面白くない？　ああ、そーですか」
+			PRINTFORMW てゐは少し呆れている。
+;			CFLAG:8007 = 4
+		;自慰中毒Lv1以上
+		ELSEIF ABL:自慰中毒 >= 1 && (CFLAG:8007 <= 2)
+			PRINTFORMW 「ん、はぁ……ひっあっ、はっ、はぁっ」
+			PRINTFORMW てゐはこちらのことなどお構いなしで自慰をしている。
+;			CFLAG:8007 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「……ド変態、としか言えないわ」
+			PRINTFORMW てゐは呆れつつも渋々従っている。
+;			CFLAG:8007 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_9
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_10
+;PRINTFORMW 
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_11
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_13
+;解除時
+IF TEQUIP:25 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_14
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_15
+;解除時
+IF TEQUIP:35 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_16
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_17
+;解除時
+IF TEQUIP:30 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_20
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なんか落ち着くね、これ。……アンタと近いからかな」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「……ほら、さっさと入れなさいよ。どうせ嫌って言っても入れるんでしょ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「う、あっ！？　やめてよっ！　それシャレにならないってっ！　やだぁあ！！」
+		ENDIF
+;		CFLAG:8020 = 1
+ELSE
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8020 <= 3)
+			PRINTL 「ほら、遠慮しなくていいからさ。
+			PRINTFORMW 　あたしの身体のことなんて気にしないで、むしろ壊すくらいのつもりでやっちゃってよ」
+			PRINTFORMW 「うわ、アンタのを改めてこういう姿勢で見るとスゴいわね……」
+;			CFLAG:8020 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8020 <= 2)
+			PRINTFORMW 「……ああ、別に何ももう言わないからさ。さっさとやってよ」
+;			CFLAG:8020 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「……アンタ女の身になった事ある？　気持ちよくないわ痛いわで今あたし最悪なんだけどさ」
+;			CFLAG:8020 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_21
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あたしはしたことないから実際のところは分からないけど、
+			PRINTFORMW 　兎の雄はよく背中の毛を口で勢いよく引っ張ってするらしいから、
+			PRINTFORMW 　毛が抜けるわ痛いわで大変だってさ」
+			PRINTFORMW 「ま、人型になったらなったで困ることも多いけどね」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「アンタの顔見なくて済む分マシってものよね」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「う……本気でやる気なの？　勘弁してよ……アンタみたいなのと交尾なんて考えたくもないわ」
+			PRINTFORMW 
+			PRINTFORMW 抵抗はするものの、弱弱しい。問題なさそうなので%CALLNAME:MASTER%はかまわず挿入した。
+		ENDIF
+;		CFLAG:8021 = 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8021 <= 3)
+			PRINTFORMW 「兎の交尾の仕方としては正しいんだけど……別に合わせなくていいよ？」
+			PRINTFORMW 「アンタのしたいようにしてくれればさ」
+;			CFLAG:8021 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8021 <= 2)
+			PRINTFORMW 「うっ、くぁ……あっ、はっ……あ、くぅ……」
+			PRINTFORMW てゐは身体が反応しているのを隠したがっているようだが、隠し切れないでいる。
+;			CFLAG:8021 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「嫌だっつってんでしょ？　あーあー、言葉通じてますかー？」
+			PRINTFORMW 「……皮肉くらい分かりなさいよ」
+;			CFLAG:8021 = 2
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_22
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「この体勢いいかもね……キスしやすいしあたしもちょっとは動けるし」
+			PRINTFORMW 「……重いとか言ったらひっぱたくからね」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ふっ、ふっ、うっ……ぁ、っく……」
+			PRINTFORMW （ココでこう腰をぐりってすると……気持ちいいかも）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「あぐっ……くうっ、近付かないで、よっ！！」
+			PRINTFORMW 
+			PRINTFORMW 腰を引き寄せる手を強引に振り払って逃げようとするが、
+			PRINTFORMW 逃げられるはずもなくあっさり捕まってしまった。
+		ENDIF
+;		CFLAG:8022= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8022 <= 3)
+			PRINTFORMW 「ほら、もうちょっとこっち寄ってよ……んっ」
+			PRINTFORMW （気持ちいいだけじゃなくて、好きなのがどんどんおっきくなってく……病み付きになりそ……）
+;			CFLAG:8022 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8022 <= 2)
+			PRINTFORMW 「あっ、ふぅ……あっ、あぁ、あぁっ……」
+			PRINTFORMW （どうせやめてもらえるわけないんだし、楽しむのが正解なのかなぁ）
+;			CFLAG:8022 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「もう、来ないでよ！　アンタはいいかもしれないけどあたしにとっては最悪なのよ！」
+;			CFLAG:8022 = 2
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_23
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「な、なんかこの体勢不安定で怖いわね……気持ちいいんだけどさ」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んっ、あっ、はっ、はぁ……あ、んひゃっ！？」
+			PRINTFORMW （うわ、なんだかイイとこに当たったせいでヘンな声出ちゃったし……ううう）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぎっ……い、ったぁあ……っ、がぁ」
+			PRINTFORMW 
+			PRINTFORMW てゐは歯を食いしばって耐えている。
+		ENDIF
+;		CFLAG:8023= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8023 <= 3)
+			PRINTFORMW 「だ、大丈夫。ぎゅってしててくれるんでしょ？」
+;			CFLAG:8023 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8023 <= 2)
+			PRINTFORMW 「はぁ、んくっ……あ、かぁ……はぁ」
+			PRINTFORMW （ヘンな声だけは出さないようにしないと……）
+;			CFLAG:8023 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「やぁ、ぐぁ……も、やめ……」
+;			CFLAG:8023 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_24
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なんだかこの体勢、自分を捧げてるって感じで割りと好みなのよね」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あたしがするの……？　わ、分かったわよ……」
+			PRINTFORMW （ああもう、女は度胸……いくしかないわね！）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「何でアンタ相手に自分からだなんてっ……ふっ……っぐうううっ」
+		ENDIF
+;		CFLAG:8024= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8024 <= 3)
+			PRINTFORMW 「んっ……ちょっと待ってね、今入れるから……っ」
+;			CFLAG:8024 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8024 <= 2)
+			PRINTFORMW 「あっ、ひゃぁ、あっ、あ……あっ！　っ、うぁっ」
+			PRINTFORMW （一番奥の、子宮まで届いてるっ……！）
+;			CFLAG:8024 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ま、また自分から入れろっての……？　ううっ……分かったわよ……」
+;			CFLAG:8024 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_27
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「だいじょうぶ？　このカッコ入れにくそうだけど……んっ、入ったぁ……」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「だいぶっ、キモチよくなってきたけど……まだまだねえ？」
+			PRINTFORMW （強気に言ってみたはいいけど、我慢してるの見抜かれてそうね……悔しいなぁ）
+		;その他の場合
+		ELSE
+			PRINTFORMW 「自分で広げろって？　誰がそんなこっ……ひっ、や……やるわよ。やればいいんでしょ！？」
+		ENDIF
+;		CFLAG:8027= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8027 <= 3)
+			PRINTFORMW 「ほら、あたしも広げたげるから……んっ、上手に出来たんだから、キスしてよ……ね？」
+;			CFLAG:8027 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8027 <= 2)
+			PRINTFORMW 「は、んっ……だ、だいぶマシになってきたじゃない……」
+			PRINTFORMW （ヤバ……結構気持ちいい……これがホントのセックスなんだ……）
+;			CFLAG:8027 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ま、またやるの？　これもう嫌なのよぉ……」
+;			CFLAG:8027 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;背面立位
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_28
+;PRINTFORMW 
+IF TFLAG:95 == 1
+IF TALENT:恋慕 == 1
+			PRINTFORMW 「なんだか、この格好だとチカンでもされてるみたい……」
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「っく、ふぅー……ふぅ、ぁ、ひっ……足が、ふらついちゃう……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ひっ……寄るなぁっ！　あぐっ……腰引っ張ら、あがぁっ！！」
+			PRINTFORMW （コイツが怖いっ……何やろうとしてるのか全然見えないし……）
+		ENDIF
+;		CFLAG:8028= 1
+ELSE
+IF TALENT:恋慕 == 1 && (CFLAG:8028 <= 3)
+			PRINTFORMW 「ふふ、ヘンタイはあたしが退治しちゃうんだから……あんっ」
+;			CFLAG:8028 = 4
+		;Ｖ感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3 && (CFLAG:8028 <= 2)
+			PRINTFORMW 「ね、ねえ。せめてもうちょっとあたしの身体押さえてよ……っ、転んじゃう」
+			PRINTFORMW （気持ちよくて足に力がはいんないなんて、言いたくない！）
+;			CFLAG:8028 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「もう、やめてよ……こんないたいけなかわいい兎を苛めて何になるのさ……」
+;			CFLAG:8028 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_30
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「う……ちょっと、いや……かなり怖い、けどっ！　いいよ、うん」
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「ん、っくうううっ！　っはあー、入った……の？　あのおっきいのが……」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「なっ、バッカじゃないの！？　う、ぐぁああああっ！　いだいいいいいっ！」
+			PRINTFORMW 
+			PRINTFORMW てゐは半狂乱になって泣き叫んでいる。
+		ENDIF
+;		CFLAG:8030= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8030 <= 3)
+			PRINTFORMW 「あ、ちょっと待ってよ。……ほら、あたしが広げた方が入れ易いんじゃない？」
+;			CFLAG:8030 = 4
+		;Ａ感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3 && (CFLAG:8030 <= 2)
+			PRINTFORMW 「ふぅーっ、ふーっ……や、やっぱやめない？　やったことはあるけど怖っ……んっぎぃっ！」
+;			CFLAG:8030 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またぁ！？　ムチャされるこっちの身にもなってよぉ！」
+			;鈴仙がいる場合
+			;IF NO:COUNT == 28
+			;よくわからん条件式
+			;NO:COUNTをプリントすると27、つまり調教対象であるてゐの番号なのでこれが28になるのか謎い
+			IF CFLAG:7027 == 0
+			;助手の鈴仙に会ってない時にしました。
+			;その他の場合
+			ELSE
+				PRINTFORMW （鈴仙が助けにきたら絶対コイツの尻に鈴仙の弾幕ぶち込ませてやるんだから！）
+			ENDIF
+;			CFLAG:8030 = 2
+		ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_31
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_32
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_33
+;PRINTFORMW 
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_34
+;PRINTFORMW 
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_37
+;PRINTFORMW 
+
+;-------------------------------------------------
+;背面立位アナル
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_38
+;PRINTFORMW 
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_40
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「姫様のセーシはどんな味がするんでしょうかねー」
+					PRINTFORMW 『ふふ、飲んでみたいの？　上手く出来たらそうしてもいいけれど』
+					CFLAG:8872 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「姫様のセーシはどんな味がするんでしょうかねー」
+					PRINTFORMW 『すっかり毒されちゃったのね、この子は』
+					CFLAG:8872 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「姫様がちんこを生やすことになるとは思ってませんでした」
+					PRINTFORMW 『まあ、ご主人様についていけばこういうこともあるわね』
+					CFLAG:8872 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「姫様がちんこを生やすことになるとは思ってませんでした」
+					PRINTFORMW 『私も想像していなかったわ……まあこれはこれで退屈はしないけれど』
+					CFLAG:8872 = 1
+				ENDIF
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「鈴仙もアイツの為にちんこ生やすなんて変わったわねえ」
+					PRINTFORMW 『案外いいものよ、立っておしっこできるし』
+					PRINTFORMW 「……それ、いいの？」
+					CFLAG:8870 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙もアイツの為にちんこ生やすなんて変わったわねえ」
+					PRINTFORMW 『別に生やしたかったわけじゃ……』
+					PRINTFORMW 「ま、あたしは鈴仙のセーシを美味しくいただければそれでいいんだけどね」
+					CFLAG:8870 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「鈴仙はお師匠様にちんこ生やされててもおかしくないと世間一般の人たちは思ってるはずよ」
+					PRINTFORMW 『まあ実際こうしてご主人様に生やされちゃったんだけどね』
+					PRINTFORMW 「子供がスカートめくりをしたそのとき、鈴仙の股間にはあってはならないものが……」
+					PRINTFORMW 『買い物は生えてない人に任せたいなぁ……』
+					CFLAG:8870 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「鈴仙はお師匠様にちんこ生やされててもおかしくないと世間一般の人たちは思ってるはずよ」
+					PRINTFORMW 『なっ！　そんなわけないじゃない！』
+					PRINTFORMW 「まあ噂を流したのはあたしなんだけど」
+					PRINTFORMW 『私これからどんな顔して人里いけばいいのよー！』
+					CFLAG:8870 = 1
+				ENDIF
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「これから焼き鳥屋のちんこを”ご立派様”と呼ぶことに」
+					PRINTFORMW 『そんな愛称貰っても全然嬉しくないから！』
+					PRINTFORMW 「ご立派様、手で気持ちよくしますんでお恵みをー」
+					PRINTFORMW 『私の股間で小芝居しないでよっ』
+					CFLAG:8873 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「焼き鳥屋はただでさえ女ウケしそうなのにこんなの持ってたら人里中のオンナが寄って来るね」
+					PRINTFORMW 『そんなものかなぁ』
+					PRINTFORMW 「片っ端から突っ込むハメになるわ。夜が明けると死屍累々」
+					PRINTFORMW 『私のコレは誘蛾灯か何かか？』
+					CFLAG:8873 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「焼き鳥屋はアイツの為にちんこつけたの？」
+					PRINTFORMW 『ま、まあね。ご主人様がどうしてもっていうから……』
+					PRINTFORMW 「オンナってのは惚れた男には弱いもんだねえ」
+					PRINTFORMW 『しょうがないじゃない、恋ってのはそういうものよ』
+					CFLAG:8873 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「焼き鳥屋はアイツの為にちんこつけたの？」
+					PRINTFORMW 『いや付けたくはなかったんだけど……付けないと何されるかわからないじゃない』
+					PRINTFORMW 「で、付けた結果あたしにちんこ擦られると」
+					PRINTFORMW 『気持ちいいのは確かなんだけどねー……複雑だよ』
+					CFLAG:8873 = 1
+				ENDIF
+			ENDIF
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3
+			PRINTFORMW 「はーっ、はーっ……ちんこのにおいだぁ……」
+			PRINTFORMW くんくんと鼻先に突きつけられたペニスを嗅いでいる。
+			PRINTFORMW 手でしろと命令していなければすぐにでもくわえこんだだろう。
+			PRINTFORMW 最早虜になっていると言ってよさそうだ。
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「ほんとにしょうがないなぁ……てゐ様ので腰抜かすんじゃないわよ？」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「……し、仕方なくやるのよ。あんたがどうしてもっていうから、仕方なくよっ！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「げ。こんなの握れっての？
+			PRINTFORMW 　……ぎゃー！　何これぴくぴくしてる！　気持ち悪っ！」
+		ENDIF
+;		CFLAG:8040= 1
+		RETURN 0
+ELSE
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8040 <= 7)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（輝夜）
+					IF CFLAG:8872 == 1
+						PRINTFORMW 『また飲みたいの？　呆れた子ねぇ』
+						PRINTFORMW 「はやく、はやくっ！　姫様セーシ出してっ」
+					;その他の場合
+					ELSE
+						CFLAG:8872 = 1
+						PRINTFORMW 「姫様のセーシはどんな味がするんでしょうかねー」
+						PRINTFORMW 『ふふ、飲んでみたいの？　上手く出来たらそうしてもいいけれど』
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（輝夜）
+					IF CFLAG:8872 == 1
+						PRINTFORMW 「セーシ出すまでずぅっとこすりますからね」
+						PRINTFORMW 『搾乳されてる牛の気分ね、困ったものだわ』
+					;その他の場合
+					ELSE
+						CFLAG:8872 = 1
+						PRINTFORMW 「姫様のセーシはどんな味がするんでしょうかねー」
+						PRINTFORMW 『すっかり毒されちゃったのね、この子は』
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（輝夜）
+					IF CFLAG:8872 == 1
+						PRINTFORMW 「そのうち手を触手にしろとか言われるんじゃないですか？」
+						PRINTFORMW 『……完全に否定できないところが怖いわね』
+					;その他の場合
+					ELSE
+						CFLAG:8872 = 1
+						PRINTFORMW 「姫様がちんこを生やすことになるとは思ってませんでした」
+						PRINTFORMW 『まあ、ご主人様についていけばこういうこともあるわね』
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（輝夜）
+					IF CFLAG:8872 == 1
+						PRINTFORMW 『コレが生えてから妙に歩きにくくて、最初は戸惑ったわ』
+						PRINTFORMW 「その代わりオトコみたいに気持ちいい、って事ですか」
+					;その他の場合
+					ELSE
+						CFLAG:8872 = 1
+						PRINTFORMW 「姫様がちんこを生やすことになるとは思ってませんでした」
+						PRINTFORMW 『私も想像していなかったわ……まあこれはこれで退屈はしないけれど』
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8040 = 8
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8040 <= 6)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（鈴仙）
+					IF CFLAG:8870 == 1
+						PRINTFORMW 『こうやっててゐに擦ってもらえるのもちょっといいかもね』
+						PRINTFORMW 「鈴仙はスッキリ出来て、あたしはごくごく飲めて、いいこと尽くめね」
+					;その他の場合
+					ELSE
+						CFLAG:8870 = 1
+						PRINTFORMW 「鈴仙もアイツの為にちんこ生やすなんて変わったわねえ」
+						PRINTFORMW 『案外いいものよ、立っておしっこできるし』
+						PRINTFORMW 「……それ、いいの？」
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（鈴仙）
+					IF CFLAG:8870 == 1
+						PRINTFORMW 「ほらほら、さっさとセーシ出しなさいよー」
+						PRINTFORMW 『うう、女としてのプライドが……ああでも出ちゃいそ……』
+					;その他の場合
+					ELSE
+						CFLAG:8870 = 1
+						PRINTFORMW 「鈴仙もアイツの為にちんこ生やすなんて変わったわねえ」
+						PRINTFORMW 『別に生やしたかったわけじゃ……』
+						PRINTFORMW 「ま、あたしは鈴仙のセーシを美味しくいただければそれでいいんだけどね」
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（鈴仙）
+					IF CFLAG:8870 == 1
+						PRINTFORMW 「でもちんこ生えてるかもって思いつつ鈴仙を口説いてきたら……」
+						PRINTFORMW 『か、考えたくないわね……それでもいいって言ってくれるのはご主人様だけで十分よ』
+					;その他の場合
+					ELSE
+						CFLAG:8870 = 1
+						PRINTFORMW 「鈴仙はお師匠様にちんこ生やされててもおかしくないと世間一般の人たちは思ってるはずよ」
+						PRINTFORMW 『まあ実際こうしてご主人様に生やされちゃったんだけどね』
+						PRINTFORMW 「子供がスカートめくりをしたそのとき、鈴仙の股間にはあってはならないものが……」
+						PRINTFORMW 『買い物は生えてない人に任せたいなぁ……』
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（鈴仙）
+					IF CFLAG:8870 == 1
+						PRINTFORMW 「でもちんこ生えてるかもって思いつつ鈴仙を口説いてきたら……」
+						PRINTFORMW 『私ただでさえ兎で目立ってるのに……ああ、本当にどうしよう』
+					;その他の場合
+					ELSE
+						CFLAG:8870 = 1
+						PRINTFORMW 「鈴仙はお師匠様にちんこ生やされててもおかしくないと世間一般の人たちは思ってるはずよ」
+						PRINTFORMW 『なっ！　そんなわけないじゃない！』
+						PRINTFORMW 「まあ噂を流したのはあたしなんだけど」
+						PRINTFORMW 『私これからどんな顔して人里いけばいいのよー！』
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8040 = 7
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8040 <= 5)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（妹紅）
+					IF CFLAG:8873 == 1
+						PRINTFORMW 「ご立派様、本日もよろしくお願いしますー」
+						PRINTFORMW 『崇拝対象みたいに言うな！』
+					;その他の場合
+					ELSE
+						CFLAG:8873 = 1
+						PRINTFORMW 「これから焼き鳥屋のちんこを”ご立派様”と呼ぶことに」
+						PRINTFORMW 『そんな愛称貰っても全然嬉しくないから！』
+						PRINTFORMW 「ご立派様、手で気持ちよくしますんでお恵みをー」
+						PRINTFORMW 『私の股間で小芝居しないでよっ』
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（妹紅）
+					IF CFLAG:8873 == 1
+						PRINTFORMW 「焼き鳥屋が人里行ってちんこ出して無双してたって噂が」
+						PRINTFORMW 『なにそれ！　私のコレ武器扱い！？』
+					;その他の場合
+					ELSE
+						CFLAG:8873 = 1
+						PRINTFORMW 「焼き鳥屋はただでさえ女ウケしそうなのにこんなの持ってたら人里中のオンナが寄って来るね」
+						PRINTFORMW 『そんなものかなぁ』
+						PRINTFORMW 「片っ端から突っ込むハメになるわ。夜が明けると死屍累々」
+						PRINTFORMW 『私のコレは誘蛾灯か何かか？』
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;手淫（妹紅）
+					IF CFLAG:8873 == 1
+						PRINTFORMW 「愛する相手の為に、焼き鳥屋は今日もあたしにちんこを擦られるのでした」
+						PRINTFORMW 『……そこだけ聞くとワケ分からないね』
+					;その他の場合
+					ELSE
+						CFLAG:8873 = 1
+						PRINTFORMW 「焼き鳥屋はアイツの為にちんこつけたの？」
+						PRINTFORMW 『ま、まあね。ご主人様がどうしてもっていうから……』
+						PRINTFORMW 「オンナってのは惚れた男には弱いもんだねえ」
+						PRINTFORMW 『しょうがないじゃない、恋ってのはそういうものよ』
+					ENDIF
+				;その他の場合
+				ELSE
+					;手淫（妹紅）
+					IF CFLAG:8873 == 1
+						PRINTFORMW 「気持ちいいならまだマシなんじゃない、気持ち悪いだけってよりはさ」
+						PRINTFORMW 『……うーん』
+					;その他の場合
+					ELSE
+						CFLAG:8873 = 1
+						PRINTFORMW 「焼き鳥屋はアイツの為にちんこつけたの？」
+						PRINTFORMW 『いや付けたくはなかったんだけど……付けないと何されるかわからないじゃない』
+						PRINTFORMW 「で、付けた結果あたしにちんこ擦られると」
+						PRINTFORMW 『気持ちいいのは確かなんだけどねー……複雑だよ』
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8040 = 6
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3 && (CFLAG:8040 <= 4)
+			PRINTFORMW 「ね、ねえ。お願いだからさ、いっぱいセーエキだしてよね……？」
+			PRINTFORMW てゐは潤んだ目で訴えかけてくる。
+;			CFLAG:8040 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8040 <= 3)
+			PRINTFORMW 「ほらほら、手でシゴかれて感じてるんでしょ！　このヘンタイ！」
+;			CFLAG:8040 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8040 <= 2)
+			PRINTFORMW 「上手く出来てる？　感想くらい言いなさいよ」
+;			CFLAG:8040 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぇっ。趣味悪すぎでしょアンタ……何考えてんだか」
+;			CFLAG:8040 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_41
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「うわ、くっさいですよ姫様。ちゃんと洗ってます？」
+					PRINTFORMW 『洗ってるわよ失礼ね！』
+					PRINTFORMW 「嫌なわけじゃないですよ、それどころか歓迎です。今後は洗わないでくださいね」
+					PRINTFORMW 『な、何かしら。凄くショックなんだけど……』
+					CFLAG:8882 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「うわ、くっさいですよ姫様。ちゃんと洗ってます？」
+					PRINTFORMW 『そ、それがね。これ敏感過ぎて触るのが怖いのよ……前洗おうとしたら出ちゃったし』
+					PRINTFORMW 「丁度いいですね、洗わない方があたし好みなんでそのままでお願いします」
+					PRINTFORMW 『女としてそれはいいのかしら……？』
+					CFLAG:8882 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「臭いがきついですよ、姫様」
+					PRINTFORMW 『嘘！？　私ちゃんと洗ってるわよ！　ご主人様に見初めていただいてからは特に――』
+					PRINTFORMW 「ってことは単にヤりすぎで臭いが取れなくなってるんじゃ……」
+					PRINTFORMW 『いやー！　コレ終わったら臭いが取れるまで湯から出ないんだから！』
+					CFLAG:8882 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「臭いがきついですよ、姫様」
+					PRINTFORMW 『う……実はね、股間のこれが敏感過ぎて洗い難いのよ。股で擦れるだけでも出ちゃいそうになったりして』
+					PRINTFORMW 「いっそのこと出し切って大きくならないようにすればいいんじゃないですか？」
+					PRINTFORMW 『試したけど……延々勃起したままなのよね。さすが私というべきなのかしら』
+					PRINTFORMW 「どこに流石だなんて言う点があったのか理解できないです」
+					CFLAG:8882 = 1
+				ENDIF
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「ほら、鈴仙キモチよくしてあげるからこっちにちんこ出しなさいよ」
+					PRINTFORMW 『はい。歯とか気をつけてよね？』
+					PRINTFORMW 「セーシ出してくれるちんこにひどいことはしないよ、嫌いなヤツと痛いのが好きってタイプじゃなければね」
+					PRINTFORMW 『良かったわ、嫌われてなくて』
+					CFLAG:8880 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「ほら、鈴仙キモチよくしてあげるからこっちにちんこ出しなさいよ」
+					PRINTFORMW 『あー。何で私はてゐにこんなこと頼んでるのかなぁ』
+					PRINTFORMW 「別にいいじゃない、あたしはセーシくれるなら大歓迎よ？」
+					PRINTFORMW 『そのうち私も自分のから搾り出して自分で飲むようなド変態にさせられるのかしら……』
+					CFLAG:8880 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「はぁ、あたしらのこんな姿見られたら何て言われる事やら」
+					PRINTFORMW 『ご主人様と私の関係なら公開したいくらいなんだけどなぁ』
+					PRINTFORMW 「冗ッ談じゃないわ、あたしにだって立場ってものがあるんだから』
+					PRINTFORMW 『こうやって私のを舐めてる時点で立場も何もないでしょうに』
+					CFLAG:8880 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「はぁ、あたしらのこんな姿見られたら何て言われる事やら」
+					PRINTFORMW 『そうね、まあこんなの生やしてるのに見られるような真似はしないけど』
+					PRINTFORMW 「見られないうちは、あたしで処理するってワケね」
+					CFLAG:8880 = 1
+				ENDIF
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「さっさと出しなさい。あたしにご馳走してくれるんでしょ？」
+					PRINTFORMW 『そうね、一度ですっきりさっぱりは出来そう？』
+					PRINTFORMW 「残念だけど無理ね、どれだけ飲んでも足りないのよ。
+					PRINTFORMW 　真夏のクソ暑い日に氷を頬張るようなもの。
+					PRINTFORMW 　理解出来たらたっぷり出してよ。焼き鳥屋の熱くてくっさい精液をさ」
+					CFLAG:8883 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「さっさと出しなさい。あたしにご馳走してくれるんでしょ？」
+					PRINTFORMW 『ええ、そう。コレが貴方にとってご馳走かどうかはわからないけれど』
+					PRINTFORMW 「ご馳走よ。あたしだって何度精液を啜ってきたか、覚えてないくらいだもの」
+					CFLAG:8883 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					PRINTFORMW 「知らない相手のを無理矢理くわえさせられるよりマシよね」
+					PRINTFORMW 『ごめんね、ご主人様の命令だからさ』
+					PRINTFORMW 「アンタがアイツに惚れてるのは知ってるから、何もされないなんてのは諦めてるわよ」
+					CFLAG:8883 = 1
+				;その他の場合
+				ELSE
+					PRINTFORMW 「知らない相手のを無理矢理くわえさせられるよりマシよね」
+					PRINTFORMW 『苦しかったら言ってよ？　私もこれ慣れてないんだから』
+					PRINTFORMW 「アンタの為に我慢するほどいい子でもないから、心配しないでよ」
+					CFLAG:8883 = 1
+				ENDIF
+			ENDIF
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3
+			PRINTFORMW 「はむ、ちゅるっ、んく……んっ、ちゅっ……」
+			PRINTFORMW （ヤバ……もうダメだわ、セーエキがほしくてたまんない……溺れちゃうくらいいっぱい出してよぉ）
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「あら、このてゐちゃんのテクニックを目の当たりにしたいって？
+			PRINTFORMW 　ふふ、かわいいとこあるじゃない♪」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「はぁ、舐めろって？　……どうせ嫌だって言ってもやらせるんでしょ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うぷっ、くっさぁ……こんなの舐めさせるなんて、アンタほんとに馬鹿じゃないの！？」
+		ENDIF
+;		CFLAG:8041= 1
+		RETURN 0
+ELSE
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8041 <= 7)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（輝夜）
+					IF CFLAG:8882 == 1
+						PRINTFORMW 「相変わらずのニオイですね、ちゃんと洗ってなくて……くんくん、いい感じですよ」
+						PRINTFORMW 『姫という立場にあった者としてはかなり複雑なのだけど』
+					;その他の場合
+					ELSE
+						CFLAG:8882 = 1
+						PRINTFORMW 「うわ、くっさいですよ姫様。ちゃんと洗ってます？」
+						PRINTFORMW 『洗ってるわよ失礼ね！』
+						PRINTFORMW 「嫌なわけじゃないですよ、それどころか歓迎です。今後は洗わないでくださいね」
+						PRINTFORMW 『な、何かしら。凄くショックなんだけど……』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（輝夜）
+					IF CFLAG:8882 == 1
+						PRINTFORMW 「相変わらずのニオイですね、ちゃんと洗ってなくて……くんくん、いい感じですよ」
+						PRINTFORMW 『こ、今度から洗うわ！　ゼッタイ洗うわ！』
+					;その他の場合
+					ELSE
+						CFLAG:8882 = 1
+						PRINTFORMW 「うわ、くっさいですよ姫様。ちゃんと洗ってます？」
+						PRINTFORMW 『そ、それがね。これ敏感過ぎて触るのが怖いのよ……前洗おうとしたら出ちゃったし』
+						PRINTFORMW 「丁度いいですね、洗わない方があたし好みなんでそのままでお願いします」
+						PRINTFORMW 『女としてそれはいいのかしら……？』
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（輝夜）
+					IF CFLAG:8882 == 1
+						PRINTFORMW 「ニオイ取れてないんですけど……まあ好みですが」
+						PRINTFORMW 『えー！？　私ちゃんとあの後一度死ぬまでお風呂に入ってたのに！』
+					;その他の場合
+					ELSE
+						CFLAG:8882 = 1
+						PRINTFORMW 「臭いがきついですよ、姫様」
+						PRINTFORMW 『嘘！？　私ちゃんと洗ってるわよ！　ご主人様に見初めていただいてからは特に――』
+						PRINTFORMW 「ってことは単にヤりすぎで臭いが取れなくなってるんじゃ……」
+						PRINTFORMW 『いやー！　コレ終わったら臭いが取れるまで湯から出ないんだから！』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（輝夜）
+					IF CFLAG:8882 == 1
+						PRINTFORMW 「ニオイ取れてないんですけど……まあ好みですが」
+						PRINTFORMW 『しょうがないじゃない、洗おうとすると欲情しちゃうんだもの』
+					;その他の場合
+					ELSE
+						CFLAG:8882 = 1
+						PRINTFORMW 「臭いがきついですよ、姫様」
+						PRINTFORMW 『う……実はね、股間のこれが敏感過ぎて洗い難いのよ。股で擦れるだけでも出ちゃいそうになったりして』
+						PRINTFORMW 「いっそのこと出し切って大きくならないようにすればいいんじゃないですか？」
+						PRINTFORMW 『試したけど……延々勃起したままなのよね。さすが私というべきなのかしら』
+						PRINTFORMW 「どこに流石だなんて言う点があったのか理解できないです」
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8041 = 8
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8041 <= 6)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（鈴仙）
+					IF CFLAG:8880 == 1
+						PRINTFORMW 「んーっ、このちんこを嫌いだなんていう女の気が知れないわ」
+						PRINTFORMW 『褒められてる……のかなぁ』
+					;その他の場合
+					ELSE
+						CFLAG:8880 = 1
+						PRINTFORMW 「ほら、鈴仙キモチよくしてあげるからこっちにちんこ出しなさいよ」
+						PRINTFORMW 『はい。歯とか気をつけてよね？』
+						PRINTFORMW 「セーシ出してくれるちんこにひどいことはしないよ、嫌いなヤツと痛いのが好きってタイプじゃなければね」
+						PRINTFORMW 『良かったわ、嫌われてなくて』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（鈴仙）
+					IF CFLAG:8880 == 1
+						PRINTFORMW 「んーっ、このちんこを嫌いだなんていう女の気が知れないわ」
+						PRINTFORMW 『当人が好きならいいけど、命令でもなきゃ他の子にしてもらおうなんて思わないわよ』
+					;その他の場合
+					ELSE
+						CFLAG:8880 = 1
+						PRINTFORMW 「ほら、鈴仙キモチよくしてあげるからこっちにちんこ出しなさいよ」
+						PRINTFORMW 『あー。何で私はてゐにこんなこと頼んでるのかなぁ』
+						PRINTFORMW 「別にいいじゃない、あたしはセーシくれるなら大歓迎よ？」
+						PRINTFORMW 『そのうち私も自分のから搾り出して自分で飲むようなド変態にさせられるのかしら……』
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（鈴仙）
+					IF CFLAG:8880 == 1
+						PRINTFORMW 「さすがに誰にでもこういうことするとは思われたくないわね」
+						PRINTFORMW 『本当はご主人様だけにしたいんだけどなぁ』
+					;その他の場合
+					ELSE
+						CFLAG:8880 = 1
+						PRINTFORMW 「はぁ、あたしらのこんな姿見られたら何て言われる事やら」
+						PRINTFORMW 『ご主人様と私の関係なら公開したいくらいなんだけどなぁ』
+						PRINTFORMW 「冗ッ談じゃないわ、あたしにだって立場ってものがあるんだから』
+						PRINTFORMW 『こうやって私のを舐めてる時点で立場も何もないでしょうに』
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（鈴仙）
+					IF CFLAG:8880 == 1
+						PRINTFORMW 「さすがに誰にでもこういうことするとは思われたくないわね」
+						PRINTFORMW 『私も誰にでもしゃぶらせるっていうのはちょっと』
+					;その他の場合
+					ELSE
+						CFLAG:8880 = 1
+						PRINTFORMW 「はぁ、あたしらのこんな姿見られたら何て言われる事やら」
+						PRINTFORMW 『そうね、まあこんなの生やしてるのに見られるような真似はしないけど』
+						PRINTFORMW 「見られないうちは、あたしで処理するってワケね」
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8041 = 7
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8041 <= 5)
+			;精液中毒Lv3以上
+			IF ABL:精液中毒 >= 3
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（妹紅）
+					IF CFLAG:8883 == 1
+						PRINTFORMW 『そんなに夢中になるものかなぁ』
+						PRINTFORMW 「今のあたしにとっては水みたいなものだからねえ」
+					;その他の場合
+					ELSE
+						CFLAG:8883 = 1
+						PRINTFORMW 「さっさと出しなさい。あたしにご馳走してくれるんでしょ？」
+						PRINTFORMW 『そうね、一度ですっきりさっぱりは出来そう？』
+						PRINTFORMW 「残念だけど無理ね、どれだけ飲んでも足りないのよ。
+						PRINTFORMW 　真夏のクソ暑い日に氷を頬張るようなもの。
+						PRINTFORMW 　理解出来たらたっぷり出してよ。焼き鳥屋の熱くてくっさい精液をさ」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（妹紅）
+					IF CFLAG:8883 == 1
+						PRINTFORMW 『そんなに夢中になるものかなぁ』
+						PRINTFORMW 「本当に飲みたくなかったらちんこに触りすらしないんじゃない？」
+					;その他の場合
+					ELSE
+						CFLAG:8883 = 1
+						PRINTFORMW 「さっさと出しなさい。あたしにご馳走してくれるんでしょ？」
+						PRINTFORMW 『ええ、そう。コレが貴方にとってご馳走かどうかはわからないけれど』
+						PRINTFORMW 「ご馳走よ。あたしだって何度精液を啜ってきたか、覚えてないくらいだもの」
+					ENDIF
+				ENDIF
+			;その他の場合
+			ELSE
+				;助手が恋慕である
+				IF TALENT:ASSI:恋慕 == 1
+					;フェラチオ（妹紅）
+					IF CFLAG:8883 == 1
+						PRINTFORMW 『ごめん、またお願い』
+						PRINTFORMW 「はいはい、んっ……くぷっくぷっ」
+					;その他の場合
+					ELSE
+						CFLAG:8883 = 1
+						PRINTFORMW 「知らない相手のを無理矢理くわえさせられるよりマシよね」
+						PRINTFORMW 『ごめんね、ご主人様の命令だからさ』
+						PRINTFORMW 「アンタがアイツに惚れてるのは知ってるから、何もされないなんてのは諦めてるわよ」
+					ENDIF
+				;その他の場合
+				ELSE
+					;フェラチオ（妹紅）
+					IF CFLAG:8883 == 1
+						PRINTFORMW 『精液出すときはいっつも緊張するの、慣れなくて』
+						PRINTFORMW 「最初っから男でなきゃ慣れたりしないでしょ。あと出すときはちゃんと言ってよね」
+					;その他の場合
+					ELSE
+						CFLAG:8883 = 1
+						PRINTFORMW 「知らない相手のを無理矢理くわえさせられるよりマシよね」
+						PRINTFORMW 『苦しかったら言ってよ？　私もこれ慣れてないんだから』
+						PRINTFORMW 「アンタの為に我慢するほどいい子でもないから、心配しないでよ」
+					ENDIF
+				ENDIF
+			ENDIF
+;			CFLAG:8041 = 6
+		;精液中毒Lv3以上
+		ELSEIF ABL:精液中毒 >= 3 && (CFLAG:8041 <= 4)
+			PRINTFORMW 「んぁっ、じゅるっ、くちゅっ、ちぅ……」
+			PRINTFORMW （早く出してよ、我慢できないのよぉ……セーエキちょうだいよぉ……）
+;			CFLAG:8041 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8041 <= 3)
+			PRINTFORMW 「ほら、我慢しないで出していいからね。んくっ、ちゅっ、くぷっ」
+;			CFLAG:8041 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8041 <= 2)
+			PRINTFORMW 「仕方ないわね、してあげるわよ」
+			PRINTFORMW （ああ、もうあたし飼いならされてるなぁ）
+;			CFLAG:8041 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「にが……せめてちゃんと洗いなさいよぉ……」
+;			CFLAG:8041 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_42
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF ABL:精液中毒 >= 3
+			PRINTFORMW 「んふふ、ヘンタイねぇアンタも……」
+			PRINTFORMW （でも、これでセーエキ出してくれるって思ったら濡れちゃうあたしも、十分ヘンタイよねえ……）
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んふふ、ヘンタイねぇアンタも……ま、見てなさいよ」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「あたしの胸でやれって？　……何考えてんのよ、いいけどさあ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はあ！？　アンタあたしに喧嘩売ってるの？
+			PRINTFORMW 　……うう、屈辱的だわこんなの」
+		ENDIF
+;		CFLAG:8042= 1
+ELSE
+		IF ABL:精液中毒 >= 3 && (CFLAG:8042 <= 4)
+			PRINTFORMW 「ねえ、コーフンしてきた？　セーエキいっぱいでそう……？」
+			PRINTFORMW どうやら精液が欲しくてたまらないらしい。
+			PRINTFORMW 奉仕をしているだけなのに異常に興奮している。
+;			CFLAG:8042 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8042 <= 3)
+			PRINTFORMW 「ほらほら、てゐ様のムネでイっちゃいなさいよっ！」
+;			CFLAG:8042 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8042 <= 2)
+			PRINTFORMW 「これのどこがいいんだかさっぱりだわ……」
+;			CFLAG:8042 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「ああ、もう……その辺の板にでもこすり付けてなさいよっ！」
+			PRINTFORMW てゐは何故か涙目だ。
+;			CFLAG:8042 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_43
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「入れるんじゃなくて、擦りたいわけ？　……ヘンなの。
+			PRINTFORMW 　まあ、アンタがそれがいいっていうならいいけどさあ」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「へ？　股で擦りたい？　男ってそういうのが好きなわけ？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁ！？　アンタそういってその粗末なの突っ込む気でしょ！？
+			PRINTFORMW 　嫌よ絶対嫌っ！　嫌だって言ってるでしょ！」
+			PRINTFORMW 
+			PRINTFORMW やる気がないなら本当にそのまま突っ込むぞ、と脅したら渋々やることに決めたようだ。
+			PRINTFORMW まあ、初めてなこともあってあまり上手くはなかったが。
+		ENDIF
+;		CFLAG:8043= 1
+ELSE
+		IF TALENT:恋慕 == 1 && (CFLAG:8043 <= 3)
+			PRINTFORMW 「ん、しょっと。どう？　気持ちいい？」
+;			CFLAG:8043 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3 && (CFLAG:8043 <= 2)
+			PRINTFORMW 「まだ股でやりたいの？　ほんとヘンタイねえ……」
+;			CFLAG:8043 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またやるわけ……？　そ、そりゃこの前は入れられなかったけどさあ……」
+;			CFLAG:8043 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_44
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_45
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_46
+;PRINTFORMW 
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_47
+;PRINTFORMW 
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_54
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_55
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ナイズリ
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_56
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_60
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30
+			PRINTFORMW 『さ、塗るわよ。ちょっとヒヤッとするけど我慢しなさい』
+			PRINTFORMW 「はぁーい」
+			CFLAG:8892 = 1
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			PRINTFORMW 『ほら、逃げない。別にローションの中に何か仕込んでたりはしないわよ』
+			PRINTFORMW 「なんか、怖いんですよね。お師匠様だと」
+			CFLAG:8891 = 1
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			PRINTFORMW 『まあ、転んで泥の中に突っ込んじゃうよりは……』
+			PRINTFORMW 「どういうことよ？」
+			PRINTFORMW 『汚れないだけこっちがマシってこと』
+			CFLAG:8890 = 1
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			PRINTFORMW 『ちょっとローション温めておいてあげたから、少しはマシじゃないかな』
+			PRINTFORMW 「あ、ありがと」
+			CFLAG:8893 = 1
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「別にいらなくない？　その、さ。……あたしはアンタ相手だし、すぐ濡れちゃうからさ」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「濡らせっていうならすぐいじって濡らすよ？　ローションがイイって事なら止めないけどさ」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うえぇ。気持ち悪っ……」
+		ENDIF
+		CFLAG:8060 = 1
+ELSE
+		IF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8060 <= 7)
+			;ローション（輝夜）
+			IF CFLAG:8892 == 1
+				PRINTFORMW 『だいぶ慣れてきたかしら？』
+				PRINTFORMW 「まあ、こう何度も使わてればそりゃあ……」
+			;その他の場合
+			ELSE
+				CFLAG:8892 = 1
+				PRINTFORMW 『さ、塗るわよ。ちょっとヒヤッとするけど我慢しなさい』
+				PRINTFORMW 「はぁーい」
+			ENDIF
+;			CFLAG:8060 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8060 <= 6)
+			;ローション（永琳）
+			IF CFLAG:8891 == 1
+				PRINTFORMW 『前も仕込んでなかったんだから、今回も大丈夫よ』
+				PRINTFORMW 「そう言って平然と仕込んでそうなのがお師匠様ですから」
+			;その他の場合
+			ELSE
+				CFLAG:8891 = 1
+				PRINTFORMW 『ほら、逃げない。別にローションの中に何か仕込んでたりはしないわよ』
+				PRINTFORMW 「なんか、怖いんですよね。お師匠様だと」
+			ENDIF
+;			CFLAG:8060 = 7
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8060 <= 5)
+			;ローション（鈴仙）
+			IF CFLAG:8890 == 1
+				PRINTFORMW 『まあ何匹ってタコに絡まれるよりは……』
+				PRINTFORMW 「鈴仙ってたとえ話下手よねえ」
+			;その他の場合
+			ELSE
+				CFLAG:8890 = 1
+				PRINTFORMW 『まあ、転んで泥の中に突っ込んじゃうよりは……』
+				PRINTFORMW 「どういうことよ？」
+				PRINTFORMW 『汚れないだけこっちがマシってこと』
+			ENDIF
+;			CFLAG:8060 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8060 <= 4)
+			;ローション（妹紅）
+			IF CFLAG:8893 == 1
+				PRINTFORMW 「焼き鳥屋のコレはなんだか気楽でいいわね。ありがと」
+				PRINTFORMW 『そう言ってもらえると嬉しいね』
+			;その他の場合
+			ELSE
+				CFLAG:8893 = 1
+				PRINTFORMW 『ちょっとローション温めておいてあげたから、少しはマシじゃないかな』
+				PRINTFORMW 「あ、ありがと」
+			ENDIF
+;			CFLAG:8060 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8060 <= 3)
+			PRINTFORMW 「まあ、アンタがあたしの身体のこと考えてくれてるってことで納得しとく」
+;			CFLAG:8060 = 4
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8060 <= 2)
+			PRINTFORMW 「身体中べっとべとだわ、でも面白いかも。アンタもつける？」
+;			CFLAG:8060 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またそれ使うわけ？　まあ痛いよりはマシかもしんないけどさぁ」
+;			CFLAG:8060 = 2
+		ENDIF
+ENDIF
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_61
+;PRINTFORMW 
+IF TFLAG:95 == 1
+		;助手が鈴仙で助手が調教
+		IF ASSIPLAY && NO:ASSI == 28
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「何で薬使うのよ？」
+				PRINTFORMW 『まあ命令だから……てゐも気持ちよくなれるんだからいいんじゃない？』
+				CFLAG:8900 = 1
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「鈴仙も一緒に飲んで楽しんでみない？」
+				PRINTFORMW 『私は遠慮しておくわ……』
+				CFLAG:8900 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「う……嫌、やめてよぉ」
+				PRINTFORMW 『ごめんね、てゐ。飲んでさえしまえば、気にならなくなるから』
+				CFLAG:8900 = 1
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;淫乱である
+			IF TALENT:淫乱 == 1
+			;CFLAG:7802が1の時
+			ELSEIF CFLAG:7802 == 1
+				PRINTFORMW 「あれれ、使っちゃうんですか？　使わないって言っておいてこれは引いちゃいますよ」
+				PRINTFORMW 『貴方は騙された……それだけの話じゃない？』
+				PRINTFORMW （やっぱり上手くいかないのね……う、っく）
+				CFLAG:7802 = 0
+				CFLAG:8901 = 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うげ。お師匠様特製ですか」
+				PRINTFORMW 『そうよ。さ、遠慮なく乱れなさいな』
+				CFLAG:8901 = 1
+			ENDIF
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「姫様ー、使わなくてもあたしは別に逃げませんって」
+				PRINTFORMW 『だって、あなたが何も考えられなくなるほど乱れるのを見てみたいんだもの』
+				CFLAG:8902 = 1
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「う……姫様何持ってるんですか」
+				PRINTFORMW 『見て分からない？　楽しく遊ぶためのお薬、よ』
+				CFLAG:8902 = 1
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「ちょ、別に口移しじゃなくてもちゃんと飲むってば！　あーもう！」
+				PRINTFORMW 『この方が雰囲気出るかと思ったんだけど、ダメだったかな』
+				PRINTFORMW （そういう言い方されると何も言えないってば……）
+				CFLAG:8903 = 1
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+			;その他の場合
+			ELSE
+				PRINTFORMW 「やっ……嫌ぁっ！　そんなの飲みたく、ぐぶっ……こくっ」
+				PRINTFORMW 『悪いけど、そういうわけにもいかないからさ』
+				CFLAG:8903 = 1
+			ENDIF
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「別に使わなくてもよさそうだけど？　媚薬で乱れたあたしが見たい？
+			PRINTFORMW 　あー。ま……まあいいわ。それじゃ、きっちり気持ちよくさせてよね？」
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「んふふ、なぁに？　そんなにえっちいあたしを見たいの……？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「そんなのに頼らないとあたしを落とせないって？　あははっ、お笑いねえ！」
+			PRINTFORMW （やばいやばいやばいどうしよう、さすがにあんなの使われたらどうなるかわかんないじゃん……！）
+		ENDIF
+;		CFLAG:8061= 1
+		RETURN 0
+ELSE
+		;助手が鈴仙で助手が調教
+		IF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8061 <= 7)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				;媚薬（鈴仙）
+				IF CFLAG:8900 == 1
+					PRINTFORMW 「別にいらないと思うんだけどなぁ。あたしって不感症なわけじゃないでしょ？」
+					PRINTFORMW 『ほら、風情があるっていうか……』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「何で薬使うのよ？」
+					PRINTFORMW 『まあ命令だから……てゐも気持ちよくなれるんだからいいんじゃない？』
+					CFLAG:8900 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;媚薬（鈴仙）
+				IF CFLAG:8900 == 1
+					PRINTL 「れ、れーせん……ごめんなさい、悪戯してたこと謝るから……
+					PRINTFORMW 　だから薬はもうやめてよぉ、ねぇってばぁ……」
+					PRINTFORMW 『謝るくらいなら悪戯なんてしないでよね』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「う……嫌、やめてよぉ」
+					PRINTFORMW 『ごめんね、てゐ。飲んでさえしまえば、気にならなくなるから』
+					CFLAG:8900 = 1
+				ENDIF
+			ENDIF
+;			CFLAG:8061 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8061 <= 6)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				;媚薬（永琳）
+				IF CFLAG:8901 == 1
+					PRINTFORMW 「お師匠様、もうそれ勘弁してくださいよー！」
+					PRINTFORMW 『大丈夫大丈夫、依存性はないはずだから！』
+				;その他の場合
+				ELSE
+					CFLAG:8901 = 1
+					PRINTFORMW 「うげ。お師匠様特製ですか」
+					PRINTFORMW 『そうよ。さ、遠慮なく乱れなさいな』
+				ENDIF
+			;CFLAG:7802が1の時
+			ELSEIF CFLAG:7802 == 1
+				CFLAG:7802 = 0
+				;媚薬（永琳）
+				IF CFLAG:8901 == 1
+					PRINTFORMW 「またそれですか。優越感すら感じますね」
+					PRINTFORMW 『それが敗北感に変わるのはいつ頃かしらねえ？』
+				;その他の場合
+				ELSE
+					PRINTFORMW 「あれれ、使っちゃうんですか？　使わないって言っておいてこれは引いちゃいますよ」
+					PRINTFORMW 『貴方は騙された……それだけの話じゃない？』
+					PRINTFORMW （やっぱり上手くいかないのね……う、っく）
+					CFLAG:8901 = 1
+				ENDIF
+			;その他の場合
+			ELSE
+				;媚薬（永琳）
+				IF CFLAG:8901 == 1
+					PRINTFORMW 「お師匠様、正気に戻ってくださいよ……」
+					PRINTFORMW 『こうするのは仕方ない事なのよ、諦めなさい』
+				;その他の場合
+				ELSE
+					CFLAG:8901 = 1
+					PRINTFORMW 「うげ。お師匠様特製ですか」
+					PRINTFORMW 『そうよ。さ、遠慮なく乱れなさいな』
+				ENDIF
+			ENDIF
+;			CFLAG:8061 = 7
+		;助手が輝夜で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8061 <= 5)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				;媚薬（輝夜）
+				IF CFLAG:8902 == 1
+					PRINTFORMW 「う……それほんとにヤなんですけどね……」
+					PRINTFORMW 『何言ってるか自分でもわかんないくらい乱れてたものね、以前は』
+				;その他の場合
+				ELSE
+					CFLAG:8902 = 1
+					PRINTFORMW 「姫様ー、使わなくてもあたしは別に逃げませんって」
+					PRINTFORMW 『だって、あなたが何も考えられなくなるほど乱れるのを見てみたいんだもの』
+				ENDIF
+			;その他の場合
+			ELSE
+				;媚薬（輝夜）
+				IF CFLAG:8902 == 1
+					PRINTFORMW 「またそれですか……全然楽しくないんですけど」
+					PRINTFORMW 『だってこれは私が楽しく遊ぶためのお薬だもの』
+				;その他の場合
+				ELSE
+					CFLAG:8902 = 1
+					PRINTFORMW 「う……姫様何持ってるんですか」
+					PRINTFORMW 『見て分からない？　楽しく遊ぶためのお薬、よ』
+				ENDIF
+			ENDIF
+;			CFLAG:8061 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8061 <= 4)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				;媚薬（妹紅）
+				IF CFLAG:8903 == 1
+					PRINTFORMW 『あのさ』
+					PRINTFORMW 「ああもうわかった、わかったから口移しはいいから！　ほらさっさと渡しなさいよ！」
+				;その他の場合
+				ELSE
+					CFLAG:8903 = 1
+					PRINTFORMW 「ちょ、別に口移しじゃなくてもちゃんと飲むってば！　あーもう！」
+					PRINTFORMW 『この方が雰囲気出るかと思ったんだけど、ダメだったかな』
+					PRINTFORMW （そういう言い方されると何も言えないってば……）
+				ENDIF
+			;その他の場合
+			ELSE
+				;媚薬（妹紅）
+				IF CFLAG:8903 == 1
+					PRINTFORMW 「ね、ねえやめてよ。お願いだからさ。それ飲むとほんとにあたしダメなんだって……」
+					PRINTFORMW 『ごめんね、でもご主人様の命令だからさ』
+				;その他の場合
+				ELSE
+					CFLAG:8903 = 1
+					PRINTFORMW 「やっ……嫌ぁっ！　そんなの飲みたく、ぐぶっ……こくっ」
+					PRINTFORMW 『っぷぁ……悪いけど、そういうわけにもいかないからさ。無理にでも飲んでもらうよ』
+				ENDIF
+			ENDIF
+;			CFLAG:8061 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8061 <= 3)
+			PRINTFORMW 「またそれ？　別にいいけど、依存性とかないでしょうね？」
+;			CFLAG:8061 = 4
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8061 <= 2)
+			PRINTFORMW 「あははは、またキモチよくしてくれるんだぁ……」
+;			CFLAG:8061 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またそれ！？　ほんとプライドとかないのね……バカみたい」
+;			CFLAG:8061 = 2
+		ENDIF
+		RETURN 0
+ENDIF
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_62
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;お香を焚く
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_79
+;シダーウッド
+IF TFLAG:99 == 0
+	;PRINTFORMW 
+;ペパーミント
+ELSEIF TFLAG:99 == 1
+	;PRINTFORMW 
+;ジャスミン
+ELSEIF TFLAG:99 == 2
+	;PRINTFORMW 
+;ラヴェンダー
+ELSEIF TFLAG:99 == 3
+	;PRINTFORMW 
+;ムスク
+ELSEIF TFLAG:99 == 4
+	;PRINTFORMW 
+;フランキンセンス
+ELSEIF TFLAG:99 == 5
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+	IF TFLAG:95 == 1
+		;恋慕である
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「うわ、なにこれ。うわー！　これ裸の上に着ろって？　うわー！！」
+			PRINTFORMW 大はしゃぎしているが、割とまんざらでもなさそうだ。
+			PRINTFORMW 「これ！　一度やってみたかった気がしてたのよ！」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うわ、なにこれ。うわー！　これ裸の上に着ろって？
+			PRINTFORMW 　いや、今更なのは分かってるけどアンタ変態でしょ！？」
+			PRINTFORMW 男とはそういうものだ。
+		ENDIF
+;		CFLAG:8090= 1
+	ELSE
+		;恋慕である
+		IF TALENT:恋慕 == 1 && (CFLAG:8090 <= 2)
+			PRINTFORMW 「何度もやると新鮮味なくなりそうでヤじゃない？
+			PRINTFORMW 　こう、忘れた頃にあたしが勝手にやるのがいーかなーって思うんだけど」
+			PRINTFORMW 男のロマンでもあるから仕方がない。
+;			CFLAG:8090 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「うへー、ほんとにアンタこれ好きよね。他に誰が得するのかって聞きたいわ」
+			PRINTFORMW こちらが得すればそれでいいのだ。
+;			CFLAG:8090 = 2
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_91
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	IF TFLAG:95 == 1
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『ふふ、なかなか似合うじゃない』
+				PRINTFORMW 「あんまり似合っても嬉しくないんですけどね、ガキっぽいって言われてるみたいで」
+				PRINTFORMW 『あら、いいじゃない。ご主人様はそういうのが好きなんでしょう？』
+				PRINTFORMW 「あ、アイツはその……別、っていうか……ですね」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「姫様。着てきましたよぉ」
+				PRINTFORMW 『はいはい。……それにしても何でこんなものがあるのかしら』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なんであたしがこんなの着ないと……ぶつぶつ」
+				PRINTFORMW 『あら、裸のままよりマシでしょう？』
+			ENDIF
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『へえ、外見が外見だからかぴったりねえ』
+				PRINTFORMW 「あんまり似合っても嬉しくないんですけどね、ガキっぽいって言われてるみたいで」
+				PRINTFORMW 『嫌なら着なければいいじゃない？』
+				PRINTFORMW 「それはそうなんですけど……」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「はい、お師匠様の言う通り着ましたよぉ」
+				PRINTFORMW 『……妙に似合ってるわね』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なんであたしがこんなの着ないと……ぶつぶつ」
+				PRINTFORMW 『脱ぎたいなら脱げばいいんじゃない？
+				PRINTFORMW 　その結果どうなるかは知らないけれどね』
+			ENDIF
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「着てきたよ、鈴仙」
+				PRINTFORMW 『てゐかわいいじゃない、これで川に行ったら楽しいかも！』
+				PRINTFORMW 「……いや、さすがに河童の連中にこれを見られるのはちょっと」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「鈴仙ー、これでいい？」
+				PRINTFORMW 『かわいい系の服や水着なら大体似合いそうよね、てゐなら』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「うう……鈴仙、これでいい？」
+				PRINTFORMW 『うんうん！　てゐかわいい！　着るの渋らなくてもいいじゃないの！』
+				PRINTFORMW 「いや、これはハズかしいでしょ……鈴仙相手でも顔から火が出そうなのにさ」
+			ENDIF
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「着てきたわよー」
+				PRINTFORMW 『おおー。ぱっつんぱっつんだねえ。身体の線がくっきり出ててオトコは喜ぶんじゃない？』
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「ふふ、どうよこれ！」
+				PRINTFORMW 『水着はよく知らないからなぁ、卑猥だなぁとは思うけど』
+				PRINTFORMW 「ひ、卑猥って……いや、アイツが興奮するならそれはそれでいいかも……」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「なんでこんなの着せるのよー！」
+				PRINTFORMW 『いや、その。面白そうだったから』
+				PRINTFORMW 「じょっ、冗談じゃないわ！　何よそれ！　あたしは着せ替え人形じゃないってのよ！」
+			ENDIF
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「どう、似合ってる？」
+			PRINTFORMW てゐは%CALLNAME:MASTER%の前でくるりと一回転して、無邪気な笑いを見せた。
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1
+			PRINTFORMW 「なぁに、今日はコレを着てえろいことするの？」
+		;その他の場合
+		ELSE
+			PRINTFORMW 「はぁぁ！？　なんであたしがそんなの着なきゃいけないのよ！」
+			PRINTFORMW ぎゃーぎゃー煩かったが、軽く脅して無理矢理着せた。
+		ENDIF
+;		CFLAG:8091= 1
+		RETURN 0
+	ELSE
+		;助手が輝夜で助手が調教
+		IF ASSIPLAY && NO:ASSI == 30 && (CFLAG:8091 <= 7)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『ほら、割り切って着なさいな』
+				PRINTFORMW 「はいはい。分かりましたよー……」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「コレあって良かったですね、アイツも興奮してましたし」
+				PRINTFORMW 『まあ、てゐがそれでいいならいいんだけど……』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「またコレですか？　懲りませんね」
+				PRINTFORMW 『また逆らうの？　懲りないわね』
+			ENDIF
+;			CFLAG:8091 = 8
+		;助手が永琳で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 29 && (CFLAG:8091 <= 6)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『嫌でも着るのは、やっぱりそれなりの理由があるのよね。うふふ』
+				PRINTFORMW 「どうなんでしょうねー？」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「これ着てる時のアイツのちんこすっごいカタいんですよ」
+				PRINTFORMW 『あ、ああそうなの。良かったわね……何か負けた気がするけど』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「またですかお師匠様。誰が得するんだって言いたいですよ」
+				PRINTFORMW 『強いて言えば、嫌がっているのを無理矢理やらせることに意味があるのよ』
+			ENDIF
+;			CFLAG:8091 = 7
+		;助手が鈴仙で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 28 && (CFLAG:8091 <= 5)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『じゃあコレ着て人里に行くとか』
+				PRINTFORMW 「鈴仙何かあたしに恨みでもあるわけ？」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 『最近てゐにも妙な色気を感じるのよね、こういうかわいい水着着ててもさ』
+				PRINTFORMW 「あたしもオンナとして成長したってコトよ～」
+			;その他の場合
+			ELSE
+				PRINTFORMW 「またコレ着せるし……ベタ褒めしてくるから断りづらいのよね、鈴仙のは」
+				PRINTFORMW 『断るなんてとんでもないわ、似合ってるんだからどんどん着るべきよ！』
+			ENDIF
+;			CFLAG:8091 = 6
+		;助手が妹紅で助手が調教
+		ELSEIF ASSIPLAY && NO:ASSI == 31 && (CFLAG:8091 <= 4)
+			;恋慕である
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 『動いてるとたまにお尻に食い込んでるよね、その水着』
+				PRINTFORMW 「位置直すのがまた面倒なのよ……」
+			;淫乱である
+			ELSEIF TALENT:淫乱 == 1
+				PRINTFORMW 「どう？　これ卑猥？」
+				PRINTFORMW 『その質問はちょっとどうかと思う』
+			;その他の場合
+			ELSE
+				PRINTFORMW 「だからあたしは着せ替え人形じゃないってばー！」
+				PRINTFORMW 『うんうんわかってるわかってる。にしてもかわいいなぁ』
+			ENDIF
+;			CFLAG:8091 = 5
+		;恋慕である
+		ELSEIF TALENT:恋慕 == 1 && (CFLAG:8091 <= 3)
+			PRINTFORMW 「ヘンタイな上にロリコンだなんて、救いようがないわねぇ」
+			PRINTFORMW そう悪態をつきつつも、まんざらでもなさそうだ。
+;			CFLAG:8091 = 4
+		;淫乱である
+		ELSEIF TALENT:淫乱 == 1 && (CFLAG:8091 <= 2)
+			PRINTFORMW 「ほら、てゐ様の魅惑のボディを堪能しなさいよ、このロリコン」
+;			CFLAG:8091 = 3
+		;その他の場合
+		ELSE
+			PRINTFORMW 「またなの？　はぁ、分かったわよ着るわよ……ほんとアホらしいわ」
+;			CFLAG:8091 = 2
+		ENDIF
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@KOJO_27_TRAIN_MESSAGE_S_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

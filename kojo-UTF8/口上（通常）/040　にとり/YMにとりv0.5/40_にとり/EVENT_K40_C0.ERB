@@ -1,0 +1,3539 @@
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;eratohoYM Mk-3用 口上テンプレート
+;40をキャラ番号に置換して使用してください(霊夢なら1、蓮子なら49、魅魔なら100)。
+;
+;このファイルでは0～99番のコマンドの口上用関数が置いてあります。
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+;==============================================================
+;にとり口上
+;==============================================================
+;========================================================
+;コマンド口上
+;CFLAG:9000～9099までの100個を使用して、
+;選んだコマンドを対象に初めて使ったかどうかを判別できる
+;初回かどうかは最初に@COM_FLAGを呼び出した上で
+;RESULT:1が1かどうかで判別できる
+;========================================================
+;-------------------------------------------------
+;愛撫
+;器具装着時追加予定
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_0
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「え、っと、何で、こんなこと、するの……？」
+	PRINTFORML 「河童の生態調査、とか？　……ないよね」
+	PRINTFORMW にとりはなされるがまま、全身をこねくり回されている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ん、ちゅ……、ぷ、ふぁ……」
+		PRINTFORML 「キス、もっと、したい……ずっと、こうしてたい……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ん、やっ……！　体、ほてっちゃ、う……っ」
+		PRINTFORML 「どうする気……なのさ？　めちゃくちゃに、してくれる……？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「物足りなくないですかー、ご主人さま……？」
+		PRINTFORML 「いえ、……私、が物足りないという訳じゃ……っ、はぁ、っ！」
+	;屈服３
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ちょ、撫でるの、やめっ……」
+		PRINTFORML 「すぐに良くなっちゃいそうなんだってば……」
+	;その他
+	ELSE
+		PRINTFORML 「く、くすぐったい、だけだってば……」
+		PRINTFORML 「いい加減、無駄だってわかってよ……」
+		PRINTFORMW にとりは柔らかい肌を撫で擦られる度、僅かに体を震わせている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは快感に仰け反りながらも、しっかりと手を握り、離そうとしない……
+		CASE 1
+			PRINTFORMW にとりは劣情に瞳を潤ませ、快感をもたらす動きを注視している……
+		CASEELSE
+			PRINTFORMW にとりは唐突に加えられた刺激に、嬌声を上げ倒れこんだ……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;クンニ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_1
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ひゃうっ！！　何してんのさ……っ！」
+	PRINTFORML 「薄々想像はしてたけど……って、もうっ、やだぁ……」
+	PRINTFORMW にとりは頬を真っ赤に染め、身をよじっている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「き、きたないってば、あっ……！」
+		PRINTFORML 「恥ずかしいからっ、吸、わないでよお……！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「うわ……何その、舌遣い、……っ」
+		PRINTFORML 「的確に、当たって……、あぁ、っ、あと、で、教えてっ……？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「……ん、んうっ！　ごめんなさい、ご主人さま……ぁ」
+		PRINTFORML 「奴隷なのに、ご主人さまの舌、気持ちいいんですっ！」
+	;屈服３
+	ELSEIF CFLAG:7000 ==1
+		PRINTFORML 「そこ、舐めないでっ……」
+		PRINTFORML 「腰、抜けちゃ、うっ……からぁ……」
+	;その他
+	ELSE
+		PRINTFORML 「ちょ、っと、音、立てないでよっ……！」
+		PRINTFORML 「私、変態みたいじゃ、ないかぁ……っ」
+		PRINTFORMW にとりはいやいやをするように首を振り、両手で顔を覆っている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりはしっかりと腰を固定された状態で、クリトリスを吸い上げられている……
+		CASE 1
+			PRINTFORMW にとりはクリトリスを舌先でねぶられる度、息を弾ませている……
+		CASEELSE
+			PRINTFORMW にとりは秘所から水音が響く度に、恥辱と興奮で震えている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫
+;器具装着時追加予定
+;TEQUIP:25 = 1:アナルバイブ装着or触手Ａ挿入3:アナルローターor触手貫通 5:アナルビーズ, 6:アナルバルーン, 7:浣腸＋アナルプラグ装着
+;CFLAG:7001 アナルバイブ形状	１＝改造宣言、２＝改造済み、３＝歪、４＝深部、５＝根元
+;CFLAG:7002 アナルビーズ形状	１＝改造宣言、２＝改造済み、３＝歪、４＝振動、５＝長い
+;CFLAG:7003 浣腸+プラグ形状		１＝改造宣言、２＝改造済み、３＝シャワ浣、４＝エネマシリンジ、５＝イルリガートル
+;CFLAG:7004 アナル電極			１＝改造宣言、２＝改造済み、３＝排泄操作、４＝Ｓ字電極、５＝低周波
+;CFLAG:7005 Ａローター			１＝改造宣言、２＝改造済み、３＝ピストン、４＝スクリュー、５＝膨張
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_2
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「い、痛いってば……っ！」
+	PRINTFORML 「お尻なんていじって、河童じゃあるまいに……」
+	PRINTFORMW にとりは固く窄まった肛門に触れられる度、苦痛を訴えている……
+;２回目以降
+ELSE
+	;アナルバイブ
+	IF TEQUIP:25 == 1
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「もう、そこ……やめて、よ……んっ！」
+			PRINTFORML 「あ、やぁ、は、ん！　奥、擦らない、でぇっ！」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「ぉ、うっ……おっきい、ねっ……」
+			PRINTFORML 「バイブ、気持ちい……っ！」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「あ、おうぅっ……ご主人、さまっ……」
+			PRINTFORML 「けつまんこ、熱い、のっ、凄くっ！」
+		;屈服３
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「ん……っ、あんまり、強く、抜かない、でっ！」
+			PRINTFORML 「声、抑えられなく、なっちゃうからっ」
+		;その他
+		ELSE
+			PRINTFORML 「それ、っ、動かしちゃ、だめっ……！」
+			PRINTFORML 「痛い、のっ、お尻、いやぁ……っ」
+			PRINTFORMW にとりは、言葉とは裏腹に腰をくねらせ、熱い息を漏らしている……
+			RETURN 0
+		ENDIF
+		SELECTCASE CFLAG:7001
+			CASE 3
+				PRINTFORML 歪なバイブを抜き差しする度に、不定形な腸液の塊が溢れ出す。
+				PRINTFORML 完全に緩んでしまっているにとりの肛門は、その抵抗にすら快楽を覚えていた。
+				PRINTFORML しとどに濡れた括約筋をこねくり回すような異物の動きが、理性を削る。
+				PRINTFORMW 懇願するように体を伏せ、にとりは啜り泣いていた……
+			CASE 4
+				PRINTFORML 硬質なバイブの先端が、敏感な腸粘膜を丹念に擦り上げた。
+				PRINTFORML 振動するバイブを包み込むように、より深部へ導くように、腸壁は運動する。
+				PRINTFORML 繊細な体内を荒々しく掻き回される感触は、抵抗の意思を奪い去る。
+				PRINTFORMW 折れんばかりに体を反らせ、にとりは耐え難い快楽を訴えていた……
+			CASE 5
+				PRINTFORML 肛門括約筋を責め立てるバイブを、焦らすように動かしてゆく。
+				PRINTFORML 呼吸の度に拡がる括約筋、それが最も緩んだ瞬間に力を込める。
+				PRINTFORML バイブの最大径を超え、腸内に格納された瞬間、逆方向に力を込める。
+				PRINTFORMW 開きっぱなしの肛門を虐待される快楽に、にとりは夢中になっていた……
+			CASEELSE
+				PRINTFORML バイブの機械的な振動は、生理的な呼吸周期を全く気に掛けない。
+				PRINTFORML 快楽から呼吸が浅くなったとしても、お構いなしに責め立てる。
+				PRINTFORML 過呼吸に陥ったとしても、快楽は終わらない。
+				PRINTFORMW 絶望的な陵辱に、にとりはなりふり構わず叫んでいる……
+		ENDSELECT
+	;アナルローター
+	ELSEIF TEQUIP:25 == 3
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「こ、これじゃ、っ……私、変態みたい」
+			PRINTFORML 「うぅ、っ……でも、気持ち、いい、のっ……！」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「あ、は……中で、動いてるよ……」
+			PRINTFORML 「もっと、っ、強くても、っ、いいよ……」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「ぁ、おっ……けつまんこ、犯されてっ！」
+			PRINTFORML 「機械に、っ、堕とされる……っ」
+		;屈服３
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「これ、っ……小さいのに、凄くっ」
+			PRINTFORML 「あ……やだ、そこ、弱いの、っ……！」
+		;その他
+		ELSE
+			PRINTFORML 「ひゃ、うんっ……そんな、っ……！」
+			PRINTFORML 「お尻、嫌なのに、どうして……っ？」
+			PRINTFORMW にとりは振動するローターに意識を奪われ、目を白黒させている……
+			RETURN 0
+		ENDIF
+		SELECTCASE CFLAG:7005
+			CASE 3
+				PRINTFORML ピストン運動を行うローターが、少女の腸内で暴虐の限りを尽くしていた。
+				PRINTFORML 粘膜をそぎ落とし、腸管をこねくり回した挙句、Ｓ字結腸内に侵入を試みる。
+				PRINTFORML 結腸と直腸の繋ぎ目、その急所をピストンが刺激しこじ開けるのだ。
+				PRINTFORMW ガクガクと震える身体が、快楽の激しさを物語っている……
+			CASE 4
+				PRINTFORML スクリュー状に加工されたローターは、直腸に潜り込むように運動する。
+				PRINTFORML 自らの所有物であることを宣言するかのごとくに、腸壁に食い込み痕を刻む。
+				PRINTFORML その快感によって収縮する腸管が、更に刺激を増幅してゆく。
+				PRINTFORMW 無限に続くかと思われる責めに、にとりは屈服の言葉を抑えられない……
+			CASE 5
+				PRINTFORML 腸内で膨張したローターは、弄る度に括約筋を拡張していた。
+				PRINTFORML 激しく主張する圧倒的な質量は、自然に排泄欲を引き起こす。
+				PRINTFORML 少女がいきむのに併せ、肛門が盛り上がり引っかかったローターが姿を見せる。
+				PRINTFORMW 決して開放されぬ排泄性感に、にとりは泣きながら許しを乞っている……
+			CASEELSE
+				PRINTFORML 通常のローターは、直腸内に留まり緩やかに刺激を続けている。
+				PRINTFORML 決して焦ることはなく、怠けることもない機械の責め。
+				PRINTFORMW じわじわと、くすぐるように快感が高められてゆく……
+		ENDSELECT
+	;電極
+;	ELSEIF TEQUIP:25 == 4
+		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+		;屈服３
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+	;アナルビーズ
+	ELSEIF TEQUIP:25 == 5
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「や、だぁっ！　引っ張らないでっ！」
+			PRINTFORML 「……っ！　押し込むのも、や、だぁ……」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「んふっ……どきどき、しちゃう」
+			PRINTFORML 「思いっきり、っ、いじめて……？」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「ご主人さま、ケツマンコ、がっ……」
+			PRINTFORML 「意地汚い奴隷に、お仕置き、下さいっ……！」
+		;屈服３
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「んっ……抜いちゃう、の……？」
+			PRINTFORML 「いつでも、大丈夫、っ、だから……」
+		;その他
+		ELSE
+			PRINTFORML 「抜かない、でっ……！　気持ち、悪いのっ……」
+			PRINTFORML 「やだっ……お尻、もう、やだっ……」
+			PRINTFORMW にとりは肛門を苛む異物の感触に、吐息を漏らしている……
+			RETURN 0
+		ENDIF
+		SELECTCASE CFLAG:7002
+			CASE 3
+				PRINTFORML 歪なアナルビーズの珠は、思いもしない形に肛門を拡張する。
+				PRINTFORML 予想した快感を裏切られる感触、その快楽に理性は溶かされてゆく。
+				PRINTFORML 何度も何度もビーズは引き抜かれ、押し入れられる。
+				PRINTFORMW にとりは、その度ごとに体を震わせ、懇願の眼差しを向けていた……
+			CASE 4
+				PRINTFORML 振動するアナルビーズの珠は、内外から括約筋を挟み込み揉み解す。
+				PRINTFORML ビーズの引き抜かれる度に、直腸粘膜は腸液をこそげ落とされてゆく。
+				PRINTFORML 保護するものの無い敏感な性感帯に、強烈な刺激が与えられる。
+				PRINTFORMW 強制的に絶頂へと引き上げられてゆく状態に、にとりは咽び泣いている……
+			CASE 5
+				PRINTFORML 長いアナルビーズは、いつまで続くとも知れぬ排泄性感を送り込んでいた。
+				PRINTFORML 途切れることの無い開放感に、足腰からは力が奪われる。
+				PRINTFORML 弛緩した直腸は、異物に陵辱されるがままとなってしまう。
+				PRINTFORMW 快楽に抵抗することが出来ないにとりは、ただ嬌声を上げ続けていた……
+			CASEELSE
+				PRINTFORML 排泄する為に盛り上がった肛門から、珠が姿を見せる。
+				PRINTFORML その珠を押し込むように力を込めてやると、意表を突かれたにとりは一声喘ぐ。
+				PRINTFORML 押し込まれた珠が排泄された瞬間、再び腸内へ押し戻す。
+				PRINTFORMW 排泄を他者に操作される感覚に、にとりは全身を震わせている……
+		ENDSELECT
+	;アナルバルーン
+;	ELSEIF TEQUIP:25 == 6
+		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+		;屈服３
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+	;浣腸＋アナルプラグ
+	ELSEIF TEQUIP:25 == 7
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「あ、あぁあっ……見ないで、%MASTERNAME%っ……」
+			PRINTFORML 「やだ、っ、こんなの、やめて、よっ……！」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「ん、ぅ……っ！　いい、よっ……響いてっ……！」
+			PRINTFORML 「全身、震える、ほど、っ……気持ちい……」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「ご……ご主人、さまっ……」
+			PRINTFORML 「汚しちゃう、っ、お、ぉっ！　お尻っ……！」
+		;屈服３
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「あ、はぁっ……！　出ちゃう、よっ……！」
+			PRINTFORML 「それ以上、お尻、弄られたらっ……！」
+		;その他
+		ELSE
+			PRINTFORML 「ぐ……お腹、痛いのっ、触らない、でっ……」
+			PRINTFORML 「あぁ……っ、やだぁっ、もう、だ、めっ……！」
+			PRINTFORMW にとりはプラグを弄られるたびに、苦悶の表情を浮かべている……
+			RETURN 0
+		ENDIF
+		SELECTCASE CFLAG:7003
+			CASE 3
+				PRINTFORML シャワーによる暴力的な注腸は、少女の排泄欲を容易に煽り、満たす。
+				PRINTFORML 排泄により腸は緩み、結合部からは液体が零れ落ちていた。
+				PRINTFORMW にとりは強くいきみ、水流の勢いに自らの弱点を晒し続けている……
+			CASE 4
+				PRINTFORML シリンジによる注腸は、勢い、間隔共に射精を彷彿とさせるものだった。
+				PRINTFORML Ｓ字結腸の入り口に、連続して叩きつけられる擬似精液。
+				PRINTFORMW 受精とは関係無い器官にもかかわらず、にとりは女の喜びに顔を蕩けさせている……
+			CASE 5
+				PRINTFORML 未だにイルリガートルは高圧で注腸を続けていた。
+				PRINTFORML 限界に近づく直腸に、更なる陵辱が加えられる。
+				PRINTFORMW 襞が伸びるまで拡げられる腸壁は、苦痛じみた快楽を与えてゆく……
+			CASEELSE
+				PRINTFORML プラグを引っ張る度に、内側から括約筋が盛り上がる。
+				PRINTFORML 腸内で暴れる薬液が、異物に阻まれ少女の理性を責め苛んでいた。
+				PRINTFORMW 満たされぬ排泄欲は、にとりの顔を歪ませてゆく……
+		ENDSELECT
+	;その他
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「ん、ぅ……！　おしり、拡げられてるっ！」
+			PRINTFORML 「ちから、はいらなくな、って……！」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「ほ、おおぉぉ……っ！　やら、ぁ……」
+			PRINTFORML 「ぐちゅぐちゅ、って、やらしすぎ、てぇ……」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「ごしゅじんさまぁ……奥、くすぐったい、ですっ……！」
+			PRINTFORML 「……っ！　つ、突かないで、もれちゃいますぅ……」
+		;屈服３
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「あ、はぁ……っ！　指、ふと、いよ……」
+			PRINTFORML 「お尻、拡がっちゃう、ってばぁ……」
+		;その他
+		ELSE
+			PRINTFORML 「もう、お尻、いじらないでっ……」
+			PRINTFORML 「嫌だ、やだぁ……」
+			PRINTFORMW にとりは敏感な括約筋を揉み解される度、吐息を漏らしている……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML にとりの肛門は柔らかくほぐれ、%CALLNAME:MASTER%が指を出し入れする度に盛り上がる。
+				PRINTFORML 腸壁を擦られながら、盛り上がった括約筋を押し潰され、にとりの目は既に虚ろになっている……
+				PRINTFORMW 「いやっ！　もっ、ゆるしてっ、あぉっ！　ひゃっ……は、あーっ、あーっ！」
+			CASE 1
+				PRINTFORML %CALLNAME:MASTER%が指でにとりの直腸を刺激していると、次第に腸が膨らむのが感じられた。
+				PRINTFORML 降りてきたＳ字結腸の入り口を突かれる度得られる排泄性感に、にとりはだらしなく涎を垂らしている……
+				PRINTFORMW 「うあっ！　出ちゃ……うっ……汚しちゃ……っ！！」
+			CASEELSE
+				PRINTFORML にとりの直腸粘膜は%CALLNAME:MASTER%の指に絡みつき、しっかりと固定して離れない。
+				PRINTFORML 粘膜襞を引き剥がす程の勢いで腸内をかき回される度に、腸液が引絞られた括約筋から垂れ落ちる……
+				PRINTFORMW 「あはっ……はぁっ……はっ、はあぁ……っ！」
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_3
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……っ！　何するんだよっ！」
+	PRINTFORML 「嫌な目で見られてたから、触られるかなーって思ってたけど、さ……」
+	PRINTFORMW にとりは両腕を振り回して%CALLNAME:MASTER%を振り払おうとしている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「なんか、赤ちゃんみたいだねえ……」
+		PRINTFORML 「少し、いやらしい感じが、するけど……っ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「おっぱい、あったかーい……」
+		PRINTFORML 「激しくしても、大丈夫だよ？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「乳首、つねられっ……！」
+		PRINTFORML 「痛、もう、ゆるしてくださ……ぃ」
+	;屈服３
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「そんなに、揉むの面白いかな……？」
+		PRINTFORML 「うー、こっちはなんか変な感じなんだけど……」
+	;その他
+	ELSE
+		PRINTFORML 「ちょ、っと……揉まないでよお……」
+		PRINTFORML 「もう、やだぁ……」
+		PRINTFORMW にとりは怯えた様子で%CALLNAME:MASTER%を見つめている……
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは乳首を舌で転がされる度、手を握りしめて震えていた……
+		CASE 1
+			PRINTFORMW にとりは弾力のある胸を揉まれる度、%CALLNAME:MASTER%にちらちらと視線を向けていた……
+		CASEELSE
+			PRINTFORML にとりの胸は柔らかく形を変え、持ち主に刺激を与えている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;指挿入れ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_4
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ひ、……！」
+	PRINTFORML 「んううっ……」
+	PRINTFORMW にとりは衝撃を予期したのか、身を縮めて震えている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ちょ、ばか……っ、音立てないで、ってば……」
+		PRINTFORML 「やあ……！　はずかしい、から……あぁっ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ほ、ぁ……っ、やっぱり、長い、いいよっ」
+		PRINTFORML 「私の指じゃ、とどかないんだよねえ、っ！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ゆる、してぇ、ごしゅじんさま……っ」
+		PRINTFORML 「くすぐられると、おしっこ、でちゃ……ぁあっ」
+	;屈服３
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「きゃ、ふ……ぅ、どこで覚えたんだよぉ、その動き……」
+		PRINTFORML 「いいとこ、全部、こすられちゃ……っ！」
+	;その他
+	ELSE
+		PRINTFORML 「もうすこし、やさしくしてよっ……」
+		PRINTFORML 「おかしくなっちゃ、からぁ！」
+		PRINTFORMW にとりの膣口は未だ固さを残しているが、次第にほぐれまとわりついてきた……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは機械的に膣粘膜を擦りたてられ、全身を仰け反らせている……
+		CASE 1
+			PRINTFORMW にとりの膣口からは愛液が攪拌される度、破裂音が発せられていた……
+		CASEELSE
+			PRINTFORMW にとりは子宮口をくすぐられ、内臓を振動させられる快感に顔を緩ませている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;フェラする
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_5
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「うあ……っ、何してんだよおっ……！」
+	PRINTFORML 「これも人間のやり方……？」
+	PRINTFORMW にとりは初めて味わう異質な感触に思わず腰を引いている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ごめんね、っ、腰、とめられなっ……！」
+		PRINTFORML 「つぎ、わたしがしゃぶるからぁ……動いて、いい、よね……っ？」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ふう、ぅ！　筋のところ、すごいの、びくびくして……」
+		PRINTFORML 「続けられちゃったら、ダメになっちゃうってばぁ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「んんぅ……っ！　ごしゅじんさまぁ！」
+		PRINTFORML 「わたしに、奉仕させてくださいよおっ……」
+	;屈服３
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「っ、吸わないで、ぇぇ……」
+		PRINTFORML 「これは、舐めさせたくなるわけだねえ……」
+	;その他
+	ELSE
+		PRINTFORML 「ほんと、変な趣味だあね……」
+		PRINTFORML 「も、やめてくれない……？」
+		PRINTFORMW にとりは尿道口に舌先が触れる度、腰を震わせている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりの陰茎は、鈴口からぷくりと粘液を盛り上がらせ、びくびくと震えている……
+		CASE 1
+			PRINTFORMW にとりは我慢できなくなったのか腰を激しく振りはじめ、もたらされる快感に顔を歪めている……
+		CASEELSE
+			PRINTFORMW にとりは敏感な裏筋を集中的に責め立てられ、立っているのがやっとな程に膝を震わせている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;キスする
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_6
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ひゅいっ……！」
+	PRINTFORML 「嘘……っ？」
+	PRINTFORMW にとりは呆然とした様子で立ち尽くしている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「んふ、ぅ……舌、あったかいね……」
+		PRINTFORML 「優しいの、すごく、きもちいいよ……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「お、よだれ、垂れてるよ？　激しかったからねえ」
+		PRINTFORML 「舐めたげよっか？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ぷ、んはぁ……唾液、おいしいですぅ……」
+		PRINTFORML 「もっと、頂けますか、ご主人さま……」
+	;屈服３
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「もう、っ、物好きだねえ……ほんとに」
+		PRINTFORML 「好きな人とか、そういうのとやるべきじゃないかなあ？」
+	;その他
+	ELSE
+		PRINTFORML 「ん、やめて、ってば、ねぇ……」
+		PRINTFORML 「何で、こんなこと、するのさ……」
+		PRINTFORMW にとりは目尻に涙を湛え、しおらしくなっている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは唾液をじっくり味わうかのように舌を動かしている……
+		CASE 1
+			PRINTFORMW にとりはしっかりと抱きつき、全身を擦り付けるように動かしている……
+		CASEELSE
+			PRINTFORMW にとりは完全に脱力し、されるがまま口内を陵辱されている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;自慰
+;ビデオ、器具装着時追加予定
+;二穴バイブ、Ａバイブ、Ａローター、ビーズ、バルーン、
+;プラグ＋浣腸、バイブ
+;CFLAG:7001 アナルバイブ形状	１＝改造宣言、２＝改造済み、３＝歪、４＝深部、５＝根元
+;CFLAG:7002 アナルビーズ形状	１＝改造宣言、２＝改造済み、３＝歪、４＝振動、５＝長い
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_7
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……うぅっ、こんなっ……！」
+	PRINTFORML 「見ないで、ってばぁ……」
+	PRINTFORMW にとりは秘所を隠すように身を縮め、最小の動きで快感を得ようと試みている……
+;２回目以降
+ELSE
+	;ビデオ撮影
+	IF TEQUIP:50
+		;二穴バイブ
+		IF TEQUIP:20 == 1 && TEQUIP:25 == 1
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「んぅ……っ、全部、見られちゃうっ、のにっ」
+				PRINTFORML 「止まらないの、やだ……っ、怖いのっ……」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「今、っ、お尻抉ってる、のっ……凄く、っ」
+				PRINTFORML 「思いっきり、っ、虐めて、気持ち良く、なっちゃうんだ……！」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「ぉ、あ！　見て、っ、奴隷まんこ、いやらしく、拡がってるのっ」
+				PRINTFORML 「けつまんこ、もっ……馬鹿になっちゃう、ぐらいにっ……！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「く、うっ……い、いぃ……っ、どっちも、っ！」
+				PRINTFORML 「ふあっ！　気持ち、いいのっ、止まらなっ……」
+			;その他
+			ELSE
+				PRINTFORML 「あっ……！　嘘、だ……こんなのっ」
+				PRINTFORML 「見ないで、こんな、恥ずかしいのにっ……！」
+				PRINTFORMW にとりは羞恥からか、全身を震わせている……
+				RETURN 0
+			ENDIF
+			SELECTCASE CFLAG:7001
+				CASE 3
+					PRINTFORML 少女の下半身は、秘所と肛門共に限界まで拡張されていた。
+					PRINTFORML その充血した粘膜を、淫具で激しく擦る様が記録されてゆく。
+					PRINTFORML 歪なアナルバイブが肛門を解し、抑えられない嬌声を引き出す。
+					PRINTFORMW にとりは、欲情に塗れた表情をビデオカメラに向けている……
+				CASE 4
+					PRINTFORML 少女は、肛門に押さえつけるようにバイブを握り締めていた。
+					PRINTFORML 同時に秘所を抉るバイブは、浅く固定するように。
+					PRINTFORML 既にＳ字結腸内まで入り込んでいる淫具が、堪えきれない性感を送り込む。
+					PRINTFORMW にとりはビデオカメラの前で、あられもない姿を晒してしまっている……
+				CASE 5
+					PRINTFORML 少女の操る二本のバイブは、的確に性感帯を刺激していた。
+					PRINTFORML 自らを観察する機械の視線に臆することもない。
+					PRINTFORML 根元を改造されたアナルバイブで、執拗に括約筋を収縮させてゆく。
+					PRINTFORMW にとりは、次第に高まる興奮を抑えきれないようだ……
+				CASEELSE
+					PRINTFORML 少女はバイブを交互に出し入れし、快楽に表情を蕩けさせていた。
+					PRINTFORML 痴態を記録するビデオカメラを気にすることも無く、激しい自慰が続けられる。
+					PRINTFORML 振動するアナルバイブが括約筋を震わせる度に、背筋がぴんと伸びる。
+					PRINTFORMW 小刻みに排出される愛液が、にとりの両手を濡らしていた……
+			ENDSELECT
+;		;Ａバイブ
+;		ELSEIF TEQUIP:25 == 1
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;Ａローター
+;		ELSEIF TEQUIP:25 == 3
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;アナルビーズ
+;		ELSEIF TEQUIP:25 == 5
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;アナルバルーン
+;		ELSEIF TEQUIP:25 == 6
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;浣腸＋アナルプラグ
+;		ELSEIF TEQUIP:25 == 7
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;バイブ
+;		ELSEIF TEQUIP:20 == 1
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+		;その他
+		ELSE
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「……誰にも、見せたくないのに……」
+				PRINTFORML 「ん、……ふぅ、あ、すご、っ……」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「あぁあっ！　きもちいっ……！」
+				PRINTFORML 「欲しい、おちんちん、ちょうだ、いっ！」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「見えて……ますか？　メス奴隷のオナニー、です……っ！」
+				PRINTFORML 「ご主人さまに、ぅ、躾けられて、こんなになっちゃいましたぁ……」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「ちょ、待ってよ、聞いてないって、」
+				PRINTFORML 「……もぉ、しょうがないね、っはぁ……！」
+			;その他
+			ELSE
+				PRINTFORML 「あ……あ……や、やめ、てよ……」
+				PRINTFORML 「っ、うぅうっ、やだぁ……」
+				PRINTFORMW にとりは恐怖に涙を流しながら、全身をまさぐっている……
+				RETURN 0
+			ENDIF
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORMW にとりは腰を突き上げ、ビデオカメラに自らの痴態を余すところなく見せ付けている……
+				CASE 1
+					PRINTFORMW にとりは興奮に全身を紅潮させ、体液を撒き散らしながら自慰に耽っている……
+				CASEELSE
+					PRINTFORMW にとりはカメラの存在を無視するかのように、激しく快楽を貪っている……
+			ENDSELECT
+		ENDIF
+	;その他
+	ELSE
+		;二穴バイブ
+		IF TEQUIP:20 == 1 && TEQUIP:25 == 1
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「こんな、だめだって、ばっ……！」
+				PRINTFORML 「ん……ぅ、でちゃ、うう……っ！」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「すごすぎ……っ、癖に、なっちゃうっ！」
+				PRINTFORML 「あ、きちゃ、う、きちゃうぅっ！！」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「お、おおぉ……っ、ほお、っ！」
+				PRINTFORML 「あああ、あ、ご、しゅじん、さま、ああっ！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「あはぁ……これ、どっちも、すごいよ……っ」
+				PRINTFORML 「……！　っ、ううっ……！！」
+			;その他
+			ELSE
+				PRINTFORML 「やだぁ……こんな……ぁっ！」
+				PRINTFORML 「と、とめられな……ゆるし、てぇ……っ」
+				PRINTFORMW にとりは交互にバイブを突き入れ、快感に喘いでいる……
+				RETURN 0
+			ENDIF
+			SELECTCASE CFLAG:7001
+				CASE 3
+					PRINTFORML 肛門の敏感なにとりは、主にアナルバイブを動かして快感を得ているようだ。
+					PRINTFORML 膣奥深くにバイブを固定した状態で、歪な形に改造が加えられたアナルバイブを前後に動かし、
+					PRINTFORML 括約筋を不規則に広げ、腸内を歪に変形させるのがにとりの楽しみ方らしい。
+					PRINTFORMW 肛門を柔らかく盛り上げ、アナルバイブを出し入れしながら、にとりは泣き喚いている……
+				CASE 4
+					PRINTFORML 肛門の敏感なにとりは、主にアナルバイブを動かして快感を得ているようだ。
+					PRINTFORML 自らの改造によって、直腸深部を刺激する構造になっているアナルバイブを限界まで深く突き入れる。
+					PRINTFORML そのまま腸内をかき回すと、激しい振動が排泄欲を惹起させ、Ｓ字結腸は肛門へと引き寄せられる。
+					PRINTFORMW 異物によって刺激されたＳ字結腸の入り口は容易に緩み、にとりはだらしなく腸液を噴出させている……
+				CASE 5
+					PRINTFORML 肛門の敏感なにとりは、主にアナルバイブを動かして快感を得ているようだ。
+					PRINTFORML 改造を加えたアナルバイブの根元に自らの肛門括約筋をしっかりと挟み込み、外れない程度に動き出す。
+					PRINTFORML 振動が内外から括約筋を揉み解し、バイブ本体の質量が腸粘膜を激しく責め立てる。
+					PRINTFORMW にとりは上半身から力が抜けた様子で倒れこみ、バイブから伝わる愛液が垂れ落ちた……
+				CASEELSE
+					PRINTFORML にとりは両手でバイブを掴み、既に蕩けた秘所へと突き立てる。
+					PRINTFORML アナルバイブは的確に腸内の性感帯を刺激し、調教を施してゆく。
+					PRINTFORML その結果腸の蠕動によるアナルバイブの抽挿が開始され、息を呑む音が響く。
+					PRINTFORMW にとりは全身を硬直させた後、淫語を叫びながら自慰を再開した……
+			ENDSELECT
+		;Ａバイブ
+		ELSEIF TEQUIP:25 == 1
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「おしり、よすぎて、こわ……ぁ……！」
+				PRINTFORML 「っ……で、でちゃ、ううっ、み、ないで……っ！」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「お尻で、いくとこ、みせたげるね……っ」
+				PRINTFORML 「ほら、拡がって、んっ、見える、かな……ぁっ！」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「も、むり、です、ごしゅじん、さま……」
+				PRINTFORML 「やぁ、だめ、なのに、ケツマンコで、ほ、おおぉっ！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「あは、おしり、ひろがって、る……」
+				PRINTFORML 「いいよ、これ、すきだぁ……っ」
+			;その他
+			ELSE
+				PRINTFORML 「くぅ……っ、こんなっ……」
+				PRINTFORML 「おしり、なんか……は、ぁっ」
+				PRINTFORMW にとりはぎこちなくアナルバイブを動かし、肛門を刺激している……
+				RETURN 0
+			ENDIF
+			SELECTCASE CFLAG:7001
+				CASE 3
+					PRINTFORML にとりの肛門を責めているアナルバイブは、より歪な形にと改造を加えられたものである。
+					PRINTFORML そのバイブを振動させひねるように肛門へと突き込むと、括約筋は休む間もなく拡げられ、常に違う形に捏ね回されるのだ。
+					PRINTFORML バイブの出入りの度、にとりの肛門は共に抜けるかのように盛り上がり、すぐに腸内へと引き込まれる。
+					PRINTFORMW にとりは快感の余りに両手でバイブを掴み、一心不乱に自らの肛門での自慰を披露している……
+				CASE 4
+					PRINTFORML にとりの肛門を責めているアナルバイブは、腸深くを刺激することを目的としたものである。
+					PRINTFORML そのバイブの先端をＳ字結腸の入り口に密着させ、期待に吐息を漏らしてにとりはスイッチを入れる。
+					PRINTFORMW 瞬間、腸深部での快感により震えながらも、アナルバイブの抜き差しを開始する。
+					PRINTFORML アナルバイブ先端の振動体を括約筋、直腸壁、Ｓ字結腸となぞらせていくと、
+					PRINTFORML にとりは強い排泄感を覚えたようで、緩くなった括約筋より腸深部を重点的に刺激し始めた。
+					PRINTFORML じゅぼっ、じゅぼっ、と音を立て腸液を垂らすアナルバイブの抽挿が次第に深くなり、やがて小さなものへと変わる。
+					PRINTFORMW どうやら、快感と振動で緩んだＳ字結腸の入り口がアナルバイブの先端を飲み込み、しっかりと固定してしまったらしい。
+					PRINTFORML 「ぬ、けなぁ……は、あっぁ、おぉっ……おっ！」
+					PRINTFORML にとりは腸液でしとどに濡れたアナルバイブを引き抜こうと試みるが、意識を染める性感の中ではそれもままならない。
+					PRINTFORML 結果、内部で振動するＳ字結腸から抜けない程度の強さでアナルバイブを動かすこととなり、
+					PRINTFORMW にとりは強制的に、連続的な排泄性感の高みへと押し上げられてしまったようだ……
+				CASE 5
+					PRINTFORML にとりの肛門を責めているアナルバイブは、根元の部分で括約筋を刺激する為の改造が施されたものである。
+					PRINTFORML 蹲踞の姿勢から、一気に体重をかけて改造された根元までアナルバイブをくわえ込むと、
+					PRINTFORMW さすがに衝撃が大きかったのか、にとりは息を整えた後に肛門括約筋を固定し、バイブを作動させた。
+					PRINTFORML そのままにとりは腰を振るが、括約筋が固定されているため派手な動きはできないらしい。
+					PRINTFORML それでもにとりの肛門は内部の異物でぷっくりと盛り上がり、動く度に引っ張られ形を変えている。
+					PRINTFORMW 肛門内外からの刺激を享受するにとりは、時折腸液の塊を排泄し、その度に全身を痙攣させていた……
+				CASEELSE
+					PRINTFORML にとりはただ寝転がり、アナルバイブのもたらす肛門快楽に耽っている。
+					PRINTFORML 自らの弱点を正確に刺激する淫具によって、行動を支配される感覚が理性を飛ばすらしい。
+					PRINTFORML 惚けた視線をどこへとも無く向け、断続的に嬌声を上げる。
+					PRINTFORMW 既に機械のもたらす快感に屈服してしまったのか、にとりはバイブに許しを乞い続けている……
+			ENDSELECT
+;		;Ａローター
+;		ELSEIF TEQUIP:25 == 3
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+		;アナルビーズ
+		ELSEIF TEQUIP:25 == 5
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「うっ、うぅ……壊れる、こわれちゃ、っ」
+				PRINTFORML 「深いの、きちゃ、う、も、無理……ぁ！」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「何か、ねっ……楽しく、なってきちゃった、っ」
+				PRINTFORML 「こんな、気持ちよくって、幸せ……」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「は、あ……ケツマンコ、矯正されて、ます」
+				PRINTFORML 「ご主人さま、頑張りますからっ、あは、っ！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「抜け、ちゃっう、っ！　あぅ……っ！」
+				PRINTFORML 「まだ、入って、る……っ」
+			;その他
+			ELSE
+				PRINTFORML 「うぅ……く、うっ！」
+				PRINTFORML 「こんなの、気持ち、よく、な……っ！」
+				PRINTFORMW にとりは緩慢な動きでビーズを出し入れし、時に苦痛を訴えている……
+				RETURN 0
+			ENDIF
+			SELECTCASE CFLAG:7002
+				CASE 3
+					PRINTFORML にとりは歪な形のアナルビーズを出し入れし、快感に身体をよじっている。
+					PRINTFORML 括約筋が新たな形に拡げられる度、違った種類の嬌声を上げる。
+					PRINTFORMW 両手でアナルビーズを掴み、腰を打ち付けるように抽挿を続ける姿に理性は感じられない……
+				CASE 4
+					PRINTFORML にとりは振動するアナルビーズを用い、直腸を震わせて楽しんでいる。
+					PRINTFORML 一つの珠が排泄される度、大きな吐息を漏らす。
+					PRINTFORMW 珠と珠とで括約筋を挟み込み、細かく震わせるのがにとりのお気に入りらしい……
+				CASE 5
+					PRINTFORML にとりは長いアナルビーズを勢いよく引き抜き、全身を痙攣させている。
+					PRINTFORML 全ての珠を排泄し、通常ではありえない長さの排泄性感に涎を垂らす。
+					PRINTFORMW ぐったりと倒れこむにとりは、輝きの消えた瞳で虚空を見つめている……
+				CASEELSE
+					PRINTFORML にとりは通常のアナルビーズで丹念に刺激し、甘美な排泄性感を味わっている。
+					PRINTFORML 出した珠を即座に押し込み、排泄中の直腸に強制的な快楽を与えてゆく。
+					PRINTFORMW 次第に高められてゆく排泄欲に、にとりは器具に対する恭順の意を表し始めた……
+			ENDSELECT
+;		;アナルバルーン
+;		ELSEIF TEQUIP:25 == 6
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+;		;浣腸＋アナルプラグ
+;		ELSEIF TEQUIP:25 == 7
+;			;恋慕
+;			IF CFLAG:7000 == 2
+;				PRINTFORML 
+;			;淫乱
+;			ELSEIF CFLAG:7000 == 3
+;				PRINTFORML 
+;			;服従
+;			ELSEIF CFLAG:7000 == 4
+;				PRINTFORML 
+;			;屈服3
+;			ELSEIF CFLAG:7000 == 1
+;				PRINTFORML 
+;			;その他
+;			ELSE
+;				PRINTFORML 
+;			ENDIF
+		;バイブ
+		ELSEIF TEQUIP:20 == 1
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「声、聞かないで、よぉ、……んっ！」
+				PRINTFORML 「あ、んう、んーっ！　んぅんっ！！」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「あは……っ、バイブ、気持ちいいよ……」
+				PRINTFORML 「音立てちゃって、私、やらし、なあ……っはぁ、っ！」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「子宮、つつくのがぁ……ごしゅじんさま、っ」
+				PRINTFORML 「好き、っ、すきなんです……！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「うう……震えて、きもちい……」
+				PRINTFORML 「おなか、あったかくなる……っ！」
+			;その他
+			ELSE
+				PRINTFORML 「あぁ……こんなの、いやぁ……っ」
+				PRINTFORML 「ずぼずぼ、やだ……っ」
+				PRINTFORMW 言葉とは裏腹に、にとりは快楽に顔を緩め、絶頂の予兆を感じている……
+				RETURN 0
+			ENDIF
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORMW にとりは愛液を攪拌するかのようにバイブを動かし、全身を震わせている……
+				CASE 1
+					PRINTFORMW にとりは子宮口に触れるほど深くバイブをくわえ込み、振動を楽しんでいる……
+				CASEELSE
+					PRINTFORMW にとりは羞恥に全身を染め、バイブのもたらす快感に酔いしれている……
+			ENDSELECT
+		;その他
+		ELSE
+			;恋慕
+			IF CFLAG:7000 == 2
+				PRINTFORML 「……っ！　ほかの人には、見せないんだからね……？」
+				PRINTFORML 「ほら、こ……あぁ……もう、恥ずかしいなあ！」
+			;淫乱
+			ELSEIF CFLAG:7000 == 3
+				PRINTFORML 「ほんと、やらしいねぇ……もう」
+				PRINTFORML 「ん……この、裏側、ここ、好きなの……ぉっ」
+			;服従
+			ELSEIF CFLAG:7000 == 4
+				PRINTFORML 「ご主人さま、……奴隷にとりのオナニー、見てくださいね」
+				PRINTFORML 「……ふぅ、っ！　クリトリス、きもち、いいんですっ！」
+			;屈服3
+			ELSEIF CFLAG:7000 == 1
+				PRINTFORML 「あ……くぅ……っ！」
+				PRINTFORML 「まだ、ちょっと、恥ずかしいねぇ……」
+			;その他
+			ELSE
+				PRINTFORML 「また、やらないと、だめなの……っ？」
+				PRINTFORML 「く、う……んっ！」
+				PRINTFORMW にとりは顔を背け、恐る恐るクリトリスをこねくり回している……
+				RETURN 0
+			ENDIF
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORMW にとりは涎を垂らしながら乳首をつねり上げ、クリトリスを擦っている……
+				CASE 1
+					PRINTFORMW にとりは羞恥に頬を染めながらも、積極的に秘所に責めを与えている……
+				CASEELSE
+					PRINTFORMW にとりは見せ付けるかのように腰を突き出し、形が変わるほどの強さでクリトリスをしごいている……
+			ENDSELECT
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない
+;器具装着時追加予定　ビデオで自己紹介？
+;調教初手、陥落後で呼び名変更
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_9
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「………………」
+	PRINTFORML 「……はぁ」
+	PRINTFORMW にとりは黙って%CALLNAME:MASTER%の様子を窺っている……
+;２回目以降
+ELSE
+	;初手且つ陥落後、呼び名変更
+	IF CFLAG:7000 > 1 && CFLAG:8001 == 1 && PREVCOM == -1
+		SELECTCASE CFLAG:7000
+			;恋慕
+			CASE 2
+				PRINTFORMW 「何て、呼んで欲しいの？」
+				CALL K40_NAMEINPUT
+			;淫乱
+			CASE 3
+				PRINTFORMW 「おや、気が変わったのかな？」
+				CALL K40_NAMEINPUT
+			;服従
+			CASEELSE
+				PRINTFORMW 「ご主人さまは、いつまでも私のご主人さまですから」
+		ENDSELECT
+	;ビデオ撮影中なおかつ前コマンドがビデオ撮影、つまりビデオ初手？
+	ELSEIF TEQUIP:50 == 1 && PREVCOM == 100
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「あっ……河城、にとりといいます」
+			PRINTFORML 「趣味……は、機械とか、いじること、で……」
+			PRINTFORML 「ええっ……！　す、好きなもの……う、うぅ、っと……」
+			PRINTFORMW にとりは身を小さく縮こまらせ、カメラを上目で見つめている……
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「こんにちはー！　河城、にとりですっ」
+			PRINTFORML 「今日は、わたしのえっちなトコロ、全部見せちゃおうと思ってね」
+			PRINTFORML 「ね……ほら、ここ、もうこんなに、なっちゃったよ……？」
+			PRINTFORMW にとりは体を強調するようにくねらせ、カメラに淫猥な視線を送っている……
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「こんにちは、ご主人さまの奴隷、河童のにとりです……」
+			PRINTFORML 「私のこと、知ってる人に見られちゃったら……なんて今思ってます」
+			PRINTFORML 「でも、心配しないで？　私、今凄く幸せだからっ……」
+			PRINTFORMW にとりは満面の笑みを浮かべ、カメラを見つめている……
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「やだっ、撮られてるの、これ？」
+			PRINTFORML 「誰にも、見せない……よね？」
+			PRINTFORML 「なら……撮っても、いいよ」
+			PRINTFORMW にとりは微かに頬を赤らめ、カメラの前に裸身を晒している……
+		;その他
+		ELSE
+			PRINTFORML 「ひぃ……っ、いやっ……」
+			PRINTFORML 「ぐ、すっ、わた、わたしは、これから……」
+			PRINTFORML 「ううぅ……いやらしいこと、されます……」
+			PRINTFORMW にとりは全身をがくがくと震わせ、カメラに状況を説明している……
+		ENDIF
+;	;二穴バイブ
+;	ELSEIF TEQUIP:20 == 1 && TEQUIP:25 == 1
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;Ａバイブ
+;	ELSEIF TEQUIP:25 == 1
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;Ａローター
+;	ELSEIF TEQUIP:25 == 3
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;アナルビーズ
+;	ELSEIF TEQUIP:25 == 5
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;アナルバルーン
+;	ELSEIF TEQUIP:25 == 6
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;浣腸＋アナルプラグ
+;	ELSEIF TEQUIP:25 == 7
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+;	;バイブ
+;	ELSEIF TEQUIP:20 == 1
+;		;恋慕
+;		IF CFLAG:7000 == 2
+;			PRINTFORML 
+;		;淫乱
+;		ELSEIF CFLAG:7000 == 3
+;			PRINTFORML 
+;		;服従
+;		ELSEIF CFLAG:7000 == 4
+;			PRINTFORML 
+;		;屈服3
+;		ELSEIF CFLAG:7000 == 1
+;			PRINTFORML 
+;		;その他
+;		ELSE
+;			PRINTFORML 
+;		ENDIF
+	;その他
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORML 「えっと、何すればいいのかな……」
+					PRINTFORML 「いきなりだと、なんか調子狂っちゃうね」
+				CASE 1
+					PRINTFORML 「しかしいじりがいが有りそうな物ばっかりだあね、ここの道具は」
+					PRINTFORML 「一体どこで手に入れたのやら……」
+				CASEELSE
+					PRINTFORML 「……うわっ、いきなり擽らないでよ……」
+					PRINTFORML 「い、いや、ちょっと、どきどきした……」
+			ENDSELECT
+			PRINTFORMW にとりは寛いだ様子で、何もしない時間を楽しんでいる……
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORML 「……ところで、尻穴を私に任せてみる気はない？　大丈夫！　痛くしないからさ……」
+					PRINTFORML 「きっと気持ちいいよ、うん」
+				CASE 1
+					PRINTFORML 「おや？　枯れちゃったかな？」
+					PRINTFORML 「……腹上死、とかちょっと、いやかなり困るからやめてね？」
+				CASEELSE
+					PRINTFORML 「しかし、色んなこと知ってるねえ……やらしいことばっかりだけどさ」
+					PRINTFORML 「それで、次はどんなこと教えてくれるのかな……？」
+			ENDSELECT
+			PRINTFORMW にとりはにやにやと笑いながら、%CALLNAME:MASTER%の様子を窺っている……
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			SELECTCASE RAND:3
+				CASE 0
+					PRINTFORML 「お疲れですか、ご主人さま……？」
+					PRINTFORML 「及ばずながら、マッサージでもどうですかー？」
+				CASE 1
+					PRINTFORML 「どんな命令でも、ご主人さまを満足させられるまで、がんばります！」
+					PRINTFORML 「ですので、遠慮しないでくださいねっ」
+				CASEELSE
+					PRINTFORML 「先日教えていただいた技術、試してみたいのが……」
+					PRINTFORML 「ご指導、お願いできますかっ？」
+			ENDSELECT
+			PRINTFORMW にとりは姿勢を崩さず、%CALLNAME:MASTER%の次の命令を待っている……
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「あ、休憩……？」
+			PRINTFORML 「……ふ、ぅ……ちょっと、疲れたかも……」
+			PRINTFORMW にとりは大の字になり、リラックスした様子で体を休めている……
+		;その他
+		ELSE
+			PRINTFORML 「まだ、続けるの……？」
+			PRINTFORML 「今日の分は、終わり……だとよかったんだけど」
+			PRINTFORMW にとりは不安げな様子で%CALLNAME:MASTER%の返答を待っている……
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_10
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「何、震えて……？」
+	PRINTFORML 「ひゃ、っ！　そんな、ところに……っ？」
+	PRINTFORMW にとりは淫核への突然の刺激に腰を引き、震えている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「は……、はぁ……っ！」
+		PRINTFORML 「ん、きもち、いい……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「う……っ、んうぅぅうっ！」
+		PRINTFORML 「いじわる……先っぽ、当ててよっ……！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「あああぁあっ！　ごしゅじんさまぁっ！」
+		PRINTFORML 「取れちゃいますっ、クリトリス震えて、すご、いぃっ！！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ん……ふ、あっ……」
+		PRINTFORML 「そこ、いいよぉ……っ！」
+	;その他
+	ELSE
+		PRINTFORML 「あぁ……っ、くぅ……」
+		PRINTFORML 「もう、震えるの、やめてよお……」
+		PRINTFORMW にとりは身をよじり、淫核を責めるローターの刺激から逃れようとしている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは淫核をローターで擦られ、腰を跳ねさせている……
+		CASE 1
+			PRINTFORMW にとりは淫核にローターを固定され、不規則な振動を与えられている……
+		CASEELSE
+			PRINTFORMW にとりの淫核は焦らされるように刺激され、更なる快感を求めるように震えている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;電気按摩
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_11
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「それ、は……マッサージ？」
+	PRINTFORML 「って、ええっ……！　ちょ、っと、まってっ……！」
+	PRINTFORMW にとりは淫核に強烈な振動を与えられ、目を白黒させている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「や、やめて、ってば……そこ、強すぎ、……ってぇ」
+		PRINTFORML 「も、ゆるして、よ……っ」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「も、物足りなくなっちゃったら、どうすんのさ……」
+		PRINTFORML 「きもちよすぎて、っ、もう……！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「あ、ああああああっ、っ！」
+		PRINTFORML 「……っ！　っぅ……ううっ！！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「は、ふうぅっ……これ、すご、いよ……ぅっ！」
+		PRINTFORML 「こんなの、卑怯だ……あ、っ！」
+	;その他
+	ELSE
+		PRINTFORML 「も、もう、これやだああ、あぁっ」
+		PRINTFORML 「う、うぅ……んんんっ！　あ、ああ……」
+		PRINTFORMW にとりは全身を痙攣させ、淫核を直接震わされる感触に悶えている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは淫核に直接電気按摩器を押し付けられ、意識を快楽一色に染めている……
+		CASE 1
+			PRINTFORMW にとりは自ら電気按摩器を握り、満足いくまで性感帯を責め立てている……
+		CASEELSE
+			PRINTFORMW にとりは快感から逃げられないように押さえつけられ、涙を流しながら許しを求めている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;バイブ
+;TEQUIP:20 == 0で解除口上
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_12
+;解除時
+IF TEQUIP:20 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「あう……っ、擦らないで、っ」
+		PRINTFORML 「……意地悪、だなあ、もう……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あ……抜け、ちゃ……ぅ」
+		PRINTFORML 「ん、ふぅ……次は、どうするの、かな？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「バイブ、好きです……っ」
+		PRINTFORML 「ご主人さま、ありがとう、ございますっ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ひゃ、今、抜かないでっ……」
+		PRINTFORML 「ん、あぁっ……！」
+	;その他
+	ELSE
+		PRINTFORML 「ぅ、んっ！　やぁ……」
+		PRINTFORML 「もう、やだっ……」
+		PRINTFORMW にとりは大きく開いた秘所に目をやり、只嘆いている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW バイブと共に、攪拌された白液がどろりと垂れ落ちた……
+		CASE 1
+			PRINTFORMW バイブの抜けた瞬間、にとりは小さく肩を震わせた……
+		CASEELSE
+			PRINTFORMW 未だ震えるバイブに、にとりは物欲しそうな視線を向けている……
+	ENDSELECT
+;装着時
+ELSE
+	;処女
+	IF TALENT:処女
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「……本気？」
+			PRINTFORML 「ぅ……はぁ……」
+			PRINTFORMW にとりは潤んだ目で%CALLNAME:MASTER%を見つめている……
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「はいはい、バイブに処女捧げる河童ですよ、私は」
+			PRINTFORML 「どうせなら、%MASTERNAME%のがよかったよ」
+			PRINTFORMW にとりはぶつぶつと不満を訴えながらも、体を開いている……
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「は、い……中、入ります、かね？」
+			PRINTFORML 「……っ、ぁあ……」
+			PRINTFORMW にとりはできる限り脱力し、バイブを受け入れている……
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「それ、入れる……ってこと？」
+			PRINTFORML 「またまた、冗談、っ……うぅ……」
+			PRINTFORMW にとりは冷や汗を浮かべ、バイブを見つめている……
+		;その他
+		ELSE
+			PRINTFORML 「……っ、怖く、ないっ……」
+			PRINTFORML 「こんなの、大丈夫……！」
+			PRINTFORMW にとりは涙を浮かべ、全身を震わせている……
+		ENDIF
+		RETURN 0
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「ひぁっ……ぐちゅぐちゅ、しないでよっ」
+			PRINTFORML 「凄く、恥ずかしいから……」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「あ、ふぅ……奥、ささって、る……」
+			PRINTFORML 「思いっきり、動かしたい、なっ……」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「は、ぁぁ……っ、まんこ、いいっ……」
+			PRINTFORML 「何でも、してください、ね？」
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「ぁ、ひっ！　今、動いた、っ」
+			PRINTFORML 「いじわる、しないでよ……っ」
+		;その他
+		ELSE
+			PRINTFORML 「く、ぅ……」
+			PRINTFORML 「こんなの、苦しいだけだよっ……」
+			PRINTFORMW にとりは大きく息を吐き、体を強張らせている……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML バイブは子宮口に密着し、振動を送り込む。
+				PRINTFORMW 母性と女性の本能を揺さぶる刺激に、にとりは仰け反っている……
+			CASE 1
+				PRINTFORML バイブはクリトリスの裏側から的確な動きで刺激する。
+				PRINTFORMW にとりは声にならない叫びを上げ、全身を震わせている……
+			CASEELSE
+				PRINTFORML ごつごつとしたバイブは、粘膜をこじるように擦りあげた。
+				PRINTFORMW 理性を白く塗りつぶす快楽に、にとりは天を仰いでいる……
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ
+;TEQUIP:25 == 0で解除口上
+;屈服３で改造
+;CFLAG:7001 アナルバイブ形状	１＝改造宣言、２＝改造済み、３＝歪、４＝深部、５＝根元
+;撮影→Ａバイブで実況風に
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_F_COM_13
+IF TEQUIP:25 == 0
+	;バイブ改造完了報告
+	IF CFLAG:7001 == 1
+		PRINTFORML 「バイブ、いじってみたよー」
+		PRINTFORML 「とりあえず、３種類と普通ので計四つ」
+		PRINTFORMW 「それじゃあ特徴をそれぞれ説明してみようか」
+		PRINTFORML １……歪バイブ
+		PRINTFORML バイブの本体部分をいじって、滅茶苦茶な形にしてみた。
+		PRINTFORMW 出し入れすると、気持ちいいんじゃないかな？
+		PRINTFORML ２……先端バイブ
+		PRINTFORML バイブの先っぽに、も一つローターをつけてみた。
+		PRINTFORMW 入れっぱなしにしたとき、おなかの奥が良さそう？
+		PRINTFORML ３……根元バイブ
+		PRINTFORML バイブの根元で、お尻の穴を挟めるように！
+		PRINTFORMW 内外から震わされたら、凄いんじゃないかな？
+		PRINTFORML ４……通常
+		PRINTFORML 何の変哲もない、お尻をいじめる為だけのつくりだね。
+		PRINTFORML それだけに洗練、的確に責められるかな？
+		PRINTFORMW 「私専用に作ったんで、いくら気持ち良さそうでも他の人には使えないからね？」
+		PRINTFORMW 「というわけで、好きなの選んでみてよ」
+	;改造バイブどれ使う？
+	ELSEIF CFLAG:7001 >= 2
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「……っ、気持ちいいのは、いいんだけどね？」
+			PRINTFORMW 「どれ使われても、絶対、気持ちよくなっちゃうのがね……っ」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「ほんと、見ただけで体が熱くなっちゃうよ」
+			PRINTFORMW 「どれもやらしい形だけど、どれ使ってくれるの？」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「奴隷ケツマンコ、使いやすいように躾けてください、ご主人さま……」
+			PRINTFORMW 「どのバイブで、調教してくれますか？」
+		;屈服3
+		ELSE
+			PRINTFORML 「……どきどきするよ、どれで気持ちよくさせられちゃうのかな、って」
+			PRINTFORMW 「どれも私のお墨付き！　好きなの選んでよ」
+		ENDIF
+	;改造イベント前
+	ELSE
+		RETURN 0
+	ENDIF
+	;入力画面
+	PRINTFORML 
+	PRINTFORML 使用するアナルバイブの選択（入手する珠等は全て同じです）
+	PRINTFORML 
+	PRINTL [0]歪な形で腸内を刺激するアナルバイブ
+	PRINTL [1]先端が激しく振動するアナルバイブ
+	PRINTL [2]根元で括約筋を挟み込むアナルバイブ
+	PRINTL [3]通常のアナルバイブ
+	PRINTFORML 
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW 歪な形で腸内を刺激するアナルバイブを使用します
+		CFLAG:7001 = 3
+	ELSEIF RESULT == 1
+		PRINTFORMW 先端が激しく振動するアナルバイブを使用します
+		CFLAG:7001 = 4
+	ELSEIF RESULT == 2
+		PRINTFORMW 根元で括約筋を挟み込むアナルバイブを使用します
+		CFLAG:7001 = 5
+	ELSEIF RESULT == 3
+		PRINTFORMW 通常のアナルバイブを使用します
+		CFLAG:7001 = 2
+	ELSEIF RESULT == 10
+		PRINTFORMW にとりの視線が追っていたのは……？
+		CFLAG:7001 = RAND:4 + 2
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORMW 「う……っ、出来るだけ、優しくしてね……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORMW 「もう、準備、できてるから、さ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORMW 「お願いします、ご主人さま……」
+	;屈服3
+	ELSE
+		PRINTFORMW 「わ、それ使っちゃうんだ……」
+	ENDIF
+	PRINTFORML 
+ELSE
+RETURN 0
+ENDIF
+@KOJO_40_TRAIN_MESSAGE_S_COM_13
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:25 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ふるえる、って、すごいよ……っ」
+		PRINTFORML 「無理やり、ひろげられちゃう、の、気持ちよすぎて、や、なのに、っ……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ん、ふ……ぅっ、きもち、い……」
+		PRINTFORML 「ずっと、入れてたいぐらいだよ、ほんとに……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ほ、おおぉ……！」
+		PRINTFORML 「ケツマンコ、躾けてくださり、ありがとうございましたぁ……」
+	;屈服3かつバイブ未改造
+	ELSEIF CFLAG:7000 == 1 && CFLAG:7001 == 0
+		PRINTFORML 「ふ、ぅう……ん、ぬいちゃ、うんだ……」
+		PRINTFORML 「バイブ、おいてってよ……」
+		PRINTFORMW にとりは残念そうに自らの肛門から引き抜かれたバイブを眺めている……
+		RETURN 0
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「あは……ぽっかり、ひろがっちゃった……」
+		PRINTFORML 「腑抜け、ってこんなのかねえ……」
+	;その他
+	ELSE
+		PRINTFORML 「お尻、むりやり、ひろげられ、てぇ……っ」
+		PRINTFORML 「や、だ……ああっ……」
+		PRINTFORMW にとりは腸壁を擦るバイブの感触に、鳥肌を立てている……
+		RETURN 0
+	ENDIF
+	SELECTCASE CFLAG:7001
+		CASE 3
+			PRINTFORML にとりの肛門から歪な形のアナルバイブが抜かれていく度に、括約筋が不規則に拡げられる。
+			PRINTFORML バイブに密着し、腸液を分泌し続ける粘膜は、卑猥な水音を立てて引きずり出されてゆく。
+			PRINTFORMW にとりは振動する異物を排泄する快感を、虚ろな表情で楽しんでいる……
+		CASE 4
+			PRINTFORML Ｓ字結腸の入り口がアナルバイブの先端をくわえ込み、容易には引き抜くことができない。
+			PRINTFORML 引き抜こうとする度、Ｓ字結腸は強制的に肛門側へと引き寄せられ、擬似的な排泄感を与えている。
+			PRINTFORML 一際強く力を込めると、長大なアナルバイブの殆どが体外へと引きずり出され、湯気を上げる。
+			PRINTFORMW にとりは強制排泄による理性を破壊する程の快感に、四肢を痙攣させている……
+		CASE 5
+			PRINTFORML 肛門括約筋を責めさいなむアナルバイブを引っ張る度、ぷっくりと盛り上がる肛門は振動により解される。
+			PRINTFORML 限界を超え、アナルバイブの根元が引きずり出された瞬間、腸液溜りと化した直腸から腸液が迸る。
+			PRINTFORMW にとりは振動の余韻を感じるのか、大きく息をつきながら肛門をぱくぱくと広げている……
+		CASEELSE
+			PRINTFORML にとりの肛門から通常のアナルバイブを引き抜いてゆくと、肛門は一定の大きさに拡げられたままとなる。
+			PRINTFORML 常に拡げられた感触が心地よいのか、だらしなく口を開けて貪っている。
+			PRINTFORMW 全てが排泄されると、にとりは一瞬呻いて硬直し、弛緩した肛門を晒して横たわった……
+	ENDSELECT
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 「無理っ！　無理だってっ！」
+		PRINTFORML 「そんな固そうなの、入らないってばっ！」
+		PRINTFORMW にとりは異物に肛門を押し広げられる感触に、突っ伏して耐えている……
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「や、だ……おしり、弱いのに、そんなのいれたら……ぁ」
+			PRINTFORML 「狂っちゃ、あ、はぅ……狂い、たい……っ！」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「おしりに、バイブ、使ってくれるんだ、ぁあ……」
+			PRINTFORML 「すき、だよ……きもちよく、って……っんぅ……」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「怖い、です、ご主人さま、っ……」
+			PRINTFORML 「ケツマンコ、どんどん躾けられて、わたし、じゃないみたいに、いいっ！」
+		;屈服3かつバイブ未改造
+		ELSEIF CFLAG:7000 == 1 && CFLAG:7001 == 0
+			PRINTFORML 「ん……っ、今度、さあ、このバイブ、いじらせてくれないかな……っ？」
+			PRINTFORML 「うぁ、あ……置いてってくれれば、いいからさ……」
+			PRINTFORML にとりはアナルバイブを根元まで飲み込むと、快楽のありかを探るように腰を動かした。
+			PRINTFORMW しばらくすると、急所に振動が直撃したのか嬌声を上げて倒れこんだ……
+			RETURN 0
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「っ、ひろが、っちゃう……おしりぃ……」
+			PRINTFORML 「はやく、ぶるぶる、ってさせて、よおっ……！」
+		;その他
+		ELSE
+			PRINTFORML 「もう、おしり、あ、はぁぁ……っ」
+			PRINTFORML 「い、っぱいだから……動かさないで……」
+			PRINTFORML にとりの幼い肛門に突き立てられたアナルバイブは、その振動で括約筋をほぐしていく。
+			PRINTFORMW アナルバイブをかき回すと、次第に緊張が解け、肛門の皺が伸びてゆく様が確認できる……
+			RETURN 0
+		ENDIF
+		SELECTCASE CFLAG:7001
+			CASE 3
+				PRINTFORML 歪な形のアナルバイブは、にとりの肛門括約筋を不規則な形にこねくり回す。
+				PRINTFORML 従来のそれでは想像のつかない感触に、にとりは歯を食いしばっている。
+				PRINTFORML 腸内では、振動する歪な質量が粘膜を圧迫、調教し、性感帯として躾けてゆく。
+				PRINTFORMW 肛門からの圧倒的な快感に、にとりはもはや突っ伏して涙を流すことしかできないようだ……
+			CASE 4
+				PRINTFORML 先端に振動体の取り付けられたバイブは、にとりの直腸深部を強く刺激する。
+				PRINTFORML 固く閉ざされたＳ字結腸の入り口は、直接の振動によってほぐされてゆく。
+				PRINTFORML 排泄反射が起こり、Ｓ字結腸の入り口が開いた瞬間、振動体が内部にもぐりこみ、がっちりと固定する。
+				PRINTFORMW にとりは逃れられぬ排泄性感に、機械への屈従を宣誓し、許しを乞っている……
+			CASE 5
+				PRINTFORML 根元がどら焼きのように膨らんでいるアナルバイブは、にとりの肛門括約筋を内外から挟み込む。
+				PRINTFORML 肛門に力を入れた瞬間、収縮した括約筋を内外から同時に刺激し、脱力するほどの快感を与えるのだ。
+				PRINTFORML 脱力し、バイブを排泄しようと試みても、括約筋の部分で固定されている為押し戻される。
+				PRINTFORMW 図らずもアナルバイブを抽挿することとなったにとりは、ぱくぱくと口を開き悶えている……
+			CASEELSE
+				PRINTFORML 通常のアナルバイブは、その振動でにとりの腸内を攪拌する。
+				PRINTFORML 異物のもたらす刺激から、腸液が分泌され腸内を満たしてゆく。
+				PRINTFORML 外部からでも確認できるほどの振動は、腸液を泡立てローションのように仕立て上げる。
+				PRINTFORMW にとりは粘度の増した腸液を肛門とバイブの間から垂れ流し、排泄性感を貪っている……
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_14
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:30 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+	;服従
+	ELSEIF CFLAG:7000 == 4
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+	;その他
+	ELSE
+	ENDIF
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 「これ、どうなって……？」
+		PRINTFORML 「ぅ、ひゃ、あっ！　吸われる……っ」
+		PRINTFORMW にとりは思いもよらぬ刺激に狼狽し、涙目になっている……
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「気持ちい、んだ……は、ぁあっ、これ」
+			PRINTFORML 「でも、ね、さわられると、もっと……」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「っ、ぁ……こっちは機械に任せて、って魂胆かなあ？」
+			PRINTFORML 「思いっきり、良くしてくれるんだよね……っ？」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「クリトリス、伸びちゃいます、ぅあ、っ！」
+			PRINTFORML 「駄目になる、気持ちいいの、ご主人さま……っ」
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「最近、気持ちよさがわかってきたよ……」
+			PRINTFORML 「乱暴にしちゃ、いやだかんね……？」
+		;その他
+		ELSE
+			PRINTFORML 「……これ、くすぐったいんだけど……」
+			PRINTFORML 「まあ、いいや、ぁ……っ」
+			PRINTFORMW にとりは多少の余裕を見せつつも、淫核への刺激を気にしているようだ……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORMW にとりは腰を突き出し、淫核を擽る刺激を堪能している……
+			CASE 1
+				PRINTFORMW にとりの淫核は強制的に吸い出され、充血した姿を露わにしている……
+			CASEELSE
+				PRINTFORMW にとりは泣きそうな表情を浮かべ、機械の刺激に自らの肉体を預けている……
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ
+;TEQUIP:35 == 0で解除口上
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_15
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:35 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+	;服従
+	ELSEIF CFLAG:7000 == 4
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+	;その他
+	ELSE
+	ENDIF
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 「なにこれ？」
+		PRINTFORML 「や、ぁっ……くすぐった……っ！」
+		PRINTFORMW にとりは突起を撫でられる感触に、身を竦ませた……
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「なんか、もどかしくて、震えそうで」
+			PRINTFORML 「いっそ、滅茶苦茶にされたく、なっちゃうっ……」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「うぅ……機械の刺激、悪くない、けど」
+			PRINTFORML 「もう一歩、欲しいかな……っ」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「ふぁ……擦れてます……」
+			PRINTFORML 「ご主人さまっ、見られたら、私っ」
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「傍から見たら、変態だ、これ……っ」
+			PRINTFORML 「おっぱい、機械に、虐められてっ」
+		;その他
+		ELSE
+			PRINTFORML 「また、それ……？」
+			PRINTFORML 「くぅ……っ、変な、動きっ」
+			PRINTFORMW にとりの乳首は主張するように立ち上がり、機械の刺激に身を委ねている……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORMW にとりは時折小さく声を漏らし、身を跳ねさせている……
+			CASE 1
+				PRINTFORMW にとりは上半身を微かに紅く染め、瞳を潤ませている……
+			CASEELSE
+				PRINTFORMW 機械の振動は強制的に乳首を刺激し、快楽を引きずり出す……
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_16
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:30 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+	;服従
+	ELSEIF CFLAG:7000 == 4
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+	;その他
+	ELSE
+	ENDIF
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 「な、……ひゃっ、あぁ……」
+		PRINTFORML 「これが、体の、中……なんだ……っ」
+		PRINTFORMW にとりは初めて味わう器具の感触に、腰砕けとなっているようだ……
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「音立てるの、やだ、ってば……」
+			PRINTFORML 「ううぅ……はずかし……きもちいい……」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「動かして、いい……？　いいよね……っ？」
+			PRINTFORML 「オナホ、滅茶苦茶にしちゃう、うぅ……！」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「だらしない奴隷ちんぽ、管理してくださいっ……」
+			PRINTFORML 「は、ぁあ……ぅ、っ……我慢するの、気持ちいいです……ぅ！」
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「この、中どうなってんのさ……？」
+			PRINTFORML 「擦れて、まとわりついて……っ、すごい、よ……」
+		;その他
+		ELSE
+			PRINTFORML 「ああ……中、ぬるぬるで、やだぁ……」
+			PRINTFORML 「動きたく、ないのに、やだぁ……」
+			PRINTFORMW にとりは膝をがくがくと震わせ、陰茎を絞り上げる器具に身を任せている……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORMW にとりは敏感な亀頭を包み込む器具の感触に、うずくまって嗚咽を漏らしている……
+			CASE 1
+				PRINTFORMW にとりの陰茎は擬似的な女性器の内部でビクビクと震え、今にも暴発しそうなほど腫れ上がっている……
+			CASEELSE
+				PRINTFORMW にとりは粘液の滴るオナホールを握りしめ、座り込んでしまっている……
+		ENDSELECT
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;電極オナホール
+;TEQUIP:30 == 0で解除口上
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_17
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:30 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+	;服従
+	ELSEIF CFLAG:7000 == 4
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+	;その他
+	ELSE
+	ENDIF
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 
+		;その他
+		ELSE
+			PRINTFORML 
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;正常位
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_20
+;処女
+IF TALENT:処女
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「顔が見えると、すこし、緊張するよ……」
+		PRINTFORML 「あんまり、痛くしないでね……？」
+		PRINTFORML にとりは緊張した面持ちで%CALLNAME:MASTER%を見つめる。
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「お、っと……まさか、こんな風に貰われちゃうとはねえ」
+		PRINTFORML 「ほら、早く動いて、気持ちよくなっちゃいなよ……っ」
+		PRINTFORML にとりは%CALLNAME:MASTER%の表情を観察するように視線を向ける。
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「は、はい、お願いします、ご主人さま……」
+		PRINTFORML 「奴隷の処女まんこ、堪能してください……」
+		PRINTFORML にとりは幸せそうな表情を浮かべ、%CALLNAME:MASTER%を見つめる。
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「……う、もうちょっと、待ってくれない……？」
+		PRINTFORML 「そうすれば、きっと、さ……」
+		PRINTFORML にとりはあわてた様子で%CALLNAME:MASTER%に視線を向ける。
+	;その他
+	ELSE
+		PRINTFORML 「えっ、ちょっ、まさか……っ」
+		PRINTFORML 「痛っ、から、離してって、ば……」
+	ENDIF
+	PRINTFORMW にとりの秘所は痛々しいほどに広がり、不釣合いな大きさの男性器を受け入れている……
+;その他
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「うぁ……顔、見ないで、って……音、やだぁ……」
+		PRINTFORML 「も、恥ずかし……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ん、ふぅ……っ、この、格好、好き……なの？」
+		PRINTFORML 「そんなに、ダメになっちゃうとこ、みたいんだ、……ぁっ！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「にとりの、なか、気持ちいいですかっ、ご主人さま……っ！」
+		PRINTFORML 「ちんぽ、太くて、かき回され、ぇ……てっ、すごいんです、っ！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「あ、は……乱暴だなあ、っ……」
+		PRINTFORML 「そんなきつく抱きしめなくても、ん、逃げやしないって……」
+	;その他
+	ELSE
+		PRINTFORML 「やだ、どいて、てばっ……！」
+		PRINTFORML 「……うっ、ぅ……も、やだぁ……」
+		PRINTFORMW 組み伏せられ、性交を強いられているにとりは、身じろぎすら許されずただ嗚咽を漏らしている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは自らを責め立てる身体に抱きつき、目をつぶって快感を堪えている……
+		CASE 1
+			PRINTFORMW にとりは妖艶な笑みを浮かべ、触れ合う粘膜のもたらす衝撃を楽しんでいる……
+		CASEELSE
+			PRINTFORMW にとりは淫核の裏側から肉棒による刺激を与えられ、のけぞるように嬌声をあげている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;後背位
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_21
+;処女
+IF TALENT:処女
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「顔が見えないってのは、怖い、かも……」
+		PRINTFORML 「あんまり、痛くしないでね……？」
+		PRINTFORML にとりは緊張した面持ちで%CALLNAME:MASTER%に振り返る。
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「こっちも覚えたいし、貰ってくれるとうれしいよ」
+		PRINTFORML 「ほら、早く動いて、気持ちよくなっちゃいなよ……っ」
+		PRINTFORML にとりは%CALLNAME:MASTER%の表情を観察するように視線を向ける。
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「は、はい、お願いします、ご主人さま……」
+		PRINTFORML 「奴隷の処女まんこ、獣のように奪ってください……」
+		PRINTFORML にとりは幸せそうな表情を浮かべ、脱力する。
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「……う、もうちょっと、待ってくれない……？」
+		PRINTFORML 「そうすれば、きっと、さ……」
+		PRINTFORML にとりはあわてた様子で%CALLNAME:MASTER%に視線を向ける。
+	;その他
+	ELSE
+		PRINTFORML 「えっ、ちょっ、まさか……っ」
+		PRINTFORML 「痛っ、から、離してって、ば……」
+	ENDIF
+	PRINTFORMW にとりの秘所は痛々しいほどに広がり、不釣合いな大きさの男性器を受け入れている……
+;その他
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「っ捕、まえて、離さないで……っ」
+		PRINTFORML 「後ろから、だと……気持ちいいのが、怖いの……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あっ……その、上、きもちいっ……！」
+		PRINTFORML 「ぐちゅぐちゅ、って、ひどい、音だあ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「おまんこ、根元までぇ……ひろがって……っ！」
+		PRINTFORML 「このちんぽ、素敵……ですっ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「この格好、奥に、刺さって、ぇっ！」
+		PRINTFORML 「あうっ、うっ……きもち、い……っ」
+	;その他
+	ELSE
+		PRINTFORML 「痛い、掴まないで、よお……っ！」
+		PRINTFORML 「私が、何したっていうのさ……」
+		PRINTFORMW にとりは背後から秘所への突き込みを受ける度、苦痛に涙をこぼしている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは背後から抱きすくめられ、秘所を貫かれる快感に声を上げている……
+		CASE 1
+			PRINTFORMW 抽挿の度、にとりの秘所からは泡立った愛液が飛び散り、床を汚している……
+		CASEELSE
+			PRINTFORMW にとりは手綱代わりに腕を掴まれ、腰を打ち付けられる度に吐息を漏らしている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;対面座位
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_22
+
+;恋慕
+IF CFLAG:7000 == 2
+	PRINTFORML 「……お、重く、ないかな……あっ！」
+	PRINTFORML 「やだ、奥まで、ささっちゃ、った……っ！」
+;淫乱
+ELSEIF CFLAG:7000 == 3
+	PRINTFORML 「おなか、一杯……う、動いちゃう、よ……？」
+	PRINTFORML 「は、あぅ……っ、すご、いよ、これ……っ！」
+;服従
+ELSEIF CFLAG:7000 == 4
+	PRINTFORML 「使ってくださり、ありがとうございます、っ……！」
+	PRINTFORML 「奴隷まんこ、めちゃくちゃに、してください、いっ……！」
+;屈服3
+ELSEIF CFLAG:7000 == 1
+	PRINTFORML 「はぅ……体、あったかい、よっ……」
+	PRINTFORML 「っあっ！　そこ、いい、っ……」
+;その他
+ELSE
+	PRINTFORML 「動かないで……痛い、の……」
+	PRINTFORML 「やだ、もう、気持ちわるいよ……」
+	PRINTFORMW にとりは未熟な膣をかき回される違和感に、眉を歪めている……
+	RETURN 0
+ENDIF
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORMW にとりは縋り付く様に腕を回し、熱い吐息を吹きかけている……
+	CASE 1
+		PRINTFORMW にとりは強く抱きしめられる度、膣を収縮させて陰茎をしごき上げた……
+	CASEELSE
+		PRINTFORMW にとりは子宮口まで届く陰茎の感触に、息を呑んでいる……
+ENDSELECT
+
+;-------------------------------------------------
+;背面座位
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_23
+;恋慕
+IF CFLAG:7000 == 2
+	PRINTFORML 「はぁ……ぁっ、う、ん……あったかい、な……」
+	PRINTFORML 「いっぱい、いじられるの、好き……っ！」
+;淫乱
+ELSEIF CFLAG:7000 == 3
+	PRINTFORML 「お、うぅ……っ、全部、入っちゃった……」
+	PRINTFORML 「ひゃあ、っ！　クリトリス、反則だってば……ぁ、っ！」
+;服従
+ELSEIF CFLAG:7000 == 4
+	PRINTFORML 「も、我慢、でき、なぁ……っ！！」
+	PRINTFORML 「奴隷、なのに、ごめんなさ、いい……っっ！！」
+;屈服3
+ELSEIF CFLAG:7000 == 1
+	PRINTFORML 「あはは、器用、だねえ……っ」
+	PRINTFORML 「でも、どこも気持ちいい、よ……」
+;その他
+ELSE
+	PRINTFORML 「や、っ……離して、よっ……」
+	PRINTFORML 「強く掴まれると、痛いんだってば……」
+	PRINTFORMW にとりは逃れるように前傾するが、体を弄ぶ腕がそれを許さない……
+	RETURN 0
+ENDIF
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORMW にとりは淫核を内外から同時に刺激され、体を痙攣させている……
+	CASE 1
+		PRINTFORMW にとりは乳首をこね回される度、腰を強く打ちつけ快楽を貪っている……
+	CASEELSE
+		PRINTFORMW にとりは最奥まで貫かれる快感と幸福感に、ふにゃりと体を委ねている……
+ENDSELECT
+
+;-------------------------------------------------
+;騎乗位
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_24
+;処女
+IF TALENT:処女
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「……手、握っててほしいな……」
+		PRINTFORML 「痛い、んだけど、頑張れる、から……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ほんと、いい趣味だねえ……」
+		PRINTFORML 「く、っ……どんな、感じだったか……後で聞かせてもらうからね……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「それでは……処女まんこで、奉仕、しますねっ……」
+		PRINTFORML 「っ、ふぅ、うっ……いかが、でしょう、か……？」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「へ、……変態、だあね……」
+		PRINTFORML 「あ、いっ……怖いの、やっぱり、やめにしない……？」
+		PRINTFORMW にとりは痛みに顔をしかめ、%CALLNAME:MASTER%の様子を窺っている……
+		RETURN 0
+	;その他
+	ELSE
+		PRINTFORML 「何で、こんなこと……っ！」
+		PRINTFORML 「うぅ……やだ、嘘だ、っ……」
+		PRINTFORMW にとりは顔を歪め、震える体にゆっくりと体重をかけている……
+		RETURN 0
+	ENDIF
+	PRINTFORMW にとりはそそり立つ陰茎を固定した後、ゆっくりと腰を下ろしている……
+;その他
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ぁ……深、くて……あったかい、よっ……」
+		PRINTFORML 「私、しあわせ、だぁ……」
+	;淫乱　
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「色々、上手くなったからね……空になるまで、搾ったげる」
+		PRINTFORML 「ん、う……やっぱ前言、撤回……このちんぽ、凄いよ……っ」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ふぁ、あああっ……や、はぁ……」
+		PRINTFORML 「はしたない奴隷で、ごめんなさ、ぁ、いっ！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「潰れちゃわない、かな……あっ」
+		PRINTFORML 「もっと、激しく動いて、いい……？」
+	;その他
+	ELSE
+		PRINTFORML 「はや、く……終わって、ってば……」
+		PRINTFORML 「く、う……あ、あ……」
+		PRINTFORMW にとりは未だ固さを残した膣で、強く陰茎を扱き立てている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは的確に膣を締め付け、敏感な粘膜を擦り合わせている……
+		CASE 1
+			PRINTFORMW にとりは自らの汗を飛び散らせるほどの勢いで腰を打ちつけ、快感に酔っている……
+		CASEELSE
+			PRINTFORMW にとりの膣は柔らかくこなれ、陰茎が出し入れされる度、自在に形を変えていた……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_25
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手を犯す
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_26
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位
+;処女ＮＧ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_27
+;恋慕
+IF CFLAG:7000 == 2
+	PRINTFORML 「……照れる、から、あんまり見ちゃ、やだ……ぁ」
+	PRINTFORML 「つ、突かないで、変に、なっちゃう……」
+;淫乱
+ELSEIF CFLAG:7000 == 3
+	PRINTFORML 「く、うっ、大丈夫？　動きづらかったり、しない……？」
+	PRINTFORML 「これ、合わせるの、難しっ……！　ふぁ……っ！」
+;服従
+ELSEIF CFLAG:7000 == 4
+	PRINTFORML 「ご主人さまが、近くて、嬉しいです……」
+	PRINTFORML 「奴隷まんこで奉仕、させて頂きます……ん、ふ……」
+;屈服3
+ELSEIF CFLAG:7000 == 1
+	PRINTFORML 「変なとこ、刺さってるみたいだ……っ」
+	PRINTFORML 「いつもより、気持ちいい、かも……」
+;その他
+ELSE
+	PRINTFORML 「……や、だぁ、離してよっ」
+	PRINTFORML 「動くと、こすれ、て、もう、や……ぁ……」
+	PRINTFORMW にとりは強い圧迫感に表情を歪め、すすり泣いている……
+	RETURN 0
+ENDIF
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORMW にとりは強く抱きしめられながら最奥まで突かれ、膝をガクガクと震わせている……
+	CASE 1
+		PRINTFORMW にとりの秘所からは溢れる愛液が垂れ落ち、淫靡な音を奏でている……
+	CASEELSE
+		PRINTFORMW にとりは密着する陰茎の感触を味わうかのように、腰を振っている……
+ENDSELECT
+;-------------------------------------------------
+;背面立位
+;処女ＮＧ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_28
+;恋慕
+IF CFLAG:7000 == 2
+;淫乱
+ELSEIF CFLAG:7000 == 3
+;服従
+ELSEIF CFLAG:7000 == 4
+;屈服3
+ELSEIF CFLAG:7000 == 1
+;その他
+ELSE
+ENDIF
+
+;-------------------------------------------------
+;正常位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_30
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ち、ちょっ、いきなり、押し倒すって……」
+	PRINTFORML 「…………っ！　そ、っっっっ！」
+	PRINTFORMW にとりの肛門括約筋、直腸共に性交に用いるには硬かったようで、陰茎は強く締め上げられている。
+	PRINTFORML しばらくすると、腸の蠕動が活発になったのか多少の抽挿が可能になった。
+	PRINTFORML 「うう、動かさないで……きつい、から……っ」
+	PRINTFORMW にとりは腸を性器に作り変えるべく動く陰茎に、戸惑いと恐怖を感じているようだ……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「……ひゃ、っ、抱きしめながら、お尻は、卑怯だ……！」
+		PRINTFORML 「もっと、好きに、なっちゃ、あぅ、っ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「んううっ！　そこ、私の、急所ぉっ」
+		PRINTFORML 「形、変わっちゃう、躾けられちゃう……っ！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ほ、おっ……ゆるゆるケツマンコ、締めますから、っ！」
+		PRINTFORML 「使って、捨てないでっ、ください……っ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「おしり、入ってくるぅ……っ！」
+		PRINTFORML 「やっぱり、太すぎる、って、これっ……」
+	;その他
+	ELSE
+		PRINTFORML 「太い、の……苦しい、から、やだぁ……」
+		PRINTFORML 「もう、許して、ください……っ！」
+		PRINTFORMW 肛門に雁首が潜り込む瞬間、にとりは衝撃に顔を覆う。
+		PRINTFORML 「ぁ……っ、は、はぁ、っ……う、ぅ……」
+		PRINTFORMW 陰茎全体を利用した抽挿の度、覆った手からにとりの啜り泣きが聞こえてくる……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 括約筋に雁首が食い込んだ次の瞬間、直腸は熱を帯びた陰茎に陵辱される。
+			PRINTFORML 肛門で快感を覚える度、腸の締め付けは緩くなり、陰唇も釣られて口を開く。
+			PRINTFORMW 強制的に排泄性感をもたらされる感覚に、にとりはただ体を強張らせている……
+		CASE 1
+			PRINTFORML にとりの肛門は、焦らされるかのような浅い抽挿によって責められている。
+			PRINTFORML 上半身をかき抱かれた状態でひたすらに括約筋を伸縮させられ、逃れることもままならない。
+			PRINTFORMW 異物の侵入する感触に、にとりは鳥肌を立てつつも嬌声をあげている……
+		CASEELSE
+			PRINTFORML にとりは仰向けの姿勢で、直腸深部まで陰茎を受け入れている。
+			PRINTFORML 亀頭が硬く閉ざされたＳ字結腸の入り口を叩く度に、圧迫感から呻きが漏れる。
+			PRINTFORMW この先にある快感を想像したのか、にとりは潤んだ瞳で結合部を見つめている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;後背位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_31
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ぐ、う……っ、痛い、痛いよっ！」
+	PRINTFORML 「動く、なんて無理、……っ」
+	PRINTFORMW にとりは衝撃に耐えられないのか、涙を流し叫んでいる。
+	PRINTFORML しばらくすると異物に対する反応からか腸液が分泌され、卑猥な音が肛門から奏でられ始める。
+	PRINTFORML 「やぁ……っ、動かさない、でぇ……」
+	PRINTFORMW にとりは肛門からの痛みと屈辱感に、顔をうずめてただ耐えている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「私、変態だぁ……っ、こんな格好、でお尻気持ちいいの……」
+		PRINTFORML 「ふ、うぅっ……嫌わ、ないで……ん、ああっ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あ、ぁ……思うがまま、犯されちゃうんだぁ……」
+		PRINTFORML 「動く、私、も、動いて、いいよね、っ？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「は、ぉっ……ちんぽ、素敵……っ！」
+		PRINTFORML 「奥、刺さって、全部出ちゃいますぅ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「この格好、お尻広がりすぎちゃって、恥ずかしいなあ……」
+		PRINTFORML 「っ、あおっ……！　そこ、まだ、無理、っ……！」
+	;その他
+	ELSE
+		PRINTFORML 「つ、ううっ……！　お尻、熱い、深いよっ……」
+		PRINTFORML 「後ろから、されるの、やだぁ……」
+		PRINTFORMW にとりの腸内最奥まで埋められた陰茎は、じりじりと引きずり出され始めている。
+		PRINTFORML 「……っ、う、はぁ、ああっ……！」
+		PRINTFORMW 肛門をゆっくりと躾けられてゆく感覚は、にとりの吐息に艶を加えてゆく……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 背後から責めを加えられているにとりの肛門は、もはや限界まで拡げられていた。
+			PRINTFORML 亀頭が出入りを繰り返す度括約筋はめくれ上がり、持ち主に電撃的な快感を与えるのである。
+			PRINTFORMW 断続的に肛門をマッサージされる快楽を知ったにとりは、唯己の体を抱きしめることしか出来ないようだ……
+		CASE 1
+			PRINTFORML Ｓ字結腸の入り口に亀頭が打ち付けられる度、にとりの体を支える腿が震える。
+			PRINTFORML 直腸を蹂躙する陰茎に押し出されるように、口からは喘ぎが漏れ出す。
+			PRINTFORMW 腸内に溜まった腸液が攪拌され、快楽を伴う擬似排泄となって結合部から溢れ出している……
+		CASEELSE
+			PRINTFORML 腸奥への強すぎる快感を嫌ったにとりは、括約筋を締め付け陰茎の動きを制限しようと試みる。
+			PRINTFORML 括約筋を雁首で内部からこじ開けると、締め付けが裏目に出たのか理性を焦がす快感に悲鳴が上がる。
+			PRINTFORMW 腸奥、括約筋と交互に性感帯を刺激され続けているにとりには、もはや快楽を訴える気力すらないようだ……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;対面座位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_32
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ひ、……っ、う、えぇ……っ」
+	PRINTFORML 「離して、お尻、入らないから……ぁ……」
+	PRINTFORMW 苦痛に顔を歪めるにとりは、肛門を陵辱する異物から逃れようと体をよじる。
+	PRINTFORML しかし串刺しにされた状態で動こうとした結果、より深く陰茎を受け入れることになってしまう。
+	PRINTFORML 「ん、うぅ……や、だ……」
+	PRINTFORMW 加えられた衝撃は、にとりの腸粘膜を刺激し次第に大きくなってゆく……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「あ……、はぁ……暖かい、よ……」
+		PRINTFORML 「全身、気持ちよくて、しあわせ……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「奥まで、突き刺してよ？　深いの、好きだからさあ」
+		PRINTFORML 「は、おっ……拡げられるの、好きだぁ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「動いて、いいですかっ……ご主人さま……」
+		PRINTFORML 「お尻で、ぉっ……はしたなくて、ごめんなさい……っ！」	
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ほんの、ちょっとだけ安心するんだよね……」
+		PRINTFORML 「ふ、……う、入って、きた……ぁ」
+	;その他
+	ELSE
+		PRINTFORML 「また、お尻？　早く飽きてくれないかなあ……」
+		PRINTFORML 「……ぅ、この、格好……おなか、一杯に……」
+		PRINTFORMW にとりの腸内に全て埋没した陰茎は、強い圧迫感を与えているようだ。
+		PRINTFORML 「ぁあ……もう、動かない、で……」
+		PRINTFORMW 異物を排泄しようという腸の蠕動は、陰茎を優しくくすぐり快感を与える結果となってしまっている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 抱きしめられながら腸内を陵辱されるにとりは、自らも腰を振り快感を増幅させようとしている。
+			PRINTFORML 己の性感帯について知識を刷り込まれた様子で、粘膜一箇所に刺激を集中させているようだ。
+			PRINTFORMW 肛門自慰とも呼べる所業の中、にとりは全身を突っ張らせて快感を訴えている……
+		CASE 1
+			PRINTFORML 既に慣れた様子で直腸の異物を排泄しようといきむにとりは、排泄性感で理性に靄がかかっている。
+			PRINTFORML うわごとのように名前を呼びながら抱きつき、豊富に分泌された腸液を撒き散らす。
+			PRINTFORMW 緩くなった腸管は容易に陰茎を最奥まで招き、両者に強い快感を与えている……
+		CASEELSE
+			PRINTFORML 括約筋を雁首が通り抜ける瞬間、にとりは顔を反らし意識を一瞬飛ばす。
+			PRINTFORML 連続的に括約筋を責め立てると、何度も首を振り不規則に吐息を漏らす。
+			PRINTFORMW 調教され続けているにとりの肛門は、既に性器と化しているようだ……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;背面座位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_33
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「やだ、気持ち、悪いなあ……っ」
+	PRINTFORML 「！　ぅ……ぬ、かないで……っ！　出ちゃ、うっ……」
+	PRINTFORMW にとりの肛門は限界まで拡げられ、調教されつつある腸は抽挿の度に苦痛をもたらす。
+	PRINTFORML 強制的に排泄を管理されているともいえる状況に、自律神経は狂わされ意図せぬ蠕動が起こる。
+	PRINTFORML 「ん……ぅ、はぁ、はぁっ！　もう、だめ……っ！」
+	PRINTFORMW 苦痛と共に新たな感覚を焼き付けられたにとりは、大きく息をついて唯耐え忍んでいる……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「全部、いじられて……っ！　我慢、できないよ……！」
+		PRINTFORML 「ん、はぁ……！　もっと、ゆっくり、いじめないで……っ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ひゃ……っ、欲張り、だあね……」
+		PRINTFORML 「それ、深く入っちゃ、って……壊れちゃう、からぁ……っ！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「あぁっ……は、ぁ……っ！」
+		PRINTFORML 「ケツマンコ犯されて、幸せです……っ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「なんか、緩く、なっちゃったかな……っ！」
+		PRINTFORML 「引きずられるの、きもちい……」
+	;その他
+	ELSE
+		PRINTFORML 「動かさないで、出ちゃいそうだから、っ……」
+		PRINTFORML 「……ひゃ、っ！　そこ、いじっちゃ、やだぁ……っ！」
+		PRINTFORMW 排泄感覚に耐えているにとりだが、乳首と淫核の両性感帯を刺激されたとたんに肛門が締まる。
+		PRINTFORML 「うぁっ、お尻、ごめんなさい……っ！」
+		PRINTFORMW 一瞬の衝撃に思わず脱力したにとりは、腰を深く落とし陰茎を腸奥深くまで招き入れてしまったようだ……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML にとりは全体重を預け、Ｓ字結腸の入り口を突き刺される感触を楽しんでいるようだ。
+			PRINTFORML 同時に与えられる乳首と淫核への性感から緩んだ入り口は、今にも亀頭を飲み込みそうになっている。
+			PRINTFORMW 最後の一突きの瞬間、限界を突破した快楽によってにとりは全身を痙攣させた……
+		CASE 1
+			PRINTFORML にとりは直腸を磨き上げられるかのような抽挿を受け、悲鳴を上げている。
+			PRINTFORML 腸壁を全て引きずり出されるかのような排泄性感は、噴出する腸液からも見てとれる。
+			PRINTFORMW 陰茎が引き抜かれた瞬間、白濁した液体が大きく盛り上がった肛門から飛び出し、二人の体を汚していた……
+		CASEELSE
+			PRINTFORML にとりは膝を立て、括約筋を刺激する陰茎の感触に理性を奪われているようだ。
+			PRINTFORML がくがくと震える太ももは、亀頭が括約筋を最大まで拡張する刹那、動きを止める。
+			PRINTFORMW 暴力的なまでに加えられる括約筋への責めに、にとりは肛門での屈従を宣言している……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;騎乗位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_34
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「何で、そんなことっ……しなきゃ、なんないのさ……」
+	PRINTFORML 「あああぁっ、やだ、無理だってばっ！」
+	PRINTFORMW にとりは自らの体重によって肛門を割り開き、腸内を占領する異質な重量感に涙を堪えている。
+	PRINTFORML 経験の浅い粘膜にとっては陰茎の持つ熱ですらも凶器となり、持ち主を苛むのである。
+	PRINTFORML 「う、ぅうごけ、だなんて、できないよ、っ……！」
+	PRINTFORMW 軋む音が聞こえそうなほどに締め付けられた括約筋が、にとりの動きを緩やかなものにしていた……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「……立場、逆転だねえ、っは、ぁ……！」
+		PRINTFORML 「って、動かない、でって、ぁ、やだ、やだぁっ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「うう……ぅっ！　奥、くぐる瞬間、いいっ！」
+		PRINTFORML 「は、はぁっ、抜けなく、なっちゃうのに、好きっ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「奴隷ケツマンコ……はっ、ちんぽ扱く為の穴です、ぅ……っ！」
+		PRINTFORML 「深いの、きちゃ、っ……！！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「……う、しょうがないな……は、ぉっ！」
+		PRINTFORML 「お尻、そんなに、気持ちいい……のっ？」
+	;その他
+	ELSE
+		PRINTFORML 「自分で調節できるぶん、マシなの、かなっ、うぅ……っ！」
+		PRINTFORML 「動いたら、切れちゃいそう、だから……やめてよ」
+		PRINTFORMW 恐る恐る腰を下ろすにとりの肛門は、ゆっくりと陰茎を飲み込んでゆく。
+		PRINTFORML 「は……ぁっ、……くるし、……っ」
+		PRINTFORMW 意図せずに絡みつく腸粘膜が、より抽挿を困難にしているようだ……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML にとりが息を弾ませる度に、ぱくぱくと広がる括約筋から腸液が吹き零れる。
+			PRINTFORML 肛門快楽を一心不乱に貪るような腰の動きが一瞬止まり、再び動き出す。
+			PRINTFORMW 嬌声と肉の弾む音が響くなかで、一際高いにとりの嗚咽が漏れた……
+		CASE 1
+			PRINTFORML にとりは強くいきみながら腰を打ちつけ、全てを飲み込んでしまおうとしている。
+			PRINTFORML 大きく盛り上がった肛門が陰茎の根元と触れ合う瞬間、Ｓ字結腸を陵辱される衝撃に体を仰け反らせる。
+			PRINTFORMW 腸奥で固定された亀頭のもたらす刺激に、にとりは完全に屈服してしまっているようだ……
+		CASEELSE
+			PRINTFORML にとりは排泄感に顔を歪めながら、腸粘膜で陰茎を磨き上げるかのように丹念に動いている。
+			PRINTFORML 肛門奉仕による快楽は時折腸を強制的に蠕動させ、亀頭を緩やかに愛撫する。
+			PRINTFORMW 焦らす程度の刺激が次第に強くなり、にとりの動きも激しくなってゆく……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;逆アナルレイプ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_35
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手のＡを犯す
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_36
+;PRINTFORMW 
+
+;-------------------------------------------------
+;対面立位アナル
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_37
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 
+	;その他
+	ELSE
+		PRINTFORML 
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面立位アナル
+;B,Cソース有り
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_38
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「足っ、つかな……ぁふっ！」
+	PRINTFORML 「も、おしり、許して……っ」
+	PRINTFORMW にとりは背後から肛門を貫かれ、自らの体重によって串刺しにされていた。
+	PRINTFORML 内臓を蝕む異物感に反応した淫核と乳首とを刺激されると、その度に呻き声を漏らす。
+	PRINTFORML 「くるしい、の……もう、やめ、っ！　あ、あ……」
+	PRINTFORMW 自重によって調教されてゆく肛門は、新たな感覚をにとりに植え付けようとしていた……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「立ったまま、この格好、っ、恥ずかしいんだ、けど……」
+		PRINTFORML 「……ぅ、あっ、意地悪……っ！」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ぉ、ほぉぉおお……深く、きた、ぁ……」
+		PRINTFORML 「！　ちょ、いきなり、抜かれると、ぉっ！　あ、ぉっ！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ゆるゆるケツマンコ、で、ごめんなさ、ぁっ！」
+		PRINTFORML 「ちんぽ、刺さって、締まら……ぁい……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ふ、ぁ……はいっちゃったぁ……おしり、に……」
+		PRINTFORML 「だめ、なのに、おしり、ちがうのに、っ……！」
+	;その他
+	ELSE
+		PRINTFORML 「……っ、これ、違うのっ……」
+		PRINTFORML 「くるしく、って……倒れちゃ、ぅ……から……」
+		PRINTFORMW にとりはぶるぶると震え、体重を預けるようにもたれかかる。
+		PRINTFORML 「あ、ぁ……やぁ、そん、なの……」
+		PRINTFORMW 直腸を掘り返される度、にとりの震えは激しくなってゆく……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML にとりの直腸は蛇腹のように伸縮を繰り返し、満たされぬ排泄欲を解消しようと試みている。
+			PRINTFORML 最大限に腸が縮まった瞬間、直腸最奥では亀頭がＳ字結腸入り口を激しく愛撫する。
+			PRINTFORMW 全身を貫く快楽ににとりは筋肉を硬直させ、ぱくぱくと口を開いている……
+		CASE 1
+			PRINTFORML 既に調教の施されたにとりの肛門はたやすく陰茎を受け入れ、腸襞で丹念に擦りあげる。
+			PRINTFORML ぴんと立った乳首をつねられる度に、かすかに開いた口から吐息が漏れる。
+			PRINTFORMW 背後から乳首を強く刺激されながら肛門を陵辱され、にとりは快楽の虜となっているようだ……
+		CASEELSE
+			PRINTFORML にとりは下腹部の熱感に顔を綻ばせ、更なる抽挿を懇願している。
+			PRINTFORML より快感を得るために強くいきみ、混ぜ合わされた体液が結合部から次々と排泄される。
+			PRINTFORMW 括約筋の収縮する周期が次第に短くなり、近づく肛門絶頂を予感させている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;手淫
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_40
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「げ、これ……うわぁ……」
+	PRINTFORML 「ちょ、っ……今、なんか、動いた……！」
+	PRINTFORMW  にとりは陰茎から顔を背け、嫌々といった様子で手を動かしている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「大分、気持ちいいところ覚えたよ……」
+		PRINTFORML 「もっと、私の手で良くなってほしいなあ、ってね」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「んふふ……これ、どうよ？」
+		PRINTFORML 「お、っと！　逃がさないよ？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「どうでしょうか、っ、ご主人さま……」
+		PRINTFORML 「手コキ奴隷として使われて、幸せですっ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「……しかし、凄い熱い、もんだねえ……」
+		PRINTFORML 「体の中に入れるなんて、信じられないや……」
+	;その他
+	ELSE
+		PRINTFORML 「う……ちょっと、硬っ……」
+		PRINTFORML 「これ、どうなってるのさ……」
+		PRINTFORMW にとりはちらちらと陰茎に視線を送りながら、緩やかに手を動かしている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは唾液を潤滑剤代わりに、泡立つほどの強さで陰茎を擦っている……
+		CASE 1
+			PRINTFORMW にとりは手のひらで亀頭を優しく擦り、物欲しそうな眼差しを向けている……
+		CASEELSE
+			PRINTFORMW にとりは陰嚢を刺激しながら裏筋を責め立て、反応を窺っている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_41
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……河童の好物、知ってる？」
+	PRINTFORML 「はぁ……ん、うぶ、ぅ……」
+	PRINTFORMW にとりは口中を陵辱する異物を必死に吐き出そうとしている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「……ぁ、おいし、っ……」
+		PRINTFORML 「何でかな、もっと、欲しい……っ」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ここ、弱いよねえ……っ？」
+		PRINTFORML 「刺激すると、んぷ、ぅ……口の中で、震えてさ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「口マンコに、精液、くださ、っ……」
+		PRINTFORML 「あ、ふ、ぁ……思いっきり、どうぞ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「乱暴なのは、やだよ……？」
+		PRINTFORML 「ん、ぅ……っ、はぁ、ぅ……」
+	;その他
+	ELSE
+		PRINTFORML 「げ、ほっ！　ごほぉ、っ……」
+		PRINTFORML 「奥、くる、し……っ」
+		PRINTFORMW にとりは喉奥を刺激する陰茎に反応し、むせ返っている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは喉奥の刺激に反応し分泌された唾液を絡め、いとおしげに陰茎を舐っている……
+		CASE 1
+			PRINTFORMW にとりは鈴口に舌を添え、尿道を吸い上げるように口をすぼませている……
+		CASEELSE
+			PRINTFORMW にとりは蕩けた表情で陰茎を口に含み、裏筋を重点的に責めている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;パイズリ
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_42
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ぱ、ぱいず……？　って、え、えっ？」
+	PRINTFORML 「人間の考えることって、わからないねえ……」
+	PRINTFORMW にとりは難しい顔で唸りながら、奉仕を開始した……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ぁ、は……強すぎたら、ごめんね……」
+		PRINTFORML 「何か、顔見てると、幸せで、気持ちよくって……っ」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ん、ぐちゃぐちゃ、だぁ……ねっ、は、ぁ……」
+		PRINTFORML 「乳首、こっちも、いいよ、っ……！」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「おっぱい、どうです、かっ……」
+		PRINTFORML 「ご主人さま、満足させられて、ますか……っ？」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「っ……すっごく、熱い」
+		PRINTFORML 「こんなになって、苦しくない、の……？」
+	;その他
+	ELSE
+		PRINTFORML 「く……っ、は、ぁ……」
+		PRINTFORML 「見せ付けられてるみたいで、やだねえ……」
+		PRINTFORMW にとりは頬を染め、自らの双乳でもって陰茎を刺激している……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは乳首への摩擦感を得られるように押さえ、動き始めた……
+		CASE 1
+			PRINTFORMW にとりは唾液を胸元に垂らしながら、陰茎を揉みしだくように刺激している……
+		CASEELSE
+			PRINTFORMW にとりは反応を窺うように顔を向け、しっとりと湿った肌で奉仕を続けている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;素股
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_43
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「あ、わっ……ちょ、っと待ってってばっ……」
+	PRINTFORML 「ん……うっ……！　……っ？　ぁ、れ……？」
+	PRINTFORMW にとりは目を白黒させ、何が起きたかわからないといった様子で悶えている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ん、ふぅっ！　強すぎ、は、ぁっ！」
+		PRINTFORML 「っ、潰れちゃわない……？　ごめんね、気持ちよくてさ……ぁっ」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あふ……震えてるの、わかる、よっ……」
+		PRINTFORML 「挿れたい、な……だめ、かなっ……？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「……っ！！　い、やぁっ！　捨てないで、っご主人さまっ！！」
+		PRINTFORML 「ゆるマンコ、締めますから、射精できるように、しますから、ぁっ……！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ふ、ぅ……にゅるにゅるで、変な感じだねえ……」
+		PRINTFORML 「……締めたほうが、気持ちいい？」
+	;その他
+	ELSE
+		PRINTFORML 「ま、た……何なんだよ、もうっ……」
+		PRINTFORML 「っ！　そこ、擦らないで、ってばっ……」
+		PRINTFORMW にとりは秘所をくすぐる感触に顔をしかめている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは背後からされるがままに突かれ、陰核を擦る快感に瞳を潤ませている……
+		CASE 1
+			PRINTFORMW にとりは太ももを強く挟み、より強い快感を与えるために四苦八苦している……
+		CASEELSE
+			PRINTFORMW にとりは火照った体をすり寄せ、更なる行為を求めている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;アナル舐め強制
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_44
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ぅ……汚い、っ……」
+	PRINTFORML 「いつか、絶対、抜くからね……」
+	PRINTFORMW にとりは涙を浮かべ、震えながら舌を這わせている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「んっ……ん、ぅっ！」
+		PRINTFORML 「どう？　いつもの、お返し……だよ」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あはっ……立派な、ケツマンコ、だぁ……」
+		PRINTFORML 「掻き回すの、絶対気持ちいいよ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「腸液、おいしい、れすっ……」
+		PRINTFORML 「お恵み、ありがとうございます……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ちゅ……ぷ、はぁ……っ」
+		PRINTFORML 「大分、ほぐれてきた、かな……」
+	;その他
+	ELSE
+		PRINTFORML 「ふ……ぅ……ん……っ」
+		PRINTFORML 「く、ぅ……はぁ、っ、もうっ……」
+		PRINTFORMW にとりは強く目を瞑り、窄まった肛門に舌を突き入れている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは腸壁をなぞるようにくすぐり、分泌された腸液を美味しそうに啜っている……
+		CASE 1
+			PRINTFORMW にとりは肛門を拡張するように舌を動かし、その成果に目を細めている……
+		CASEELSE
+			PRINTFORMW にとりは暴れる腰を押さえつけながら、舌を性器に見立て抽挿を開始した……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;アナルおねだり
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_45
+;恋慕
+IF CFLAG:7000 == 2
+	PRINTFORML 「やぁ……顔、見ないで……？」
+	PRINTFORML 「って、お尻も、見ちゃ、やだ……」
+;淫乱
+ELSEIF CFLAG:7000 == 3
+	PRINTFORML 「ほら、ぱくぱく、開いちゃってる……」
+	PRINTFORML 「期待、してるの、私」
+;服従
+ELSEIF CFLAG:7000 == 4
+	PRINTFORML 「ご主人さまの、大きいの……」
+	PRINTFORML 「奥まで抉って、気持ちよく、なってくださいっ」
+;屈服3
+ELSEIF CFLAG:7000 == 1
+	PRINTFORML 「お尻、拡がっちゃって、っ」
+	PRINTFORML 「何だか、切なくてっ……」
+;その他
+ELSE
+	PRINTFORML 「くぅ……っ、見ないでっ……」
+	PRINTFORML 「お、お願い、しま……っ」
+	PRINTFORMW にとりは耳まで赤く染め、肛門を自ら晒している……
+	RETURN 0
+ENDIF
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORMW 蠢く肛門は、その奥の鮮やかな粘膜を露わにしている……
+	CASE 1
+		PRINTFORMW にとりは、どこか期待に潤む視線を向けている……
+	CASEELSE
+		PRINTFORMW 服従の姿勢をとるにとりは、更なる屈服を望むように微笑んでいる……
+ENDSELECT
+
+;-------------------------------------------------
+;足舐め強制
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_46
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……っ、足蹴にしよう、ってこと……？」
+	PRINTFORML 「酷い人間も、いたもんだ……」
+	PRINTFORMW にとりは屈辱に顔を歪め、跪いている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「う……ふっ、もう、虜なのに……」
+		PRINTFORML 「まだ、足りないんだね……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「はぁっ……もっと……」
+		PRINTFORML 「淫乱メス奴隷で、ごめんなさい……っ」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「じゅ、ちゅっ……ず……ぅっ」
+		PRINTFORML 「いつでも、雑巾として、使ってください……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「んふ、っ……は、ふ……」
+		PRINTFORML 「……どう、ですか……っ？」
+	;その他
+	ELSE
+		PRINTFORML 「……わかった、から……」
+		PRINTFORML 「酷いこと、しないでってば……」
+		PRINTFORMW にとりは渋々といった様子で、足裏に舌を這わせている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは恭しく額ずき、熱っぽい視線を向けながら奉仕している……
+		CASE 1
+			PRINTFORMW にとりは音を立てて唾液を吸いながら、汚れを丹念に舐め取っている……
+		CASEELSE
+			PRINTFORMW にとりは時折体を震わせ、紅潮した肌を露わにさせている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;足扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_47
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「う、わぁ……何、この感触……」
+	PRINTFORML 「えっ、ちょ……待って、待ってよ……っ」
+	PRINTFORMW にとりはどこか興味深そうに、陰茎の動きを目で追っている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「が、頑張ってみるよ……」
+		PRINTFORML 「ここ、震えるけど、気持ちいいのかな……っ？」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ん、ふふっ……潰れちゃう、よ……？」
+		PRINTFORML 「こうやって、転がして……擦って、扱いて……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「はぁ……硬くて逞しい、ちんぽ……」
+		PRINTFORML 「ご主人さま、素敵です……っ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「……こんなこと、気持ちいいんだ……？」
+		PRINTFORML 「っ、やっぱり、変態だなあ……」
+	;その他
+	ELSE
+		PRINTFORML 「うう……生温かい……」
+		PRINTFORML 「何か、足濡れてるし、もう……」
+		PRINTFORMW にとりはため息をつきながら、足を動かしている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは睾丸を足裏で転がしながら、反応を窺っている……
+		CASE 1
+			PRINTFORMW にとりは熱い視線をそそり立った陰茎に向け、今にも涎を垂らしそうな様子だ……
+		CASEELSE
+			PRINTFORMW にとりは鈴口に指を添え、尿道を開くように力を込めながら陰茎を扱いている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;髪扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_48
+;PRINTFORMW 
+
+;-------------------------------------------------
+;腋扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_49
+;PRINTFORMW 
+
+;-------------------------------------------------
+;全身扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_50
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尻扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_51
+;PRINTFORMW 
+
+;-------------------------------------------------
+;竿扱き
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_52
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉揉み強制
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_53
+;PRINTFORMW 
+
+;-------------------------------------------------
+;玉舐め強制
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_54
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……っ、やだ、って言ったら……？」
+	PRINTFORML 「うぅ……何で、こんなこと、っ」
+	PRINTFORMW にとりは表情を歪めながら、舌を這わせている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ん、う……転がす、みたいに……」
+		PRINTFORML 「どう？　気持ち、いい……？」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ほら、少し、力、入れると……」
+		PRINTFORML 「あはは、今、びくって、なったよ……？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「れろ……っ、あ、はっ……」
+		PRINTFORML 「あぁ……おいしい、ですっ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ん、っ……はぁ、っ、どう、かな」
+		PRINTFORML 「……これ、気持ち、いいかな……？」
+	;その他
+	ELSE
+		PRINTFORML 「は、ぁ……っ、押し付けないでっ……」
+		PRINTFORML 「わかった、から、もう……」
+		PRINTFORMW にとりは涙を浮かべながら、奉仕を開始した……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは丹念に、皺を伸ばすように愛撫を続けている……
+		CASE 1
+			PRINTFORMW 唾液塗れになった陰嚢を、にとりは愛しげにさすっている……
+		CASEELSE
+			PRINTFORMW にとりは欲情に濡れた視線を向け、奉仕を行っている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫強制
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_55
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……っ、私、河童だよ？」
+	PRINTFORML 「どうなっても、知らないよ？」
+	PRINTFORMW にとりは目を伏せたまま、%CALLNAME:MASTER%の様子を窺っている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「教えてくれた感じに、やってるんだけど……」
+		PRINTFORML 「もうちょっと、強くしていい？」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ほら、腰逃げないで……」
+		PRINTFORML 「もうすぐ、全部入るんだからさ」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「ご主人さま、指、増やしますね？」
+		PRINTFORML 「痛かったら、言ってくださいね？」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「じゃ、私が気持ちいいとこ、やってみるね？」
+		PRINTFORML 「ここ、ちょっと奥のほうと……」
+	;その他
+	ELSE
+		PRINTFORML 「うぅ……ぬるぬるする」
+		PRINTFORML 「腕、入っちゃうかな……」
+		PRINTFORMW にとりはどこか不穏な言葉を呟きながら、愛撫を続けている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは、快感を訴える声を無視するように、機械的に責めを続けている……
+		CASE 1
+			PRINTFORMW 限界まで開いた肛門に、にとりの指がねじ込まれてゆく……
+		CASEELSE
+			PRINTFORMW にとりは嗜虐的な笑みを浮かべ、%CALLNAME:MASTER%を見つめている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;ローション
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_60
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「おっ、と……！」
+	PRINTFORML 「この粘っこさ、淀みに良く似てるよ……」
+	PRINTFORMW にとりは手のひらの上でローションを弄んでいる……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「ぁ……これ、使うときって……」
+		PRINTFORML 「……っ！　な、何でもないっ……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「にゅるにゅる……って、ほら、抱っこしてよ？」
+		PRINTFORML 「きっと擦れるの、気持ちいいよ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「あぁ……は、ぁ……」
+		PRINTFORML 「準備万端です、ご主人さまぁ……」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「舐めても大丈夫なのかな……これ」
+		PRINTFORML 「全身ぐちょぐちょって、興奮する……かも」
+	;その他
+	ELSE
+		PRINTFORML 「……少し、落ち着くよ」
+		PRINTFORML 「弄くりまわされるのは、勘弁して欲しいんだけどねえ……」
+		PRINTFORMW にとりはどこか観念した様子でたたずんでいる……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは自らの体にローションを塗りたくり、誘うように眼差しを向けている……
+		CASE 1
+			PRINTFORMW にとりは何かを期待するような表情を浮かべ、熱い吐息を漏らしている……
+		CASEELSE
+			PRINTFORMW にとりはローションの感触を楽しむように、ぬめる全身を撫で回している……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;媚薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_61
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「……ぅ、っ……何、これ……」
+	PRINTFORML 「！　そんなの、飲ませたのっ……」
+	PRINTFORMW にとりは全身を震わせながら、抗議の視線を向けている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「あ……ずるい、私だけ……」
+		PRINTFORML 「一緒に、なりたい、のに……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ちゃんと、鎮めてちょうだいよ……？」
+		PRINTFORML 「これ、凄い効き目なんだから、さ」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「これ以上なんて、ご主人さま……」
+		PRINTFORML 「服従して、今のままで、幸せなのに……っ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「ふぅう……や、はぁ……」
+		PRINTFORML 「寂しいの、何だか、とても……っ」
+	;その他
+	ELSE
+		PRINTFORML 「もう、また……っ！」
+		PRINTFORML 「ぼーっ、ってする、やだ……っ」
+		PRINTFORMW にとりは焦点の合わなくなった瞳を彷徨わせ、両手を握り締めている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは全身を紅潮させ、性感帯を強調するように差し出している……
+		CASE 1
+			PRINTFORMW にとりは腑抜けた表情を浮かべ、自らの体をかき抱いている……
+		CASEELSE
+			PRINTFORMW にとりは興奮を抑えきれない様子で、潤んだ瞳を向けている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;利尿薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_62
+;コマンド初回判定
+TRYCALL COM_FLAG
+;初回のみ
+IF RESULT:1 == 1
+	PRINTFORML 「ふぅっ、うぅっ……！」
+	PRINTFORML 「さっきの、もしかして……っ」
+	PRINTFORMW にとりは顔を赤らめ、もじもじと股を擦り合わせている……
+;２回目以降
+ELSE
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「もう……変態……っ！」
+		PRINTFORML 「見ちゃ、だめだよ……」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「あ……っ、ふぅ……っ！」
+		PRINTFORML 「今、何かされちゃったら……どうなるかな、ふふ……」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「出ちゃ、いますっ……」
+		PRINTFORML 「もう我慢できません、ご主人さま……っ！」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「おしっこ、見て楽しい……？」
+		PRINTFORML 「本当、わかんないよ……」
+	;その他
+	ELSE
+		PRINTFORML 「うぅ……やだ、ぁ……」
+		PRINTFORML 「出ちゃう、ってば……っ」
+		PRINTFORMW にとりは落ち着かない様子で体を震わせている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは太ももをしっかりと掴み、尿意を堪えている……
+		CASE 1
+			PRINTFORMW にとりはどこか期待に満ちた眼差しを向けている……
+		CASEELSE
+			PRINTFORMW にとりは下半身をまさぐり、呼吸を荒げている……
+	ENDSELECT
+ENDIF
+
+;-------------------------------------------------
+;座薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_63
+;PRINTFORMW 
+
+;-------------------------------------------------
+;座薬(膣)
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_64
+;PRINTFORMW 
+
+;-------------------------------------------------
+;強精神薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_65
+;PRINTFORMW 
+
+;-------------------------------------------------
+;排卵誘発剤
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_66
+;PRINTFORMW 
+
+;-------------------------------------------------
+;緊急避妊薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_67
+;PRINTFORMW 
+
+;-------------------------------------------------
+;産卵促進剤
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_68
+;PRINTFORMW 
+
+;-------------------------------------------------
+;陰核成長剤
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_69
+;PRINTFORMW 
+
+;-------------------------------------------------
+;興奮剤
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_70
+;PRINTFORMW 
+
+;-------------------------------------------------
+;助手避妊薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_71
+;PRINTFORMW 
+
+;-------------------------------------------------
+;感覚増幅薬
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_72
+;PRINTFORMW 
+
+;-------------------------------------------------
+;クリトリス注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_80
+;PRINTFORMW 
+
+;-------------------------------------------------
+;ヴァギナ注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_81
+;PRINTFORMW 
+
+;-------------------------------------------------
+;アナル注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_82
+;PRINTFORMW 
+
+;-------------------------------------------------
+;バスト注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_83
+;PRINTFORMW 
+
+;-------------------------------------------------
+;尿道注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_84
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ肥大注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_85
+;PRINTFORMW 
+
+;-------------------------------------------------
+;Ｃ強精神薬注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_86
+;PRINTFORMW 
+
+;-------------------------------------------------
+;採血注射
+;-------------------------------------------------
+@KOJO_40_TRAIN_MESSAGE_S_COM_88
+;PRINTFORMW 
+
+;-------------------------------------------------
+;裸エプロン
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@K40_MESSAGE_COM_90
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;スク水プレイ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@K40_MESSAGE_COM_91
+;コマンド初回判定
+TRYCALL COM_FLAG
+;解除時
+IF TEQUIP:59 == 0
+	;恋慕
+	IF CFLAG:7000 == 2
+		PRINTFORML 「んん……っ、ちょっと、残念かな」
+		PRINTFORML 「また次の機会でも、待ちますかね」
+	;淫乱
+	ELSEIF CFLAG:7000 == 3
+		PRINTFORML 「ふぅん……視線、落ち着かないねえ？」
+		PRINTFORML 「ほら……水着、脱いじゃうよ……？」
+	;服従
+	ELSEIF CFLAG:7000 == 4
+		PRINTFORML 「そ、そうですか……ご主人さま」
+		PRINTFORML 「水を得た河童、だったんですけどねえ」
+	;屈服3
+	ELSEIF CFLAG:7000 == 1
+		PRINTFORML 「あぁ……水着、張り付いちった」
+		PRINTFORML 「見ちゃ、やだよ……？」
+	;その他
+	ELSE
+		PRINTFORML 「うぅ……変なことされなければ、悪くないんだけど」
+		PRINTFORML 「……考えてくれないかなあ」
+		PRINTFORMW にとりは非難を含んだ視線を%CALLNAME:MASTER%に向けている……
+		RETURN 0
+	ENDIF
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORMW にとりは水着を脱ぎ捨て、%CALLNAME:MASTER%の前に裸体を晒している……
+		CASE 1
+			PRINTFORMW 脱ぎ捨てられた水着は、得体の知れない液体に塗れていた……
+		CASEELSE
+			PRINTFORMW にとりは興奮に息を荒げ、自らの体を抱きしめている……
+	ENDSELECT
+;装着時
+ELSE
+	;初回のみ
+	IF RESULT:1 == 1
+		PRINTFORML 「おや、それは……人間の水着、かな？」
+		PRINTFORML 「ふぅん……どんな感じなんだろ」
+		PRINTFORMW にとりは興味津々といった様子で、水着を弄くり回している……
+	;２回目以降
+	ELSE
+		;恋慕
+		IF CFLAG:7000 == 2
+			PRINTFORML 「あははっ……これ、ちょっと小さくない……？」
+			PRINTFORML 「……やらしいな、もう」
+		;淫乱
+		ELSEIF CFLAG:7000 == 3
+			PRINTFORML 「んん……っ、ほら、おっぱいに食い込んじゃってる」
+			PRINTFORML 「見たい？　それとも……このまま？」
+		;服従
+		ELSEIF CFLAG:7000 == 4
+			PRINTFORML 「はいっ、ご主人さま」
+			PRINTFORML 「水着は、好きです……気分が落ち着いて」
+		;屈服3
+		ELSEIF CFLAG:7000 == 1
+			PRINTFORML 「濡れると肌に張り付くよね、これ」
+			PRINTFORML 「……あんまり、見ないでよ？」
+		;その他
+		ELSE
+			PRINTFORML 「この前の水着……？」
+			PRINTFORML 「肌触りは、なかなか良かった……かな」
+			PRINTFORMW にとりは、身体を隠すように着替え始めている……
+			RETURN 0
+		ENDIF
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORMW にとりは肩紐を気にしながら、%CALLNAME:MASTER%の前に佇んでいる……
+			CASE 1
+				PRINTFORMW 伸縮性に富んだ水着の素材は、にとりの体の膨らみをそのままに表していた……
+			CASEELSE
+				PRINTFORMW これから行われるであろう行為に、にとりは頬を染めている……
+		ENDSELECT
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;お医者プレイ
+;TEQUIP:57 == 0で解除口上
+;-------------------------------------------------
+@K40_MESSAGE_COM_92
+;解除時
+IF TEQUIP:57 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;コスプレ
+;TEQUIP:59 == 0で解除口上
+;-------------------------------------------------
+@K40_MESSAGE_COM_93
+;解除時
+IF TEQUIP:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF
+
+;-------------------------------------------------
+;助手コスプレ
+;TEQUIP:ASSI:59 == 0で解除口上
+;-------------------------------------------------
+@K40_MESSAGE_COM_94
+;解除時
+IF TEQUIP:ASSI:59 == 0
+	;PRINTFORMW 
+;装着時
+ELSE
+	;PRINTFORMW 
+ENDIF

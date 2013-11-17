@@ -1,0 +1,45 @@
+女主人の時に食後の運動を行うと表示される口上…のはずでしたがあまりにも長すぎるのでボツに
+
+						PRINTFORMW 「まずはこれを飲んで……」
+						PRINTFORMW 輝夜は枕元にあった媚薬の瓶を手に取り、媚薬を口に含んだ
+						PRINTFORMW 中身を察してキスをしようと迫る輝夜から逃げようとして後ずさりをした%CALLNAME:MASTER%だったが、
+						PRINTFORMW 半ば強引に捕えられた%CALLNAME:MASTER%は輝夜とキスをし、そのまま口移しで媚薬を飲まされた
+						PRINTFORMW 媚薬が喉を通り、胃の中に入ったと思った瞬間、胃辺りが突然熱くなり、
+						PRINTFORMW その熱さが胃を中心として喉と胴体全身に広がり、手足、そして頭へと広がっていく
+						PRINTFORMW あまりの熱さに頭が蕩けてきた%CALLNAME:MASTER%は、
+						PRINTFORMW 自由が効かない喉を使って声を出そうとするが、口からは熱い吐息しか出なかった
+						PRINTFORMW 「ふふっ……私も熱くなってきちゃった……♪」
+						PRINTFORMW 輝夜はそう言って手で%CALLNAME:MASTER%の秘所に触った
+						PRINTFORMW その瞬間、媚薬の効果か%CALLNAME:MASTER%の全身に軽く電流が走ったかのような痺れが回った
+						PRINTFORMW 思わず擦れた声で甘い声をあげる%CALLNAME:MASTER%
+						PRINTFORMW 「ちょっとしか触ってないのに……でも、これなら大丈夫そうね」
+						PRINTFORMW そう言って輝夜は%CALLNAME:MASTER%の身体の上に重なり、互いの秘所を合わせた
+						PRINTFORMW 「じゃあ、次は私も気持ちよくしてね？　%CALLNAME:MASTER%だけが気持ちよくなるとかずるいんだから……ね」
+						PRINTFORMW 輝夜は腰を動かして互いの秘所を擦り始めた
+						PRINTFORMW すると途端に%CALLNAME:MASTER%の頭の中に快楽が流れ込んできて……
+						PRINTFORMW            ・
+						PRINTFORMW            ・
+						PRINTFORMW            ・
+						;露出癖がLv4以上だと鏡を用意します
+						IF ABL:露出癖 >= 4
+							PRINTFORMW 快楽の渦の最中%CALLNAME:MASTER%は微かに意識を取り戻した
+							PRINTFORMW 快楽によって目は霞んでよく見えないが目の前に物が置かれていることに気づいた
+							PRINTFORMW これは……鏡？
+							PRINTFORMW 「ほら……%CALLNAME:MASTER%……私達、とっても気持ちよさそうに見えない？」
+							PRINTFORMW 少しずつ焦点が合ってくるようになった目で鏡をよく見つめると
+							PRINTFORMW そこには全身を真っ赤にして蕩けた表情を浮かべながら貝合わせをしている輝夜と%CALLNAME:MASTER%の姿があった
+							PRINTFORMW 上に乗っている輝夜の目は情欲に耽っている目ではあったが光があった、が%CALLNAME:MASTER%の目はとろんとしていた
+							PRINTFORMW この様子だと恐らく目に光など宿っていないだろう、どうりで目の前が霞んで見える訳だ……
+							PRINTFORMW 「ふふっ、普段主人として振舞っている身としては恥ずかしい？　その表情、素敵だと思うわ」
+							PRINTFORMW %CALLNAME:MASTER%は羞恥で顔を更に赤らめ目に涙を浮かべて始めていた
+							PRINTFORMW そして更に頭に伝わる快楽が強まり、%CALLNAME:MASTER%は再び意識を手放した……
+							PRINTFORMW            ・
+							PRINTFORMW            ・
+							PRINTFORMW            ・
+						ENDIF
+						PRINTFORMW 「はぁ……気持ちよかったわね……%CALLNAME:MASTER%も中々やるじゃないの」
+						PRINTFORMW 「まさかあんなに積極的に動くだなんて思わなかったわ」
+						PRINTFORMW %CALLNAME:MASTER%に意識が戻ってきた頃には既に行為を終えて横で仰向けになっている輝夜が居た
+						PRINTFORMW どうやら%CALLNAME:MASTER%は快楽のあまり積極的に腰を動かしていたらしい……
+						PRINTFORMW 未だに頭と身体に気だるさが残る……次の調教に支障は出ないだろうかと%CALLNAME:MASTER%は不安に思った
+						PRINTFORMW 結局、その不安は杞憂だったが……

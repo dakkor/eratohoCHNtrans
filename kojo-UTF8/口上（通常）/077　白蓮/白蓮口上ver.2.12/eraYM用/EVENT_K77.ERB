@@ -1,0 +1,5524 @@
+;-------------------------------------------------
+;※ぱるコソ！v1.23+/X2にて変換したファイルです※
+;（RR1317系列用構文をYM用構文に置換したものです）
+;-------------------------------------------------
+;白蓮口上（キャラクターの名前を入れる、下にコンセプトなど一言あれば入れる）
+;ひーねぇかわいいよひーねぇ、そして我(オレ)の嫁。
+;(※最重要事項※)
+;調教者(＝あなた)の名前はCSVファイルで変更する事を前提としてますので
+;予めご了承ください。
+;(白蓮はあなたのことを「%CALLNAME:MASTER%さん」と呼びます。)
+;(つまり、デフォルトのままだと「あなたさん」とおかしくなります。)
+;(もしそれが嫌であれば、サクラエディタで「ご主人様」でも「旦那様」とでも置換して下さい。)
+;　
+;………と言うのは過去の話。
+;呼び名を変更するイベントを作成。
+;作成にあたり、早苗さん口上を参考にしました。
+;YMフランちゃんの口上も見たけど……耳から煙が出てやつれそうになったよ…orz
+;-------------------------------------------------
+
+;-------------------------------------------------
+;口上設定雛形
+;77とX2をキャラ番号に置換し、Y1を助手のキャラ番号に置換する。
+;ただし、キャラ番号が一桁のキャラの場合、77,Y1は1、X2は01のように変える必要がある
+;そしてコマンド内の適当な条件の下のPRINTFORMWの後ろに半角スペースを置いてセリフを追加してください。
+;テンプレートが更新された際には、新しいテンプレをベースにして、
+;該等する条件のPRINTFORMWの行をコピー＆ペーストしていくことをお勧めします。（手間はかかるが、エラーは起こりえない）
+;口上を追加しないコマンドには行頭に『;』をつけましょう。後で追加した際に初めての口上が出ないなどの弊害が起こります。
+;また、口上を追加したコマンドの『;』をきちんと外しましょう。これだと条件を満たしても口上がでません
+;条件の追加や変更は自由ですが、その際には随時テストをしていくとよいでしょう。（エラーの原因は、ほぼ確実に手を加えた部分にあるため）
+;最後にできればread meも読んで下さい
+;-------------------------------------------------
+
+;-------------------------------------------------
+;(追記)
+;エンディング分岐……CFLAG:5202。
+;「あなた」の呼び名…CFLAG:5210。
+;-------------------------------------------------
+
+;--------------------------------------------------
+;調教開始時のセリフ CFLAG 201～219を使用
+;-------------------------------------------------
+@KOJO_77_SLAVE_MESSAGE_TRAIN_START
+;--------------------------------------------------
+;エキストラモード構文　CFLAG:5220を使用
+;はいを選択した時に初調教時に口上設定用の素質に変更できます
+;下記に処女化する場合の構文をサンプルとして載せておきます
+;-------------------------------------------------
+IF CFLAG:5220 == 0
+	PRINTL 白蓮は「経験豊富なお姉さん」？
+	PRINTL [0] そういうのもありで
+	PRINTL [1] ひじりんの処女は俺のものだっ！！
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 0
+		PRINTFORMW ―「聖☆おねえさん」モードで調教を開始します―
+		;素質：処女を削除、能力：V感覚、経験：V経験を増やします。
+		TALENT:処女 = 0
+		EXP:Ｖ経験 = 30
+		EXP:自慰経験 = 30
+		EXP:精液経験 = 5
+		EXP:フェラ経験 = 10
+	ELSEIF RESULT == 1
+		PRINTFORMW ―「ひじりんの初めて」モードで調教を開始します―
+		;素質：処女を追加、能力：V感覚、経験：V経験をゼロに。
+		TALENT:処女 = 1
+		EXP:Ｖ経験 = 0
+		EXP:自慰経験 = 0
+		EXP:精液経験 = 0
+		EXP:フェラ経験 = 0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	CFLAG:5220 = 1
+ENDIF
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、77を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTTRAIN_K77_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_EVENTTRAIN_K77_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;--------------------------------------------------
+;簡易助手口上の発動時に初調教時口上をスキップ（Y1を助手のキャラ番号にする）
+;複数人いる際には、SIF NO:ASSI == Y1 || NO:ASSI == Z1と追加していく
+;--------------------------------------------------
+;IF CFLAG:5201 == 0 && ASSI > 0
+;	SIF NO:ASSI == Y1
+;		CFLAG:5201 =1
+;ENDIF
+;-------------------------------------------------
+;初調教時 CFLAG201
+;-------------------------------------------------
+
+IF CFLAG:5201 == 0
+	DRAWLINE
+	PRINTFORMW 「ここは……」
+	PRINTFORMW 目を覚ますと、白蓮は殺風景な部屋の中にいた
+	PRINTFORMW 「ああ……確か……」
+	PRINTFORMW ここに来るまでの経緯を振り返る
+	PRINTFORMW 命蓮寺に何者かが押し入り、ここまで拉致されたこと
+	PRINTFORMW そして、星やムラサ達が必死に自分を助けようとしてたこと
+	PRINTFORMW 「みんな……必ず、帰るからね……！」
+	PRINTFORMW そう意気込んでいる最中、%CALLNAME:MASTER%は白蓮にこう言ったのだった
+	PRINTFORMW 調教の時間だ、と
+	PRINTFORMW 　
+	PRINTFORMW 「調、教……！？」
+	PRINTFORMW 「ふふ……私が寺にいた頃と、人間は変わっていないな……」
+	PRINTFORMW 「誠に醜く、大欲非道である―――っ」
+	PRINTFORMW 「いざ、南無―――！？」
+	PRINTFORMW 魔法の詠唱をしたはずだが、力が出ない
+	PRINTFORMW 「……力まで封印するなんて、只者ではありませんね……」
+	PRINTFORMW 「で、貴方の名前を教えて欲しいのですけど……」
+	PRINTFORMW 「%CALLNAME:MASTER%、ですか……」
+	PRINTFORMW 「私は聖白蓮といいます」
+	PRINTFORMW お互い軽く自己紹介を済ませると、調教を開始する%CALLNAME:MASTER%であった
+	CFLAG:5201 = 1
+	RETURN 1
+
+;-------------------------------------------------
+;調教開始時（一回のみ） CFLAG201
+;-------------------------------------------------
+
+;屈服刻印Lv1
+ELSEIF CFLAG:5201 < 2 && MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW 「………………」
+	PRINTFORMW 白蓮は決して%CALLNAME:MASTER%と目を合わせようとはしなかった
+	CFLAG:5201 = 2
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF CFLAG:5201 < 3 && MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW 「………………」
+	PRINTFORMW 白蓮は%CALLNAME:MASTER%と目を合わせる気にはなったが、その表情は固いままだ
+	CFLAG:5201 = 3
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF CFLAG:5201 < 4 && MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「………」
+	PRINTFORMW 白蓮は、双眸を潤わせながら%CALLNAME:MASTER%を見ていた
+	PRINTFORMW もはや理性が欲望に勝ってしまっている
+	CFLAG:5201 = 4
+	RETURN 1
+
+;恋慕
+ELSEIF CFLAG:5201 < 5 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「……%CALLNAME:MASTER%さん……」
+	PRINTFORMW そう呟き、白蓮が%CALLNAME:MASTER%を見上げる
+	PRINTFORMW 「……今まで、私は……」
+	PRINTFORMW 「%CALLNAME:MASTER%さんを誤解していたみたいです……」
+	PRINTFORMW %CALLNAME:MASTER%は白蓮の言葉にじっと耳を傾けていた
+	PRINTFORMW 「最初の頃は、%CALLNAME:MASTER%さんも、私の知ってる人間と同じだと……」
+	PRINTFORMW 「誠に軽く、軽挙妄動であると思い込んでました」
+	PRINTFORMW 「でも……違っていたんですね……」
+	PRINTFORMW 「確かに……ひどい事ではありましたが、それを享受できるようにしてくれた……」
+	PRINTFORMW 「%CALLNAME:MASTER%さん……もっと、そばにいても……いいですか……？」
+	PRINTFORMW 白蓮はそう言うと、堰を切ったように泣き出してしまう
+	PRINTFORMW もう、昔の自分には戻れないと悟ったのだろう……
+	PRINTFORMW それならば。
+	PRINTFORMW %CALLNAME:MASTER%は、子供のように泣きじゃくる白蓮を、そっと抱きしめてあげるのだった。
+
+	CALL K77_RENAME
+	CFLAG:5201 = 5
+	RETURN 1
+
+;助手の有無をチェック（いない場合は二回目以降へ飛ぶ）
+ELSEIF ASSI < 0 
+	CALL K77_KOJO2
+
+;-------------------------------------------------
+;簡易助手口上（Y1を助手のキャラ番号に置換、77をキャラ番号に変更する) CFLAG203
+;掛け合いをするキャラを増やす場合は、コピー＆ペーストをして、CFLAGの数を204、205と増やす
+;ナズーリン…CFLAG203
+;一輪…………CFLAG204
+;ムラサ………CFLAG205
+;星……………CFLAG206
+;ぬえ…………CFLAG207
+;順番通りになるように定義付けしてみました。
+;あと、ナズーリンは個人的にボクっ娘だと思ってます。
+;-------------------------------------------------
+;助手がナズーリン
+ELSEIF NO:ASSI == 72
+	DRAWLINE
+	;初めて
+	IF CFLAG:5203 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:恋慕 == 1 && CFLAG:5201 >= 5
+			PRINTFORMW 『聖……』
+			PRINTFORMW 「ナズ……」
+			PRINTFORMW %CALLNAME:MASTER%の助手と奴隷は、一言だけ挨拶を交わしたが
+			PRINTFORMW 程無くして、ナズーリンが泣き出してしまう
+			PRINTFORMW 『う……うぅっ……聖っ……ボクは……っ』
+			PRINTFORMW 「泣かないで、また……こうして一緒に居られるんだもの……」
+			PRINTFORMW 『は……はい……っ』
+			PRINTFORMW 帰ってきた我が子を抱きしめる母親のような白蓮の姿が、そこにはあった
+			PRINTFORMW 「心配を掛けてばかりでごめんね……ナズ……」
+			PRINTFORMW ナズーリンが泣き止むのを待って、調教を始める事にした
+		;それ以外
+		ELSE
+			PRINTFORMW 『聖……』
+			PRINTFORMW 「ナズっ！どこに行ったかと思っていたら……ここに捕まっていたのですね」
+			PRINTFORMW 「さぁ、一緒に命連寺に帰りましょう？」
+			PRINTFORMW しかし、ナズーリンは白蓮の差し出した手を払い除けた
+			PRINTFORMW 「な……ま、まさか……！？」
+			PRINTFORMW 白蓮の顔が歪んだ
+			PRINTFORMW 『ふふ……前々から、聖を色んな意味でいじめてみたいと思ってたんですよ』
+			PRINTFORMW 「な……ナズ、貴方一体何を……」
+			PRINTFORMW 『心配しなくても、ちゃんと気持ち良くしてあげればいいんでしょう？ご主人様？』
+			PRINTFORMW 「くっ……貴方……ナズに一体何をしたんですかっ！？」
+		ENDIF
+			CFLAG:5203 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5203 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 『聖……』
+			PRINTFORM 「ふふ、あんまりおっぱいに甘えてると、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW が拗ねますよ？」
+			PRINTFORMW 『あ……はい、それでは……』
+		;それ以外
+		ELSE
+			PRINTFORMW 『ふふ……今日はどんな事をしてあげましょうか……』
+			PRINTFORMW 「いや……どうして、どうしてこんな事に……」
+			PRINTFORMW 怯え、泣きじゃくる白蓮の服を無理矢理脱がすナズーリン
+			PRINTFORMW その目は、獲物を見つけた肉食獣のそれと変わらなかった
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;助手が一輪
+ELSEIF NO:ASSI == 74
+	DRAWLINE
+	;初めて
+	IF CFLAG:5204 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:恋慕 == 1 && CFLAG:5201 >= 5
+			PRINTFORMW 『あっ、姐さんっ！？』
+			PRINTFORMW 「その声は……一輪っ！」
+			PRINTFORMW 久方振りに再開したように和気藹々とする二人
+			PRINTFORMW だが、すぐにその空気は掻き消され、殺気のようなものが漂い始めた
+			PRINTFORMW 『姐さん……私……』
+			PRINTFORMW 「ふふ、私も同じよ……」
+			PRINTFORMW 両者、睨み合ったまま一歩も動いていない
+			PRINTFORMW このままでは埒が開かないので、何とか二人を宥め、調教を開始した
+		;それ以外
+		ELSE
+			PRINTFORMW 『あっ、姐さんっ！？』
+			PRINTFORMW 「一輪……無事だったのね！」
+			PRINTFORMW 家族の無事を確認出来て一安心……の筈だったが
+			PRINTFORMW 「い、一輪……貴方、様子が変よ？」
+			PRINTFORMW 『気のせいですよ姐さん……』
+			PRINTFORMW 『私は……ご主人様と一緒に、姐さんを厭らしく躾に来たんですから』
+			PRINTFORMW 「いっ……一輪っ！？　いやっ……嫌あぁぁっ！！」
+		ENDIF
+			CFLAG:5204 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5204 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「………」
+			PRINTFORMW 『………』
+			PRINTFORMW 今日もまた、調教の前に二人を宥める%CALLNAME:MASTER%であった
+		;それ以外
+		ELSE
+			PRINTFORMW 『姐さん、時間ですよ？』
+			PRINTFORMW 「うぅ……一輪、どうしてこうなっちゃったの……？」
+			PRINTFORMW 『ふふ、姐さんにもすぐ分からせてあげますよ……快楽というものを』
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;助手がムラサ
+ELSEIF NO:ASSI == 75
+	DRAWLINE
+	;初めて
+	IF CFLAG:5205 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:恋慕 == 1 && CFLAG:5201 >= 5
+			PRINTFORMW 『ひ、聖！？』
+			PRINTFORMW 「その声……ムラサ……ムラサなのねっ！」
+			PRINTFORMW 『ごめんなさい……私は……』
+			PRINTFORMW ムラサが謝ろうとすると、白蓮はそっと抱き寄せた
+			PRINTFORMW 「いいんですよ……私も、そしてあなたも……」
+			PRINTFORMW 『はい……一緒に……』
+		;それ以外
+		ELSE
+			PRINTFORMW 『ひ、聖！？』
+			PRINTFORMW 「その声……ムラサ、助けに来てくれたのね！？」
+			PRINTFORMW ようやく救いの船が現れたかと思えた
+			PRINTFORMW だが、それは救済の船ではなく、色欲に塗れた船であった
+			PRINTFORMW 『ごめんなさい……私は……聖を調教しに来たんです……』
+			PRINTFORMW 「どうしたのムラサっ！？　お願い、正気に戻ってっ！」
+		ENDIF
+			CFLAG:5205 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5205 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 『……聖、もう……』
+			PRINTFORMW 「あらあら、我慢出来なくなったの？」
+			PRINTFORMW 『……はい、三人で……気持ち良くなりましょう……』
+		;それ以外
+		ELSE
+			PRINTFORMW 『……聖、そろそろお時間ですよ？』
+			PRINTFORMW %CALLNAME:MASTER%と一緒にムラサは部屋を訪れた
+			PRINTFORMW だが、当の白蓮は……変わり果てたムラサに何度も声をかけるばかりだった
+			PRINTFORMW 「ムラサ……もう、あの頃のあなたには会えないの……！？」
+			PRINTFORMW 『何を言ってるんです？　私は私、村紗水蜜ですよ』
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;助手が星
+ELSEIF NO:ASSI == 76
+	DRAWLINE
+	;初めて
+	IF CFLAG:5206 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:恋慕 == 1 && CFLAG:5201 >= 5
+			PRINTFORMW 『聖』
+			PRINTFORMW 「星……貴方なのね……」
+			PRINTFORMW 『……まさか相手が聖だったとは、正直驚いてます』
+			PRINTFORMW 「私もよ……星、あの頃に近付いたのかしら？」
+			PRINTFORMW 『なっ……！！』
+			PRINTFORM 「うふふ、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW 、この子……私がちょっと愛撫しただけで……」
+			PRINTFORMW 『聖っ！　今更そんな話はやめて下さいっ！！』
+			PRINTFORMW 「……それもそうね、星……ちゃんと、気持ち良く出来る？」
+			PRINTFORMW 『はい……』
+		;それ以外
+		ELSE
+			PRINTFORMW 『聖』
+			PRINTFORMW 「星……貴方なのね……」
+			PRINTFORMW 『……まさか相手が聖だったとは……』
+			PRINTFORMW 『また、あの時の貴方を……見れるんですね……？』
+			PRINTFORMW 「………っ！！」
+			PRINTFORMW 『ふふふっ、私が聖の弱点を忘れたとでも？』
+			PRINTFORMW 『そして……長い間、私はこの時を待ちつづけていた……』
+			PRINTFORMW 『覚悟はいいですね……聖？』
+		ENDIF
+			CFLAG:5206 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5206 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「星、まだ及第点にも届いてませんよ？」
+			PRINTFORMW 『すみません……精進します……』
+			PRINTFORMW ……これじゃどっちが調教者か分からないな、と思う%CALLNAME:MASTER%であった
+		;それ以外
+		ELSE
+			PRINTFORMW 『さて……今日から開発してあげましょうか……』
+			;白蓮が処女
+			IF TALENT:処女 == 1
+				PRINTFORMW 『そろそろ、お赤飯でも炊きますか？』
+			;非処女
+			ELSE
+				PRINTFORMW 『何回イッてしまうか……楽しみですね……』
+			ENDIF
+			PRINTFORMW 「いやぁ……星……もうやめてぇっ……」
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;助手がぬえ
+ELSEIF NO:ASSI == 78
+	DRAWLINE
+	;初めて
+	IF CFLAG:5207 == 0
+		;恋慕＋恋慕時初口上（陥落イベント）が発生済み
+		IF TALENT:恋慕 == 1 && CFLAG:5201 >= 5
+			PRINTFORMW 『ふふ、久し振り』
+			PRINTFORMW 「ぬえ……」
+			PRINTFORMW 『あんなに身持ち固そうにしてたのに……ねぇ……』
+			PRINTFORMW 「！？」
+			PRINTFORMW 『ご主人様に色々弄られてあんあん喘いで……』
+			PRINTFORMW 「………っ」
+			PRINTFORMW 自らの痴態を振り返り、顔を真っ赤にする白蓮
+			PRINTFORMW 『でも安心したよ』
+			PRINTFORMW 「ぬえ……？」
+			PRINTFORMW 『さて……今度は私が聖を喘がせてあげようかな』
+			PRINTFORMW その言葉と共に、ぬえの舌が音を立てていた
+		;それ以外
+		ELSE
+			PRINTFORMW 『久し振りだね……』
+			PRINTFORMW 「ぬえ……大丈夫だったの？」
+			PRINTFORMW 『ああ、私は何ともないよ……』
+			PRINTFORMW そう言うと、ぬえは白蓮の肩を掴んだ
+			PRINTFORMW 『聖……人間ってさ、自分の知らないものを怖がるよね？』
+			PRINTFORMW 「な……？」
+			PRINTFORMW 『昔と違ってさ……聖の知らないところまで、人間は弄るんだよ？』
+			PRINTFORMW 「な、何を言っているの……ぬえ、大丈夫なの？」
+			PRINTFORMW 『例えば……お尻にペニスを入れて、直腸に射精するとか……』
+			PRINTFORMW 「………！？」
+			PRINTFORMW 『ああ、聖の時代には鏡の前でセックスするってのも無かったっけ……』
+			PRINTFORMW 「(な……か、鏡の前……で……！？)」
+			PRINTFORMW ぬえの言葉によって、頭の中で強制的にビジョンが生み出され、それが恐怖を誘う
+			PRINTFORMW 気が付けば、白蓮の足はがくがくと震えており、立つ事もままならない状態だった
+			PRINTFORMW 「ふふふ、性交久しき魔法使いよ、正体不明の現在性交(セックス)に怯えてイけっ！！」
+		ENDIF
+			CFLAG:5207 = 1
+			RETURN 1
+	;二回目以降
+	ELSEIF CFLAG:5207 == 1
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 『聖……』
+			PRINTFORMW 「ぬえ、良かったですね……」
+			PRINTFORMW 『……うん』
+			;白蓮の技巧がぬえの技巧以上
+			IF ABL:技巧 >= ABL:ASSI:技巧
+				PRINTFORMW 「今度は、私がぬえを可愛がってあげようかしら……」
+				PRINTFORMW 『うぅ……』
+			;白蓮の技巧がぬえ未満
+			ELSE
+				PRINTFORMW 『でも、まだまだ聖には負けないよ』
+			ENDIF
+		;それ以外
+		ELSE
+			PRINTFORMW 『つくつぐ面白いよね……ご主人様って……』
+			PRINTFORMW 「ぬえ……ぬえっ！」
+			PRINTFORMW 『そんな台詞も吐けないくらいの快楽を刻んであげるよ、聖』
+		ENDIF
+			RETURN 1
+	ENDIF
+
+;口上のある助手が居ない場合は、通常の二回目以降の口上へ飛ぶ
+ELSE
+	CALL K77_KOJO2
+ENDIF
+
+
+;-------------------------------------------------
+;調教開始時（2回目以降、77をキャラ番号に変更する） CFLAGなし 
+;-------------------------------------------------
+@K77_KOJO2
+;反発刻印Lv3
+IF MARK:反発刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「来るだけ時間の無駄です」
+	PRINTFORMW 白蓮は寒気のする笑顔で%CALLNAME:MASTER%を出迎えた
+	RETURN 1
+
+;屈服刻印Lv0
+ELSEIF MARK:屈服刻印 == 0
+	DRAWLINE
+	PRINTFORMW 「あなたには……血も涙も無いんですね……」
+	PRINTFORMW 服を脱がそうとすると、白蓮は抵抗を見せた
+	RETURN 1
+
+;屈服刻印Lv1
+ELSEIF MARK:屈服刻印 == 1
+	DRAWLINE
+	PRINTFORMW 「(一体……いつになったら終わるの……？)」
+	PRINTFORMW 抵抗はまだあるものの、少し弱まっていた
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW 「(……どうして？どうしてシて欲しいって思ってるの……？)」
+	PRINTFORMW 調教の開始を告げると、渋々ながらも自分から服を脱いだ
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕無し
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「私は……まだ……折れてません……」
+	PRINTFORMW 抵抗しているのは言葉だけで、あっという間に生まれたままの姿になる
+	PRINTFORMW 最早身体が快楽に抵抗しきれないようだ……
+	RETURN 1
+
+;屈服刻印Lv3+恋慕
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW %CALLNAME:MASTER%が部屋に来ると、いい匂いがする
+	PRINTFORMW 白蓮が部屋の中でお茶を淹れていたのだった
+	PRINTFORM 「
+	CALL MASTER_CALLNAME_77
+	PRINTFORMW 、一緒に飲みませんか？」
+	PRINTFORMW 確かに自分は調教者、白蓮は奴隷ではあった
+	PRINTFORMW それからというもの、次第に%CALLNAME:MASTER%は白蓮のペースに引かれつつある
+	PRINTFORMW だがそんな関係も悪くは無い、と思う%CALLNAME:MASTER%であった
+	RETURN 1
+ENDIF
+RETURN 0
+
+;-------------------------------------------------
+;調教終了時のセリフ
+;-------------------------------------------------
+@KOJO_77_SLAVE_MESSAGE_TRAIN_END
+
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、77を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_EVENTEND_K77_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	SIF NO:ASSI == Y1
+;	CALL LES_EVENTEND_K77_MY1
+;	RETURN 0
+;ENDIF
+;--------------------------------------------------
+;調教終了時のセリフ CFLAG 211～220を使用
+;--------------------------------------------------
+;反発刻印Lv3
+IF MARK:反発刻印 == 3
+	DRAWLINE
+	PRINTFORMW 「ここから出られた暁には……」
+	PRINTFORMW 「そうですね、貴方には反面教師になってもらいましょうか」
+	PRINTFORMW その言葉にはあからさまに怒気と殺気が篭っている
+	RETURN 1
+;屈服刻印Lv1未満
+ELSEIF MARK:屈服刻印 <= 1
+	DRAWLINE
+	PRINTFORMW 「………」
+	PRINTFORMW 調教を終えると、白蓮はそっぽを向いたまま動かなかった
+	RETURN 1
+
+;屈服刻印Lv2
+ELSEIF MARK:屈服刻印 == 2
+	DRAWLINE
+	PRINTFORMW (星……、ムラサ……)
+	PRINTFORMW 白蓮は何か考え事をしているかのように、中空を見つめていた
+	RETURN 1
+
+;屈服刻印Lv3
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 0
+	DRAWLINE
+	PRINTFORMW 「……こんなことで、私は……屈しません……！」
+	PRINTFORMW 口では強がっていたが身体は紅潮しており、その言葉が偽りであると証明していた
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕＋体力500未満
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1 && BASE:0 < 500
+	DRAWLINE
+	PRINTFORMW 「はぁ……もう……限界……っ」
+	PRINTFORMW 白蓮はそのままの姿で眠りについてしまったので、%CALLNAME:MASTER%は毛布をかけ、部屋を後にした
+	RETURN 1
+
+;屈服刻印Lv3＋恋慕
+ELSEIF MARK:屈服刻印 == 3 && TALENT:恋慕 == 1
+	DRAWLINE
+	PRINTFORMW 「……もう、終わりなんですか？」
+	PRINTFORMW 白蓮は名残惜しそうに%CALLNAME:MASTER%を見つめる
+	PRINTFORMW 「……また、お願いしますね……」
+	PRINTFORMW そう言うと、菩薩のような笑みを浮かべ、%CALLNAME:MASTER%を見送った
+	RETURN 1
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;@KOJO_MESSAGE_COM関係（77をキャラ番号に置換）
+;コマンド実行時に出力されます
+;--------------------------------------------------
+@KOJO_77_TRAIN_MESSAGE_S_GENERAL
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、77を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == 
+;	CALL LES_MESSAGE_COM_K77_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == 
+;		CALL LES_MESSAGE_COM_K77_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;コマンド実行時のセリフ CFLAG 301～400を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;愛撫 CFLAG301
+;-------------------------------------------------
+IF SELECTCOM == 0 || SELECTCOM == 606
+	;初めて
+	IF CFLAG:5301 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……もっと……」
+			PRINTFORMW 白蓮は自分から%CALLNAME:MASTER%に積極的に近づいてくる
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっ、触らないでくださいっ！」
+		ENDIF
+			CFLAG:5301 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「大好きです……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……」
+			PRINTFORMW 白蓮は%CALLNAME:MASTER%に身を任せ、快楽に身を投じている
+			CFLAG:5301 = 5
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「やっ……はぁ……んんっ……」
+			PRINTFORMW 白蓮はもう%CALLNAME:MASTER%を拒まなくなっていた
+			CFLAG:5301 = 4
+		;屈服刻印Lv2
+		ELSEIF MARK:屈服刻印 == 2
+			PRINTFORMW 「あっ、やぁっ……」
+			PRINTFORMW 白蓮は快楽から逃げようとするが、時折甘い声を漏らしていた
+			CFLAG:5301 = 3
+		;それ以外
+		ELSEIF MARK:屈服刻印 <= 1
+			PRINTFORMW 「やめて……不潔ですっ」
+			CFLAG:5301 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クンニ CFLAG302
+;岩清水 CFLAG303
+;-------------------------------------------------
+;クンニ
+IF SELECTCOM == 1 && TEQUIP:58 == 0
+	;初めて
+	IF CFLAG:5302 == 0
+		;屈服刻印Lv2以上
+		IF MARK:屈服刻印 >= 2
+			PRINTFORMW 「っ……き、汚いですよ……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやっ、そんな所舐めないでっ」
+		ENDIF
+			CFLAG:5302 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「気持ちいいですよ、そこっ……んんっ……」
+			PRINTFORMW %CALLNAME:MASTER%が舌を襞に這わせるたび、淫靡な声を上げていた
+			CFLAG:5302 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「はぁ……はぁん……あぁっ！」
+			CFLAG:5302 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて、やめてください……」
+			PRINTFORMW 白蓮は目に涙を浮かべている
+			CFLAG:5302 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;岩清水
+IF SELECTCOM == 611 || (SELECTCOM == 1 && TEQUIP:58)
+	;初めて
+	IF CFLAG:5303 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5303 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+C感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5303 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1	
+			PRINTFORMW 
+			CFLAG:5303 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｃ感覚 >= 3 && ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:5303 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5303 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5303 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナル愛撫 CFLAG304
+;-------------------------------------------------
+IF SELECTCOM == 2
+	;初めて
+	IF CFLAG:5304 == 0
+		;未経験
+		IF EXP:Ａ経験 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「お、お尻の穴……！？」
+				PRINTFORMW 「ほ……本当にするんですか……？」
+				PRINTFORMW 白蓮は少し躊躇った後、%CALLNAME:MASTER%に向けて尻を突き出した
+				PRINTFORMW 「分かりました……
+				PRINTFORMW 　でも、あんまり痛くしないでくださいね……？」
+			;それ以外
+			ELSE
+				PRINTFORMW 「ひいっ！？」
+				PRINTFORMW 白蓮のアナルを触ると、それだけで悲鳴を上げる
+				PRINTFORMW 「そ、そこは不浄の……あっ……！？」
+			ENDIF
+		;経験あり
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+		ENDIF
+			CFLAG:5304 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「……あぁんっ……気持ちいい……もっと、もっとして下さい……」
+			PRINTFORMW %CALLNAME:MASTER%がアナルを掻き回す度に、白蓮は喜悦の声を響かせた
+			CFLAG:5304 = 4
+		;潤滑Lv2以上＋A感覚Lv3以上
+		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「そ、そこはもう嫌……あぁっ！？」
+			PRINTFORMW 「(嘘……！？何……今の声！？)」
+			PRINTFORMW 「(私の……私の身体が……おかしくなってる……！？)」
+			PRINTFORMW アナルで快感を得る事に、白蓮は戸惑いを隠せなかった
+			CFLAG:5304 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぐ……痛いだけですから……やめて下さい……」
+			CFLAG:5304 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;自慰 （処女）CFLAG305
+;-------------------------------------------------
+IF SELECTCOM == 7
+	;初めて
+	IF CFLAG:5305 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「じ、自分でしろと……？」
+			PRINTFORM 「はぁ……本当は
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW にして欲しいんですけど……」
+			PRINTFORMW そう言うと、渋々ながら自慰を始めるのだった
+		;それ以外
+		ELSE
+			PRINTFORMW 「じ、自分で……！？」
+			PRINTFORMW 自慰をしたことが無いわけでは無かった
+			PRINTFORMW だが自分の身内でもない男の前で自慰をすることは、もはや拷問に近かった
+			PRINTFORMW 「うぅ……すればいいんでしょう……？」
+			PRINTFORMW 白蓮は顔を真っ赤にしながら、自らを慰めた
+		ENDIF
+			CFLAG:5305 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋自慰中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:自慰中毒 >= 3
+			PRINTFORMW 「はっ、はぁっ……」
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……早く、来てください……」
+			CFLAG:5305 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んんっ……これでは生殺しですよ……」
+			PRINTFORMW 白蓮は不満そうに口を尖らせるが、指はもうグチョグチョになっていた
+			CFLAG:5305 = 4
+		;自慰中毒Lv3以上
+		ELSEIF ABL:自慰中毒 >= 3
+			PRINTFORMW 「はぁ、はぁ……指が……っ、止まらない……」
+			PRINTFORMW もう身体の内から沸き起こる欲望を止められないようだ
+			CFLAG:5305 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「お願いです、もうこんな事させないで下さい……」
+			CFLAG:5305 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラされる(ふたなり/オトコのみ) CFLAG306
+;-------------------------------------------------
+IF SELECTCOM == 5
+	;初めて
+	IF CFLAG:5306 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5306 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5306 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5306 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5306 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;胸愛撫 CFLAG307
+;巨乳がデフォで助かった……
+;-------------------------------------------------
+IF SELECTCOM == 3
+	;初めて
+	IF CFLAG:5307 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……もう、甘えん坊さん……」
+			PRINTFORMW %CALLNAME:MASTER%が伸ばした手を、優しく胸に当て、揉ませていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「……ど、どこを触ってるんですかっ！」
+			PRINTFORMW 触れた途端、白蓮は胸を腕で隠し、%CALLNAME:MASTER%の手を払いのけた
+		ENDIF
+			CFLAG:5307 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:6 == 0
+				PRINTFORMW 「んんっ、あっ……はぁぁっ……」
+				PRINTFORMW 「こんなにいっぱい揉まれたら……もっと大きくなっちゃう……」
+				PRINTFORM 「くすっ、そうしてみたいんですか……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW ？」
+			ELSEIF RAND:5 == 0
+				PRINTFORMW 今回は少し調教らしくしようと、思いきり強く揉む
+				PRINTFORMW 「ひああぁぁっ！？　ふぁぁっ……あぁんっ！」
+				PRINTFORMW 嬌声を上げる白蓮に追い討ちを掛けるように、そのまま乳首を指で抓ると
+				PRINTFORMW 痙攣を起こしたかのように身体を仰け反らせた
+				PRINTFORMW 「いひぃっ！　いっ、弄っちゃやぁぁっ……」
+			ELSEIF RAND:4 == 0
+				PRINTFORMW 「うふふ……私のおっぱい、どんな感じですか？」
+				PRINTFORMW 「もっといっぱいしても……やぁんっ」
+				PRINTFORMW 調教される立場であってもこの余裕……この白蓮、誘い受けだろうか……？
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「ふぁぁ……あっ……んんっ……」
+				PRINTFORMW %CALLNAME:MASTER%が指を動かすと、ふにふにと形を変えていく柔らかな胸
+				PRINTFORMW 夢中になって胸を揉む%CALLNAME:MASTER%の頭を、白蓮は優しく撫でるのだった
+			ELSEIF RAND:2 == 0
+				PRINTFORM 「うふふ、
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW っておっぱい好きなんですか？」
+				PRINTFORMW 「んっ……もっと、してください……」
+			ELSE
+				PRINTFORMW 「ひゃぁっ…！？ち、乳首弄っちゃやぁ……あぁっ！」
+				PRINTFORMW 先端を回すように愛撫すると、それだけで悲鳴に近い嬌声を上げていた
+			ENDIF
+			CFLAG:5307 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 「ふぁ……だ、だから嫌だって……んんっ！」
+			CFLAG:5307 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「嫌ですっ……来ないで下さいっ！」
+			CFLAG:5307 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;キス CFLAG308
+;-------------------------------------------------
+IF SELECTCOM == 6
+	;初めて
+	IF CFLAG:5308 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「キス……ですか……」
+			PRINTFORMW その言葉を聞いた瞬間に、ぱっと白蓮の顔が明るくなる
+			PRINTFORMW 「こういう場で言うのも変ですけど……」
+			PRINTFORMW 「やっぱり、普通に愛し合いたいです……」
+			PRINTFORMW それから、どちらからとも無くキスが始まった
+		;それ以外
+		ELSE
+			PRINTFORMW 「……んむっ！？んんっ……っはぁ……」
+			PRINTFORMW 強制的に%CALLNAME:MASTER%を押しのけると、白蓮はどこか悲しそうな顔をした
+		ENDIF
+			CFLAG:5308 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「んちゅ……っふぁ……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……」
+			PRINTFORMW うっとりした顔で、白蓮は何度も%CALLNAME:MASTER%を呼び、キスをしていた
+			CFLAG:5308 = 4
+		;従順Lv2以上
+		ELSEIF ABL:従順 >=2
+			PRINTFORMW 「んっ……ふっ……」
+			PRINTFORMW 以前ほど露骨では無かったが、まだまだ抵抗するのは見て取れた
+			CFLAG:5308 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……嫌です……」
+			PRINTFORMW キスをするまで、白蓮は%CALLNAME:MASTER%と目を合わそうとしなかった
+			CFLAG:5308 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;何もしない CFLAG309
+;-------------------------------------------------
+;通常
+IF SELECTCOM == 9
+	;初めて
+	IF CFLAG:5309 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……」
+			PRINTFORMW 休むことを告げると、白蓮は物欲しそうな表情で%CALLNAME:MASTER%を見つめていた
+		;それ以外
+		ELSE
+			PRINTFORMW 「次は……何もしないのですか？」
+			PRINTFORMW 呼吸を整えながら、白蓮は%CALLNAME:MASTER%の様子を窺った
+			PRINTFORMW 何もしない事が、逆に気になるようだ
+		ENDIF
+			CFLAG:5309 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋欲情Lv5以上＋前回何もしない
+		IF TALENT:恋慕 == 1 && ABL:欲望 >= 5 && PREVCOM == 9
+			PRINTFORMW 「ふふっ、こちらにどうぞ？」
+			PRINTFORMW 白蓮が壁に凭れ掛かるように座り、そこで手招きしている
+			PRINTFORMW %CALLNAME:MASTER%が近付くと、白蓮は自分の胸を指差していた
+			PRINTFORMW どうやら、胸枕をしてあげる、と言っているらしい
+			PRINTFORMW %CALLNAME:MASTER%は背中から体を預け、後頭部を胸に埋もれさせた
+			PRINTFORMW 心地よい感触と共に、白蓮の温かみが全身に染み渡った気がした
+			CFLAG:5309 = 5
+		;恋慕＋欲望Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:欲望 >= 3
+			PRINTFORMW 「ふふっ、こちらにどうぞ？」
+			PRINTFORMW 白蓮が壁に凭れ掛かるように座り、そこで手招きしている
+			PRINTFORMW %CALLNAME:MASTER%が近付くと、白蓮は自分の膝を指差していた
+			PRINTFORMW どうやら、膝枕をしてあげる、と言っているらしい
+			PRINTFORMW %CALLNAME:MASTER%は頭を白蓮の脚に乗せると、優しい手が撫でていった
+			CFLAG:5309 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……んんっ……」
+			PRINTFORMW 白蓮はもう待ちきれない様子で、%CALLNAME:MASTER%をじっと見ていた
+			CFLAG:5309 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……何をするつもりですか？」
+			PRINTFORMW 白蓮の警戒心は、なかなか解かれなかった
+			CFLAG:5309 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ローター CFLAG310
+;-------------------------------------------------
+IF SELECTCOM == 10
+	;初めて
+	IF CFLAG:5310 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「何ですか、これ？」
+			PRINTFORMW 白蓮は、見たこともないピンク色の物体に一瞬だけ興味を示したが……
+			PRINTFORMW 「これも、エッチなことに使う道具なんですよね？」
+			PRINTFORMW すぐに看破された%CALLNAME:MASTER%は、いきなりクリトリスにローターを当てたのだった
+		;それ以外
+		ELSE
+			PRINTFORMW 「ひゃ！　な、何なんですか、これ？」
+			PRINTFORMW 見たこともない物体に怯え、思わず後退りしたが……
+			PRINTFORMW その後、部屋からは白蓮の悲鳴と嬌声が響いた
+		ENDIF
+			CFLAG:5310 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あぁぁっ……病み付きになりそう……」
+			PRINTFORM 「でも……本当は
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW が一番いいんですよ……？」
+			CFLAG:5310 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ふぁ……やっ、あぁっ！」
+			CFLAG:5310 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめて……やめて下さい……」
+			CFLAG:5310 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;バイブ CFLAG311　CFLAG312
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 12 && TEQUIP:20 == 1
+	;初めて
+	IF CFLAG:5311 == 0
+		;処女
+		IF TALENT:処女 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「うっ……そ、それは……」
+				PRINTFORMW 見たことは無くても、形を見れば大体想像は付いた
+				PRINTFORM 「……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW 、私が……私が処女だってことは分かってますか？」
+				PRINTFORMW 「……そうですよね、仕方ありません……」
+				PRINTFORM 「でも……初めては……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW に奪って欲しかった……っ！」
+				PRINTFORMW 意を決したのか、ぎゅっと目を瞑る白蓮
+				PRINTFORMW そして、凶悪な形の玩具が、白蓮の膜を破っていった…………
+			;それ以外
+			ELSE
+				PRINTFORMW 「……貴方という人は……」
+				PRINTFORMW 「人の……人の処女を一体何だと思って……いっ、いやっ！嫌あぁぁぁっ！！」
+				PRINTFORMW 抵抗する白蓮を押さえ付け、無理矢理バイブを突き刺した
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「そんな卑猥なものを…」
+				PRINTFORM 「でも、
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW がしたいのなら……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「ひゃっ！　そんなもの入れちゃ……っ！？」
+			ENDIF
+		ENDIF
+			CFLAG:5310 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「うぅ……本当は
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW のが欲しいのに……」
+			CFLAG:5310 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「ま、またそれですか……？」
+			PRINTFORMW 「そんな冷たいものより……その……」
+			PRINTFORMW 最後の方は吃って聞こえなかった
+			CFLAG:5310 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ……こんなのいやぁ……」
+			CFLAG:5310 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 12 && TEQUIP:20 == 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 「お、終わりですか？」
+		PRINTFORM 「次は……
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW のをください……」
+		CFLAG:5312 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ……ふぅ……」
+		PRINTFORMW 「貴方に挿入れられていないだけ……まだいいですけど」
+		PRINTFORMW 荒い息遣いをしながら、白蓮は呼吸を整えた
+		CFLAG:5312 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;Ｅマッサージャ CFLAG313
+;道具系は基本使わないのでパス
+;-------------------------------------------------
+IF SELECTCOM == 12
+	;初めて
+	IF CFLAG:5313 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5313 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5313 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5313 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5313 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルバイブ 開始時CFLAG314 終了時CFLAG315
+;マッサージャと同様。
+;てんこちゃんやおぜうさまを墜とすときには活躍しましたが。
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 13 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5314 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5314 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5314 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5314 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5314 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5314 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 13 && TEQUIP:25 == 1
+	;初めて
+	IF CFLAG:5315 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5315 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5315 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5315 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5315 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;クリキャップ 開始時CFLAG316 終了時CFLAG317
+;これも↑二つと(ry
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 14 && TEQUIP:30 == 1
+	;初めて
+	IF CFLAG:5316 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5316 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5316 = 4
+		;C感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5316 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5316 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 14 && TEQUIP:30 == 1
+	;初めて
+	IF CFLAG:5317 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5317 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5317 = 4
+		;C感覚Lv3以上
+		ELSEIF ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5317 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5317 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ニプルキャップ 開始時CFLAG318 終了時CFLAG319
+;おっぱいは好きだけど、これを使うのは我的ルールに反する気が。
+;だから書いてない。
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 15 && TEQUIP:35 == 1
+	;初めて
+	IF CFLAG:5318 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5318 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 
+			CFLAG:5318 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW
+			CFLAG:5318 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5318 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 15 && TEQUIP:35 == 1
+	;初めて
+	IF CFLAG:5319 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5319 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5319 = 4
+		;B感覚Lv3以上
+		ELSEIF ABL:Ｂ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5319 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5319 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;搾乳機(母乳体質のみ) 開始時CFLAG320 終了時CFLAG321
+;だがこれだけは例外。
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 191 && TEQUIP:35 == 2
+	;初めて
+	IF CFLAG:5320 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……そ、その…………」
+			PRINTFORM 「搾るのでしたら……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW の手で……」
+			PRINTFORMW 恥ずかしいのか、白蓮は顔を赤く染め上げていった
+		;それ以外
+		ELSE
+			PRINTFORMW 「やめてっ！　母乳を搾るなんて……私は家畜じゃないんですよっ！」
+		ENDIF
+			CFLAG:5320 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁぁ……そんなに強くしたら……」
+			PRINTFORMW 「ダメぇ……感じすぎて……これだけでイッちゃうぅっ！」
+			CFLAG:5320 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ……貴方は……本当に人間なんですか？」
+			PRINTFORMW 
+			CFLAG:5320 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;脱着時
+ELSEIF SELECTCOM == 191 && TEQUIP:35 == 0
+	;初めて
+	IF CFLAG:5321 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ……はぁ……」
+			PRINTFORMW 白蓮は乳首から母乳を垂れ流しながら、艶かしい目線でこっちを見ていた
+			PRINTFORMW 「ふふ……おっぱい、飲んでみます？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっと……終わりました……」
+			PRINTFORMW 噴乳が収まらなかったのか、白蓮は荒い息をしていた
+		ENDIF
+			CFLAG:5321 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「もう……こんなに溢してもったいないですよ……」
+			PRINTFORM 「次は直接、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW に飲んで欲しいです……」
+			CFLAG:5321 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「し、搾った母乳を……売る！？」
+			PRINTFORMW 平然と答えた%CALLNAME:MASTER%の前で、白蓮は倒れそうになった
+			CFLAG:5321 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;オナホール(ふたなり/オトコのみ) 開始時CFLAG322 終了時CFLAG323
+;両性具有にはあまり興味無いね、実際。
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 16 && TEQUIP:30 == 2
+	;初めて
+	IF CFLAG:5322 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5322 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5322 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5322 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 191 && TEQUIP:30 == 0
+	;初めて
+	IF CFLAG:5323 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW
+		ENDIF
+			CFLAG:5323 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5323 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5323 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;正常位 CFLAG324
+;力を二番目に入れた場所。
+;-------------------------------------------------
+IF SELECTCOM == 20
+	;初めて
+	IF CFLAG:5324 == 0
+		;処女
+		IF TALENT:処女 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「……ふふっ」
+				PRINTFORMW %CALLNAME:MASTER%がこれから挿入すること……
+				PRINTFORML 白蓮の初めてを奪うことを告げると、嬉しそうな顔を見せた
+				PRINTFORMW 「ようやく、奪ってくれるんですね……」
+				PRINTFORM 「……これでやっと、
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW のものに……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「やめて、それだけはやめて下さいっ！」
+				PRINTFORML 白蓮は必死に抵抗するが……普通の女性程度の力では、組み伏されるのがオチである
+				PRINTFORMW 「こっ……こんな軽挙妄動な人間に……嫌っ、いやあぁぁっ！！」
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORM 「
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW ……来てください……」
+				PRINTFORMW 白蓮は慈愛の微笑みを浮かべ、%CALLNAME:MASTER%を迎え入れた
+			;それ以外
+			ELSE
+				PRINTFORMW 「……もう勝手にしなさい」
+				PRINTFORMW 「貴方に犯されたところで、私は屈しませんから」
+			ENDIF
+		ENDIF
+			CFLAG:5324 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+				PRINTFORM 「あぁぁっ！
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW …もっと、もっと突いてくださいっ！」
+				PRINTFORMW 白蓮は腰をぐいぐい押し付け、更なる快楽を得ようとしている
+			ELSEIF RAND:2 == 0
+				PRINTFORML 「ふぁ……んんっ、こうやって……一緒に動いてぇっ……！」
+				PRINTFORMW 「はぁ……イくときは……一緒に……っ！」
+			ELSE
+				PRINTFORMW 「もっと激しくしてもいいんですよ？」
+				PRINTFORMW 「出したくなったら、そのまま膣内に下さいね……」
+				PRINTFORMW 
+			ENDIF
+			CFLAG:5324 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「んんっ……感じたくなんかないのに……」
+			CFLAG:5324 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「うぅっ……いやぁっ……」
+			PRINTFORMW 目に涙を浮かべながら、じっと終わるまでじっと堪えていた
+			CFLAG:5324 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「許して……もう……」
+			PRINTFORMW 白蓮は涙を流しながら、何度も許しを乞うのだった
+			CFLAG:5324 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;後背位 CFLAG325
+;-------------------------------------------------
+IF SELECTCOM == 21
+	;初めて
+	IF CFLAG:5325 == 0
+		;処女
+		IF TALENT:処女 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「う……後ろから……？」
+				PRINTFORM 「ちょっと怖いですけど……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW がお望みでしたら……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「嫌ぁっ！初めてをこんな獣みたいな格好で奪うだなんて、い――――」
+				PRINTFORMW 業を煮やした%CALLNAME:MASTER%は、無理矢理剛直を押し込んだ
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「後ろから？」
+				PRINTFORMW 「ふふ、いいですよ……来てください……」
+			;それ以外
+			ELSE
+				PRINTFORMW 「こ……こんな体勢でするなんて……」
+				PRINTFORMW 「(これじゃまるで犬の交尾じゃない……私は、もう人間扱いされてないの？)」
+			ENDIF
+		ENDIF
+			CFLAG:5325 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:2 == 0
+				PRINTFORMW 「んぁぁっ、奥まで……入ってくるぅっ！！」
+			ELSE
+				PRINTFORMW 「は……あんっ……」
+				PRINTFORMW 焦らすようにゆっくり動かしていると、白蓮はそれに合わせて腰を振っている
+				PRINTFORM 「
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW ……もっと、激しくしても……いいんですよ……？」
+			ENDIF
+			CFLAG:5325 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「あんっ、んっ、んあっ……」
+			PRINTFORMW 「(はぁ……はぁ……犯されてるのに……感じちゃうなんて……)」
+			CFLAG:5325 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「んっ……もう嫌よぉ……」
+			CFLAG:5325 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「こっ……こんな人間相手に……屈辱です……！」
+			CFLAG:5325 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;アナルセックス CFLAG326
+;-------------------------------------------------
+IF SELECTCOM == 30
+	;初めて
+	IF CFLAG:5326 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お、お尻に入れる？」
+			PRINTFORMW 「……本当に何でもありなんですね……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「えっ！？ちょっと……そっちは違……！」
+		ENDIF
+			CFLAG:5326 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋A感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3
+			PRINTFORMW 「あぁんっ、お尻が……お尻が焼けちゃうくらい気持ちいいっ！」
+			PRINTFORMW 完全にアナルによる快感に目覚めたのか、狂ったように嬌声を上げていた。
+			CFLAG:5326 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んぐ……はぁ……うぅっ……」
+			CFLAG:5326 = 4
+		;A感覚Lv3以上
+		ELSEIF ABL:Ａ感覚 >= 3
+			PRINTFORMW 「どうして……どうして嫌なのに……ひゃぁっ！？」
+			PRINTFORMW 快楽を受け入れる身体と快楽を拒む理性の板挟みで、白蓮は困惑していた。
+			CFLAG:5326 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……痛っ……やめて下さい……」
+			CFLAG:5326 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;逆レイプ CFLAG327
+;(主人が非オトコ、奴隷がオトコ/ふたなりのみ)
+;だから我は両性具有にはあまり関心が(ry
+;-------------------------------------------------
+IF SELECTCOM == 25
+	;初めて
+	IF CFLAG:5327 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5327 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5327 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5327 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;手淫 CFLAG328
+;-------------------------------------------------
+IF SELECTCOM == 40
+	;初めて
+	IF CFLAG:5328 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「手でして欲しいんですか？」
+			PRINTFORMW 白蓮がいたわるようにペニスを触ると、ビクッと反応してしまう
+			PRINTFORMW 「ふふ、もっとして欲しいんですか……？」
+			PRINTFORMW そのまま、白蓮の上品な指使いに高められていった
+		;それ以外
+		ELSE
+			PRINTFORMW 「うっ……こんな穢らわしいものを……」
+			PRINTFORMW 白蓮は咄嗟に目を背けてしまった
+			PRINTFORMW 再三命令すると、手だけ伸ばして、ペニスを見ようとはしなかった
+		ENDIF
+			CFLAG:5328 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			IF RAND:3 == 0
+				PRINTFORMW 「本当に手だけでいいんですか？」
+				PRINTFORMW 上目遣いに%CALLNAME:MASTER%を見ながら、白蓮は丹念に奉仕を続けた
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「うふふ……軽く扱いただけなのに、もうこんなに……」
+				PRINTFORMW 先走りが出た後も、白蓮は容赦無く手を動かし続ける
+				PRINTFORMW %CALLNAME:MASTER%がイキそうになると、急激に速度を落とされてしまう
+				PRINTFORMW 最早生殺しに近いものがあり、%CALLNAME:MASTER%は白蓮にイカせて欲しいと嘆願した
+				PRINTFORMW 「あらあら、仕方ないですね……」
+			ELSE
+				PRINTFORMW 「……くす、ここがいいんですよね？」
+				PRINTFORMW カリ首と傘の部分を重点的に擦られ、早くも達しそうになる
+				PRINTFORM 「もう
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW の弱点は大方看破しました」
+				;調教者が早漏持ち
+				IF TALENT:PLAYER:早漏
+					PRINTFORMW 「そうですね……３０秒あれば十分です」
+				ELSE
+					PRINTFORMW 「次は何分で射精しちゃうんでしょうね」
+				ENDIF
+			ENDIF
+			CFLAG:5328 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「本当に手だけでいいんですか……きゃっ！？」
+			PRINTFORMW ビクビクと反応しているペニスを見て、白蓮は納得したようだ
+			CFLAG:5328 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「こう……ですか？」
+			PRINTFORMW 色々な場所を弄るたびに白蓮は具合を訊いてくる
+			PRINTFORMW 一つ一つ、どこが気持ちいいのか学習しているようにも見えた
+			CFLAG:5328 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……私にさせるより、自分でされたらどうですか？」
+			CFLAG:5328 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;フェラチオ CFLAG329
+;パイズリの次に好きなのがこれ。
+;-------------------------------------------------
+;二穴バイブあり
+IF SELECTCOM == 41
+	;初めて
+	IF CFLAG:5329 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お口で……ですか……」
+			PRINTFORMW その言葉を聞いた矢先、いきなりペニスを咥え込む白蓮
+			PRINTFORMW 「はむ……ん、じゅる……」
+			PRINTFORMW %CALLNAME:MASTER%は驚きつつも、懸命に奉仕する白蓮の頭を撫でていた
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「お口で奉仕……？」
+			PRINTFORMW 「したことないですけど……やってみます……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……嫌だと言っても無理でしょうね……」
+			PRINTFORMW 白蓮は、渋々ながらもペニスを口に含んだ
+		ENDIF
+			CFLAG:5329 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			IF RAND:2 == 0
+				PRINTFORMW 「んっ……あむ、じゅるるるっ、ちぅぅぅっ……」
+				PRINTFORMW 舌で唾液を絡ませ、一気にそれと一緒に吸い上げる
+				PRINTFORMW その度にビクビク跳ねるように動き、それが白蓮の奉仕精神を刺激する
+				PRINTFORMW 「んむ……ちゅっ、ちゅぷっ……いつでも射精していいですからね……」
+			ELSE
+				PRINTFORMW 「んっ、ちゅっ……ちゅぶ、ちゅ……くちゅっ…」
+				PRINTFORMW 「ちゅば…んちゅっ……ふふっ……気持ちいいですか？」
+				PRINTFORMW 口に含むだけでなく、下の袋まで迫る刺激にたまらなくなっていた
+			ENDIF
+			CFLAG:5329 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……こんな感じで、いいんですか？」
+			CFLAG:5329 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んぷ……ちゅ……」
+			CFLAG:5329 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んぐ……ひどい臭い……」
+			CFLAG:5329 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;パイズリ CFLAG330
+;シチュエーション別に口上が変わるのは司書小悪魔を参照に。
+;そして選択形式も入れてみる。
+;ひーねぇのおっぱいで搾り尽くされるなら、本望だっ！！
+;-------------------------------------------------
+IF SELECTCOM == 42
+	;初めて
+	IF CFLAG:5330 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「えっと、その……挟めばいいんですね？」
+			PRINTFORMW 白蓮は恐る恐る近付き、豊満な胸を手で持ち上げ、ペニスを挟み込んだ
+			PRINTFORMW 「わ……もうこんなに熱く……」
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「む、胸で気持ちよく……？」
+			PRINTFORMW 「確かに挟めるだけの大きさはありますけど……」
+			PRINTFORMW 白蓮は男の趣味に当惑しながらも、奉仕を始めた
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ……こんなことさせるなんて……」
+			PRINTFORMW 「へ、変態……」
+		ENDIF
+			CFLAG:5330 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			;前回と今回が主人へのパイズリ
+			IF PREVCOM == 42 && (ASSIPLAY == 0 && TFLAG:133 == 0)
+				PRINTFORMW 「んんっ……ん？」
+				PRINTFORMW 白蓮のパイズリを堪能した%CALLNAME:MASTER%だったが、まだまだ物足りない
+				PRINTFORMW もう一回することを告げると、喜んで了承した
+				PRINTFORM 「うふふ……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW の、また大きくなってます……」
+				PRINTFORMW 「もう本番よりこっちがいいんじゃ……きゃあっ！？」
+				PRINTFORMW 「そんなに慌てなくても、ちゃんとしてあげますから……」
+			;前回が主人による胸愛撫
+			ELSEIF PREVCOM == 7 && (ASSIPLAY == 0 && TFLAG:133 == 0)
+				IF RAND:2 == 0
+					PRINTFORMW 「ふぁ……んんっ……」
+					PRINTFORMW すっかり固くなった乳首に、ぐりぐりとペニスを押し付ける
+					PRINTFORMW 「やぁっ、あぁんっ！」
+					PRINTFORMW 「……今度は、おっぱいでして欲しくなったんですか？」
+					PRINTFORM 「仕方ない
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW ……さぁ、どうぞ？」
+					PRINTFORMW 胸をぎゅっと寄せて出来た谷間に挿入すると、%CALLNAME:MASTER%は恍惚のため息を漏らした
+				ELSE
+					PRINTFORMW 「あぁっ……ん？どうしました？」
+					PRINTFORMW 突然手の動きを止める%CALLNAME:MASTER%に、白蓮が問い掛けてきた
+					PRINTFORMW 「くすっ……今度は、こっちですか？」
+					PRINTFORMW そう言うと自らの胸を指差し、%CALLNAME:MASTER%に覆い被さってくる
+					PRINTFORMW 「ん……しょ、っぱぁ……」
+					PRINTFORMW ペニスにたらりと唾液を垂らし、繊細な指で絡めていく
+					PRINTFORMW 「やんっ、そんな聞かん坊にはお仕置きですよ？」
+					PRINTFORMW そのまま大きな門を閉めるように挟むと、気持ち良さでびくびくと暴れてしまう
+					PRINTFORMW 「んっ、もう……暴れちゃダメって言ってるでしょう？」
+				ENDIF
+			;前回が主人への手淫
+			ELSEIF PREVCOM == 40 && (ASSIPLAY == 0 && TFLAG:133 == 0)
+				PRINTFORMW 「んしょ……どうしました？」
+				PRINTFORMW 手で奉仕していた白蓮だったが、%CALLNAME:MASTER%の視線に気付いたようだ
+				PRINTFORMW 「……うふふ、そんなにおっぱいをジーっと見て……」
+				PRINTFORMW その先は敢えて言わず、すぐに豊満な胸でペニスを挟み込む白蓮
+				PRINTFORMW しっとりとした乳肌の感触に、%CALLNAME:MASTER%は早くも射精感を覚えたのだった
+			;前回が主人へのフェラチオ
+			ELSEIF PREVCOM == 41 && (ASSIPLAY == 0 && TFLAG:133 == 0)
+				PRINTFORMW 「んふ……んんっ？」
+				PRINTFORMW フェラチオをしていた白蓮だったが、いきなり胸を揉まれて動きを止めてしまう
+				PRINTFORMW 「……くす、分かりました……」
+				PRINTFORMW 「んしょ……はぁ、んん……はむ」
+				PRINTFORMW 口の中の唾液が潤滑油となり、ぬるぬると胸の中でペニスが動く
+				PRINTFORMW 更に、はみ出た亀頭を白蓮が咥え、ペニス全体が彼女の体温で温められる結果になった
+				PRINTFORMW おっぱいの柔らかさと白蓮の温もりが、容赦無く%CALLNAME:MASTER%を責め立てていた
+			;前回が主人への泡踊り
+			ELSEIF PREVCOM == 352 && (ASSIPLAY == 0 && TFLAG:133 == 0)
+				PRINTFORMW 背中を豊満な胸で洗っていた白蓮だったが、%CALLNAME:MASTER%の様子に気付いた
+				PRINTFORMW 「またおっきくなってる……今度は、おっぱいでも洗ってあげます……」
+				PRINTFORMW そのまま仰向けになり、白蓮が上に乗る格好になる
+				PRINTFORMW そして泡だらけのおっぱいで、ぎゅっとペニスを挟んだ
+				PRINTFORMW 唾液やローションとは違い、おっぱいがぬるぬると滑るように擦れる
+				PRINTFORMW 普段のパイズリでは得られないよな感覚に、%CALLNAME:MASTER%の息も段々と荒くなっていく
+				PRINTFORMW 「あらあら、そんなに顔を紅くして……もっと気持ち良くなってくださいね……」
+			;それ以外（上記フラグが無い場合）
+			ELSE
+				IF RAND:8 == 0
+					PRINTFORMW 「きつく挟むと、みっちり締め付けられて……」
+					PRINTFORMW 「軽く揺さぶると、揉みしだかれるような刺激になるんです」
+					PRINTFORM 「
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW は、どっちの刺激でイかされたいですか……？」
+					PRINTL [0] 「ぎゅうぎゅうと挟まれたい」
+					PRINTL [1] 「たぷたぷ弾むおっぱいが見たい」
+					PRINTL [2] 「……ダメだ、俺には選べないっ」
+					$INPUT_LOOP_2
+					INPUT
+					IF RESULT == 0
+						PRINTFORMW 「ほら……ぎゅうって挟んで、揉み潰してあげます……」
+						PRINTFORMW 「どうです……？　おちんちん、おっぱいで締め付けられてるんですよ？」
+						PRINTFORMW 白蓮の軟らかい肉がみっちりと吸い付き、離れようとしない
+						PRINTFORMW 試しに腰を引いてみるが、すぐに横から押さえ付けられて徒労に終わってしまう
+						PRINTFORM 「うふふ……
+						CALL MASTER_CALLNAME_77
+						PRINTFORMW が気持ちいいって射精するまで……
+						PRINTFORMW 　絶対に逃がしませんからね……？」
+						PRINTFORMW このまま吸い尽くされるのではないかと、%CALLNAME:MASTER%は恐怖を覚えたのだった
+					ELSEIF RESULT == 1
+						PRINTFORMW 「こうやって、ぶるぶると揺さぶって……」
+						PRINTFORMW 「ふふっ……振動が伝わって、たまらないでしょう？」
+						PRINTFORMW 「更に……胸を寄せて、揺すって、ずりずり動かしてあげますね……♪」
+						PRINTFORMW ぷにぷにした乳肉がペニスのあちこちに擦れて、腰がゾクゾクと震えあがる
+						PRINTFORM 「こうしてると……私がおっぱいで
+						CALL MASTER_CALLNAME_77
+						PRINTFORMW を犯してるみたいですね……」
+					ELSEIF RESULT >= 2
+						PRINTFORMW 「……ダ・メ・で・す・よ？」
+						PRINTFORMW 「どちらか、ちゃんと選んで下さいね？」
+						GOTO INPUT_LOOP_2
+					ENDIF
+				ELSEIF RAND:7 == 0
+					PRINTFORM 「もう……本当におっぱい好きなんですね、
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW ？」
+					PRINTFORMW そう言うと、裏スジに舌を這わせながらペニスをしゃぶる白蓮
+					PRINTFORMW 口を離し、ペニスを扱くようにして唾液を馴染ませ、自分の胸も濡らしていく
+					PRINTFORMW 「お待たせしました……さぁ、どうぞ……？」
+					PRINTFORMW 待ち兼ねた%CALLNAME:MASTER%は、白蓮の胸を犯すように挿入した
+				ELSEIF RAND:6 == 0
+					PRINTFORMW 「どうです？　ボリュームのあるおっぱいで挟まれた感想は？」
+					PRINTFORMW 「じんわり温かくって……ふんわりしてて……極楽気分でしょう？」
+					PRINTFORM 「
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW のオチンチンが、ピクピクしているのが伝わってきます……」
+				ELSEIF RAND:5 == 0
+					PRINTFORMW 「竿の部分だけでこんなにぴくぴく震わせて……」
+					PRINTFORMW 「では、先っぽを直に挟んだらどうなるんしょうね……？」
+					PRINTFORMW %CALLNAME:MASTER%も興味があったのか、少し腰を引いてみる
+					PRINTFORMW すると、白蓮の柔肌と乳肉が、無防備な亀頭を直接包み込んできたのだった
+					PRINTFORMW 神経を直に撫でられるような感覚に、%CALLNAME:MASTER%のペニスと顔はドロドロになっていく
+					PRINTFORMW 「ふぁっ、我慢汁がいっぱい……気持ち良さそうで何よりです……♪」
+				ELSEIF RAND:4 == 0
+					PRINTFORM 「では、
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW はそのまま座っていて下さい」
+					PRINTFORMW %CALLNAME:MASTER%のペニスを、胸に突き刺すように挿入れていく白蓮
+					PRINTFORMW 「ふふっ……半分くらい……って、あら？」
+					PRINTFORMW その柔らかさと温かさで早くも夢心地の%CALLNAME:MASTER%
+					PRINTFORMW がくがくと足が震え、倒れそうになる主人を支える白蓮であった
+					PRINTFORMW 「あらあら……支えてあげますから、気持ち良くなって下さいね……♪」
+				ELSEIF RAND:3 == 0
+					PRINTFORMW 竿の部分はみっちりと白蓮の胸に覆われており、とても気持ちがいい
+					PRINTFORMW じわじわと蒸し焼きにされるような感覚が走ると、尿道口から先走りが漏れた
+					PRINTFORMW 「んんっ……ふふ、先っぽもピクピクして……可愛らしいですよ？」
+					PRINTFORMW その瞬間を見逃さなかった白蓮は、すかさず鈴口を責める
+					PRINTFORMW 射精までのカウントダウンは、既に始まっていた――いや、縮められていた
+				ELSEIF RAND:2 == 0
+					PRINTFORMW 「いつも私がしてばかりですから、今日は自分でしてみますか？」
+					PRINTFORMW ベッドに仰向けに倒れ、たぷたぷと揺れる乳房を腕で寄せる
+					PRINTFORMW そのまま谷間にペニスを挿入すると、白蓮は胸から腕を離した
+					PRINTFORMW 「ふぁぁっ……んんっ、あっ……」
+					PRINTFORMW %CALLNAME:MASTER%が力を入れて揉みしだくと、力を加えた分だけ弾力が返ってくる
+					PRINTFORMW その柔らかな乳圧が直に掛かってくる様を見て、段々と昂ぶりを覚える%CALLNAME:MASTER%
+					PRINTFORM 「あぁっ……
+					CALL MASTER_CALLNAME_77
+					PRINTFORMW 、ちゃんと……気持ち良くなれてますか……？」
+				ELSE
+					PRINTFORMW 白蓮の豊満な胸で挟んでもらうと、胸の谷間から亀頭が飛び出していた
+					PRINTFORMW 「あらあら、先っぽ真っ赤にして……可愛い♪」
+					PRINTFORMW 鈴口を啄むように吸い上げると、びくびくと震えて反応してしまう
+					PRINTFORMW 「ぢゅるっ……ふふ、もっとぺろぺろしながらして欲しいんですね？」
+					PRINTFORMW 言葉責めを交えながらパイズリとフェラを同時にこなす白蓮
+					PRINTFORMW 母性的かつ妖艶な波状攻撃に、早くも限界が訪れようとしていた
+				ENDIF
+			ENDIF
+			CFLAG:5330 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「気持ち良くしてあげます……」
+			PRINTFORMW 白蓮は優しくペニスを挟み込むと、いたわるように奉仕した
+			CFLAG:5330 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んっ……はぁ……」
+			PRINTFORMW 「(凄く……熱い……変な気持ちになりそう……)」
+			CFLAG:5330 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……いい加減、人の身体を玩具にしないで……！」
+			CFLAG:5330 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;-------------------------------------------------
+;素股 CFLAG331
+;-------------------------------------------------
+IF SELECTCOM == 225
+	;初めて
+	IF CFLAG:5331 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「股で……擦れって？」
+			;処女の場合
+			IF TALENT:処女 == 1
+				PRINTFORMW 「(私の初めて……貰ってくれないのですか……？)」
+			ENDIF
+			PRINTFORMW 「本当に……そんなのが気持ちいいんですか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「股で擦れって……」
+			;処女の場合
+			IF TALENT:処女 == 1
+				PRINTFORMW 「まぁ、貴方に挿入れられるよりはいいですけど……」
+			ELSE
+				PRINTFORMW 「人間の発想って……よく分からないわ……」
+			ENDIF
+		ENDIF
+			CFLAG:5331 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			PRINTFORMW 「擦られるだけなんて嫌です……」
+			;処女の場合
+			IF TALENT:処女 == 1
+				PRINTFORMW 「早く……私の初めてを奪ってください……」
+			ELSE
+				PRINTFORM 「早く……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW のが欲しい……」
+			ENDIF
+			CFLAG:5331 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「じ、焦らさないで……お願いですから……」
+			CFLAG:5331 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「先が……擦られて……っ」
+			PRINTFORMW クリトリスへの刺激のためか、白蓮は時折声を上げた
+			CFLAG:5331 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「ん……無理矢理犯されるよりは……」
+			CFLAG:5331 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;騎乗位 CFLAG332
+;個人的に騎乗位は大人のおねえさんに良く似合う。
+;-------------------------------------------------
+IF SELECTCOM == 24
+	;初めて
+	IF CFLAG:5332 == 0
+		;処女
+		IF TALENT:処女 == 1 && EXP:Ｖ経験 == 1
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「んっ……こ、これって……」
+				PRINTFORMW 腰に跨るように命令すると、白蓮はこれから先に起こる事を理解したようだ
+				PRINTFORMW 「……わ、分かり、ました……」
+				PRINTFORM 「こうしてると……自分から
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW に捧げているみたいですね……」
+				PRINTFORMW そうして一呼吸置いた後、片手でペニスを握り、自分の手で膜を破いていくのだった
+			;それ以外
+			ELSE
+				PRINTFORMW 「んっ……こ、これ……っ！？」
+				PRINTFORMW 腰に跨るように命令すると、白蓮はこれから先に起こる事を理解したようだ
+				PRINTFORMW その顔には明らかに恐怖が浮かんでいた
+				PRINTFORMW 「いっ……嫌ぁっ！！　お願いします！他の事ならっ……何でも言うこと聞きますからっ！！」
+				PRINTFORMW 「だから……純血だけは破かな―――――」
+				PRINTFORMW 白蓮の返事を待たず、%CALLNAME:MASTER%は白蓮の腰を下ろさせて膜を破くのだった
+			ENDIF
+		;非処女
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 「うふふ、こうするのって……何年ぶりでしょうね……？」
+				PRINTFORMW 急に白蓮の顔に妖艶さが増して見えたのは気のせいだろうか……？
+			;それ以外
+			ELSE
+				PRINTFORMW 「うぅっ……もう嫌ぁっ……」
+				PRINTFORMW 涙ぐみながら白蓮は許しを乞うが、それを無視して挿入するのだった
+				PRINTFORMW 「ひぁぁっ！？嫌っ……こんなのって……」
+			ENDIF
+		ENDIF
+			CFLAG:5332 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			IF RAND:3 == 0
+				PRINTFORM 「んぁぁっ、
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW っ……気持ちいいですか？」
+				PRINTFORMW 豊満な胸と黄土色の髪を揺らしながら、激しく腰を打ち付ける白蓮
+				PRINTFORMW 「あぁんっ、もっと激しくして、もっと、もっとぉ……！」
+			ELSEIF RAND:2 == 0
+				PRINTFORM 「こうしてると、私が
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW を犯しているみたいですね……」
+				PRINTFORMW 「でもたまには……あぁんっ、あぁぁっ！」
+			ELSE
+				PRINTFORM 「ふふ……
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW ……」
+				PRINTFORMW %CALLNAME:MASTER%のものを優しく扱きながら、腰に跨る白蓮
+				PRINTFORMW 「ふぁ……じゃあいきますよ……んんっ」
+				PRINTFORMW 一気に奥まで挿入し、じわじわと味わわせるようにゆっくりと腰を引く
+				PRINTFORMW 「あらあら……涎垂らしちゃうくらい気持ちいいんですか？」
+				PRINTFORMW 二種類の異なる快感に、翻弄されるばかりの%CALLNAME:MASTER%であった
+			ENDIF
+			CFLAG:5332 = 5
+		;屈服刻印Lv3＋V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 「うぅっ……どうして、腰が……勝手に……っ」
+			PRINTFORMW 「(こんな……淫らな事なのに……身体が……)」
+			CFLAG:5332 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ふぅ……動けばいいんでしょう？」
+			CFLAG:5332 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「どうしてこんな事を……はぁ……」
+			CFLAG:5332 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;スパンキング CFLAG333
+;勇気を持って書いてみた。
+;完全にキャラ崩壊してるけど……こまけぇこたぁいいんだよ！！
+;-------------------------------------------------
+IF SELECTCOM == 220
+	;初めて
+	IF CFLAG:5333 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ひっ……！？」
+			PRINTFORMW 「どうしたんですか？　何か、粗相でもしましたか……？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「痛っ、苦痛で私を従わせるつもりですか？」
+		ENDIF
+			CFLAG:5333 = 1
+			RETURN 0
+	;二回目以降
+		ELSE
+		;恋慕＋マゾっ気Lv5以上
+		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+			PRINTFORMW 「あぁぁっ！？いいっ、もっと……もっと叩いてぇっ……」
+			PRINTFORMW 「白蓮は叩かれて悦ぶ変態ですっ！　あぁっ、あぁぁーっ！」
+			PRINTFORMW 身体に%CALLNAME:MASTER%の手形が出来るたび、狂ったように嬌声を上げる白蓮であった
+			CFLAG:5333 = 6
+		;恋慕＋マゾっ気Lv3以上
+		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+			PRINTFORMW 「あぁぁっ……これ、気持ち良くなってきました……」
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……もっと、叩いてくれますか？」
+			PRINTFORMW 潤んだ瞳と荒い息をしながら、白蓮はもっと痛め付けるようせがむのだった
+			CFLAG:5333 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁ……はぁ……」
+			PRINTFORM 「あんまりこういうのは好きじゃないですけど、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW の為なら……」
+			CFLAG:5333 = 4
+		;マゾっ気Lv3以上
+		ELSEIF ABL:マゾっ気 >= 3
+			PRINTFORMW 「ひぐっ……あぁっ……！？」
+			PRINTFORMW 「(やだ……どうして……？)」
+			PRINTFORMW 白蓮は叩かれて反応する自分の身体に疑問を抱いていた
+			CFLAG:5333 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぐっ……痛いです……やめて下さい……」
+			CFLAG:5333 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;鞭 CFLAG334
+;-------------------------------------------------
+;IF SELECTCOM == 221
+;	;初めて
+;	IF CFLAG:5334 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5334 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5334 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5334 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5334 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5334 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5334 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;針 CFLAG335
+;-------------------------------------------------
+;IF SELECTCOM == 222
+;	;初めて
+;	IF CFLAG:5335 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5335 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5335 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5335 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5335 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5335 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5335 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;アイマスク 開始時CFLAG336 終了時CFLAG337
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 225 && TEQUIP:41 == 1
+;	;初めて
+;	IF CFLAG:5336 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5336 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5336 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5336 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORM 
+;			CFLAG:5336 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5336 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5336 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;終了時
+;ELSEIF SELECTCOM == 514 && TEQUIP:43 == 0
+;	;初めて
+;	IF CFLAG:5337 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORM 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5337 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORM 
+;			CFLAG:5337 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5337 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5337 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;縄 開始時CFLAG338 終了時CFLAG339
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 224 && TEQUIP:40
+;	;初めて
+;	IF CFLAG:5338 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5338 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5338 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5338 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5338 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5338 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5338 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;終了時
+;ELSEIF SELECTCOM == 513 && TEQUIP:40 == 0 && TEQUIP:90 == 0
+;	;初めて
+;	IF CFLAG:5339 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5339 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5339 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5339 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5339 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;
+;-------------------------------------------------
+;ボールギャグ 開始時CFLAG340 終了時CFLAG341
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 226 && TEQUIP:42 == 1
+;	;初めて
+;	IF CFLAG:5340 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5340 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5340 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5340 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5340 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5340 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5340 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;終了時
+;ELSEIF SELECTCOM == 563 && TEQUIP:42 == 0
+;	;初めて
+;	IF CFLAG:5341 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5341 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5341 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5341 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5341 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+
+
+;-------------------------------------------------
+;浣腸 CFLAG342
+;-------------------------------------------------
+;開始時
+;IF TEQUIP:25 == 7 && SELECTCOM == 174
+;	;初めて
+;	IF CFLAG:5342 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			
+;		;それ以外
+;		ELSE
+;			
+;		ENDIF
+;			CFLAG:5342 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			
+;			CFLAG:5342 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			
+;			CFLAG:5342 = 4
+;		;A感覚Lv3以上＋マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			
+;			CFLAG:5342 = 3
+;		;それ以外
+;		ELSE
+;			
+;			CFLAG:5342 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;排泄 CFLAG343
+;-------------------------------------------------
+;IF TEQUIP:25 == 0 && SELECTCOM == 174
+;	;初めて
+;	IF CFLAG:5343 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			
+;		;それ以外
+;		ELSE
+;			
+;		ENDIF
+;			CFLAG:5343 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋A感覚Lv3以上＋マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			
+;			CFLAG:5343 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			
+;			CFLAG:5343 = 4
+;		;A感覚Lv3以上＋マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			
+;			CFLAG:5343 = 3
+;		;それ以外
+;		ELSE
+;			
+;			CFLAG:5343 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;ローション使用 CFLAG344
+;こっから再開。
+;-------------------------------------------------
+IF SELECTCOM == 60
+	;初めて
+	IF CFLAG:5344 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「……それは、濡らす為のものですか？」
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW なら、そんなものは要りませんけど……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「な……何ですかそれ……うぅ、冷たい……」
+		ENDIF
+			CFLAG:5344 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW なら、すぐに濡れてしまうんですけど……」
+			PRINTFORMW 「……どうしてもと仰るなら……どうぞ？」
+			CFLAG:5344 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……こんなものに頼って濡らしたつもりですか？」
+			CFLAG:5344 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;媚薬使用 CFLAG345
+;-------------------------------------------------
+IF SELECTCOM == 61
+	;初めて
+	IF CFLAG:5345 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……」
+			PRINTFORMW 身体の渇きを抑えられなくなったのか、白蓮はしきりに%CALLNAME:MASTER%を求め始めた
+		;それ以外
+		ELSE
+			PRINTFORMW 「……こっ……これは…………媚薬、ですね……」
+			PRINTFORMW 力を封じられながらも正体を看破したが、欲望を抑えることは出来なかった
+		ENDIF
+			CFLAG:5345 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……こんなお薬なんて必要ないのに……」
+			CFLAG:5345 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「……またそれですか……」
+			PRINTFORMW 「余程自身が無いんですね、貴方」
+			CFLAG:5345 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;ビデオカメラ使用 CFLAG346
+;-------------------------------------------------
+IF SELECTCOM == 100 && TEQUIP:50
+	;初めて
+	IF CFLAG:5346 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「……何ですか、その機械は？」
+			PRINTFORMW %CALLNAME:MASTER%はこれから行うことを説明すると、白蓮は顔を赤らめた
+			PRINTFORM 「……売られるのは構いません、それが
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW のお仕事なんですから」
+			PRINTFORMW 「でも……」
+			PRINTFORMW 「売られる前に……その……一緒に見るのは、ダメですか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「……何ですか、その機械は？」
+			PRINTFORMW %CALLNAME:MASTER%はこれから行うことを説明すると、白蓮は顔を真っ青にした
+			PRINTFORMW 「なっ……もしそれが人里に流れたら……っ！」
+			PRINTFORMW ビデオカメラを壊そうとする白蓮を押さえ付け、撮影を開始した
+		ENDIF
+			CFLAG:5346 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「その……売る前に、一緒に見て貰えますか？」
+			PRINTFORMW 白蓮は顔を赤らめていた
+			CFLAG:5346 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「貴方は……どこまで私を辱めれば気が済むんですかっ！」
+			PRINTFORMW 目尻に涙を浮かべ、白蓮は撮影を止めるよう懇願した
+			CFLAG:5346 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;野外プレイ 開始時CFLAG347 終了時CFLAG348
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 104 && TEQUIP:52
+;	;初めて
+;	IF CFLAG:5347 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5347 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋露出癖Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+;			PRINTFORMW 
+;			CFLAG:5347 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5347 = 4
+;		;露出癖Lv3以上
+;		ELSEIF ABL:露出癖 >= 3
+;			PRINTFORMW 
+;			CFLAG:5347 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5347 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;終了時
+;ELSEIF SELECTCOM == 504 && TEQUIP:51 == 0
+;	;初めて
+;	IF CFLAG:5348 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5348 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5348 = 4
+;		;露出癖Lv3以上
+;		ELSEIF ABL:露出癖 >= 3
+;			PRINTFORMW 
+;			CFLAG:5348 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5348 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;助手を犯す CFLAG349 CFLAG350
+;-------------------------------------------------
+;IF SELECTCOM == 26
+;	;初めて
+;	IF CFLAG:5349 == 0
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;	;それ以外
+;	ELSE
+;		IF ASSI:TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;	ENDIF
+;		CFLAG:5349 = 1
+;		RETURN 0
+;	;二回目以降
+;	ELSE
+;		IF TALENT:恋慕 == 1
+;			IF TALENT:ASSI:恋慕 == 1
+;				PRINTFORMW 
+;				CFLAG:5349 = 5
+;			;それ以外
+;			ELSE
+;				PRINTFORMW 
+;				CFLAG:5349 = 4
+;			ENDIF
+;		;それ以外
+;		ELSE
+;			IF TALENT:ASSI:恋慕 == 1
+;				PRINTFORMW 
+;				CFLAG:5349 = 3
+;			;それ以外
+;			ELSE
+;				PRINTFORMW 
+;				CFLAG:5349 = 2
+;			ENDIF
+;		ENDIF
+;				RETURN 0
+;	;相手がそれ以外
+;	ELSE 
+;		;初めて
+;		IF CFLAG:5350 == 0
+;			IF TALENT:恋慕 == 1
+;				;助手に恋慕
+;				IF TALENT:ASSI:恋慕 == 1
+;					PRINTFORMW 
+;				;それ以外
+;				ELSE
+;					PRINTFORMW 
+;				ENDIF
+;			;それ以外
+;			ELSE
+;				;助手に恋慕
+;				IF TALENT:ASSI:恋慕 == 1
+;					PRINTFORMW 
+;				;それ以外
+;				ELSE
+;					PRINTFORMW 
+;				ENDIF
+;			ENDIF
+;				CFLAG:5350 = 1
+;				RETURN 0
+;		;二回目以降
+;		ELSE
+;			IF TALENT:恋慕 == 1
+;				;助手に恋慕
+;				IF TALENT:ASSI:恋慕 == 1
+;					PRINTFORMW 
+;					CFLAG:5350 = 5
+;				;それ以外
+;				ELSE
+;					PRINTFORMW 
+;					CFLAG:5350 = 4
+;				ENDIF
+;			;それ以外
+;			ELSE
+;				;助手に恋慕
+;				IF TALENT:ASSI:恋慕 == 1
+;					PRINTFORMW 
+;					CFLAG:5350 = 3
+;				;それ以外
+;				ELSE
+;					PRINTFORMW 
+;					CFLAG:5350 = 2
+;				ENDIF
+;			ENDIF
+;				RETURN 0
+;		ENDIF
+;	ENDIF
+;ENDIF
+
+;-------------------------------------------------
+;イラマチオ CFLAG351
+;-------------------------------------------------
+;IF SELECTCOM == 230
+;	;初めて
+;	IF CFLAG:5351 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;奉仕精神Lv3以上
+;		ELSEIF ABL:奉仕精神 >= 3
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5351 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋奉仕精神Lv5
+;		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+;			PRINTFORMW 
+;			CFLAG:5351 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5351 = 4
+;		;奉仕精神Lv3以上
+;		ELSEIF ABL:奉仕精神 >= 3
+;			PRINTFORMW 
+;			CFLAG:5351 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5351 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;フィスト系コマンド CFLAG352
+;-------------------------------------------------
+;IF SELECTCOM == 231 || SELECTCOM == 232 || SELECTCOM == 233
+;	;初めて
+;	IF CFLAG:5352 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5352 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕＋マゾっ気Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 5
+;			PRINTFORMW 
+;			CFLAG:5352 = 6
+;		;恋慕＋マゾっ気Lv3以上
+;		ELSEIF TALENT:恋慕 == 1 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5352 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5352 = 4
+;		;マゾっ気Lv3以上
+;		ELSEIF ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5352 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5352 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;触手召喚 開始時CFLAG353 終了時CFLAG354
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 500 && TEQUIP:90
+	;初めて
+	IF CFLAG:5352 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「なっ……こ、これは……！？」
+			PRINTFORMW 白蓮は召喚されたものを見た瞬間、自らの記憶を振り返った
+			PRINTFORMW 「(これは……異世界の生物を……？)」
+			PRINTFORM 「(
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW って……魔法も使えたんですか……？)」
+		;それ以外
+		ELSE
+			PRINTFORMW 「こ、これは……！？」
+			PRINTFORMW 「ま、まさかその生き物に…………嫌ぁぁぁっ！！」
+		ENDIF
+			CFLAG:5352 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋触手経験20以上
+		IF TALENT:恋慕 == 1 && EXP:触手経験 >= 20
+			PRINTFORMW 「ふふ、この子の扱い方が段々分かってきました……」
+			PRINTFORM 「姿形はどうあれ、私を気持ち良くしようとしてるのは
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW 一緒ですからね……」
+			CFLAG:5352 = 4
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「うぅ……いくらなんでもこれだけは慣れません……」
+			CFLAG:5352 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「そんな力を持ちながら……どうして……」
+			CFLAG:5352 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 500 && TEQUIP:90 == 0
+	;恋慕＋触手経験20以上
+	IF TALENT:恋慕 == 1 && ABL:55 >= 20
+		PRINTFORMW 「んっ、ふふ……お疲れさま」
+		PRINTFORMW 白蓮が別れを惜しむように触手を撫でると、触手は戻っていった
+		CFLAG:5353 = 3
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORM 「……やっぱり、
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW にして欲しいです……」
+		CFLAG:5353 = 2
+	;それ以外
+	ELSE
+		PRINTFORMW 「うぅ……」
+		CFLAG:5353 = 1
+	ENDIF
+		RETURN 0
+ENDIF
+
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・通常版 CFLAG355以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;-------------------------------------------------
+;Gスポット刺激 CFLAG355
+;指挿入れ CFLAG356
+;-------------------------------------------------
+IF SELECTCOM == 4
+	;Gスポット刺激
+	IF SELECTCOM == 4 && ABL:PLAYER:技巧 >= 3 || PREVCOM == 600
+		;初めて
+		IF CFLAG:5355 == 0
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 
+			;それ以外
+			ELSE
+				PRINTFORMW 
+			ENDIF
+				CFLAG:5355 = 1
+				RETURN 0
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				PRINTFORMW 
+				CFLAG:5355 = 5
+			;V感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				PRINTFORMW 
+				CFLAG:5355 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 
+				CFLAG:5355 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	;指挿入れ
+	ELSE
+		;初めて
+		IF CFLAG:5356 == 0
+			;処女（処女でないキャラの場合は無記入でよい）
+			IF TALENT:処女 == 1 && EXP:Ｖ経験 == 1
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 
+				;それ以外
+				ELSE
+					PRINTFORMW 
+				ENDIF
+			;非処女
+			ELSE
+				;恋慕
+				IF TALENT:恋慕 == 1
+					PRINTFORMW 
+				;それ以外
+				ELSE
+					PRINTFORMW 
+				ENDIF
+			ENDIF
+				CFLAG:5356 = 1
+				RETURN 0
+		;二回目以降
+		ELSE
+			;恋慕
+			IF TALENT:恋慕 == 1
+				
+				CFLAG:5356 = 4
+			;V感覚Lv3以上
+			ELSEIF ABL:Ｖ感覚 >= 3
+				
+				CFLAG:5356 = 3
+			;それ以外
+			ELSE
+				PRINTFORMW 
+				CFLAG:5356 = 2
+			ENDIF
+				RETURN 0
+		ENDIF
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;シャワー 開始時CFLAG357
+;-------------------------------------------------
+IF SELECTCOM == 18 && TEQUIP:54
+	;初めて
+	IF CFLAG:5357 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5357 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5357 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5357 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;対面座位 CFLAG358
+;-------------------------------------------------
+IF SELECTCOM == 22
+	;初めて
+	IF CFLAG:5358 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1 && ASSIPLAY == 0
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5358 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5358 = 5
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5358 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5358 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5358 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;背面座位 CFLAG359
+;乱れ牡丹 CFLAG360
+;-------------------------------------------------
+;背面座位
+IF SELECTCOM == 23 && TEQUIP:56 == 0
+	;初めて
+	IF CFLAG:5359 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5359 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5359 = 5
+		;屈服刻印Lv3+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5359 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5359 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5359 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;乱れ牡丹
+ELSEIF SELECTCOM == 23 && TEQUIP:56
+	;初めて
+	IF CFLAG:5360 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5360 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上+V感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5360 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5360 = 5
+		;屈服刻印Lv3+露出癖Lv3以上+V感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:Ｖ感覚 >= 3 && ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:5360 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5360 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5360 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;泡踊り CFLAG361
+;-------------------------------------------------
+IF SELECTCOM == 352
+	;初めて
+	IF CFLAG:5361 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「要するに……私の体で
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW を洗って欲しい、と？」
+			PRINTFORMW 「でも一体どこで……あっ」
+			PRINTFORMW どこで洗うのか気が付いた白蓮は、顔を真っ赤にした
+			PRINTFORM 「……もう、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW のおっぱい好き……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「やっぱり、人のことを道具としか見ていないんですね……」
+		ENDIF
+			CFLAG:5361 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			IF RAND:2 == 0
+				PRINTFORMW 「んしょ……」
+				PRINTFORMW 背中から腕を回して抱き付き、そのまま上下に動く
+				PRINTFORMW 泡でぬるぬるになったおっぱいがひしゃげながらも擦られ、凄く気持ちがいい
+				PRINTFORMW 「あら、もうこんなに大きくなって……こっちもお世話してあげます」
+			ELSE
+				PRINTFORMW 「はぁ……はぁ……」
+				PRINTFORMW 「こうやって洗ってると……乳首や色んなところが擦れて……あぁん……」
+			ENDIF
+			CFLAG:5361 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んん……け、結構難しいですね……」
+			CFLAG:5361 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「(はぁ……なんでこんな変なことを……)」
+			CFLAG:5361 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;利尿剤 CFLAG362
+;-------------------------------------------------
+;IF SELECTCOM == 62
+;	;恋慕+おもらし癖
+;	IF TALENT:恋慕 && TALENT:おもらし癖
+;		PRINTFORMW 
+;		CFLAG:5362 = 4
+;	;恋慕
+;	ELSEIF TALENT:恋慕
+;		PRINTFORMW 
+;		CFLAG:5362 = 3
+;	;屈服刻印Lv3
+;	ELSEIF MARK:屈服刻印 == 3
+;		PRINTFORMW 
+;		CFLAG:5362 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:5362 = 1
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;羞恥プレイ 開始時CFLAG363 終了時CFLAG364
+;-------------------------------------------------
+IF SELECTCOM == 103 && TEQUIP:56
+	;初めて
+	IF CFLAG:5363 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5363 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+露出癖Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:5363 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5363 = 4
+		;露出癖Lv3以上
+		ELSEIF ABL:露出癖 >= 3
+			PRINTFORMW 
+			CFLAG:5363 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5363 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 503 && TEQUIP:43 == 0 && TEQUIP:58 == 0
+	;初めて
+	IF CFLAG:5364 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5364 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5364 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5364 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;お風呂場プレイ 開始時CFLAG365 終了時CFLAG366
+;きっと命蓮寺では、ひーねぇと一緒にお風呂に入る習慣があると思う。
+;故にこうなった。
+;そして口上見直したら……なんかeraJのような気がしなくもない。
+;-------------------------------------------------
+IF SELECTCOM == 350 && TEQUIP:53
+	;初めて
+	IF CFLAG:5365 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「お風呂場に？　ふふ、いいですよ」
+			PRINTFORMW 「折角ですから、背中……流しましょうか？」
+		;それ以外
+		ELSE
+			PRINTFORMW 「お風呂場に？」
+			PRINTFORMW 「一人で……って、ダメでしょうね……」
+		ENDIF
+			CFLAG:5365 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふふ、命蓮寺でお風呂に入っているとき……」
+			;ナズーリンの場合
+			IF RAND:5
+				PRINTFORMW 「ナズがよくふざけてきましたね」
+				PRINTFORMW 「どうしたらそんなに大きくなるんですか、って」
+				PRINTFORMW 「結局は揉むための口実でしたけど……」
+			;一輪の場合
+			ELSEIF RAND:4
+				PRINTFORMW 「一輪は大人しいですね、体格も私とあまり相違無いですし」
+				PRINTFORMW 「ああ……一度だけ雲山が来たことがありました……」
+				PRINTFORMW そう言うと、白蓮はどこか遠くを見ていた
+			;ムラサの場合
+			ELSEIF RAND:3
+				PRINTFORMW 「ムラサがよく水をかけてきましたね」
+				PRINTFORMW 「発育は良かったので、ナズのように嫉妬することは無かったですけど……」
+			;星の場合
+			ELSEIF RAND:2
+				PRINTFORMW 「星は……あまり私とは入りたがらないんです」
+				PRINTFORMW 「何でも、『聖様の胸を見ると嫉妬してしまう自分が嫌だ』とか……」
+			;ぬえの場合
+			ELSE
+				PRINTFORMW 「ぬえは……本当に容赦無いですね」
+				PRINTFORM 「まるで、今の
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW みたいに甘えてきますから……ふふっ」
+				PRINTFORMW 何処か母親的な表情で、白蓮は%CALLNAME:MASTER%を見ていた
+			ENDIF
+			CFLAG:5365 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「普通にお風呂に入らせてください…」
+			CFLAG:5365 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 350 && TEQUIP:53 == 0
+	;初めて
+	IF CFLAG:5366 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5366 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5366 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5366 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;新妻プレイ 開始時CFLAG367　終了時CFLAG368
+;ひーねぇには割烹着が似合うと思ったんだが……これはこれで。
+;-------------------------------------------------
+;開始時
+IF SELECTCOM == 90 && TEQUIP:59
+	;初めて
+	IF CFLAG:5367 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「エプロン……ですか……」
+			PRINTFORMW 白蓮は目を瞑って何やら考えている
+			PRINTFORMW そして――――――
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW ……」
+			PRINTFORMW 「お食事ですか？　お風呂ですか？」
+			PRINTFORMW 「それとも……私を、召し上がりますか？」
+			PRINTFORMW 顔を真っ赤にしながらも、白蓮はそう言い切った
+			PRINTFORMW 腕は寄せられ、エプロンから豊満な胸がはみ出しているのが見て取れた
+			PRINTFORMW その刹那、欲情した%CALLNAME:MASTER%は、白蓮を押し倒していた
+		ELSE
+			PRINTFORMW 「裸に、エプロン……」
+			PRINTFORMW 「大体考えてることは分かりました……はぁ」
+		ENDIF
+		RETURN 0
+	;二回目以降
+	ELSE
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 白蓮は嬉しそうにエプロンを身に付けている
+			PRINTFORMW 「うふふ、始めましょう？」
+			CFLAG:5367 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「また……さっぱり意図が分かりません……」
+			CFLAG:5367 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+;終了時
+ELSEIF SELECTCOM == 90 && TEQUIP:59 == 0
+	;初めて
+	IF CFLAG:5368 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5368 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5368 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5368 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+;
+;-------------------------------------------------
+;放尿 CFLAG369
+;強制放尿 CFLAG370
+;-------------------------------------------------
+;IF SELECTCOM == 111
+;	;強制放尿
+;	IF (TALENT:おもらし癖 && ABL:従順 >= 3 && ABL:マゾっ気 >= 3) || (TALENT:おもらし癖 && TEQUIP:12 == 0)
+;		;恋慕+おもらし癖+野外プレイ
+;		IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+;			PRINTFORMW 
+;			CFLAG:5370 = 5
+;		;恋慕+おもらし癖
+;		ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+;			PRINTFORMW 
+;			CFLAG:5370 = 4
+;		;露出癖Lv5
+;		ELSEIF ABL:露出癖 >= 5
+;			PRINTFORMW 
+;			CFLAG:5370 = 3
+;		;屈服刻印Lv3
+;		ELSEIF MARK:屈服刻印 == 3
+;			PRINTFORMW 
+;			CFLAG:5370 = 2
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5370 = 1
+;		ENDIF
+;	;放尿
+;	ELSE
+;		;恋慕+おもらし癖+野外プレイ
+;		IF TALENT:恋慕 && TALENT:おもらし癖 && TEQUIP:52
+;			PRINTFORMW 
+;			CFLAG:5369 = 5
+;		;恋慕+おもらし癖
+;		ELSEIF TALENT:恋慕 && TALENT:おもらし癖
+;			PRINTFORMW 
+;			CFLAG:5369 = 4
+;		;露出癖Lv5
+;		ELSEIF ABL:露出癖 >= 5
+;			PRINTFORMW 
+;			CFLAG:5369 = 3
+;		;屈服刻印Lv3
+;		ELSEIF MARK:屈服刻印 == 3
+;			PRINTFORMW 
+;			CFLAG:5369 = 2
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5369 = 1
+;		ENDIF
+;	ENDIF
+;ENDIF
+;
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;追加コマンド・アナル関連 CFLAG371以降を使用
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;
+;-------------------------------------------------
+;アナル舐め CFLAG371
+;-------------------------------------------------
+;IF SELECTCOM == 180
+;	;初めて
+;	IF CFLAG:5371 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5371 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5371 = 4
+;		;A感覚Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5371 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5371 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;アナルビーズ 開始時CFLAG372 終了時CFLAG373
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 172 && TEQUIP:25 == 5
+;	;初めて
+;	IF CFLAG:5372 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5372 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕+A感覚Lv3以上+マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5372 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5372 = 4
+;		;A感覚Lv3以上+マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5372 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5372 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;脱着時
+;ELSEIF SELECTCOM == 172 && TEQUIP:25 == 0
+;	;恋慕
+;	IF TALENT:恋慕 == 1
+;		PRINTFORMW 
+;		CFLAG:5373 = 3
+;	;A感覚Lv3以上+マゾっ気Lv3以上
+;	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;		PRINTFORMW 
+;		CFLAG:5373 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:5373 = 1
+;	ENDIF
+;		RETURN 0
+;ENDIF
+;
+;------------------------------------------------
+;正常位アナル CFLAG374
+;-------------------------------------------------
+;IF SELECTCOM == 30
+;	;初めて
+;	IF CFLAG:5374 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5374 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:潤滑 + UP:潤滑
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5374 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5374 = 4
+;		;潤滑Lv2以上+A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5374 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5374 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;後背位アナル CFLAG375
+;-------------------------------------------------
+;IF SELECTCOM == 31
+;	;初めて
+;	IF CFLAG:5375 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5375 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:潤滑 + UP:潤滑
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5375 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5375 = 4
+;		;潤滑Lv2以上+A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5375 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5375 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;対面座位アナル CFLAG376
+;-------------------------------------------------
+;IF SELECTCOM == 32
+;	;初めて
+;	IF CFLAG:5376 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5376 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:潤滑 + UP:潤滑
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5376 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5376 = 4
+;		;潤滑Lv2以上+A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5376 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5376 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;背面座位アナル CFLAG377
+;-------------------------------------------------
+;IF SELECTCOM == 33
+;	;初めて
+;	IF CFLAG:5377 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5377 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:潤滑 + UP:潤滑
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5377 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5377 = 4
+;		;潤滑Lv2以上+A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5377 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5377 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;騎乗位アナル CFLAG378
+;-------------------------------------------------
+;IF SELECTCOM == 34
+;	;初めて
+;	IF CFLAG:5378 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5378 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		P = PALAM:潤滑 + UP:潤滑
+;		;恋慕+潤滑Lv2以上
+;		IF TALENT:恋慕 == 1 && P >= PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5378 = 5
+;		;恋慕+潤滑Lv2未満
+;		ELSEIF TALENT:恋慕 == 1 && P < PALAMLV:2
+;			PRINTFORMW 
+;			CFLAG:5378 = 4
+;		;潤滑Lv2以上+A感覚Lv3以上
+;		ELSEIF P >= PALAMLV:2 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5378 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5378 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;空気浣腸 開始時CFLAG379 終了時CFLAG380
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 175 && TEQUIP:25 == 8
+;	;初めて
+;	IF CFLAG:5379 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5379 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕+A感覚Lv3以上+マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5379 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5379 = 4
+;		;A感覚Lv3以上+マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5379 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5379 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;脱着時
+;ELSEIF SELECTCOM == 175 && TEQUIP:25 == 0
+;	;恋慕
+;	IF TALENT:恋慕 == 1
+;		PRINTFORMW 
+;		CFLAG:5380 = 3
+;	;A感覚Lv3以上+マゾっ気Lv3以上
+;	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;		PRINTFORMW 
+;		CFLAG:5380 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:5380 = 1
+;	ENDIF
+;		RETURN 0
+;ENDIF
+;
+;-------------------------------------------------
+;拡張バルーン 開始時CFLAG381 終了時CFLAG382
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 173 && TEQUIP:25 == 6
+;	;初めて
+;	IF CFLAG:5381 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 「
+;		ENDIF
+;			CFLAG:5381 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕+A感覚Lv3以上+マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5381 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5381 = 4
+;		;A感覚Lv3以上+マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5381 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5381 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;脱着時
+;ELSEIF SELECTCOM == 173 && TEQUIP:25 == 0
+;	;恋慕
+;	IF TALENT:恋慕 == 1
+;		PRINTFORMW 
+;		CFLAG:5382 = 3
+;	;A感覚Lv3以上+マゾっ気Lv3以上
+;	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;		PRINTFORMW 
+;		CFLAG:5382 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:5382 = 1
+;	ENDIF
+;		RETURN 0
+;ENDIF
+;
+;-------------------------------------------------
+;アナル電極 開始時CFLAG383 終了時CFLAG384
+;-------------------------------------------------
+;開始時
+;IF SELECTCOM == 171 && TEQUIP:25 == 4
+;	;初めて
+;	IF CFLAG:5383 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5383 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕+A感覚Lv3以上+マゾっ気Lv3以上
+;		IF TALENT:恋慕 == 1 && ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5383 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5383 = 4
+;		;A感覚Lv3以上+マゾっ気Lv3以上
+;		ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;			PRINTFORMW 
+;			CFLAG:5383 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5383 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;脱着時
+;ELSEIF SELECTCOM == 171 && TEQUIP:25 == 0
+;	;恋慕
+;	IF TALENT:恋慕 == 1
+;		PRINTFORMW 
+;		CFLAG:5384 = 3
+;	;A感覚Lv3以上+マゾっ気Lv3以上
+;	ELSEIF ABL:Ａ感覚 >= 3 && ABL:マゾっ気 >= 3
+;		PRINTFORMW 
+;		CFLAG:5384 = 2
+;	;それ以外
+;	ELSE
+;		PRINTFORMW 
+;		CFLAG:5384 = 1
+;	ENDIF
+;		RETURN 0
+;ENDIF
+;
+;-------------------------------------------------
+;アナル奉仕強制 CFLAG385
+;-------------------------------------------------
+;IF SELECTCOM == 44
+;	;初めて
+;	IF CFLAG:5385 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5385 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕+従順Lv5以上
+;		IF TALENT:恋慕 == 1 && ABL:従順 >= 5
+;			PRINTFORMW 
+;			CFLAG:5385 = 5
+;		;恋慕
+;		ELSEIF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5385 = 4
+;		;奉仕精神Lv3以上
+;		ELSEIF ABL:奉仕精神 >= 3
+;			PRINTFORMW 
+;			CFLAG:5385 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5385 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;レズ調教コマンド
+;～～～～～～～～～～～～～～～～～～～～～～～～～
+;-------------------------------------------------
+;３P CFLAG386
+;-------------------------------------------------
+;IF SELECTCOM == 610
+;	;初めて
+;	IF CFLAG:5386 == 0
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;		ENDIF
+;			CFLAG:5386 = 1
+;			RETURN 0
+;	;二回目以降
+;	ELSE
+;		;恋慕
+;		IF TALENT:恋慕 == 1
+;			PRINTFORMW 
+;			CFLAG:5386 = 5
+;		;V感覚Lv3以上+A感覚Lv3以上
+;		ELSEIF ABL:Ｖ感覚 >= 3 && ABL:Ａ感覚 >= 3
+;			PRINTFORMW 
+;			CFLAG:5386 = 4
+;		;屈服刻印Lv3
+;		ELSEIF MARK:屈服刻印 == 3
+;			PRINTFORMW 
+;			CFLAG:5386 = 3
+;		;それ以外
+;		ELSE
+;			PRINTFORMW 
+;			CFLAG:5386 = 2
+;		ENDIF
+;			RETURN 0
+;	ENDIF
+;ENDIF
+;
+;-------------------------------------------------
+;シックスナイン CFLAG387
+;-------------------------------------------------
+IF SELECTCOM == 602
+	;初めて
+	IF CFLAG:5387 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「はぁっ……い、一緒に……？」
+			PRINTFORMW 「はむ……んんっ、ちゅ……んむっ！？」
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5387 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕+奉仕精神Lv3以上+C感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 「ん……もっと、あむ……ひもひおく……」
+			PRINTFORMW %CALLNAME:MASTER%に責められながらも、白蓮は丹念にペニスを咥え込んだ
+			CFLAG:5387 = 6
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5387 = 5
+		;屈服刻印Lv3+奉仕精神Lv3以上+C感覚Lv3以上
+		ELSEIF MARK:屈服刻印 == 3 && ABL:奉仕精神 >= 3 && ABL:Ｃ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5387 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 
+			CFLAG:5387 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5387 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_PALAMCNG関係（77をキャラ番号に置換）
+;パラメータ変動をトリガーにした口上
+;パラメータ変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_77_MESSAGE_PALAMCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、77を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_PALAMCNG_K77_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_PALAMCNG_K77_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;パラメータ変動時のセリフ CFLAG 221～260を使用
+;-------------------------------------------------
+;-------------------------------------------------
+;初めて潤滑がLV2超えた CFLAG221
+;-------------------------------------------------
+P = PALAM:潤滑 + UP:潤滑
+IF P > PALAMLV:2 && CFLAG:5221 == 0
+	;ローションを使った場合
+	IF SELECTCOM == 60
+		PRINTFORMW 「こんなもので濡らされても……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「(嘘……こんな人間相手に……！？)」
+	ENDIF
+		CFLAG:5221 = 1
+ENDIF
+;-------------------------------------------------
+;初めて欲情がLV2超えた CFLAG222
+;-------------------------------------------------
+P = PALAM:欲情 + UP:欲情
+IF P > PALAMLV:2 && CFLAG:5222 == 0
+	;媚薬を使った場合
+	IF SELECTCOM == 61
+		PRINTFORMW 「薬にしか頼れないなんて……」
+		PRINTFORMW 「貴方が可哀想に思えてきました……」
+	;それ以外
+	ELSE
+		PRINTFORMW 「(うぅ……誰がこんな……)」
+	ENDIF
+		CFLAG:5222 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恥情がLV2超えた CFLAG223
+;-------------------------------------------------
+P = PALAM:恥情 + UP:恥情
+IF P > PALAMLV:2 &&CFLAG:5223 == 0
+	PRINTFORMW 「(……もう……顔から火が出そうよ……)」
+	PRINTFORMW 白蓮は顔を真っ赤にして俯いていた
+		CFLAG:5223 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めて恐怖がLV2超えた CFLAG224
+;-------------------------------------------------
+;P = PALAM:恐怖 + UP:恐怖
+;IF P > PALAMLV:2
+;	IF CFLAG:5224 == 0
+;		PRINTFORMW 
+;		CFLAG:5224 = 1
+;	ENDIF
+;ENDIF
+
+
+;-------------------------------------------------
+;初めてC絶頂 CFLAG225
+;-------------------------------------------------
+IF NOWEX:0 > 0
+	IF CFLAG:5225 == 0
+		PRINTFORMW 「ああぁっ……来る……来る……何か来ちゃう……！」
+		PRINTFORMW 「ダメ……これ以上は……あっ！あぁぁんっ！！」
+	CFLAG:5225 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてV絶頂 CFLAG226
+;-------------------------------------------------
+IF NOWEX:1 > 0
+	IF CFLAG:5226 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふあぁ！あっ……あっ、あぁっ、あぁっ……！」
+			PRINTFORMW 「あぁぁぁっ！ダメぇぇっ！イッちゃうぅぅぅっ！！」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あっ、あぁっ……！」
+			PRINTFORMW 「イキたくないのに……あぁっ、イッちゃうっ！」
+		ENDIF
+		CFLAG:5226 = 1
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;初めてA絶頂 CFLAG227
+;-------------------------------------------------
+IF NOWEX:2 > 0
+	IF CFLAG:5227 == 0
+		PRINTFORMW 「や、やだ……おっ、お尻……ダメぇぇっ！」
+	ENDIF
+	CFLAG:5227 = 1
+ENDIF
+
+;-------------------------------------------------
+;初めてB絶頂 CFLAG228
+;-------------------------------------------------
+IF NOWEX:3 > 0
+	IF CFLAG:5228 == 0
+		PRINTFORMW 「はぁ……ふぁ、もう……おっぱいが熱い……」
+		PRINTFORMW 「ダメ……それ以上したら……あぁぁんっ！」
+	ENDIF
+	CFLAG:5228 = 1
+ENDIF
+
+;-------------------------------------------------
+;処女喪失(処女のみ) CFLAG229
+;デフォだとひーねぇは処女じゃないんだよな……。
+;-------------------------------------------------
+A = UP:反感 + UP:不快
+IF TFLAG:0 > 0 && CFLAG:5229 == 0
+	;恋慕かつ主人のセックスによる処女喪失
+	IF TFLAG:2
+		;恋慕+従順Lv5
+		IF TALENT:恋慕 == 1 && ABL:従順 >= 5 && ASSIPLAY == 0
+			PRINTFORMW 「くぁっ……はぁ……あぁ……」
+			PRINTFORM 「私の初めて……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW に……」
+			PRINTFORMW そう言うと、白蓮は最高の笑顔で%CALLNAME:MASTER%に抱きついた
+		ENDIF
+	;指挿入れで処女喪失（反感がかなり少ない）
+	ELSEIF SELECTCOM == 4
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「指でなんて……」
+			PRINTFORM 「(本当は……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW に奪って欲しかったのに……)」
+		;それ以外
+		ELSE
+			PRINTFORMW 「あ……あぁぁ……」
+			PRINTFORMW %CALLNAME:MASTER%の指に付いた血が、何を意味していたか―――
+			PRINTFORMW 白蓮は、呆然とその光景を見ていることしか出来なかった
+		ENDIF
+	;それ以外の時に処女喪失
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「私の処女は……」
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW に奪って欲しかったのに……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅっ……うぁぁぁっ……」
+			PRINTFORMW その後、白蓮は顔を伏せてずっと泣いていた
+			PRINTFORMW %CALLNAME:MASTER%が声をかけようとしても、呼びかけに応じようとはしなかった
+		ENDIF
+	ENDIF
+		CFLAG:5229 = 1
+ENDIF
+
+;-------------------------------------------------
+;アナルセックスで射精させた CFLAG230 CFLAG231
+;-------------------------------------------------
+IF TFLAG:12 > 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あっ……はぁっ……お尻が熱い……」
+			CFLAG:5230 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……嫌ぁっ……お腹の中に出すなんて……」
+			CFLAG:5230 = 2
+		ENDIF
+			RETURN 0
+ENDIF
+;-------------------------------------------------
+;セックスで射精させた CFLAG230 CFLAG231
+;-------------------------------------------------
+IF TFLAG:11 > 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORM 「ふぁ……あぁぁっ！来てるっ、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW のが……」
+			PRINTFORMW 「凄く……あったかい……」
+			CFLAG:5231 = 4
+		;屈服刻印Lv3
+		ELSEIF MARK:屈服刻印 == 3
+			PRINTFORMW 「ダメ……ダメなのに……」
+			CFLAG:5231 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「いやぁ……もうやめてぇ……」
+			CFLAG:5231 = 2
+		ENDIF
+			RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;手で射精させた CFLAG232
+;-------------------------------------------------
+IF TFLAG:19 > 0
+	;恋慕＋奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		IF RAND:4 == 0
+			PRINTFORMW 「うわっ、凄いいっぱい……まだ出てる……」
+			PRINTFORMW 「んっ、綺麗にしてあげます……ぺろっ……ちゅぷ……」
+			PRINTFORMW 流れ出す精液を、きれいに舐め取っていく白蓮であった
+		ELSEIF RAND:3 == 0
+			PRINTFORMW 「わぁ……こんなにいっぱい……」
+			PRINTFORMW 「こんなに射精して……それだけ気持ち良かった、って事ですか……？」
+			PRINTFORMW 満足げな表情な白蓮だったが、手の動きは止めていなかった
+			PRINTFORMW 射精したばかりのペニスを握られ、神経を直に触られている感覚になる
+			PRINTFORMW 下半身の感覚が麻痺したような快楽が来た頃には、次の射精が始まっていた
+			PRINTFORMW 「……んもう、射精し過ぎですよ……」
+		ELSEIF RAND:2 == 0
+			PRINTFORMW 「ふふっ……もっと射精させてあげますね……」
+			PRINTFORMW そう言うと、精液に塗れた指をペロリと舐め取る白蓮
+			PRINTFORMW その姿が艶かしかったのか、再びペニスを勃起させるのだった
+		ELSE
+			PRINTFORMW 「凄い……手だけでこんなにいっぱい射精するなんて……」
+			PRINTFORMW 白蓮は恍惚とした表情を浮かべ、精液を掬っていた
+		ENDIF
+		CFLAG:5232 = 5
+	;恋慕
+	ELSEIF TALENT:恋慕 == 1
+		PRINTFORMW 「ふふっ、そんなに気持ち良かったんですか？」
+		CFLAG:5232 = 4
+	;それ以外
+	ELSE
+		PRINTFORMW 「……きゃぁっ！？」
+		PRINTFORMW 「……急に出さないでください……」
+		CFLAG:5232 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;口で射精させた CFLAG233 CFLAG234
+;一部原作ネタあり。と言うかひーねぇのパイズリネタを考えてたらこうなった。
+;「ああ、法の世界に光が満ちる」→「ああ、私の谷間に(ry」
+;後は分かるね？
+;-------------------------------------------------
+IF TFLAG:15 > 0
+	;フェラ、イラマチオの場合
+	IF SELECTCOM == 41 || SELECTCOM == 230
+		;恋慕＋精液中毒Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:精液中毒 >= 3
+			PRINTFORMW 「んぐ……んんっ……あむ……じゅるるる……」
+			PRINTFORMW 「もっと……もっと精液を飲ませて下さい……」
+			CFLAG:5233 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 「んっ……んぷ……ふぁ……んぐ……ごくっ……」
+			CFLAG:5233 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「んっ……こくっ、ちゅっ……」
+			CFLAG:5233 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……げほっ……げほっ……」
+			CFLAG:5233 = 2
+		ENDIF
+			RETURN 0
+	;パイズリの場合
+	ELSEIF SELECTCOM == 42
+		;恋慕＋奉仕精神Lv5
+		IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+			IF RAND:4 == 0
+				PRINTFORMW 「あらあら、うふふ……こんなにいっぱい……」
+				PRINTFORMW 谷間や顔を精液でベトベトにされながらも、一つ一つ掬って舐め取っていった
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 「あぁ……私の谷間に、精液が満ちる……」
+				PRINTFORMW すっかりベトベトになった胸や谷間から精液を掬い取ると、見せ付けるようにして口に含むのだった
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 「ふぁ……もう、射精し過ぎですよ……」
+				PRINTFORMW 「うふふ、もっと射精したいですか……？」
+				PRINTFORMW そのまま優しく労わるように、豊満な胸で包んだままやんわりと動く
+				PRINTFORMW じわじわと癒されるような感覚に、再び陰茎は固さを取り戻すのだった
+				PRINTFORMW 「あら、もう一回……して欲しいんですか？」
+			ELSE
+				PRINTFORMW 「ふふ、まだびくびくしてますね……」
+				PRINTFORMW 一度射精したものの、まだまだペニスは固さを失っていない
+				PRINTFORMW 「んっ……まだ……出ますよね？」
+				PRINTFORMW 精液がローションの代わりになり、にちゃにちゃと厭らしい音を立てている
+				PRINTFORMW 射精したばかりという事もあり、すぐに第二波が襲ってくるのだった
+				PRINTFORMW 「んぐっ……んぷ……凄い、こんなに……」
+			ENDIF
+			CFLAG:5234 = 4
+		;奉仕精神Lv3以上
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORMW 「えっ……わっ、きゃぁっ！？」
+			PRINTFORMW 「んん……もう、しょうがないですねぇ……」
+			CFLAG:5234 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ……気持ち悪いだけですよ……」
+			CFLAG:5234 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;射精した(ふたなり/オトコのみ) CFLAG236
+;-------------------------------------------------
+IF TFLAG:30 > 0
+	;初めて
+	IF CFLAG:5236 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5236 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5236 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5236 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;噴乳した(母乳体質のみ) CFLAG237
+;-------------------------------------------------
+IF TFLAG:27 > 0
+	;初めて
+	IF CFLAG:5237 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「ふぁ……あっ、あぁぁっ！？」
+			PRINTFORMW 「これ……母乳……？って事は……」
+			PRINTFORMW そう言うと、白蓮は急にもじもじし始めた
+		;従順Lv4以上
+		ELSEIF ABL:従順 >= 4
+			PRINTFORMW 「ふぁ……あっ、あぁぁっ！？」
+			PRINTFORMW 「これ……母乳……？って事は……」
+		;それ以外
+		ELSE
+			PRINTFORMW 「ふぁ……あっ、あぁぁっ！？」
+			PRINTFORMW 「これ……母乳……！？」
+			PRINTFORMW そう言うと、白蓮の顔は一気に青褪めていった
+		ENDIF
+			CFLAG:5237 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「あぁっ、また母乳がっ……」
+			PRINTFORMW 「ふふ、吸ってみますか？」
+			PRINTFORMW 乳首から母乳を噴き出しながら、誘っている白蓮だった
+			CFLAG:5237 = 4
+		;従順Lv4以上
+		ELSEIF ABL:従順 >= 4
+			PRINTFORMW 「ふぁ……また射乳てるぅっ……」
+			CFLAG:5237 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「うぅ……もう嫌です……」
+			CFLAG:5237 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｃ感覚Lv5でＣ絶頂50以上 CFLAG238
+;-------------------------------------------------
+IF ABL:Ｃ感覚 >= 5 && EX:0 >= 50 && NOWEX:0 > 0
+	;初めて
+	IF CFLAG:5238 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5238 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5238 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5238 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｖ感覚Lv5でＶ絶頂50以上 CFLAG239
+;-------------------------------------------------
+IF ABL:Ｖ感覚 >= 5 && EX:1 >= 50 && NOWEX:1 > 0
+	;初めて
+	IF CFLAG:5239 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5239 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5239 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5239 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ａ感覚Lv5でＡ絶頂50以上 CFLAG240
+;-------------------------------------------------
+IF ABL:Ａ感覚 >= 5 && EX:2 >= 50 && NOWEX:2 > 0
+	;初めて
+	IF CFLAG:5240 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5240 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5240 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5240 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;Ｂ感覚Lv5でＢ絶頂50以上 CFLAG241
+;-------------------------------------------------
+IF ABL:Ｂ感覚 >= 5 && EX:3 >= 50 && NOWEX:3 > 0
+	;初めて
+	IF CFLAG:5241 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5241 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5241 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5241 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;@KOJO_MESSAGE_MARKCNG関係（77をキャラ番号に置換）
+;刻印変動をトリガーにした口上
+;刻印変動後に口上を発動します
+;-------------------------------------------------
+@KOJO_77_MESSAGE_MARKCNG
+;助手が調教した時に口上をスキップする（好みに応じて使う、行頭の;を消すとスキップするようになる）
+;SIF ASSI > 0 && ASSIPLAY
+;	RETURN 0 
+;ボールギャグ着用時には口上をスキップする（OFFだと口を塞いでるのに喋りまくる）
+SIF TEQUIP:42 == 1
+	RETURN 0
+;--------------------------------------------------
+;特定助手、主人時に特殊助手口上を呼び出す(Y1を特定助手、77を主人のキャラ番号に置換）
+;--------------------------------------------------
+;IF NO:MASTER == Y1
+;	CALL LES_MESSAGE_MARKCNG_K77_MY1
+;	RETURN 0
+;ENDIF
+;IF ASSI > 0 && ASSIPLAY
+;	IF NO:ASSI == Y1
+;		CALL LES_MESSAGE_MARKCNG_K77_MY1
+;		RETURN 0
+;	ENDIF
+;ENDIF
+;-------------------------------------------------
+;苦痛刻印Lv3取得 CFLAG297
+;-------------------------------------------------
+IF TFLAG:40 == 3 && CFLAG:5297 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORM 「……
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW って……倒錯的なんですね」
+		PRINTFORMW 白蓮は傷跡を押さえながらも、%CALLNAME:MASTER%を否定的な目では見なかった
+	ELSE
+		PRINTFORMW 「星……ナズ………っ！」
+		PRINTFORMW 「ムラサ……一輪…っ！」
+		PRINTFORMW 「誰かぁ……誰か助けてぇっ……！！」
+	ENDIF
+		CFLAG:5297 = 1
+ENDIF
+
+;-------------------------------------------------
+;快楽刻印Lv3取得 CFLAG298
+;-------------------------------------------------
+IF TFLAG:41 == 3
+	IF CFLAG:5298 == 0
+		PRINTFORMW 「はぁ……はぁ……はぁ……」
+		PRINTFORMW 「(こんな淫らなことなのに……)」
+		PRINTFORMW 「(身体が……欲しがってるなんて……)」
+	ENDIF
+		CFLAG:5298 = 1
+ENDIF
+
+;-------------------------------------------------
+;屈服刻印Lv3取得 CFLAG299
+;-------------------------------------------------
+IF TFLAG:42 == 3 && CFLAG:5299 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORM 
+	ELSE
+		PRINTFORMW 「う…うぅ……あぁぁぁっ…………」
+		PRINTFORMW 「(星、ナズ、ムラサ、一輪……)」
+		PRINTFORMW 「(ごめんね……ごめんね………)」
+		PRINTFORMW 「(私はもう……この人に逆らえない……！)」
+		PRINTFORMW 今まで気丈だった白蓮が始めて嗚咽を漏らし、涙を零していた…………
+	ENDIF
+		CFLAG:5299 = 1
+ENDIF
+
+;-------------------------------------------------
+;反発刻印Lv3取得 CFLAG300
+;-------------------------------------------------
+IF TFLAG:44 == 3 && CFLAG:5300 == 0
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORMW 
+	ELSE
+		PRINTFORMW 「………仏の顔も、三度までです…」
+		PRINTFORMW そう言った白蓮の顔から、菩薩のような笑みは消え失せていた
+	ENDIF
+		CFLAG:5300 = 1
+ENDIF
+
+;-------------------------------------------------
+;イベント口上集（77、X2をキャラ番号に置換する） FLAG 261～296
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_BEFORE
+;-------------------------------------------------
+;調教後自慰 CFLAG261
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE151
+IF 1
+	;恋慕
+	IF TALENT:恋慕 == 1
+		PRINTFORM 「……
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW ……来てっ、来て下さいっ！」
+		PRINTFORMW 白蓮は%CALLNAME:MASTER%にされることを思いながら、自らを慰めた
+		CFLAG:5262 = 4
+	;自慰中毒Lv3以上
+	ELSEIF ABL:自慰中毒 >= 3
+		PRINTFORMW 「嫌……嫌なのに……指が……止まらない……」
+		CFLAG:5262 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「(私……一体何を……)」
+		CFLAG:5262 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;朝フェラ CFLAG263
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE140
+IF 1
+	;初めて
+	IF CFLAG:5263 == 0
+		;恋慕
+		IF TALENT:恋慕 == 1
+			PRINTFORMW 「んちゅ……ふふ、おはようございます……」
+			PRINTFORMW 白蓮は精液を口から垂らしながら、朝の挨拶を交わした
+		;それ以外
+		ELSE
+			PRINTFORMW 「んっ……どう、ですか？」
+		ENDIF
+			CFLAG:5263 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕
+		IF TALENT:恋慕 ==1
+			IF RAND:2 == 0
+				PRINTFORM 「ん、くちゅ……あ、おはようございます、
+				CALL MASTER_CALLNAME_77
+				PRINTFORMW ……」
+				PRINTFORMW 「うふふ……気持ちいいですか？」
+			ELSE
+				PRINTFORMW 「んむ……んんっ、朝から凄く元気ですね……」
+				PRINTFORMW そう言う白蓮の顔は、既に精液で汚れていたのだった
+			ENDIF
+			CFLAG:5263 = 4
+		;奉仕精神Lv5以上
+		ELSEIF ABL:奉仕精神 >= 5
+			PRINTFORMW 「んちゅ……んっ……」
+			CFLAG:5263 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 「んちゅ……こ、これは練習ですっ！」
+			CFLAG:5263 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後セックス CFLAG264
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE150
+IF 1
+	;初めて
+	IF CFLAG:5264 == 0
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5264 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;淫乱
+		IF TALENT:淫乱 == 1
+			PRINTFORMW 
+			CFLAG:5264 = 4
+		;V感覚Lv4以上
+		ELSEIF ABL:Ｖ感覚 >= 4
+			PRINTFORMW 
+			CFLAG:5264 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5264 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;調教後夜這い　 CFLAG265
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE158
+IF 1
+	;初めて
+	IF CFLAG:5265 == 0
+		;恋慕
+		IF TALENT:恋慕 ==1
+			PRINTFORMW 
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+		;それ以外
+		ELSE
+			PRINTFORMW 
+		ENDIF
+			CFLAG:5265 = 1
+			RETURN 0
+	;二回目以降
+	ELSE
+		;恋慕＋V感覚Lv3以上
+		IF TALENT:恋慕 == 1 && ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5265 = 5
+		;恋慕
+		ELSEIF TALENT:恋慕 == 1
+			PRINTFORMW 
+			CFLAG:5265 = 4
+		;V感覚Lv3以上
+		ELSEIF ABL:Ｖ感覚 >= 3
+			PRINTFORMW 
+			CFLAG:5265 = 3
+		;それ以外
+		ELSE
+			PRINTFORMW 
+			CFLAG:5265 = 2
+		ENDIF
+			RETURN 0
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;朝パイズリ CFLAG266
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE141
+IF 1
+	;恋慕+奉仕精神Lv5
+	IF TALENT:恋慕 == 1 && ABL:奉仕精神 >= 5
+		IF RAND:2 == 0
+			PRINTFORMW 「んしょ……んしょ……」
+			PRINTFORMW 「くす、もうビクビクして……イキそうですか？」
+			PRINTFORMW そう言うと、白蓮ははみ出た亀頭に舌を這わせた
+		ELSE
+			PRINTFORM 「おはようございます、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW 」
+			PRINTFORMW 「こうやって起こしたほうが……気持ちいいですか？」
+			PRINTFORMW そんな彼女の頭を撫でてやると、笑顔で応える白蓮であった
+		ENDIF
+		CFLAG:5267 = 3
+	;それ以外
+	ELSE
+		PRINTFORMW 「んちゅ……こ、これは練習ですっ！」
+		PRINTFORMW 照れながら反論する白蓮の頭を、撫でてしまう%CALLNAME:MASTER%であった
+		CFLAG:5267 = 2
+	ENDIF
+		RETURN 0
+ENDIF
+
+;-------------------------------------------------
+;売却
+;一部原作ネタあり、平安時代にも人身売買とかあったんだろうか
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE130
+IF 1
+	;恋慕+反発刻印Lv3未満
+	IF TALENT:恋慕 && MARK:反発刻印 < 3
+		PRINTFORMW 「え……売る……！？」
+		PRINTFORMW 売却ということを告げると、白蓮は哀しい顔を見せた
+		PRINTFORMW 「……分かっていました」
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW は、それがお仕事だということくらい……」
+		PRINTFORMW 声が震えている
+		PRINTFORMW 「でも……」
+		PRINTFORMW 「こんな形であっても、これだけは……覚えていてください……」
+		PRINTFORMW 「私は……！私は……っ！」
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW のことが――――――」
+		PRINTFORMW そこまで言った所で、白蓮は奴隷商人と共に出ていった
+		WAIT
+		PRINTFORMW その日の夕刻、ふと西の空を見上げると、
+		PRINTFORMW 夕日と共に、紫雲が空に浮かんでいた
+		PRINTFORMW その雲が先刻売り払った奴隷のようにも見えたのか、%CALLNAME:MASTER%はそそくさと屋敷に戻った
+	;反発刻印Lv3
+	ELSEIF MARK:反発刻印 == 3
+		PRINTFORMW 「さて……貴方にはどんな未来が待っているでしょうね？」
+		PRINTFORMW 「修羅界？　餓鬼界？　畜生界？」
+		PRINTFORMW 「……無間地獄に落ちてくれるのが一番ですけど」
+	;淫乱
+	ELSEIF TALENT:淫乱
+		PRINTFORMW 「……私を売る？」
+		PRINTFORMW 「ふふ、もうどうでもいいですよ……」
+		PRINTFORMW 「快楽無しに生きていけない私には、こういう道しか残っていないのでしょう？」
+		PRINTFORMW 「そのきっかけを与えてくれたことには……感謝しますね……」
+		PRINTFORMW そう言うと、白蓮は自ら奴隷商人と共に去っていった
+	;それ以外
+	ELSE
+		PRINTFORMW 「はぁ……やっと貴方から解放されるかと思うと、清々します」
+		PRINTFORMW はて、解放するなんて言っただろうか？
+		PRINTFORMW 「……人を売り買いするなんて……」
+		PRINTFORMW 「私が寺にいた頃よりも、人間は醜くなってしまったな……」
+		PRINTFORMW そう捨て台詞を吐くと、白蓮は奴隷商人に連れて行かれたのだった
+	ENDIF
+ENDIF
+
+;-------------------------------------------------
+;エンゲージリング使用時
+;売却フラグの立て方はゆゆ様口上を参考に。
+;ナズーリン、一輪、ムラサ、星、ぬえの誰か一人でも売却してる場合即バッドエンドですので。
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SUB_EVENT_SCENE200
+IF 1
+	;ナズーリンを売却済みの場合
+	IF ITEM:171 && GETCHARA(71) == -1
+		PRINTFORMW 「すみませんが、それは受け取れません……」
+		PRINTFORMW 「ここに連れてこられる前に、ナズーリンが失踪していたのですが……」
+		PRINTFORMW 「ご存知ありませんか？」
+		PRINTFORMW %CALLNAME:MASTER%は答える事が出来なかった
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW が、どんな仕事をして生計を立てているかは知っています……」
+		PRINTFORM 「確かに、私は
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW の事も好きですが……」
+		PRINTFORMW 「私の事を千年以上も慕い、想ってきた子達も……かけがえの無い家族なんです」
+		PRINTFORMW そう呟く白蓮の顔には、最早生気は感じられなかった
+		PRINTFORMW 彼女が理想としてきた「人妖の共存と共栄」
+		PRINTFORMW その大半はスキマ妖怪によって成されていたが、それでも完全とは言えない
+		PRINTFORMW 千年以上も待たせた妖怪達……いや、自分の家族に恩返しをする為に自分は帰ってきた
+		PRINTFORMW 　
+		PRINTFORMW 今の白蓮にとって……家族を失う事は、生きる意味を無くすのと同義であった
+		CFLAG:5202 = 1
+	;一輪を売却済みの場合
+	ELSEIF ITEM:173 && GETCHARA(73) == -1
+		PRINTFORMW 「すみませんが、それは受け取れません……」
+		PRINTFORMW 「ここに連れてこられる前に、一輪が失踪していたのですが……」
+		PRINTFORMW 「ご存知ありませんか？」
+		PRINTFORMW %CALLNAME:MASTER%は答える事が出来なかった
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW がどんな仕事をして生計を立てているかは知っています……」
+		PRINTFORM 「確かに、私は
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW の事も好きですが……」
+		PRINTFORMW 「私の事を千年以上も慕い、想ってきた子達も……かけがえの無い家族なんです」
+		PRINTFORMW そう呟く白蓮の顔には、最早生気は感じられなかった
+		PRINTFORMW 彼女が理想としてきた「人妖の共存と共栄」
+		PRINTFORMW その大半はスキマ妖怪によって成されていたが、それでも完全とは言えない
+		PRINTFORMW 千年以上も待たせた妖怪達……いや、自分の家族に恩返しをする為に自分は帰ってきた
+		PRINTFORMW 　
+		PRINTFORMW 今の白蓮にとって……家族を失う事は、生きる意味を無くすのと同義であった
+		CFLAG:5202 = 1
+	;村紗を売却済みの場合
+	ELSEIF ITEM:175 && GETCHARA(75) == -1
+		PRINTFORMW 「すみませんが、それは受け取れません……」
+		PRINTFORMW 「ここに連れてこられる前に、ムラサが失踪していたのですが……」
+		PRINTFORMW 「ご存知ありませんか？」
+		PRINTFORMW %CALLNAME:MASTER%は答える事が出来なかった
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW が、どんな仕事をして生計を立てているかは知っています……」
+		PRINTFORM 「確かに、私は
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW の事も好きですが……」
+		PRINTFORMW 「私の事を千年以上も慕い、想ってきた子達も……かけがえの無い家族なんです」
+		PRINTFORMW そう呟く白蓮の顔には、最早生気は感じられなかった
+		PRINTFORMW 彼女が理想としてきた「人妖の共存と共栄」
+		PRINTFORMW その大半はスキマ妖怪によって成されていたが、それでも完全とは言えない
+		PRINTFORMW 千年以上も待たせた妖怪達……いや、自分の家族に恩返しをする為に自分は帰ってきた
+		PRINTFORMW 　
+		PRINTFORMW 今の白蓮にとって……家族を失う事は、生きる意味を無くすのと同義であった
+		CFLAG:5202 = 1
+	;星を売却済みの場合
+	ELSEIF ITEM:176 && GETCHARA(76) == -1
+		PRINTFORMW 「すみませんが、それは受け取れません……」
+		PRINTFORMW 「ここに連れてこられる前に、星が失踪していたのですが……」
+		PRINTFORMW 「ご存知ありませんか？」
+		PRINTFORMW %CALLNAME:MASTER%は答える事が出来なかった
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW が、どんな仕事をして生計を立てているかは知っています……」
+		PRINTFORM 「確かに、私は
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW の事も好きですが……」
+		PRINTFORMW 「私の事を千年以上も慕い、想ってきた子達も……かけがえの無い家族なんです」
+		PRINTFORMW そう呟く白蓮の顔には、最早生気は感じられなかった
+		PRINTFORMW 彼女が理想としてきた「人妖の共存と共栄」
+		PRINTFORMW その大半はスキマ妖怪によって成されていたが、それでも完全とは言えない
+		PRINTFORMW 千年以上も待たせた妖怪達……いや、自分の家族に恩返しをする為に自分は帰ってきた
+		PRINTFORMW 　
+		PRINTFORMW 今の白蓮にとって……家族を失う事は、生きる意味を無くすのと同義であった
+		CFLAG:5202 = 1
+	;ぬえを売却済みの場合
+	ELSEIF ITEM:178 && GETCHARA(78) == -1
+		PRINTFORMW 「すみませんが、それは受け取れません……」
+		PRINTFORMW 「ここに連れてこられる前に、ぬえが失踪していたのですが……」
+		PRINTFORMW 「ご存知ありませんか？」
+		PRINTFORMW %CALLNAME:MASTER%は答える事が出来なかった
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW が、どんな仕事をして生計を立てているかは知っています……」
+		PRINTFORM 「確かに、私は
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW の事も好きですが……」
+		PRINTFORMW 「私がこの手で護るべき妖怪の子も……かけがえの無い家族なんです」
+		PRINTFORMW そう呟く白蓮の顔には、最早生気は感じられなかった
+		PRINTFORMW 彼女が理想としてきた「人妖の共存と共栄」
+		PRINTFORMW その大半はスキマ妖怪によって成されていたが、それでも完全とは言えない
+		PRINTFORMW 千年以上封印された妖怪……いや、自分の家族となるべき子を受け入れる為に自分は帰ってきた
+		PRINTFORMW 　
+		PRINTFORMW 今の白蓮にとって……家族を失う事は、生きる意味を無くすのと同義であった
+		CFLAG:5202 = 1
+	ELSE
+		PRINTFORMW 「こ……れは……？」
+		PRINTFORMW 指輪を見せると、白蓮は呆然と%CALLNAME:MASTER%を見ていた
+		PRINTFORM 「……
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW ……」
+		PRINTFORMW 「これが何なのか、私も知らないわけではありません」
+		PRINTFORMW 「性奴隷にする為に私を買って、調教して、挙句の果てには結婚して欲しいと……」
+		PRINTFORMW そこまで矢継ぎ早に喋ると、一旦言葉が途切れた
+		PRINTFORMW ………
+		PRINTFORMW ……
+		PRINTFORMW …
+		PRINTFORMW 　
+		PRINTFORMW 「うぅっ、うわああぁぁぁん……っ！！」
+		PRINTFORMW 白蓮は大粒の涙を零しながら、%CALLNAME:MASTER%に抱き付いてきた
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW が、どうい……お仕事をされてるか……」
+		PRINTFORMW 「いつかは私も、捨てられてしまうのではと……ずっと不安でした……」
+		PRINTFORMW そこまで言うと、白蓮はそのか細い腕で涙を拭った
+		PRINTFORMW 泣き腫らした跡で、少し頬の部分が赤くなっている
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW 」
+		PRINTFORMW 「私からも……お願いします」
+		PRINTFORM 「私は……
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW を生涯愛し続ける事を誓います……」
+		PRINTFORMW そうして、二人は長い間、抱擁を交わしていたのだった――――
+	ENDIF
+ENDIF
+	TFLAG:200 = 0
+	RETURN 0
+;-------------------------------------------------
+;追加分
+;CFLAG:5210を使用。
+;呼び名変更と、その固定フラグはここで。
+;既に.csv変更してる人の為(我含む)にも幾つか入れてます。
+;呼び方に関して、「平安時代　主人　呼び方」でググる羽目に……。
+;そうして気付いた事実……「ご主人」の英訳が「マイロード」。
+;更に、「ご主人」の古語が「背の君」と言う事が判明したが……口上にはとても入りそうに無い罠。
+@K77_RENAME
+;-------------------------------------------------
+IF TALENT:MASTER:オトコ
+	PRINTFORMW 「……あ……」
+	PRINTFORMW 白蓮はふっと我に返ると、自分のした事を思い返していた
+	PRINTFORMW 「すみません……つい、%CALLNAME:MASTER%さんって呼んでしまいまして……」
+	PRINTFORMW 「その……こう、呼んで欲しいとか……ありますか？」
+
+		DRAWLINE
+		PRINTL [0] ご主人様
+		PRINTL [1] 旦那様
+		PRINTL [2] 主殿
+		PRINTL [3] お兄様
+		PRINTL [4](あなたの名前)さん
+		PRINTL [5](あなたの名前)様
+		PRINTL [6]やっぱりやめる
+		$INPUT_LOOP_3
+		INPUT
+	
+		SIF RESULT >= 7
+		GOTO INPUT_LOOP_3
+			
+		IF RESULT == 0
+			PRINTFORMW 「はい、分かりました」
+			PRINTFORMW 「ご主人様、これからもよろしくお願いしますね」
+			CFLAG:5210 = 1
+			RETURN 1
+		ELSEIF RESULT == 1
+			PRINTFORMW 「ふふ、分かりました」
+			PRINTFORMW 「旦那様、これからもよろしくお願いします」
+			CFLAG:5210 = 2
+			RETURN 1
+		ELSEIF RESULT == 2
+			PRINTFORMW 「はい、承知しました」
+			PRINTFORMW 「主殿、これからもよろしくお願いします」
+			CFLAG:5210 = 3
+			RETURN 1
+		ELSEIF RESULT == 3
+			PRINTFORMW 「お、お兄様……ですか……」
+			PRINTFORMW 「うぅ……少し恥ずかしいですけど……」
+			PRINTFORMW 「おっ、お兄様、よろしく……お願いします……」
+			CFLAG:5210 = 4
+			RETURN 1
+		ELSEIF RESULT == 4
+			PRINTFORMW 「えっ、%CALLNAME:MASTER%さんで……？」
+			PRINTFORMW 「分かりました。　%CALLNAME:MASTER%さん、よろしくお願いします」
+			CFLAG:5210 = 5
+			RETURN 1
+		ELSEIF RESULT == 5
+			PRINTFORMW 「はい、分かりました」
+			PRINTFORMW 「%CALLNAME:MASTER%様、これからもよろしくお願いします」
+			CFLAG:5210 = 6
+			RETURN 1
+		ELSEIF RESULT == 6
+			PRINTFORMW 「そうですか？」
+			PRINTFORMW 「あなたがそう言われるのなら構いませんが……」
+			CFLAG:5210 = 7
+			RETURN 1
+		ENDIF
+ENDIF
+;-------------------------------------------------
+@MASTER_CALLNAME_77
+;-------------------------------------------------
+;恋慕イベントにて、選択により口上が変わる
+;「ご主人様」を選択
+IF CFLAG:5210 == 1
+	PRINTFORM ご主人様
+;「旦那様」を選択
+ELSEIF CFLAG:5210 == 2
+	PRINTFORM 旦那様
+;「主殿」を選択
+ELSEIF CFLAG:5210 == 3
+	PRINTFORM 主殿
+;「お兄様」を選択
+ELSEIF CFLAG:5210 == 4
+	PRINTFORM お兄様
+;「(あなたの名前)さん」を選択
+ELSEIF CFLAG:5210 == 5
+	PRINTFORM %CALLNAME:MASTER%さん
+;「(あなたの名前)様」を選択
+ELSEIF CFLAG:5210 == 6
+	PRINTFORM %CALLNAME:MASTER%様
+ELSEIF CFLAG:5210 == 7
+	PRINTFORM あなた
+ENDIF
+;-------------------------------------------------
+;@単体エンディング関係(77、X2をキャラ番号に置換する)
+;一部、ヴォーカルアレンジ「White Lotus」や浄土真宗の「蓮如上人の御文章」からのネタあり。
+;それと、バッドエンドは……書いてて鬱になりそうになった。
+;（追記）星の台詞も変数入ってますが気にしない方向で。
+;-------------------------------------------------
+@KOJO_77_MESSAGE_SINGLE_ENDING
+DRAWLINE
+PRINTFORMW ―――単体エンド条件達成―――
+PRINTFORMW …………
+PRINTFORMW ………
+PRINTFORMW ……
+PRINTFORMW 
+IF CFLAG:5202 == 1
+	PRINTFORMW その後、白蓮は%CALLNAME:MASTER%の前から忽然と姿を消した
+	PRINTFORMW 血眼になって捜索を続けていたが、結局見つかる事は無かった
+	PRINTFORMW そんなある日、白蓮は命連寺に帰っているのでは無いかと思い
+	PRINTFORMW 期待と不安の入り混じる中、向かってみたのだった…………
+	PRINTFORMW ………
+	PRINTFORMW ……
+	PRINTFORMW …
+	PRINTFORMW %CALLNAME:MASTER%の目の前には、寺社と「思われる」物体がそこにあった
+	PRINTFORMW 古めかしくも立派だった外装は消え失せ、そこに存在しているのは
+	PRINTFORMW 今にも崩れ落ちそうなほど老朽化した木造建築物であった
+	PRINTFORMW 　
+	PRINTFORMW ―――嫌な予感が過る
+	PRINTFORMW 崩落寸前の建物に入ると、講堂の中央で座っている影が見えた
+	PRINTFORMW よく見てみると、その影は衣服を身に纏った髑髏である事が分かったが……
+	PRINTFORMW その髑髏には、二つの特徴があった
+	PRINTFORMW 　
+	PRINTFORMW 一つは、かつて自分が求婚した魔法使いと全く同じ服を着ている事
+	PRINTFORMW もう一つは、左手の薬指に自分が渡した指輪を身に付けている事
+	PRINTFORMW 　
+	PRINTFORMW 　
+	PRINTFORMW 　
+	PRINTFORMW そう………
+	PRINTFORMW 家族とも言える妖怪を失った白蓮は、自らに掛けていた不老不死の魔法を解き
+	PRINTFORMW 極楽浄土へと旅立って逝ったのである………
+	PRINTFORMW 目の前で愛すべき人が死んでいる事をまざまざと見せ付けられ、ただ呆然と立ち尽くす男
+	PRINTFORMW その時、命連寺と呼ばれた建物は轟音と共に崩れ去っていく
+	PRINTFORMW %CALLNAME:MASTER%の意識は、その瞬間途絶えたのだった―――
+	PRINTFORMW 
+	PRINTFORMW 　　　　　　　　―― Ending No.1077C (白蓮エンドC)
+	WAIT
+	PRINTFORMW ------------------------------------GAMEOVER-----------------------------------
+	WAIT
+	QUIT
+ELSE
+	PRINTFORMW %CALLNAME:MASTER%と白蓮が結ばれてから、既に三ヶ月の時が流れていた
+	PRINTFORMW ここ命蓮寺では、今日も多くの人間や妖怪がご利益を得ようと詰め掛けて来る
+	PRINTFORMW そんな最中、裏の縁側に二人の姿はあった
+	PRINTFORMW ぽかぽかと暖かい日差しが降り注ぐ中、白蓮のひざの上という特等席で%CALLNAME:MASTER%は眠っていた
+	PRINTFORMW そんな旦那の頭を、白蓮は優しく撫でていたのだった
+	PRINTFORMW と、その時
+	PRINTFORMW 『姐さんっ！そろそろ説法の時間ですよ？』
+	PRINTFORM 「ええ、今から行きます……
+	CALL MASTER_CALLNAME_77
+	PRINTFORM 、
+	CALL MASTER_CALLNAME_77
+	PRINTFORMW ？」
+	PRINTFORMW 白蓮に優しく起こされ、共に講堂へと向かう
+	WAIT
+	PRINTFORMW そう、%CALLNAME:MASTER%は既に調教師を引退し、白蓮達の住む「命蓮寺」で生活しているのだ
+	PRINTFORMW とは言え、今はまだ「見習い」の段階である
+	PRINTFORMW だが、%CALLNAME:MASTER%は今の生活にこれ以上無い充実感を得ていた
+	PRINTFORMW 最初の頃はムラサやぬえと度々衝突していたが、
+	PRINTFORMW その度に白蓮が仲裁に入り、次第に打ち解けていった
+	PRINTFORMW こんな楽しい日々がいつまでも続くように――――
+	PRINTFORMW 説法の最中、%CALLNAME:MASTER%と白蓮はそう願っていた
+	WAIT
+	;親愛がある
+	IF TALENT:親愛 == 1
+		PRINTFORMW 更にそれから半世紀の時が流れ、%CALLNAME:MASTER%は年老いていた
+		PRINTFORMW 対してその妻は、初めて会ったときから何一つ変わっていない
+		PRINTFORMW 無論、それは命蓮寺に住む他の妖怪達も同じである
+		PRINTFORM 『
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW 、お茶が入りましたよ』
+		PRINTFORMW 星が差し出すお茶をゆっくりと飲みながら、白蓮を―――
+		PRINTFORMW いや、家族となった皆を呼び集めた
+		WAIT
+		PRINTFORMW そして、自分の命がもう幾許も無い事を告げる
+		PRINTFORMW 皆の反応は様々だった
+		PRINTFORMW 静かに下を向いて俯く者もいれば、別れたくないと泣き出す者もいた
+		PRINTFORMW そして、%CALLNAME:MASTER%の最愛の妻は、こう切り出したのだった―――
+		WAIT
+		PRINTFORM 「
+		CALL MASTER_CALLNAME_77
+		PRINTFORMW ……」
+		PRINTFORMW 「私と同じ、魔法使いになりますか？」
+		PRINTL [0] 「ああ、白蓮とずっと一緒に居たい」
+		PRINTL [1] 「いや、俺は人間のまま死ぬ事を選ぶ」
+		$INPUT_LOOP_4
+		INPUT
+		IF RESULT == 0
+			PRINTFORMW 「……分かりました」
+			PRINTFORMW 白蓮はそう言って頷き、特殊な文字が浮かぶ巻物を取り出す
+			PRINTFORMW そして魔法の詠唱が始まると、%CALLNAME:MASTER%は眩い光に包まれていた
+			PRINTFORMW 光の中から現れたのは、半世紀前の%CALLNAME:MASTER%―――――
+			PRINTFORMW 白蓮は、%CALLNAME:MASTER%を結婚した当時まで若返らせ、不老不死としたのである
+			PRINTFORMW 「朝に紅顔なれども、夕べには白骨となりけり」
+			PRINTFORMW 「人間の一生は、いつ終わるのか分かりません……」
+			PRINTFORMW 「ですが……」
+			PRINTFORMW そこまで言うと、白蓮は%CALLNAME:MASTER%を力強く抱きしめていた
+			PRINTFORM 「でも……私だけでも、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW だけでも……」
+			PRINTFORMW 「こうやって……二人で、みんなで笑い合えないんです……っ」
+			PRINTFORMW 更に力強くなり、白蓮は言葉を続ける
+			PRINTFORMW 人も　妖怪も
+			WAIT
+			PRINTFORMW たった一人では生きてはいけない
+			WAIT
+			PRINTFORMW 互いを支え合い　助け合っていく
+			WAIT
+			PRINTFORMW ケンカをしても　「ごめんね」と謝ればいい
+			WAIT
+			PRINTFORMW 独善的だと言われてもいい
+			WAIT
+			PRINTFORMW きっと　共存することの良さを分かってくれる筈だから
+			WAIT
+			PRINTFORMW そう言うと、%CALLNAME:MASTER%はそれに答えるように白蓮を抱き返した
+			PRINTFORMW より強く互いの身体が密着し、聖の豊満過ぎる胸もぎゅうぎゅうと押し付けられていた
+			PRINTFORMW 思わず反応しそうになってしまうが、即座に感付いた白蓮は魔法で「それ」を鎮めたのだった
+			PRINTFORMW ………
+			PRINTFORMW ……
+			PRINTFORMW …
+			WAIT
+			PRINTFORMW ―――その日の深夜
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW 、まだ起きてますか？」
+			PRINTFORMW %CALLNAME:MASTER%は一緒に寝ていた妻の声を耳にし、肩を抱いて返事をした
+			PRINTFORM 「夕方はすみませんでした、でも……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW も少しは堪え性を……んぅっ！」
+			PRINTFORMW 白蓮の小言を無視し、寝間着の上からたぷたぷと揉みしだく
+			PRINTFORMW 手には収まらない程、更に成長を遂げた爆乳がそこにはあった
+			PRINTFORMW サラシで矯正して何とかなっていたが、興味を持った%CALLNAME:MASTER%は
+			PRINTFORMW 一度そのサイズをこっそり測っていたのであった
+			PRINTFORMW ―――確か、108のJだったような―――
+			PRINTFORMW そうこう思い返しているうちに、乳首はぷっくりと勃起しているのが見て取れた
+			PRINTFORMW たまらず乳首に吸い付くと、白蓮は子供をあやすように頭を撫でていた
+			PRINTFORMW 「んぁっ……ぁんっ、ふふふ……」
+			PRINTFORMW そのまま%CALLNAME:MASTER%は、白蓮の極上の乳を堪能するのだった
+			WAIT
+			PRINTFORMW 「さて……今度は、私が奉仕する番ですね」
+			PRINTFORMW 既にガチガチに勃起したペニスを、壊れ物を扱うかのように優しく、そして上品に扱いていく
+			PRINTFORMW 間髪入れずに口の温かい粘膜で包むと、低く呻き声が聞こえてきたのだった
+			PRINTFORMW 「んふ…、あむ……んっ……ちゅぷ………ちゅ……んっ……」
+			PRINTFORMW 亀頭から口を離すと、白蓮は特大サイズの砲弾のようなものを抱えていた
+			PRINTFORMW ぐぐっと寄せ上げ、ペニスの先の方から挿入するように包み込んでいく
+			PRINTFORMW %CALLNAME:MASTER%の脳内を、ゾクゾクする快感が駆け巡っていた
+			PRINTFORMW 「んっ……動きますよ……」
+			PRINTFORMW 腕で乳房を挟み、そのままリズミカルにパイズリを開始する
+			PRINTFORMW 鈴口からどんどん先走りが溢れる為か、擦るたびに水音が辺りに響く
+			PRINTFORMW 全てを包み込んでしまいそうなおっぱいの中で、%CALLNAME:MASTER%のペニスは射精という歓喜の悲鳴を上げたのだった
+			WAIT
+			PRINTFORMW そのまま白蓮を仰向けに寝かせて股を開くと、愛液でとろとろになった秘所が出迎えた
+			PRINTFORM 「早く……
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW のを……下さい……」
+			PRINTFORMW 挿入を開始すると、%CALLNAME:MASTER%はまたも呻き声を上げた
+			PRINTFORMW 調教をしていた時からずっと使い込んできた蜜壷であったが、一向に衰える気配すら感じない
+			PRINTFORMW 万に一つも無いが、もし他の男が白蓮を抱いたら、間違い無く生娘だと思う込むであろう
+			PRINTFORMW 更に、白蓮は調教の度に膣内の締め具合や腰の振り方を学習し、それを記憶しているのである
+			PRINTFORMW 無論、中盤からは白蓮が%CALLNAME:MASTER%を騎乗位で犯していたのは確定的に明らかであった―――
+			WAIT
+			PRINTFORMW 合計１３Ｒにも及ぶセックスの後、お互い裸のまま抱き合っていた
+			PRINTFORM 「
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW 、お疲れ様でした」
+			PRINTFORMW 妙に艶々した肌の白蓮は、主人に向かって謝辞を述べていた
+			PRINTFORMW そして%CALLNAME:MASTER%も挨拶を交わし、程無くして口付けをする
+			PRINTFORMW 眠りにつくまでの間、ふと頭の中を過る事があった
+			PRINTFORMW 男と女が交わる事は、互いを気遣わないと快楽を得る事は難しい
+			PRINTFORMW 人と人が交わる事も、互いを助け合わないと共存は困難である
+			PRINTFORMW 　
+			PRINTFORMW では、それが人と妖怪なら？
+			PRINTFORMW 　
+			PRINTFORMW 少しだけ頭を捻って、%CALLNAME:MASTER%は考える事を止めた
+			PRINTFORMW 何故なら、これから共に過ごす時間の中、
+			PRINTFORMW 白蓮と育んでいく永遠とも須臾とも言える愛の中に……
+			PRINTFORMW 　
+			PRINTFORMW ―――永久と信じ、夢を見ていた日
+			PRINTFORMW 　　　繋いだ手の平、消して離さぬその中にあると―――
+			PRINTFORMW 
+			PRINTFORMW 　　　　　　　　―― Ending No.1077A (白蓮エンドA-1)
+		ELSEIF RESULT == 1
+			PRINTFORMW 「……分かりました」
+			PRINTFORMW 白蓮はそう言って頷くと、%CALLNAME:MASTER%の手を取った
+			PRINTFORMW 両の手でしっかりと、宝物を抱きしめるように握っている
+			PRINTFORMW 「最初は……この手が嫌で、怖くて……逃げたくても逃げ出せなくて……」
+			PRINTFORM 「でも、
+			CALL MASTER_CALLNAME_77
+			PRINTFORMW の優しさに気付いてから……」
+			PRINTFORMW 「この手が……とてもいとおしくなりました……」
+			PRINTFORMW %CALLNAME:MASTER%の鼓動がどんどん弱まっていくのを、白蓮は感じていた
+			PRINTFORMW 「……ああ、あの時の事を思い出します……」
+			PRINTFORMW 「私の弟……命蓮が逝ったあの日の事を……」
+			PRINTFORMW そう言うと、更に力強く%CALLNAME:MASTER%の手を握る白蓮
+			PRINTFORMW そして――――――
+			PRINTFORMW ………
+			PRINTFORMW ……
+			PRINTFORMW …
+			PRINTFORMW ―――ぽとり
+			PRINTFORMW 布団の中で、年老いた男は安らかな顔で眠りについた
+			PRINTFORMW 皆、言葉を発する事無く、%CALLNAME:MASTER%の最期を看取ったのだった
+			PRINTFORMW 白蓮は静かに立ち上がり、命連寺の縁側へと向かった
+			WAIT
+			PRINTFORMW 「紫雲が……出てますね……」
+			PRINTFORMW 白蓮が縁側から西の空を見上げると、紫雲が立ち込めていた
+			PRINTFORMW 事実、%CALLNAME:MASTER%は調教師を引退した後、幻想郷に住む人間や妖怪に尽力していた
+			PRINTFORMW かつて、最愛の妻がそれを望んでいたように―――――
+			PRINTFORMW 「……人は、生まれればいつかは必ず死を迎える」
+			PRINTFORMW 「この世は無常であり、それが娑婆の定め」
+			PRINTFORMW 「でも………」
+			PRINTFORMW そこまで言うと、白蓮は座り込んで泣き出してしまう
+			PRINTFORMW 「うぅっ……うわぁぁぁぁぁっ！あああぁぁぁっ………」
+			PRINTFORMW 本当はムラサや星達も泣きたいはずだ
+			PRINTFORMW そして、自分が彼女達を慰めなくてはいけないのに
+			PRINTFORMW 聖尼公の涙は、完全に日が暮れるまで続いたという―――
+			WAIT
+			PRINTFORMW その後、%CALLNAME:MASTER%の葬儀には数多くの参列者が集まった
+			PRINTFORMW 彼の墓前で、命連寺の人妖は誓いを新たにして祈っていたのだった
+			PRINTFORMW ………
+			PRINTFORMW ……
+			PRINTFORMW …
+			PRINTFORMW ―――願うならば、あの頃の日を
+			PRINTFORMW 　　　皆と過ごしたあの幸せに、ただ「ありがとう」と言いたくて―――
+			PRINTFORMW 
+			PRINTFORMW 
+			PRINTFORMW 　　　　　　　　―― Ending No.1077A (白蓮エンドA-2)
+		ELSE
+			GOTO INPUT_LOOP_4
+		ENDIF
+	ELSE
+		PRINTFORMW 
+		PRINTFORMW 
+		PRINTFORMW 
+		PRINTFORMW 　　　　　　　　―― Ending No.1077B (白蓮エンドB)
+	ENDIF
+ENDIF
+	
+
+RETURN 0
+
+;口上の存在判定（YM版）
+@TRY_77
+RETURN 1
+
